@@ -1,0 +1,10 @@
+{
+  "description": "Manage and showcase your Pokémon TCG collection with a premium digital binder, featuring real-time market insights and customizable organization tools.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

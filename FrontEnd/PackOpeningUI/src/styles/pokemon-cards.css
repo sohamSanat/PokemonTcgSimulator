@@ -1,0 +1,263 @@
+/* ==========================================================================
+   ADVANCED POKEMON CARDS CSS (3D Transforms, Filters, Blend Modes, Gradients)
+   Incorporated from the pokemon-cards-css repository for realistic card effects
+   ========================================================================== */
+
+:root {
+  --card-aspect: 0.718;
+  --card-radius: 4.55% / 3.5%;
+  --card-edge: hsl(47, 100%, 78%);
+  --card-back: hsl(205, 100%, 25%);
+  --card-glow: hsl(175, 100%, 90%);
+
+  --sunpillar-1: hsl(2, 100%, 73%);
+  --sunpillar-2: hsl(53, 100%, 69%);
+  --sunpillar-3: hsl(93, 100%, 69%);
+  --sunpillar-4: hsl(176, 100%, 76%);
+  --sunpillar-5: hsl(228, 100%, 74%);
+  --sunpillar-6: hsl(283, 100%, 73%);
+
+  --sunpillar-clr-1: var(--sunpillar-1);
+  --sunpillar-clr-2: var(--sunpillar-2);
+  --sunpillar-clr-3: var(--sunpillar-3);
+  --sunpillar-clr-4: var(--sunpillar-4);
+  --sunpillar-clr-5: var(--sunpillar-5);
+  --sunpillar-clr-6: var(--sunpillar-6);
+}
+
+/* Universal Card Aspect Ratios & Dimensions */
+.card-aspect-ratio {
+  aspect-ratio: 63 / 88 !important;
+  min-height: 180px;
+}
+.card-aspect-ratio-sm {
+  aspect-ratio: 63 / 88 !important;
+  min-height: 48px;
+}
+
+/* Base Card Container */
+.pkmn-card {
+  --grain: url("/img/grain.webp");
+  --glitter: url("/img/glitter.png");
+  --glittersize: 25%;
+
+  --space: 5%;
+  --angle: 133deg;
+  --imgsize: cover;
+
+  --red: #f80e35;
+  --yellow: #eedf10;
+  --green: #21e985;
+  --blue: #0dbde9;
+  --violet: #c929f1;
+
+  --clip: inset(9.85% 8% 52.85% 8%);
+  --clip-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 8% 9.85%, 8% 47.15%, 0 50%);
+  --clip-stage: polygon(91.5% 9.85%, 57% 9.85%, 54% 12%, 17% 12%, 16% 14%, 12% 16%, 8% 16%, 8% 47.15%, 92% 47.15%);
+  --clip-trainer: inset(14.5% 8.5% 48.2% 8.5%);
+
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --card-scale: 1;
+  --card-opacity: 0;
+  --translate-x: 0px;
+  --translate-y: 0px;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --background-x: var(--pointer-x);
+  --background-y: var(--pointer-y);
+  --pointer-from-center: 0;
+  --pointer-from-top: var(--pointer-from-center);
+  --pointer-from-left: var(--pointer-from-center);
+
+  -webkit-transform: translate3d(0px, 0px, 0.01px);
+  transform: translate3d(0px, 0px, 0.01px);
+  pointer-events: none;
+  position: relative;
+  z-index: calc(var(--card-scale) * 2);
+  will-change: auto;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  outline: 1px solid transparent;
+}
+
+.pkmn-card:hover,
+.pkmn-card.interacting,
+.pkmn-card.active {
+  will-change: transform, z-index;
+}
+
+.pkmn-card:not(.interactive) .pkmn-card__translater,
+.pkmn-card:not(.interactive) .pkmn-card__rotator,
+.pkmn-card:not(.interactive) .pkmn-card__shine,
+.pkmn-card:not(.interactive) .pkmn-card__glare {
+  transition: all 0.3s ease;
+}
+
+.pkmn-card:not(.interactive):hover {
+  --pointer-x: 25% !important;
+  --pointer-y: 10% !important;
+  --card-scale: 1.06 !important;
+  --card-opacity: 1 !important;
+  --translate-x: 0px !important;
+  --translate-y: -6px !important;
+  --rotate-x: 7deg !important;
+  --rotate-y: -15deg !important;
+  --background-x: 44% !important;
+  --background-y: 36% !important;
+  --pointer-from-center: .9 !important;
+  --pointer-from-top: .11 !important;
+  --pointer-from-left: .25 !important;
+}
+
+/* Pokemon Type Glow Colors */
+.pkmn-card.water, .pkmn-card[data-type*="water"], .pkmn-card[data-type*="Water"] { --card-glow: hsl(192, 97%, 60%); }
+.pkmn-card.fire, .pkmn-card[data-type*="fire"], .pkmn-card[data-type*="Fire"] { --card-glow: hsl(9, 81%, 59%); }
+.pkmn-card.grass, .pkmn-card[data-type*="grass"], .pkmn-card[data-type*="Grass"] { --card-glow: hsl(96, 81%, 65%); }
+.pkmn-card.lightning, .pkmn-card[data-type*="lightning"], .pkmn-card[data-type*="Lightning"] { --card-glow: hsl(54, 87%, 63%); }
+.pkmn-card.psychic, .pkmn-card[data-type*="psychic"], .pkmn-card[data-type*="Psychic"] { --card-glow: hsl(281, 62%, 58%); }
+.pkmn-card.fighting, .pkmn-card[data-type*="fighting"], .pkmn-card[data-type*="Fighting"] { --card-glow: rgb(145, 90, 39); }
+.pkmn-card.darkness, .pkmn-card[data-type*="darkness"], .pkmn-card[data-type*="Darkness"], .pkmn-card[data-type*="Dark"] { --card-glow: hsl(189, 77%, 27%); }
+.pkmn-card.metal, .pkmn-card[data-type*="metal"], .pkmn-card[data-type*="Metal"], .pkmn-card[data-type*="Steel"] { --card-glow: hsl(184, 20%, 70%); }
+.pkmn-card.dragon, .pkmn-card[data-type*="dragon"], .pkmn-card[data-type*="Dragon"] { --card-glow: hsl(51, 60%, 35%); }
+.pkmn-card.fairy, .pkmn-card[data-type*="fairy"], .pkmn-card[data-type*="Fairy"] { --card-glow: hsl(323, 100%, 89%); }
+
+/* Aspect & Radius */
+.pkmn-card,
+.pkmn-card__rotator {
+  aspect-ratio: var(--card-aspect);
+  border-radius: var(--card-radius);
+}
+
+.pkmn-card.interacting {
+  z-index: calc(var(--card-scale) * 120);
+}
+
+.pkmn-card.active .pkmn-card__translater,
+.pkmn-card.active .pkmn-card__rotator {
+  touch-action: none;
+}
+
+/* 3D Transform Layers */
+.pkmn-card__translater,
+.pkmn-card__rotator {
+  display: grid;
+  perspective: 600px;
+  will-change: auto;
+  transform-origin: center;
+  -webkit-transform-origin: center;
+  transform-style: preserve-3d;
+}
+
+.pkmn-card:hover .pkmn-card__translater,
+.pkmn-card:hover .pkmn-card__rotator,
+.pkmn-card.interacting .pkmn-card__translater,
+.pkmn-card.interacting .pkmn-card__rotator,
+.pkmn-card.active .pkmn-card__translater,
+.pkmn-card.active .pkmn-card__rotator {
+  will-change: transform, box-shadow;
+}
+
+.pkmn-card__translater {
+  width: auto;
+  position: relative;
+  --translate-z: calc(var(--card-scale) * 150px + 0.01px);
+  -webkit-transform: translate3d(var(--translate-x), var(--translate-y), var(--translate-z)) scale(var(--card-scale));
+  transform: translate3d(var(--translate-x), var(--translate-y), var(--translate-z)) scale(var(--card-scale));
+}
+
+.pkmn-card__rotator {
+  -webkit-transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
+  pointer-events: auto;
+}
+
+button.pkmn-card__rotator, div.pkmn-card__rotator {
+  border: none;
+  background: transparent;
+  padding: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pkmn-card__rotator,
+.pkmn-card.active .pkmn-card__rotator:focus {
+  transition: box-shadow 0.4s ease, opacity .33s ease-out;
+  box-shadow:
+    0 0 3px -1px transparent,
+    0 0 2px 1px transparent,
+    0 0 5px 0px transparent,
+    0px 10px 20px -5px black,
+    0 2px 15px -5px black,
+    0 0 20px 0px transparent;
+}
+
+.pkmn-card.active .pkmn-card__rotator,
+.pkmn-card.interacting .pkmn-card__rotator,
+.pkmn-card:hover .pkmn-card__rotator,
+.pkmn-card__rotator:focus {
+  box-shadow:
+    0 0 3px -1px white,
+    0 0 3px 1px var(--card-edge),
+    0 0 16px 3px var(--card-glow),
+    0px 12px 24px -5px black,
+    0 0 45px -25px var(--card-glow),
+    0 0 60px -15px var(--card-glow);
+}
+
+/* Remove colored backlight when card is in card preview / studio showcase section */
+.pkmn-card.showcase .pkmn-card__rotator,
+.pkmn-card.showcase:hover .pkmn-card__rotator,
+.pkmn-card.no-glow .pkmn-card__rotator,
+.pkmn-card.no-glow:hover .pkmn-card__rotator {
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.95) !important;
+}
+
+.pkmn-card__rotator > * {
+  width: 100%;
+  display: grid;
+  grid-area: 1/1;
+  aspect-ratio: var(--card-aspect);
+  border-radius: var(--card-radius);
+  image-rendering: optimizeQuality;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pkmn-card__rotator img {
+  height: auto;
+}
+.pkmn-card__rotator img:not(.pkmn-card__back) {
+  -webkit-transform: translate3d(0px, 0px, 0.01px);
+  transform: translate3d(0px, 0px, 0.01px);
+}
+
+.pkmn-card__back {
+  background-color: var(--card-back);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
+  transform: rotateY(180deg) translateZ(1px);
+  backface-visibility: visible;
+}
+
+.pkmn-card__front,
+.pkmn-card__front * {
+  backface-visibility: hidden;
+}
+
+.pkmn-card__front {
+  opacity: 1;
+  transition: opacity 0.33s ease-out;
+  -webkit-transform: translate3d(0px, 0px, 0.01px);
+  transform: translate3d(0px, 0px, 0.01px);
+}
+
+/* ==========================================================================
+   SHINE & GLARE LAYERS
+   Note: All 13 distinct rarity holo effects and glares have been migrated from
+   heavy CPU-bound CSS gradients/blend-modes to the ultra-smooth, hardware-accelerated
+   HTML5 Canvas engine (CardHoloCanvas.tsx) to ensure zero lag and 60-144 FPS rendering.
+   ========================================================================== */
