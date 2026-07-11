@@ -852,7 +852,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
             </div>
 
             <div className="mt-3 text-center text-[11px] text-gray-500">
-              Illustrated by <strong className="text-gray-300">{poke.illustrator || "Official Pokémon Artist"}</strong> • TCGdex Live Card Asset ID: <code className="text-amber-400">{poke.id}</code>
+              Illustrated by <strong className="text-gray-300">{poke.illustrator || "Official Pokémon Artist"}</strong> • Card ID: <code className="text-amber-400">{poke.id}</code>
             </div>
           </div>
         ) : (
@@ -1020,7 +1020,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
               <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <Info className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                  <span>Synced directly from TCGdex API feeds</span>
+                  <span>Live card data</span>
                 </div>
                 <div className="flex items-center gap-3">
                   {onAddToBinder && (
@@ -1876,7 +1876,7 @@ export default function App() {
               >
                 <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
                 <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
-                <span className="text-xs text-amber-300 font-semibold mt-1.5">{currentSet?.name || 'TCGdex Set'}</span>
+                <span className="text-xs text-amber-300 font-semibold mt-1.5">{currentSet?.name || 'Loading Set'}</span>
               </motion.div>
             ) : packStage !== 'opened' ? (
               <div className="w-full flex items-center justify-center gap-4 lg:gap-8 xl:gap-14 px-2 sm:px-6 relative my-2">
@@ -2289,7 +2289,7 @@ export default function App() {
                     <Layers className="w-5 h-5 text-amber-400" />
                     Select a Pokemon Set
                   </h2>
-                  <p className="text-xs text-gray-400 mt-1">Choose a set from TCGdex API to open packs from</p>
+                  <p className="text-xs text-gray-400 mt-1">Choose a set to open packs from</p>
                 </div>
                 <button
                   onClick={() => { sound.playModalClose(); setIsSetSelectorOpen(false); }}
