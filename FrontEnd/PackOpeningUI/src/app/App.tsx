@@ -1182,12 +1182,16 @@ export default function App() {
 
   const lastSyncedStatsRef = useRef({ sessionTotal: -1, packCount: -1, sessionSpent: -1 });
 
+  const hasLoadedFromFirebaseRef = useRef(false);
+
   // Listen for Firebase Stats sync
   useEffect(() => {
     if (!currentUser) return;
-    const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid, 'stats', 'packOpening'), (docSnap) => {
+    const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
+      hasLoadedFromFirebaseRef.current = true;
       if (docSnap.exists()) {
-        const data = docSnap.data();
+        const rootData = docSnap.data();
+        const data = rootData.stats || {};
         lastSyncedStatsRef.current = {
           sessionTotal: data.sessionTotal ?? 0,
           packCount: data.packCount ?? 0,
@@ -1209,7 +1213,7 @@ export default function App() {
       localStorage.setItem('tcg_session_pack_count', packCount.toString());
       localStorage.setItem('tcg_session_spent', sessionSpent.toString());
       
-      if (currentUser) {
+      if (currentUser && hasLoadedFromFirebaseRef.current) {
         // Only write if the current state differs from what we just received from Firebase
         const isFromFirebase = 
           sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
@@ -1217,11 +1221,13 @@ export default function App() {
           sessionSpent === lastSyncedStatsRef.current.sessionSpent;
 
         if (!isFromFirebase) {
-          setDoc(doc(db, 'users', currentUser.uid, 'stats', 'packOpening'), {
-            sessionTotal,
-            packCount,
-            sessionSpent,
-            lastUpdated: new Date().toISOString()
+          setDoc(doc(db, 'users', currentUser.uid), {
+            stats: {
+              sessionTotal,
+              packCount,
+              sessionSpent,
+              lastUpdated: new Date().toISOString()
+            }
           }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
         }
       }
