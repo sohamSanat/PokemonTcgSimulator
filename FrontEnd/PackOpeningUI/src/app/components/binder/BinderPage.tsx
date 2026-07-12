@@ -167,7 +167,7 @@ function BinderPage({
         </div>
       ) : (
         /* List View */
-        <div style={{ flex: 1, overflow: "auto", background: "rgba(255,255,255,0.02)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", padding: 16 }}>
+        <div className="flex-1 overflow-auto bg-white/5 rounded-2xl border border-white/10 p-4 min-h-0 custom-scrollbar">
           <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#7a7a8a", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>

@@ -5,7 +5,7 @@ class SoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private enabled: boolean = true;
-  private volume: number = 0.5;
+  private volume: number = 1.0;
   private isMobile: boolean = false;
 
   constructor() {
@@ -13,7 +13,7 @@ class SoundEngine {
       this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
     }
     // Mobile hardware typically needs a higher base gain for web audio API
-    this.volume = this.isMobile ? 0.85 : 0.45;
+    this.volume = this.isMobile ? 2.5 : 0.8;
 
     // Restore settings from localStorage if available
     try {
@@ -24,8 +24,8 @@ class SoundEngine {
       const savedVolume = localStorage.getItem('tcg_sound_volume');
       if (savedVolume !== null) {
         const parsed = parseFloat(savedVolume);
-        // Allow higher volume limits, especially on mobile
-        this.volume = Math.max(0, Math.min(1.0, parsed));
+        // Allow much higher volume limits, especially on mobile
+        this.volume = Math.max(0, Math.min(3.0, parsed));
       }
     } catch {
       // Ignore storage errors
@@ -92,8 +92,11 @@ class SoundEngine {
   }
 
   private haptic(pattern: number | number[]) {
-    if (this.isMobile && typeof navigator !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(pattern);
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      // Catch errors just in case browser blocks it without interaction
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {}
     }
   }
 
