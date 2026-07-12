@@ -305,7 +305,7 @@ export async function fetchCardFull(cardId: string): Promise<TCGDexCardFull> {
 
 let activeWarmupSetId: string | null = null;
 
-export function startBackgroundWarmupForSet(set?: TCGDexSet | null) {
+export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: () => void) {
   if (!set || !set.cards || set.cards.length === 0) return;
   if (activeWarmupSetId === set.id) return;
   activeWarmupSetId = set.id;
@@ -337,6 +337,9 @@ export function startBackgroundWarmupForSet(set?: TCGDexSet | null) {
       if (activeWarmupSetId !== set.id) break; // If user switched sets during warmup, stop previous queue
       const batch = candidates.slice(i, i + batchSize);
       await Promise.allSettled(batch.map(c => fetchCardFull(c.id)));
+      if (i === 0 && onReady) {
+        onReady();
+      }
       // Give browser UI an 80ms breathing room between batches
       await new Promise(r => setTimeout(r, 80));
     }

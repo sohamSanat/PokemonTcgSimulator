@@ -1247,6 +1247,7 @@ export default function App() {
   const [cards, setCards] = useState<CardData[]>([]);
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
+  const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa'>('pack');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<number>>(new Set());
@@ -1588,7 +1589,10 @@ export default function App() {
 
   useEffect(() => {
     if (currentSet) {
-      startBackgroundWarmupForSet(currentSet);
+      setIsChaseCardsReady(false);
+      startBackgroundWarmupForSet(currentSet, () => {
+        setIsChaseCardsReady(true);
+      });
     }
   }, [currentSet]);
 
@@ -2857,7 +2861,26 @@ export default function App() {
 
               {/* Chase Cards Grid */}
               <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar">
-                {chaseCardsForActiveSet.length > 0 ? (
+                {!isChaseCardsReady ? (
+                  Array.from({ length: 8 }).map((_, idx) => (
+                    <div
+                      key={`skeleton-${idx}`}
+                      className="relative rounded-2xl bg-[#1c1e2d]/60 border border-white/5 p-3 flex flex-col items-center justify-between overflow-hidden"
+                      style={{ minHeight: '235px' }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
+                      <div className="w-full flex items-center justify-between mb-2 gap-1.5">
+                        <div className="w-16 h-5 rounded-md bg-white/10" />
+                        <div className="w-12 h-5 rounded-md bg-white/10" />
+                      </div>
+                      <div className="w-24 h-36 rounded-lg bg-black/40 border border-white/10 my-1" />
+                      <div className="w-full flex flex-col items-center gap-1.5 mt-2">
+                        <div className="w-20 h-4 rounded-full bg-white/10" />
+                        <div className="w-14 h-3 rounded-full bg-white/5" />
+                      </div>
+                    </div>
+                  ))
+                ) : chaseCardsForActiveSet.length > 0 ? (
                   chaseCardsForActiveSet.map(({ card, value }, idx) => (
                     <div
                       key={card.id || idx}
