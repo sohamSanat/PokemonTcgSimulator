@@ -154,7 +154,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const handleDeleteActiveBinder = useCallback(() => { handleDeleteBinder(activeBinder); }, [handleDeleteBinder, activeBinder]);
 
   return (
-    <div className="flex flex-col md:flex-row w-full flex-1 h-full bg-[#0d0d0f] text-[#f0f0f2] overflow-hidden min-h-0">
+    <div className="flex flex-col md:flex-row w-full flex-1 h-full bg-[#0d0d0f] text-[#f0f0f2] overflow-y-auto md:overflow-hidden min-h-0 custom-scrollbar">
       <Sidebar
         binders={binders}
         activeBinder={activeBinder}

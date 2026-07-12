@@ -51,7 +51,7 @@ function BinderPage({
   }
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden px-4 md:px-6 py-4 md:py-5 min-h-0">
+    <main className="flex-1 flex flex-col overflow-visible md:overflow-hidden px-4 md:px-6 py-4 md:py-5 min-h-0">
       {/* Topbar */}
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-4 md:mb-5 shrink-0 gap-3 xl:gap-0">
         <div>
@@ -75,7 +75,7 @@ function BinderPage({
 
       {/* Binder content area */}
       {viewMode === "grid" ? (
-        <div className="flex-1 overflow-y-auto overflow-x-hidden py-3 pb-8 min-h-0 custom-scrollbar">
+        <div className="flex-1 overflow-visible md:overflow-y-auto overflow-x-hidden py-3 pb-8 min-h-0 custom-scrollbar">
           <div
             style={{
               width: "100%",
@@ -167,7 +167,7 @@ function BinderPage({
         </div>
       ) : (
         /* List View */
-        <div className="flex-1 overflow-auto bg-white/5 rounded-2xl border border-white/10 p-4 min-h-0 custom-scrollbar">
+        <div className="flex-1 overflow-x-auto overflow-y-visible md:overflow-auto bg-white/5 rounded-2xl border border-white/10 p-4 min-h-0 custom-scrollbar">
           <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", color: "#7a7a8a", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>

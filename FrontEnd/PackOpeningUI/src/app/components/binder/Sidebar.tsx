@@ -73,11 +73,10 @@ function Sidebar({
 }: Props) {
   return (
     <aside
-      className="w-full md:w-[300px] md:min-w-[300px] h-[40vh] md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10"
+      className="w-full md:w-[300px] md:min-w-[300px] h-auto md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10"
       style={{
         background: "rgba(20, 20, 26, 0.6)",
         backdropFilter: "blur(24px)",
-        overflow: "hidden",
       }}
     >
       {/* Profile header */}
@@ -144,7 +143,7 @@ function Sidebar({
       <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "0 20px 18px" }} />
 
       {/* Binder list - Uncluttered, Spacious, and User-Friendly */}
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "0 16px 20px" }}>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 pb-5 max-h-[35vh] md:max-h-none custom-scrollbar">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, padding: "0 6px" }}>
           <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.15em", color: "#a1a1aa", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 }}>
             <span>📁 MY BINDERS</span>
