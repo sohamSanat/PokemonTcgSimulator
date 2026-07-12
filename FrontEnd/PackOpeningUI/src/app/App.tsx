@@ -28,10 +28,10 @@ interface CardData {
 }
 
 const DARKNESS_ABLAZE_PACK_ARTS = [
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.png',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img2.png',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img3.png',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img4.png',
+  '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.webp',
+  '/packArts/Sword&Shield-Generation/DarknessAblaze/img2.webp',
+  '/packArts/Sword&Shield-Generation/DarknessAblaze/img3.webp',
+  '/packArts/Sword&Shield-Generation/DarknessAblaze/img4.webp',
 ];
 
 const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<string, string[]> = {}): string[] => {
@@ -1257,6 +1257,22 @@ export default function App() {
       }
     });
   }, [currentPackArts]);
+
+  useEffect(() => {
+    // Aggressively preload all card images inside the freshly generated pack
+    // while the pack is sitting on the table unopened, so they load instantly when revealed
+    if (cards.length > 0 && packStage === 'unopened') {
+      cards.forEach(card => {
+        const imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
+        if (imgUrl) {
+          const img = new Image();
+          // Use low priority so it doesn't block UI threads, since they have time before opening
+          img.fetchPriority = 'low';
+          img.src = imgUrl;
+        }
+      });
+    }
+  }, [cards, packStage]);
 
   useEffect(() => {
     const handleCacheUpdate = () => {
