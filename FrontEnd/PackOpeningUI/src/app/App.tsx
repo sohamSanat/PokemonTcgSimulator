@@ -1254,7 +1254,7 @@ export default function App() {
     setIsChaseCardsRevealed(false);
     const timer = setTimeout(() => {
       setIsChaseCardsRevealed(true);
-    }, 5000);
+    }, 10000);
     return () => clearTimeout(timer);
   }, [currentSet]);
 
