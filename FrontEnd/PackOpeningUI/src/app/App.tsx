@@ -1974,7 +1974,7 @@ export default function App() {
                     style={{ aspectRatio: '63 / 88' }}
                   >
                     <img
-                      src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.png`}
+                      src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                       alt={card.name}
                       className="w-full h-full object-cover block"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -2087,7 +2087,7 @@ export default function App() {
                                 style={{ minWidth: '36px', minHeight: '48px', aspectRatio: '63 / 88' }}
                               >
                               <img
-                                src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.png`}
+                                src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                                 alt={card.name}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block"
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -2835,7 +2835,7 @@ export default function App() {
                         style={{ width: '100px', height: '140px' }}
                       >
                         <img
-                          src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.png`}
+                          src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                           alt={card.name}
                           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 block p-0.5"
                           style={{ width: '100%', height: '100%', objectFit: 'contain' }}

@@ -108,8 +108,8 @@ export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'hig
     if (baseUrl.includes('/high.webp')) return baseUrl.replace('/high.webp', '/low.webp');
     if (baseUrl.includes('_hires.png')) return baseUrl.replace('_hires.png', '.png');
     if (baseUrl.endsWith('/high') || baseUrl.endsWith('/large')) return baseUrl.replace(/\/high$|\/large$/, '/medium');
-    if (!baseUrl.endsWith('.png') && !baseUrl.endsWith('.webp') && !baseUrl.endsWith('.webp') && !baseUrl.includes('scrydex.com')) {
-      return `${baseUrl}/low.png`;
+    if (!baseUrl.endsWith('.png') && !baseUrl.endsWith('.webp') && !baseUrl.includes('scrydex.com')) {
+      return baseUrl.includes('tcgdex.net') ? `${baseUrl}/low.webp` : `${baseUrl}/low.png`;
     }
     return baseUrl;
   }
@@ -121,8 +121,8 @@ export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'hig
     return baseUrl.replace('.png', '_hires.png');
   }
   if (baseUrl.endsWith('/low') || baseUrl.endsWith('/medium')) return baseUrl.replace(/\/low$|\/medium$/, '/high');
-  if (!baseUrl.endsWith('.png') && !baseUrl.endsWith('.webp') && !baseUrl.endsWith('.webp') && !baseUrl.includes('scrydex.com')) {
-    return `${baseUrl}/high.png`;
+  if (!baseUrl.endsWith('.png') && !baseUrl.endsWith('.webp') && !baseUrl.includes('scrydex.com')) {
+    return baseUrl.includes('tcgdex.net') ? `${baseUrl}/high.webp` : `${baseUrl}/high.png`;
   }
   return baseUrl;
 };
