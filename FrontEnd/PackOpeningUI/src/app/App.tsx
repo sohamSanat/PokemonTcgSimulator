@@ -28,10 +28,10 @@ interface CardData {
 }
 
 const DARKNESS_ABLAZE_PACK_ARTS = [
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.webp',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img2.webp',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img3.webp',
-  '/packArts/Sword&Shield-Generation/DarknessAblaze/img4.webp',
+  '/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp',
+  '/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp',
+  '/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp',
+  '/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp',
 ];
 
 const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<string, string[]> = {}): string[] => {
@@ -1228,12 +1228,12 @@ export default function App() {
     const pSleeve = new Image(); pSleeve.src = '/sleeve.png';
     const pSlab = new Image(); pSlab.src = '/slab.svg?v=clean3';
 
-    fetch('/packArts/manifest.json')
+    fetch('/packArts/manifest.json?v=3')
       .then(res => res.ok ? res.json() : {})
       .then(data => setPackArtsManifest(data))
       .catch(() => { });
 
-    fetch('/setLogos/manifest.json')
+    fetch('/setLogos/manifest.json?v=3')
       .then(res => res.ok ? res.json() : {})
       .then(data => setSetLogosManifest(data))
       .catch(() => { });

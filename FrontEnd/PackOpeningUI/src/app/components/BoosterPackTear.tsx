@@ -35,7 +35,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   const autoTearRafRef = useRef<number | null>(null);
   const lastScratchRef = useRef<number>(0);
 
-  const currentPackArt = (packArts && packArts.length > 0 && packArts[packArtIndex % packArts.length]) || '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.png';
+  const currentPackArt = (packArts && packArts.length > 0 && packArts[packArtIndex % packArts.length]) || '/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp';
 
   // Helper to generate a realistic serrated foil rip edge polygon clip-path
   const getJaggedClipPath = useCallback((percent: number) => {
@@ -288,7 +288,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
               decoding="sync"
               onError={(e) => {
                 const img = e.target as HTMLImageElement;
-                const universalFallback = '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.png';
+                const universalFallback = '/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp';
                 const firstArt = (packArts && packArts[0]) || universalFallback;
                 if (img.src !== window.location.origin + firstArt && img.src !== firstArt) {
                   img.src = firstArt;

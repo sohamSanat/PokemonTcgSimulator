@@ -39,7 +39,7 @@ const SET_ALIASES = {
   'chaos-rising': ['me04', 'me4', 'chaos rising', 'chaos-rising', 'chaosrising', 'me04'],
 
   // Scarlet & Violet
-  'scarlet&violet': ['sv01', 'sv1', 'scarlet & violet', 'scarlet&violet', 'sv', 'sv01'],
+  'scarlet-and-violet': ['sv01', 'sv1', 'scarlet & violet', 'scarlet&violet', 'sv', 'sv01'],
   'paldea-evolved': ['sv02', 'sv2', 'paldea evolved', 'paldea-evolved', 'sv02'],
   'obsidian-flames': ['sv03', 'sv3', 'obsidian flames', 'obsidian-flames', 'sv03'],
   '151': ['sv03.5', 'sv3pt5', 'sv3.5', '151', 'me4', 'meo', 'sve-151', 'sv035', 'sv35'],
@@ -58,7 +58,7 @@ const SET_ALIASES = {
   'white-flare': ['sv10b', 'white flare', 'white-flare', 'whiteflare'],
 
   // Sword & Shield
-  'sword&shield': ['swsh1', 'sword & shield', 'sword&shield', 'swsh', 'swsh01'],
+  'sword-and-shield': ['swsh1', 'sword & shield', 'sword&shield', 'swsh', 'swsh01'],
   'rebel-clash': ['swsh2', 'rebel clash', 'rebel-clash', 'swsh02'],
   'DarknessAblaze': ['swsh3', 'darkness ablaze', 'darknessablaze', 'darkness-ablaze', 'swsh03'],
   'champions-path': ['swsh3.5', 'swsh3pt5', 'swsh35', 'cpa', 'champions path', 'champions-path', 'champion\'s path', 'championspath'],
@@ -77,7 +77,7 @@ const SET_ALIASES = {
   'crown-zenith': ['swsh12.5', 'swsh12pt5', 'swsh12.5gg', 'crown zenith', 'crown-zenith', 'swsh125'],
 
   // Sun & Moon
-  'sun&moon-baseset': ['sm1', 'sm01', 'sun & moon', 'sun & moon base set', 'sun&moon-baseset', 'sun and moon', 'sm'],
+  'sun-and-moon-baseset': ['sm1', 'sm01', 'sun & moon', 'sun & moon base set', 'sun&moon-baseset', 'sun and moon', 'sm'],
   'guardians-rising': ['sm2', 'sm02', 'guardians rising', 'guardians-rising'],
   'burning-shadow': ['sm3', 'sm03', 'burning shadows', 'burning-shadow', 'burning-shadows'],
   'shining-legends': ['sm3.5', 'sm3pt5', 'sm35', 'shining legends', 'shining-legends', 'slg'],
