@@ -1402,7 +1402,7 @@ export default function App() {
                 large: getCardImageUrl(cached.image, 'high'),
               } : c.pokemon.images,
               pricing: cached.pricing || c.pokemon.pricing,
-              tcgplayer: cached.tcgplayer || prevCards.find(c => c.pokemon.id === updatedPoke.id)?.pokemon.tcgplayer,
+              tcgplayer: cached.tcgplayer || c.pokemon.tcgplayer,
               cardmarket: cached.cardmarket || cached.pricing?.cardmarket || c.pokemon.cardmarket,
               illustrator: cached.illustrator || c.pokemon.illustrator,
             };
