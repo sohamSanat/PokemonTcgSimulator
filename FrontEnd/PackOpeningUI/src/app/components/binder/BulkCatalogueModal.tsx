@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Layers, Package, Search, Inbox } from 'lucide-react';
-import { getCatalogues, type BulkCard, type CatalogueStore } from './types';
+import { getCatalogues, clearCatalogues, type BulkCard, type CatalogueStore } from './types';
 
 interface BulkCatalogueModalProps {
   isOpen: boolean;
@@ -95,12 +95,24 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                   </p>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 hover:bg-red-500/15 hover:border-red-400/30 text-gray-400 hover:text-red-300 transition-all"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to reset your Bulk Vault? This cannot be undone.')) {
+                      clearCatalogues();
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-[11px] font-bold transition-all mr-2"
+                >
+                  Reset Vault
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 hover:bg-red-500/15 hover:border-red-400/30 text-gray-400 hover:text-red-300 transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {setNames.length === 0 ? (

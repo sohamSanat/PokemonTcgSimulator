@@ -72,6 +72,17 @@ export async function syncToFirestore() {
   }
 }
 
+export function clearCatalogues(): void {
+  try {
+    localStorage.removeItem(getStorageKey('tcg_catalogues'));
+    syncToFirestore();
+    window.dispatchEvent(new Event('storage'));
+  } catch (e) {
+    console.error('Failed to clear catalogues', e);
+  }
+}
+
+
 let unsubscribeFirestore: (() => void) | null = null;
 
 export function listenToFirestore(uid: string | null) {
