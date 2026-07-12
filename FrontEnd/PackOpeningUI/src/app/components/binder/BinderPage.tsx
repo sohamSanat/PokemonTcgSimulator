@@ -138,13 +138,7 @@ function BinderPage({
 
             {/* 9-pocket sheet background texture & grid */}
             <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 16,
-                position: "relative",
-                zIndex: 5
-              }}
+              className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 relative z-10"
             >
               {gridSlots.slice(0, 9).map((card, i) => (
                 <CardSlot key={card?.id ?? `empty-${i}`} card={card} index={i} onToggleFavorite={onToggleFavorite} onAddCard={onAddCard} onInspectCard={onInspectCard} />

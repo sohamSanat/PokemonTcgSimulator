@@ -1736,7 +1736,7 @@ export default function App() {
             onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.65),inset_0_2px_4px_rgba(255,255,255,0.8)] border border-yellow-200 hover:border-white flex items-center gap-1.5 sm:gap-2.5 cursor-pointer transition-all duration-300 group shrink-0 transform hover:-translate-y-0.5"
+            className={`px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.65),inset_0_2px_4px_rgba(255,255,255,0.8)] border border-yellow-200 hover:border-white items-center gap-1.5 sm:gap-2.5 cursor-pointer transition-all duration-300 group shrink-0 transform hover:-translate-y-0.5 ${activeTab === 'binder' ? 'hidden sm:flex' : 'flex'}`}
           >
             <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black font-black group-hover:-translate-x-1 transition-transform shrink-0" />
             <span className="tracking-wide uppercase font-black">Choose Set</span>
@@ -1756,7 +1756,7 @@ export default function App() {
 
           <button
             onClick={() => { sound.playButtonClick(); setActiveTab(t => t === 'psa' ? 'pack' : 'psa'); }}
-            className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2.5 cursor-pointer shrink-0 ${activeTab === 'psa'
+            className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-extrabold transition-all items-center gap-1.5 sm:gap-2.5 cursor-pointer shrink-0 ${activeTab === 'binder' ? 'hidden sm:flex' : 'flex'} ${activeTab === 'psa'
               ? 'bg-gradient-to-r from-red-600 via-rose-600 to-red-700 border-red-400 text-white shadow-[0_4px_25px_rgba(239,68,68,0.6),inset_0_1px_2px_rgba(255,255,255,0.3)]'
               : 'bg-[#1f1620]/90 border-red-500/30 text-red-300 hover:bg-[#2c1f2e] hover:border-red-400/60 shadow-[0_4px_15px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)]'
               }`}
@@ -1767,13 +1767,13 @@ export default function App() {
 
           <button
             onClick={() => { sound.playButtonClick(); setIsBulkModalOpen(true); }}
-            className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2.5 cursor-pointer shrink-0 bg-[#0f1a20]/90 border-teal-500/30 text-teal-300 hover:bg-[#132028] hover:border-teal-400/60 shadow-[0_4px_15px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)]"
+            className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-extrabold transition-all items-center gap-1.5 sm:gap-2.5 cursor-pointer shrink-0 bg-[#0f1a20]/90 border-teal-500/30 text-teal-300 hover:bg-[#132028] hover:border-teal-400/60 shadow-[0_4px_15px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] ${activeTab === 'binder' ? 'hidden sm:flex' : 'flex'}`}
           >
             <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-400 shrink-0" />
             <span className="tracking-wide">Bulk Vault</span>
           </button>
         </div>
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 w-full lg:w-auto justify-center lg:justify-end mt-1 lg:mt-0">
+        <div className={`flex-wrap items-center gap-1.5 sm:gap-3 w-full lg:w-auto justify-center lg:justify-end mt-1 lg:mt-0 ${activeTab === 'binder' ? 'hidden sm:flex' : 'flex'}`}>
           <button
             onClick={toggleSound}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 ${soundEnabled
