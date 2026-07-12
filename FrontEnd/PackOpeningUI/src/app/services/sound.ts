@@ -5,9 +5,16 @@ class SoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private enabled: boolean = true;
-  private volume: number = 0.32;
+  private volume: number = 0.5;
+  private isMobile: boolean = false;
 
   constructor() {
+    if (typeof window !== 'undefined') {
+      this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
+    }
+    // Mobile hardware typically needs a higher base gain for web audio API
+    this.volume = this.isMobile ? 0.85 : 0.45;
+
     // Restore settings from localStorage if available
     try {
       const savedEnabled = localStorage.getItem('tcg_sound_enabled');
@@ -17,8 +24,8 @@ class SoundEngine {
       const savedVolume = localStorage.getItem('tcg_sound_volume');
       if (savedVolume !== null) {
         const parsed = parseFloat(savedVolume);
-        // Ensure volume isn't overly loud
-        this.volume = Math.min(0.35, parsed);
+        // Allow higher volume limits, especially on mobile
+        this.volume = Math.max(0, Math.min(1.0, parsed));
       }
     } catch {
       // Ignore storage errors
@@ -84,6 +91,12 @@ class SoundEngine {
     return this.volume;
   }
 
+  private haptic(pattern: number | number[]) {
+    if (this.isMobile && typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(pattern);
+    }
+  }
+
   // Generate white noise buffer for realistic paper/foil rustling & sliding
   private createNoiseBuffer(duration: number): AudioBuffer | null {
     if (!this.ctx) return null;
@@ -101,6 +114,7 @@ class SoundEngine {
    * Card Slide / Swish sound when moving stack, hovering, or drawing cards
    */
   public playCardSlide(isSubtle = false) {
+    this.haptic(isSubtle ? 5 : 12);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -140,6 +154,7 @@ class SoundEngine {
    * Card Flip sound when flipping over face-down card
    */
   public playCardFlip(rarity?: string) {
+    this.haptic([15, 25]);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -208,6 +223,7 @@ class SoundEngine {
    * Shimmering magical chime for Rare/Holo/EX card reveal
    */
   public playRareFanfare() {
+    this.haptic([30, 50, 30, 50, 40]);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -251,6 +267,7 @@ class SoundEngine {
    * Card Collect sound (coin / gem chime)
    */
   public playCardCollect(value = 1) {
+    this.haptic(value > 10 ? [20, 30, 20] : 15);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -297,6 +314,7 @@ class SoundEngine {
    * Pack Opening / Foil Tear sound
    */
   public playPackOpen() {
+    this.haptic([30, 40, 20]);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -348,6 +366,7 @@ class SoundEngine {
    * Foil Wrapper Tearing sound (prolonged rip + pop + opening whoosh)
    */
   public playFoilTear() {
+    this.haptic([20, 20, 20, 20]);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -415,6 +434,7 @@ class SoundEngine {
    * Micro foil tearing / scratching sound during interactive hover tearing
    */
   public playFoilScratch(progress: number = 50) {
+    this.haptic(5);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -441,6 +461,7 @@ class SoundEngine {
    * Modern UI button click
    */
   public playButtonClick() {
+    this.haptic(10);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;

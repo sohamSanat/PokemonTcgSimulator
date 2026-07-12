@@ -73,14 +73,9 @@ function Sidebar({
 }: Props) {
   return (
     <aside
+      className="w-full md:w-[300px] md:min-w-[300px] h-[40vh] md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10"
       style={{
-        width: 300,
-        minWidth: 300,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
         background: "rgba(20, 20, 26, 0.6)",
-        borderRight: "1px solid rgba(255,255,255,0.08)",
         backdropFilter: "blur(24px)",
         overflow: "hidden",
       }}

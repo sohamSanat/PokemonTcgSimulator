@@ -51,36 +51,22 @@ function BinderPage({
   }
 
   return (
-    <main
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        padding: "20px 24px",
-      }}
-    >
+    <main className="flex-1 flex flex-col overflow-hidden px-4 md:px-6 py-4 md:py-5 min-h-0">
       {/* Topbar */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 20,
-        flexShrink: 0,
-      }}>
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-4 md:mb-5 shrink-0 gap-3 xl:gap-0">
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", color: "#f0f0f2" }}>
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#f0f0f2]">
             {binderName}
           </h1>
-          <p style={{ fontSize: 12, color: "#7a7a8a", marginTop: 2 }}>
+          <p className="text-xs text-[#7a7a8a] mt-1">
             {totalCardsInBinder} cards · Page {currentPage} of {Math.max(1, totalPages)}
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="flex flex-wrap items-center gap-2">
           <TopBtn label="Grid View" active={viewMode === "grid"} onClick={() => onViewModeChange("grid")} />
           <TopBtn label="List View" active={viewMode === "list"} onClick={() => onViewModeChange("list")} />
-          <div style={{ width: 1, background: "rgba(255,255,255,0.08)", margin: "0 4px" }} />
+          <div className="hidden md:block w-[1px] h-6 bg-white/10 mx-1" />
           {onClearBinder && <TopBtn label="🗑️ Clear Binder" onClick={onClearBinder} />}
           {onDeleteBinder && <TopBtn label="❌ Delete Binder" onClick={onDeleteBinder} />}
           <TopBtn label="+ Open Packs to Add" accent onClick={onAddCard} />
