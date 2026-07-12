@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, startBackgroundWarmupForSet, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { auth, signOut } from './services/firebase';
+import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
@@ -1180,13 +1180,53 @@ export default function App() {
     } catch { return 0; }
   });
 
+  const lastSyncedStatsRef = useRef({ sessionTotal: -1, packCount: -1, sessionSpent: -1 });
+
+  // Listen for Firebase Stats sync
+  useEffect(() => {
+    if (!currentUser) return;
+    const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid, 'stats', 'packOpening'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        lastSyncedStatsRef.current = {
+          sessionTotal: data.sessionTotal ?? 0,
+          packCount: data.packCount ?? 0,
+          sessionSpent: data.sessionSpent ?? 0,
+        };
+        // Update local state to match Firebase (will trigger a re-render only if changed)
+        setSessionTotal(data.sessionTotal ?? 0);
+        setPackCount(data.packCount ?? 0);
+        setSessionSpent(data.sessionSpent ?? 0);
+      }
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Save stats to LocalStorage (as fallback) and Firebase
   useEffect(() => {
     try {
       localStorage.setItem('tcg_session_total', sessionTotal.toString());
       localStorage.setItem('tcg_session_pack_count', packCount.toString());
       localStorage.setItem('tcg_session_spent', sessionSpent.toString());
+      
+      if (currentUser) {
+        // Only write if the current state differs from what we just received from Firebase
+        const isFromFirebase = 
+          sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
+          packCount === lastSyncedStatsRef.current.packCount &&
+          sessionSpent === lastSyncedStatsRef.current.sessionSpent;
+
+        if (!isFromFirebase) {
+          setDoc(doc(db, 'users', currentUser.uid, 'stats', 'packOpening'), {
+            sessionTotal,
+            packCount,
+            sessionSpent,
+            lastUpdated: new Date().toISOString()
+          }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
+        }
+      }
     } catch {}
-  }, [sessionTotal, packCount, sessionSpent]);
+  }, [sessionTotal, packCount, sessionSpent, currentUser]);
   const [isRevealingAll, setIsRevealingAll] = useState(false);
   const [cards, setCards] = useState<CardData[]>([]);
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
