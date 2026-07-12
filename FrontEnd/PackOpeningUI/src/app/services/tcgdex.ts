@@ -263,32 +263,32 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     paddedNum = num.padStart(3, '0');
   }
 
+  // Prioritize tcgdex and scrydex since pokemontcg.io can return false-positive 200 OK card backs
   const fallbacks = [
-    `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
-    `https://images.pokemontcg.io/${setId}/${num}.png`,
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}/low.webp`,
     `${validAsset}/low.png`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/low.png`,
+    `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${setId}/${num}.png`,
     'https://images.pokemontcg.io/swsh3/19_hires.png'
   ];
 
-  let attempt = parseInt(img.dataset.errorAttempt || '0', 10);
+  // Robustly determine the next fallback without relying on React-volatile dataset
+  const currentIndex = fallbacks.findIndex(url => img.src === url || img.src.includes(url));
   
-  if (attempt < fallbacks.length) {
-    let nextSrc = fallbacks[attempt];
-    // Skip if the next fallback is exactly what just failed
-    while (attempt < fallbacks.length && img.src === nextSrc) {
-        attempt++;
-        if (attempt < fallbacks.length) nextSrc = fallbacks[attempt];
-    }
-    
-    if (attempt < fallbacks.length) {
-       img.dataset.errorAttempt = (attempt + 1).toString();
-       img.src = nextSrc;
-    }
+  let nextAttempt = currentIndex === -1 ? 0 : currentIndex + 1;
+  
+  // Skip over any fallback that is exactly what just failed
+  while (nextAttempt < fallbacks.length && (img.src === fallbacks[nextAttempt] || img.src.includes(fallbacks[nextAttempt]))) {
+      nextAttempt++;
+  }
+
+  if (nextAttempt < fallbacks.length) {
+     img.dataset.errorAttempt = nextAttempt.toString();
+     img.src = fallbacks[nextAttempt];
   }
 }
 
