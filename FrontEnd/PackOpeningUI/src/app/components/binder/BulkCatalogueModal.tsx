@@ -110,13 +110,13 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                 </div>
               </div>
             ) : (
-              <div className="flex flex-1 min-h-0">
+              <div className="flex flex-col md:flex-row flex-1 min-h-0">
                 {/* Sidebar — Set List */}
                 <div
-                  className="w-52 shrink-0 border-r border-white/8 flex flex-col overflow-y-auto"
+                  className="w-full md:w-52 md:h-full shrink-0 border-b md:border-b-0 md:border-r border-white/8 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto custom-scrollbar"
                   style={{ background: 'rgba(10,18,22,0.6)' }}
                 >
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest px-4 pt-4 pb-2">Sets</p>
+                  <p className="hidden md:block text-[10px] font-black text-gray-500 uppercase tracking-widest px-4 pt-4 pb-2">Sets</p>
                   {setNames.map(setName => {
                     const cards = catalogues[setName] || {};
                     const total = Object.values(cards).reduce((s, c) => s + c.count, 0);
@@ -125,7 +125,7 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                       <button
                         key={setName}
                         onClick={() => { setSelectedSet(setName); setSearch(''); }}
-                        className={`w-full text-left px-4 py-3 flex items-center justify-between gap-2 transition-all border-l-2 ${
+                        className={`md:w-full shrink-0 text-left px-4 py-3 flex items-center justify-between gap-2 transition-all border-b-2 md:border-b-0 md:border-l-2 ${
                           isActive
                             ? 'border-teal-400 bg-teal-500/10 text-teal-300'
                             : 'border-transparent text-gray-400 hover:text-gray-200 hover:bg-white/5'

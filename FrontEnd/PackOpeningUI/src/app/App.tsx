@@ -1565,7 +1565,7 @@ export default function App() {
       }
       return card;
     }));
-  }, [isRevealingAll]);
+  }, [isRevealingAll, currentSet?.name]);
 
   const handleInspectCard = useCallback((card: CardData) => {
     sound.playModalOpen();
