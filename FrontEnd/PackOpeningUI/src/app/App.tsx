@@ -2007,7 +2007,20 @@ export default function App() {
 
             {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
             <div className="grid grid-cols-3 gap-2 w-full">
-              {chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
+              {!isChaseCardsReady ? (
+                Array.from({ length: 3 }).map((_, idx) => (
+                  <div
+                    key={`skeleton-mobile-${idx}`}
+                    className="flex flex-col items-center p-2 rounded-xl bg-[#14141c]/90 border border-white/15 shadow-md relative overflow-hidden"
+                    style={{ minHeight: '135px' }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
+                    <div className="w-8 h-3 rounded bg-white/10 mt-1 mb-1" />
+                    <div className="w-14 sm:w-16 h-20 sm:h-22 rounded-md bg-black/40 border border-white/10 my-1" />
+                    <div className="w-12 h-2.5 rounded bg-white/10 mt-1" />
+                  </div>
+                ))
+              ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                 <div
                   key={card.id || idx}
                   onClick={() => {

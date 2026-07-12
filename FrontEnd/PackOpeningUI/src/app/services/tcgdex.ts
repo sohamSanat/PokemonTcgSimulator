@@ -306,8 +306,14 @@ export async function fetchCardFull(cardId: string): Promise<TCGDexCardFull> {
 let activeWarmupSetId: string | null = null;
 
 export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: () => void) {
-  if (!set || !set.cards || set.cards.length === 0) return;
-  if (activeWarmupSetId === set.id) return;
+  if (!set || !set.cards || set.cards.length === 0) {
+    if (onReady) onReady();
+    return;
+  }
+  if (activeWarmupSetId === set.id) {
+    if (onReady) onReady();
+    return;
+  }
   activeWarmupSetId = set.id;
 
   // Filter out energies and already cached cards
