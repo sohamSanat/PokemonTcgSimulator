@@ -155,6 +155,20 @@ const setDetailsCache = new Map<string, TCGDexSet>();
 export const cardFullCache = new Map<string, TCGDexCardFull>();
 export const onCardFullCacheUpdated = new Set<() => void>();
 
+// Cross-browser timeout helper (since AbortSignal.timeout is not supported in Safari < 16)
+const fetchWithTimeout = async (url: string, ms: number) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+};
+
 export async function fetchSeriesDetails(seriesId: string): Promise<TCGDexSeries> {
   const cacheKey = seriesId.toLowerCase();
   if (seriesCache.has(cacheKey)) {
@@ -187,7 +201,7 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     return setDetailsCache.get(cacheKey)!;
   }
   try {
-    const res = await fetch(`${API_BASE}/sets/${setId}`, { signal: AbortSignal.timeout(3500) });
+    const res = await fetchWithTimeout(`${API_BASE}/sets/${setId}`, 3500);
     if (!res.ok) throw new Error(`Failed to fetch set details for ${setId}`);
     const data: TCGDexSet = await res.json();
     if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${setId}`);
@@ -285,7 +299,7 @@ export async function fetchCardFull(cardId: string, skipEvent: boolean = false):
     return cardFullCache.get(cardId)!;
   }
   try {
-    const res = await fetch(`${API_BASE}/cards/${cardId}`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetchWithTimeout(`${API_BASE}/cards/${cardId}`, 5000);
     if (!res.ok) throw new Error(`Failed to fetch card ${cardId}`);
     const data: TCGDexCardFull = await res.json();
     cardFullCache.set(cardId, data);
@@ -492,13 +506,13 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   let rarityData = rarityPoolCache.get(cacheKey);
   if (!rarityData) {
     rarityData = await Promise.all([
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Common`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Uncommon`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare Holo`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Ultra Rare`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Secret Rare`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : []).catch(() => []),
-      gallerySetId ? fetch(`${API_BASE}/sets/${gallerySetId}`, { signal: AbortSignal.timeout(2500) }).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null)
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Common`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Uncommon`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare Holo`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Ultra Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Secret Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
+      gallerySetId ? fetchWithTimeout(`${API_BASE}/sets/${gallerySetId}`, 2500).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null)
     ]);
     if ((rarityData[0] && rarityData[0].length > 0) || (rarityData[1] && rarityData[1].length > 0)) {
       rarityPoolCache.set(cacheKey, rarityData);
