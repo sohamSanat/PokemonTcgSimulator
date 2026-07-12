@@ -370,33 +370,33 @@ export const ENERGY_POOLS_BY_ERA: Record<EnergyEra, TCGDexCardSummary[]> = {
     { id: "me-eng-8", localId: "ME08", name: "Basic Metal Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/8.webp" }
   ],
   sv: [
-    { id: "sv-eng-1", localId: "SV01", name: "Basic Grass Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/1.webp" },
-    { id: "sv-eng-2", localId: "SV02", name: "Basic Fire Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/2.webp" },
-    { id: "sv-eng-3", localId: "SV03", name: "Basic Water Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/3.webp" },
-    { id: "sv-eng-4", localId: "SV04", name: "Basic Lightning Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/4.webp" },
-    { id: "sv-eng-5", localId: "SV05", name: "Basic Psychic Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/5.webp" },
-    { id: "sv-eng-6", localId: "SV06", name: "Basic Fighting Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/6.webp" },
-    { id: "sv-eng-7", localId: "SV07", name: "Basic Darkness Energy", image: "/packArts/Saclet&Violet-Generation/SV-EnergyCards/7.webp" }
+    { id: "sv-eng-1", localId: "SV01", name: "Basic Grass Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/1.webp" },
+    { id: "sv-eng-2", localId: "SV02", name: "Basic Fire Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp" },
+    { id: "sv-eng-3", localId: "SV03", name: "Basic Water Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/3.webp" },
+    { id: "sv-eng-4", localId: "SV04", name: "Basic Lightning Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/4.webp" },
+    { id: "sv-eng-5", localId: "SV05", name: "Basic Psychic Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/5.webp" },
+    { id: "sv-eng-6", localId: "SV06", name: "Basic Fighting Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/6.webp" },
+    { id: "sv-eng-7", localId: "SV07", name: "Basic Darkness Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/7.webp" }
   ],
   sm: [
-    { id: "sm-eng-1", localId: "SM01", name: "Basic Grass Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/1.webp" },
-    { id: "sm-eng-2", localId: "SM02", name: "Basic Fire Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/2.webp" },
-    { id: "sm-eng-3", localId: "SM03", name: "Basic Water Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/3.webp" },
-    { id: "sm-eng-4", localId: "SM04", name: "Basic Lightning Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/4.webp" },
-    { id: "sm-eng-5", localId: "SM05", name: "Basic Psychic Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/5.webp" },
-    { id: "sm-eng-6", localId: "SM06", name: "Basic Fighting Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/6.webp" },
-    { id: "sm-eng-7", localId: "SM07", name: "Basic Darkness Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/7.webp" },
-    { id: "sm-eng-8", localId: "SM08", name: "Basic Metal Energy", image: "/packArts/sun&moon-Generation/SM-EnergyCards/8.webp" }
+    { id: "sm-eng-1", localId: "SM01", name: "Basic Grass Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/1.webp" },
+    { id: "sm-eng-2", localId: "SM02", name: "Basic Fire Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/2.webp" },
+    { id: "sm-eng-3", localId: "SM03", name: "Basic Water Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/3.webp" },
+    { id: "sm-eng-4", localId: "SM04", name: "Basic Lightning Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/4.webp" },
+    { id: "sm-eng-5", localId: "SM05", name: "Basic Psychic Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/5.webp" },
+    { id: "sm-eng-6", localId: "SM06", name: "Basic Fighting Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/6.webp" },
+    { id: "sm-eng-7", localId: "SM07", name: "Basic Darkness Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/7.webp" },
+    { id: "sm-eng-8", localId: "SM08", name: "Basic Metal Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/8.webp" }
   ],
   swsh: [
-    { id: "swsh-eng-1", localId: "SS01", name: "Basic Grass Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/1.webp" },
-    { id: "swsh-eng-2", localId: "SS02", name: "Basic Fire Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/2.webp" },
-    { id: "swsh-eng-3", localId: "SS03", name: "Basic Water Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/3.webp" },
-    { id: "swsh-eng-4", localId: "SS04", name: "Basic Lightning Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/4.webp" },
-    { id: "swsh-eng-5", localId: "SS05", name: "Basic Psychic Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/5.webp" },
-    { id: "swsh-eng-6", localId: "SS06", name: "Basic Fighting Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/6.webp" },
-    { id: "swsh-eng-7", localId: "SS07", name: "Basic Darkness Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/7.webp" },
-    { id: "swsh-eng-8", localId: "SS08", name: "Basic Metal Energy", image: "/packArts/Sword&Shield-Generation/SS-EnergyCards/8.webp" }
+    { id: "swsh-eng-1", localId: "SS01", name: "Basic Grass Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/1.webp" },
+    { id: "swsh-eng-2", localId: "SS02", name: "Basic Fire Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/2.webp" },
+    { id: "swsh-eng-3", localId: "SS03", name: "Basic Water Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/3.webp" },
+    { id: "swsh-eng-4", localId: "SS04", name: "Basic Lightning Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/4.webp" },
+    { id: "swsh-eng-5", localId: "SS05", name: "Basic Psychic Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/5.webp" },
+    { id: "swsh-eng-6", localId: "SS06", name: "Basic Fighting Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/6.webp" },
+    { id: "swsh-eng-7", localId: "SS07", name: "Basic Darkness Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/7.webp" },
+    { id: "swsh-eng-8", localId: "SS08", name: "Basic Metal Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/8.webp" }
   ],
   xy: [
     { id: "xy-eng-1", localId: "XY01", name: "Basic Grass Energy", image: "/packArts/XY-Generation/XY-EnergyCards/1.webp" },
