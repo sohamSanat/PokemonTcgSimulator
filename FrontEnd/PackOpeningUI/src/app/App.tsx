@@ -18,6 +18,8 @@ import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
+const imageFallbacks = new Map<string, string>();
+
 interface CardData {
   id: number;
   originalIndex: number;
@@ -1400,7 +1402,7 @@ export default function App() {
                 large: getCardImageUrl(cached.image, 'high'),
               } : c.pokemon.images,
               pricing: cached.pricing || c.pokemon.pricing,
-              tcgplayer: cached.tcgplayer || cached.pricing?.tcgplayer ? { prices: cached.tcgplayer || cached.pricing?.tcgplayer, unit: 'USD' } : c.pokemon.tcgplayer,
+              tcgplayer: cached.tcgplayer || prevCards.find(c => c.pokemon.id === updatedPoke.id)?.pokemon.tcgplayer,
               cardmarket: cached.cardmarket || cached.pricing?.cardmarket || c.pokemon.cardmarket,
               illustrator: cached.illustrator || c.pokemon.illustrator,
             };
@@ -1425,7 +1427,7 @@ export default function App() {
               large: getCardImageUrl(cached.image, 'high'),
             } : prev.pokemon.images,
             pricing: cached.pricing || prev.pokemon.pricing,
-            tcgplayer: cached.tcgplayer || cached.pricing?.tcgplayer ? { prices: cached.tcgplayer || cached.pricing?.tcgplayer, unit: 'USD' } : prev.pokemon.tcgplayer,
+            tcgplayer: cached.tcgplayer || prev.pokemon.tcgplayer,
             cardmarket: cached.cardmarket || cached.pricing?.cardmarket || prev.pokemon.cardmarket,
             illustrator: cached.illustrator || prev.pokemon.illustrator,
           };
@@ -1571,7 +1573,7 @@ export default function App() {
         },
         rarity: isExOrRare ? 'Special Illustration Rare' : (cached?.rarity || card.rarity || 'Rare'),
         pricing: cached?.pricing || (card as any).pricing,
-        tcgplayer: cached?.tcgplayer || cached?.pricing?.tcgplayer ? { prices: cached?.tcgplayer || cached?.pricing?.tcgplayer, unit: 'USD' } : (card as any).tcgplayer,
+        tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
         cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
         illustrator: cached?.illustrator || (card as any).illustrator,
       };
@@ -2028,7 +2030,7 @@ export default function App() {
                     style={{ aspectRatio: '63 / 88' }}
                   >
                     <img
-                      src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
+                      src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                       alt={card.name}
                       className="w-full h-full object-cover block"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -2037,6 +2039,7 @@ export default function App() {
                         const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
                         const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
                         handleCardImageError(target, setId, num);
+                        imageFallbacks.set(card.id, target.src);
                       }}
                     />
                   </div>
@@ -2889,7 +2892,7 @@ export default function App() {
                         style={{ width: '100px', height: '140px' }}
                       >
                         <img
-                          src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
+                          src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                           alt={card.name}
                           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 block p-0.5"
                           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
@@ -2898,6 +2901,7 @@ export default function App() {
                             const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
                             const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
                             handleCardImageError(target, setId, num);
+                            imageFallbacks.set(card.id, target.src);
                           }}
                         />
                       </div>
