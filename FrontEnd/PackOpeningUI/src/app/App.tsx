@@ -1663,7 +1663,7 @@ export default function App() {
 
   return (
     <div
-      className="w-full h-screen max-h-screen bg-[#0d0d0f] text-[#f0f0f2] font-sans overflow-hidden relative flex flex-col selection:bg-amber-500/30"
+      className="w-full h-[100dvh] max-h-[100dvh] bg-[#0d0d0f] text-[#f0f0f2] font-sans overflow-hidden relative flex flex-col selection:bg-amber-500/30"
       style={{
         background: "radial-gradient(circle at center, #1c1c24 0%, #0d0d0f 100%)"
       }}

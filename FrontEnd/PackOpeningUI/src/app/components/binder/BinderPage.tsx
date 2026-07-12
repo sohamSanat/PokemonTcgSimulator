@@ -75,7 +75,7 @@ function BinderPage({
 
       {/* Binder content area */}
       {viewMode === "grid" ? (
-        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "10px 0 30px" }}>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden py-3 pb-8 min-h-0 custom-scrollbar">
           <div
             style={{
               width: "100%",
