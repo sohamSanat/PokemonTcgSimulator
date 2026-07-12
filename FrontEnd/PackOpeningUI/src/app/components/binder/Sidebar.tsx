@@ -220,8 +220,6 @@ function Sidebar({
             <span className="text-sm md:text-base">+</span> New Binder
           </button>
         </div>
-      </div>Binder
-        </button>
       </div>
 
       {/* Stats footer */}
