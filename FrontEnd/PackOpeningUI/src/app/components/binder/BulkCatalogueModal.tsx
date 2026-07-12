@@ -148,7 +148,7 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                 </div>
 
                 {/* Main Grid */}
-                <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex-1 flex flex-col min-w-0 min-h-0">
                   {/* Search Bar */}
                   <div className="px-5 py-3 border-b border-white/8 shrink-0 flex items-center gap-3">
                     <div className="relative flex-1">
