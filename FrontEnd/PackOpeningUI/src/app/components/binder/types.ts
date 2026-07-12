@@ -13,9 +13,10 @@ export interface BulkCard {
 // Catalogues: { [setName]: { [cardId]: BulkCard } }
 export type CatalogueStore = Record<string, Record<string, BulkCard>>;
 
-export function getStorageKey(base: string): string {
-  if (auth?.currentUser?.uid) {
-    return `${base}_${auth.currentUser.uid}`;
+export function getStorageKey(base: string, forceUid?: string | null): string {
+  const uid = forceUid || auth?.currentUser?.uid;
+  if (uid) {
+    return `${base}_${uid}`;
   }
   return base;
 }
@@ -89,22 +90,22 @@ export function listenToFirestore(uid: string | null) {
 
         if (data.cards) {
           const str = JSON.stringify(data.cards);
-          if (localStorage.getItem(getStorageKey('tcg_my_collection')) !== str) {
-            localStorage.setItem(getStorageKey('tcg_my_collection'), str);
+          if (localStorage.getItem(getStorageKey('tcg_my_collection', uid)) !== str) {
+            localStorage.setItem(getStorageKey('tcg_my_collection', uid), str);
             changed = true;
           }
         }
         if (data.binders) {
           const str = JSON.stringify(data.binders);
-          if (localStorage.getItem(getStorageKey('tcg_binders')) !== str) {
-            localStorage.setItem(getStorageKey('tcg_binders'), str);
+          if (localStorage.getItem(getStorageKey('tcg_binders', uid)) !== str) {
+            localStorage.setItem(getStorageKey('tcg_binders', uid), str);
             changed = true;
           }
         }
         if (data.catalogues) {
           const str = JSON.stringify(data.catalogues);
-          if (localStorage.getItem(getStorageKey('tcg_catalogues')) !== str) {
-            localStorage.setItem(getStorageKey('tcg_catalogues'), str);
+          if (localStorage.getItem(getStorageKey('tcg_catalogues', uid)) !== str) {
+            localStorage.setItem(getStorageKey('tcg_catalogues', uid), str);
             changed = true;
           }
         }

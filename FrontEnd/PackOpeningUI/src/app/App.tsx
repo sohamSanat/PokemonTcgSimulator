@@ -1188,19 +1188,25 @@ export default function App() {
   useEffect(() => {
     if (!currentUser) return;
     const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
+      console.log('App.tsx: Received snapshot from Firebase', docSnap.exists() ? docSnap.data() : 'NOT EXISTS');
       hasLoadedFromFirebaseRef.current = true;
       if (docSnap.exists()) {
         const rootData = docSnap.data();
         const data = rootData.stats || {};
+        const fbTotal = data.sessionTotal ?? 0;
+        const fbCount = data.packCount ?? 0;
+        const fbSpent = data.sessionSpent ?? 0;
+        
         lastSyncedStatsRef.current = {
-          sessionTotal: data.sessionTotal ?? 0,
-          packCount: data.packCount ?? 0,
-          sessionSpent: data.sessionSpent ?? 0,
+          sessionTotal: fbTotal,
+          packCount: fbCount,
+          sessionSpent: fbSpent,
         };
-        // Update local state to match Firebase (will trigger a re-render only if changed)
-        setSessionTotal(data.sessionTotal ?? 0);
-        setPackCount(data.packCount ?? 0);
-        setSessionSpent(data.sessionSpent ?? 0);
+
+        // Prevent wiping out local stats if Firebase is completely empty but local has data
+        setSessionTotal(prev => (fbTotal === 0 && prev > 0) ? prev : fbTotal);
+        setPackCount(prev => (fbCount === 0 && prev > 0) ? prev : fbCount);
+        setSessionSpent(prev => (fbSpent === 0 && prev > 0) ? prev : fbSpent);
       }
     });
     return () => unsubscribe();
