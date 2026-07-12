@@ -1243,6 +1243,16 @@ export default function App() {
       const img = new Image();
       img.fetchPriority = 'high';
       img.src = src;
+      
+      // Inject network-level preload links to bypass React rendering delays
+      if (!document.querySelector(`link[href="${src}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        link.fetchPriority = 'high';
+        document.head.appendChild(link);
+      }
     });
   }, [currentPackArts]);
 
@@ -2793,6 +2803,13 @@ export default function App() {
         )}
       </AnimatePresence>
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      
+      {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
+      <div style={{ display: 'none' }} aria-hidden="true">
+        {currentPackArts.map(src => (
+          <img key={`preload-${src}`} src={src} fetchPriority="high" decoding="sync" />
+        ))}
+      </div>
     </div>
   );
 }
