@@ -284,6 +284,8 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
           >
             <img
               src={currentPackArt}
+              fetchPriority="high"
+              decoding="sync"
               onError={(e) => {
                 const img = e.target as HTMLImageElement;
                 const universalFallback = '/packArts/Sword&Shield-Generation/DarknessAblaze/img1.png';

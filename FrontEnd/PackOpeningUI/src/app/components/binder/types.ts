@@ -1,3 +1,36 @@
+import { auth, db } from '../../services/firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+
+export async function syncToFirestore() {
+  if (!auth?.currentUser) return;
+  try {
+    const cards = getCollectedCards();
+    const binders = getBinders();
+    await setDoc(doc(db, 'users', auth.currentUser.uid), {
+      cards,
+      binders,
+      lastUpdated: new Date().toISOString()
+    }, { merge: true });
+  } catch (e) {
+    console.error('Sync to Firestore failed', e);
+  }
+}
+
+export async function syncFromFirestore() {
+  if (!auth?.currentUser) return;
+  try {
+    const docRef = doc(db, 'users', auth.currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.cards) localStorage.setItem('tcg_my_collection', JSON.stringify(data.cards));
+      if (data.binders) localStorage.setItem('tcg_binders', JSON.stringify(data.binders));
+    }
+  } catch (e) {
+    console.error('Sync from Firestore failed', e);
+  }
+}
+
 export interface PricePoint {
   day: number;
   price: number;
@@ -136,6 +169,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
   try {
     localStorage.setItem('tcg_my_collection', JSON.stringify(cards));
     getBinders();
+    syncToFirestore();
   } catch (e) {
     console.error('Failed to save card to binder', e);
   }
@@ -179,6 +213,7 @@ export function getBinders(): Binder[] {
 export function saveBinders(binders: Binder[]): void {
   try {
     localStorage.setItem('tcg_binders', JSON.stringify(binders));
+    syncToFirestore();
   } catch (e) {
     console.error('Failed to save binders', e);
   }
@@ -195,6 +230,7 @@ export function updateCardSlabStatus(cardId: string, grade: string = 'N/A'): voi
     });
     localStorage.setItem('tcg_my_collection', JSON.stringify(updated));
     getBinders();
+    syncToFirestore();
   } catch (e) {
     console.error('Failed to update slab status', e);
   }
@@ -264,6 +300,7 @@ export function savePSAGradingResult(
     });
     localStorage.setItem('tcg_my_collection', JSON.stringify(updated));
     getBinders();
+    syncToFirestore();
     return gradedCard;
   } catch (e) {
     console.error('Failed to save PSA grading result', e);

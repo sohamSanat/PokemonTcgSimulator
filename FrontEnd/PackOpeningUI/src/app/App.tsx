@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, startBackgroundWarmupForSet, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
+import { auth, signOut } from './services/firebase';
+import { useAuth } from './context/AuthContext';
+import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
@@ -1142,6 +1145,8 @@ const RevealedCardItem = React.memo(({
 });
 
 export default function App() {
+  const { currentUser } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isHoveringStack, setIsHoveringStack] = useState(false);
 
   const [currentSet, setCurrentSet] = useState<TCGDexSet | null>(null);
@@ -1231,6 +1236,15 @@ export default function App() {
       .then(data => setSetLogosManifest(data))
       .catch(() => { });
   }, []);
+
+  useEffect(() => {
+    // Aggressively preload all pack arts for the current set to ensure instant render
+    currentPackArts.forEach(src => {
+      const img = new Image();
+      img.fetchPriority = 'high';
+      img.src = src;
+    });
+  }, [currentPackArts]);
 
   useEffect(() => {
     const handleCacheUpdate = () => {
@@ -1616,10 +1630,23 @@ export default function App() {
             {soundEnabled ? <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0" /> : <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 shrink-0" />}
             <span>{soundEnabled ? 'SFX On' : 'SFX Muted'}</span>
           </button>
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold text-gray-300 bg-[#14141c]/90 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border border-white/15 shadow-[inset_0_1px_2px_rgba(0,0,0,0.8),0_2px_8px_rgba(0,0,0,0.5)] shrink-0 max-w-full truncate">
-            <Layers className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>Set:</span> <span className="text-amber-300 font-extrabold truncate">{currentSet?.name || 'Darkness Ablaze'}</span>
-          </div>
+          {currentUser ? (
+            <button
+              onClick={() => signOut(auth)}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 bg-white/5 border-white/10 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 shadow-[0_4px_15px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)]"
+            >
+              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400 shrink-0" />
+              <span className="truncate max-w-[80px] sm:max-w-[120px]">{currentUser.email?.split('@')[0] || 'User'}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white border-purple-400/50 shadow-[0_0_15px_rgba(147,51,234,0.4),inset_0_1px_2px_rgba(255,255,255,0.3)]"
+            >
+              <UserCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-200 shrink-0" />
+              <span>Sign In</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -2765,6 +2792,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 }
