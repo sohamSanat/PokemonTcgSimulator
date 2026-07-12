@@ -1283,8 +1283,12 @@ export default function App() {
           .map(set => getSetLogoUrl(set, setLogosManifest))
           .filter(Boolean) as string[];
 
-        // Preload the logos for this generation in parallel
-        await Promise.all(logos.map(src => preloadImage(src)));
+        // Preload sequentially with tiny delays so we don't clog the browser's max connection limit
+        for (const src of logos) {
+          if (!isActive) break;
+          await preloadImage(src);
+          await new Promise(r => setTimeout(r, 20));
+        }
       } catch (err) {
         // ignore fetch errors for preloading
       }
@@ -1299,6 +1303,8 @@ export default function App() {
       for (const seriesId of otherSeries) {
         if (!isActive) break;
         await preloadSeriesLogos(seriesId);
+        // Small delay between series preloads to keep network free for user interactions
+        await new Promise(r => setTimeout(r, 100));
       }
     };
 
@@ -1318,7 +1324,7 @@ export default function App() {
         if (imgUrl) {
           const img = new Image();
           // Use low priority so it doesn't block UI threads, since they have time before opening
-          img.fetchPriority = 'low';
+          (img as any).fetchPriority = 'low';
           img.src = imgUrl;
         }
       });
