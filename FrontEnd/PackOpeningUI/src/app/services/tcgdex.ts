@@ -207,7 +207,6 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${setId}`);
     const enriched = enrichSetSummary(data);
     setDetailsCache.set(cacheKey, enriched);
-    startBackgroundWarmupForSet(enriched);
     return enriched;
   } catch (err) {
     console.warn(`Timeout/error fetching set details for ${setId}, using local fallback:`, err);
@@ -230,7 +229,6 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     };
     const enriched = enrichSetSummary(fallbackSet);
     setDetailsCache.set(cacheKey, enriched);
-    startBackgroundWarmupForSet(enriched);
     return enriched;
   }
 }
@@ -321,25 +319,30 @@ export async function fetchCardFull(cardId: string, skipEvent: boolean = false):
 
 let activeWarmupSetId: string | null = null;
 
-export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: () => void) {
+export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: string[], onChaseCardsReady?: () => void) {
   if (!set || !set.cards || set.cards.length === 0) {
-    if (onReady) onReady();
-    return;
-  }
-  if (activeWarmupSetId === set.id) {
-    if (onReady) onReady();
+    if (onChaseCardsReady) onChaseCardsReady();
     return;
   }
   activeWarmupSetId = set.id;
 
-  // Filter out energies and already cached cards
+  // Phase 1: Fetch pack cards first (Highest priority)
+  if (packCardIds.length > 0) {
+    const packCards = packCardIds.map(id => fetchCardFull(id, true));
+    await Promise.allSettled(packCards);
+    onCardFullCacheUpdated.forEach(fn => fn());
+  }
+
+  if (activeWarmupSetId !== set.id) return;
+
+  // Phase 2: Identify top chase candidates
   const candidates = set.cards.filter(c =>
+    !packCardIds.includes(c.id) &&
     !cardFullCache.has(c.id) &&
     !c.name.toLowerCase().includes('energy') &&
     !c.id.toLowerCase().includes('energy')
   );
 
-  // Sort candidates so likely chase cards (ex, VMAX, VSTAR, Charizard, Pikachu, Umbreon, Secret, Gold, Alt, etc.) are fetched right away first!
   candidates.sort((a, b) => {
     const score = (card: TCGDexCardSummary) => {
       let s = 0;
@@ -352,26 +355,36 @@ export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: ()
     return score(b) - score(a);
   });
 
-  // Batch fetch in the background without blocking the browser UI thread
-  setTimeout(async () => {
-    const batchSize = 6;
-    let isReadyCalled = false;
-    for (let i = 0; i < candidates.length; i += batchSize) {
-      if (activeWarmupSetId !== set.id) break; // If user switched sets during warmup, stop previous queue
-      const batch = candidates.slice(i, i + batchSize);
-      await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
-      
-      onCardFullCacheUpdated.forEach(fn => fn());
+  // Extract top ~24 candidates for immediate fetching (Chase Cards Phase)
+  const chaseCandidates = candidates.slice(0, 24);
+  const backgroundCandidates = candidates.slice(24);
 
-      // Trigger UI ready state after fetching top 24 most likely chase cards (or if set is very small)
-      if (!isReadyCalled && (i >= 18 || i + batchSize >= candidates.length)) {
-        isReadyCalled = true;
-        if (onReady) onReady();
-      }
-      // Give browser UI an 80ms breathing room between batches
-      await new Promise(r => setTimeout(r, 80));
+  // Fetch chase candidates
+  const batchSize = 6;
+  for (let i = 0; i < chaseCandidates.length; i += batchSize) {
+    if (activeWarmupSetId !== set.id) return;
+    const batch = chaseCandidates.slice(i, i + batchSize);
+    await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
+    onCardFullCacheUpdated.forEach(fn => fn());
+    await new Promise(r => setTimeout(r, 50));
+  }
+
+  if (activeWarmupSetId !== set.id) return;
+
+  // Chase cards are now fully populated in cache. Tell UI it's safe to lift the curtain.
+  if (onChaseCardsReady) onChaseCardsReady();
+
+  // Phase 3: Background warmup for the rest of the set (Low priority)
+  setTimeout(async () => {
+    for (let i = 0; i < backgroundCandidates.length; i += batchSize) {
+      if (activeWarmupSetId !== set.id) break;
+      const batch = backgroundCandidates.slice(i, i + batchSize);
+      await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
+      onCardFullCacheUpdated.forEach(fn => fn());
+      // Give browser more breathing room for background tasks
+      await new Promise(r => setTimeout(r, 150));
     }
-  }, 100);
+  }, 500);
 }
 
 export type EnergyEra = 'base' | 'xy' | 'sm' | 'swsh' | 'sv' | 'me';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut } from 'lucide-react';
-import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, startBackgroundWarmupForSet, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
+import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -1504,6 +1504,10 @@ export default function App() {
       }
       const newCards = await generatePackFromSet(setDetails);
       setCards(formatAndSortCards(newCards));
+      setIsChaseCardsReady(false);
+      orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+        setIsChaseCardsReady(true);
+      });
     } catch (error) {
       console.error('Failed to load set pack from TCGdex:', error);
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
@@ -1597,14 +1601,7 @@ export default function App() {
     return mapped.slice(0, 12);
   }, [currentSet, cacheTick]);
 
-  useEffect(() => {
-    if (currentSet) {
-      setIsChaseCardsReady(false);
-      startBackgroundWarmupForSet(currentSet, () => {
-        setIsChaseCardsReady(true);
-      });
-    }
-  }, [currentSet]);
+
 
   const flipTimesRef = useRef<Record<number, number>>({});
 
@@ -1708,6 +1705,7 @@ export default function App() {
       try {
         const newCards = await generatePackFromSet(currentSet);
         setCards(formatAndSortCards(newCards));
+        orchestrateSetLoading(currentSet, newCards.map(c => c.id));
       } catch {
         setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet));
       } finally {
