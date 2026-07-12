@@ -87,31 +87,39 @@ export function listenToFirestore(uid: string | null) {
       if (docSnap.exists()) {
         const data = docSnap.data();
         let changed = false;
+        let needsSync = false;
 
-        if (data.cards) {
-          const str = JSON.stringify(data.cards);
-          if (localStorage.getItem(getStorageKey('tcg_my_collection', uid)) !== str) {
-            localStorage.setItem(getStorageKey('tcg_my_collection', uid), str);
+        const mergeGuestData = (baseKey: string, firebaseData: any) => {
+          const guestDataStr = localStorage.getItem(baseKey);
+          const uidKey = getStorageKey(baseKey, uid);
+          const currentUidStr = localStorage.getItem(uidKey);
+
+          // If Firebase has data, use it
+          if (firebaseData) {
+            const fbStr = JSON.stringify(firebaseData);
+            if (currentUidStr !== fbStr) {
+              localStorage.setItem(uidKey, fbStr);
+              changed = true;
+            }
+          } 
+          // If Firebase is empty, but guest has data, migrate guest data!
+          else if (guestDataStr && guestDataStr !== '[]' && guestDataStr !== '{}') {
+            localStorage.setItem(uidKey, guestDataStr);
             changed = true;
+            needsSync = true;
           }
-        }
-        if (data.binders) {
-          const str = JSON.stringify(data.binders);
-          if (localStorage.getItem(getStorageKey('tcg_binders', uid)) !== str) {
-            localStorage.setItem(getStorageKey('tcg_binders', uid), str);
-            changed = true;
-          }
-        }
-        if (data.catalogues) {
-          const str = JSON.stringify(data.catalogues);
-          if (localStorage.getItem(getStorageKey('tcg_catalogues', uid)) !== str) {
-            localStorage.setItem(getStorageKey('tcg_catalogues', uid), str);
-            changed = true;
-          }
-        }
+        };
+
+        mergeGuestData('tcg_my_collection', data?.cards);
+        mergeGuestData('tcg_binders', data?.binders);
+        mergeGuestData('tcg_catalogues', data?.catalogues);
 
         if (changed) {
           window.dispatchEvent(new Event('storage'));
+        }
+        
+        if (needsSync) {
+          syncToFirestore();
         }
       }
     });

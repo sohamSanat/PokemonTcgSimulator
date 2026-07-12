@@ -1181,15 +1181,14 @@ export default function App() {
   });
 
   const lastSyncedStatsRef = useRef({ sessionTotal: -1, packCount: -1, sessionSpent: -1 });
-
-  const hasLoadedFromFirebaseRef = useRef(false);
+  const [hasLoadedFromFirebase, setHasLoadedFromFirebase] = useState(false);
 
   // Listen for Firebase Stats sync
   useEffect(() => {
     if (!currentUser) return;
     const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
       console.log('App.tsx: Received snapshot from Firebase', docSnap.exists() ? docSnap.data() : 'NOT EXISTS');
-      hasLoadedFromFirebaseRef.current = true;
+      setHasLoadedFromFirebase(true);
       if (docSnap.exists()) {
         const rootData = docSnap.data();
         const data = rootData.stats || {};
@@ -1219,7 +1218,7 @@ export default function App() {
       localStorage.setItem('tcg_session_pack_count', packCount.toString());
       localStorage.setItem('tcg_session_spent', sessionSpent.toString());
       
-      if (currentUser && hasLoadedFromFirebaseRef.current) {
+      if (currentUser && hasLoadedFromFirebase) {
         // Only write if the current state differs from what we just received from Firebase
         const isFromFirebase = 
           sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
