@@ -1248,6 +1248,16 @@ export default function App() {
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
   const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
+  const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(false);
+
+  useEffect(() => {
+    setIsChaseCardsRevealed(false);
+    const timer = setTimeout(() => {
+      setIsChaseCardsRevealed(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [currentSet]);
+
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa'>('pack');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<number>>(new Set());
@@ -2006,7 +2016,13 @@ export default function App() {
             </div>
 
             {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
-            <div className="grid grid-cols-3 gap-2 w-full">
+            <div className="grid grid-cols-3 gap-2 w-full relative">
+              {!isChaseCardsRevealed && (
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#14141c]/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-lg">
+                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-2" />
+                  <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards</span>
+                </div>
+              )}
               {!isChaseCardsReady ? (
                 Array.from({ length: 3 }).map((_, idx) => (
                   <div
@@ -2133,7 +2149,13 @@ export default function App() {
                     </div>
 
                     {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 relative">
+                      {!isChaseCardsRevealed && (
+                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#11111a]/95 backdrop-blur-sm rounded-xl border border-amber-500/20">
+                          <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-2" />
+                          <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards</span>
+                        </div>
+                      )}
                       {chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                         <div
                           key={card.id || idx}
@@ -2873,7 +2895,13 @@ export default function App() {
               </div>
 
               {/* Chase Cards Grid */}
-              <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar">
+              <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar min-h-[300px]">
+                {!isChaseCardsRevealed && (
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#14141c]/95 backdrop-blur-md rounded-xl border border-white/5">
+                    <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
+                    <span className="text-sm font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards...</span>
+                  </div>
+                )}
                 {!isChaseCardsReady ? (
                   Array.from({ length: 8 }).map((_, idx) => (
                     <div
