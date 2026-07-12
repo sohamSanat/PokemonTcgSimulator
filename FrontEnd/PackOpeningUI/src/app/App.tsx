@@ -1203,9 +1203,12 @@ export default function App() {
         };
 
         // Prevent wiping out local stats if Firebase is completely empty but local has data
-        setSessionTotal(prev => (fbTotal === 0 && prev > 0) ? prev : fbTotal);
-        setPackCount(prev => (fbCount === 0 && prev > 0) ? prev : fbCount);
-        setSessionSpent(prev => (fbSpent === 0 && prev > 0) ? prev : fbSpent);
+        // ONLY do this if `rootData.stats` does NOT exist. If it DOES exist and is 0, it means it was explicitly reset.
+        const isMigration = !rootData.stats;
+        
+        setSessionTotal(prev => (isMigration && fbTotal === 0 && prev > 0) ? prev : fbTotal);
+        setPackCount(prev => (isMigration && fbCount === 0 && prev > 0) ? prev : fbCount);
+        setSessionSpent(prev => (isMigration && fbSpent === 0 && prev > 0) ? prev : fbSpent);
       }
     });
     return () => unsubscribe();
