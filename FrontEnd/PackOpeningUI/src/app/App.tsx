@@ -1259,6 +1259,57 @@ export default function App() {
   }, [currentPackArts]);
 
   useEffect(() => {
+    // We only want to preload if we have the manifest
+    if (Object.keys(setLogosManifest).length === 0) return;
+
+    let isActive = true;
+
+    const preloadImage = (src: string): Promise<void> => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // continue even on error
+        img.src = src;
+      });
+    };
+
+    const preloadSeriesLogos = async (seriesId: string) => {
+      if (!isActive) return;
+      try {
+        const seriesData = await fetchSeriesDetails(seriesId);
+        if (!isActive || !seriesData || !seriesData.sets) return;
+        
+        const logos = seriesData.sets
+          .map(set => getSetLogoUrl(set, setLogosManifest))
+          .filter(Boolean) as string[];
+
+        // Preload the logos for this generation in parallel
+        await Promise.all(logos.map(src => preloadImage(src)));
+      } catch (err) {
+        // ignore fetch errors for preloading
+      }
+    };
+
+    const runProgressivePreload = async () => {
+      // 1. First, load the logos of sets of the generation the user has currently selected
+      await preloadSeriesLogos(selectedSeriesId);
+
+      // 2. Only when that loading is finished, start loading up other generation's sets' logos in the background
+      const otherSeries = SERIES_TABS.map(t => t.id).filter(id => id !== selectedSeriesId);
+      for (const seriesId of otherSeries) {
+        if (!isActive) break;
+        await preloadSeriesLogos(seriesId);
+      }
+    };
+
+    runProgressivePreload();
+
+    return () => {
+      isActive = false;
+    };
+  }, [setLogosManifest, selectedSeriesId]);
+
+  useEffect(() => {
     // Aggressively preload all card images inside the freshly generated pack
     // while the pack is sitting on the table unopened, so they load instantly when revealed
     if (cards.length > 0 && packStage === 'unopened') {
