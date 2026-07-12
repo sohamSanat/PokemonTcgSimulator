@@ -104,7 +104,7 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                   }}
                   className="px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-[11px] font-bold transition-all mr-2"
                 >
-                  Reset Vault
+                  Reset
                 </button>
                 <button
                   onClick={onClose}
@@ -147,20 +147,18 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                       <button
                         key={setName}
                         onClick={() => { setSelectedSet(setName); setSearch(''); }}
-                        className={`md:w-full shrink-0 text-left px-4 py-3 flex items-center justify-between gap-2 transition-all border-b-2 md:border-b-0 md:border-l-2 ${
-                          isActive
+                        className={`md:w-full shrink-0 text-left px-4 py-3 flex items-center justify-between gap-2 transition-all border-b-2 md:border-b-0 md:border-l-2 ${isActive
                             ? 'border-teal-400 bg-teal-500/10 text-teal-300'
                             : 'border-transparent text-gray-400 hover:text-gray-200 hover:bg-white/5'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <Package className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-teal-400' : 'text-gray-600'}`} />
                           <span className="text-[11px] font-bold truncate">{setName}</span>
                         </div>
                         <span
-                          className={`text-[10px] font-black shrink-0 px-1.5 py-0.5 rounded-full ${
-                            isActive ? 'bg-teal-500/20 text-teal-300' : 'bg-white/8 text-gray-500'
-                          }`}
+                          className={`text-[10px] font-black shrink-0 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-teal-500/20 text-teal-300' : 'bg-white/8 text-gray-500'
+                            }`}
                         >
                           {total}
                         </span>
@@ -274,7 +272,7 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                
+
                 <motion.div
                   initial={{ scale: 0.9, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
@@ -284,8 +282,8 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                   className="flex flex-col items-center max-w-sm w-full"
                 >
                   <div className="relative w-full aspect-[63/88] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/20">
-                    <img 
-                      src={previewCard.imageUrl.replace('/low.', '/high.')} 
+                    <img
+                      src={previewCard.imageUrl.replace('/low.', '/high.')}
                       alt={previewCard.name}
                       className="w-full h-full object-cover"
                     />
