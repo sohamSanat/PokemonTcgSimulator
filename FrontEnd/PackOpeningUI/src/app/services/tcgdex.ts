@@ -280,7 +280,7 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   }
 }
 
-export async function fetchCardFull(cardId: string): Promise<TCGDexCardFull> {
+export async function fetchCardFull(cardId: string, skipEvent: boolean = false): Promise<TCGDexCardFull> {
   if (cardFullCache.has(cardId)) {
     return cardFullCache.get(cardId)!;
   }
@@ -289,7 +289,9 @@ export async function fetchCardFull(cardId: string): Promise<TCGDexCardFull> {
     if (!res.ok) throw new Error(`Failed to fetch card ${cardId}`);
     const data: TCGDexCardFull = await res.json();
     cardFullCache.set(cardId, data);
-    onCardFullCacheUpdated.forEach(fn => fn());
+    if (!skipEvent) {
+      onCardFullCacheUpdated.forEach(fn => fn());
+    }
     return data;
   } catch {
     const setId = cardId.split('-')[0] || 'swsh3';
@@ -328,9 +330,9 @@ export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: ()
     const score = (card: TCGDexCardSummary) => {
       let s = 0;
       const n = card.name.toLowerCase();
-      if (n.includes('charizard') || n.includes('pikachu') || n.includes('umbreon') || n.includes('rayquaza') || n.includes('mewtwo') || n.includes('lugia') || n.includes('gengar')) s += 100;
-      if (n.includes('secret') || n.includes('rainbow') || n.includes('gold') || n.includes('alt')) s += 50;
-      if (n.includes('vmax') || n.includes('vstar') || n.includes('mega') || n.includes('ex') || n.includes(' gx')) s += 30;
+      if (n.includes('charizard') || n.includes('pikachu') || n.includes('umbreon') || n.includes('rayquaza') || n.includes('mewtwo') || n.includes('lugia') || n.includes('gengar') || n.includes('giratina') || n.includes('arceus') || n.includes('mew')) s += 100;
+      if (n.includes('secret') || n.includes('rainbow') || n.includes('gold') || n.includes('alt') || n.includes('illustration') || n.includes('sir') || n.includes('ir') || n.includes('gallery')) s += 50;
+      if (n.includes('vmax') || n.includes('vstar') || n.includes('mega') || n.includes('ex') || n.includes(' gx') || n.includes('tag team')) s += 30;
       return s;
     };
     return score(b) - score(a);
@@ -339,12 +341,18 @@ export function startBackgroundWarmupForSet(set?: TCGDexSet | null, onReady?: ()
   // Batch fetch in the background without blocking the browser UI thread
   setTimeout(async () => {
     const batchSize = 6;
+    let isReadyCalled = false;
     for (let i = 0; i < candidates.length; i += batchSize) {
       if (activeWarmupSetId !== set.id) break; // If user switched sets during warmup, stop previous queue
       const batch = candidates.slice(i, i + batchSize);
-      await Promise.allSettled(batch.map(c => fetchCardFull(c.id)));
-      if (i === 0 && onReady) {
-        onReady();
+      await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
+      
+      onCardFullCacheUpdated.forEach(fn => fn());
+
+      // Trigger UI ready state after fetching top 24 most likely chase cards (or if set is very small)
+      if (!isReadyCalled && (i >= 18 || i + batchSize >= candidates.length)) {
+        isReadyCalled = true;
+        if (onReady) onReady();
       }
       // Give browser UI an 80ms breathing room between batches
       await new Promise(r => setTimeout(r, 80));
