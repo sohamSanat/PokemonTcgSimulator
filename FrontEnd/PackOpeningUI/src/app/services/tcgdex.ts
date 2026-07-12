@@ -242,46 +242,41 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
 
 export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1') {
   if (!img) return;
-  const validAsset = getTCGDexValidAssetPath(setId, rawNum);
-  const src = img.src;
-
-  // 1. If low.png / medium.png failed on TCGdex CDN, try high.png right on TCGdex CDN first!
-  if (src.includes('assets.tcgdex.net')) {
-    if (src.includes('/low.png') || src.includes('/medium.png')) {
-      img.src = `${validAsset}/high.png`;
-      return;
-    }
-    if (src.includes('/low.webp') || src.includes('/medium.webp')) {
-      img.src = `${validAsset}/high.webp`;
-      return;
-    }
-    if (src.endsWith('.png')) {
-      img.src = src.replace('.png', '.webp');
-      return;
-    }
+  const num = `${rawNum}`.trim();
+  const validAsset = getTCGDexValidAssetPath(setId, num);
+  
+  const sLow = setId.toLowerCase();
+  let paddedNum = num;
+  if (sLow.startsWith('me') || sLow.startsWith('sv') || sLow.startsWith('sm') || sLow.startsWith('xy') || sLow.startsWith('swsh')) {
+    paddedNum = num.padStart(3, '0');
   }
 
-  // 2. If TCGdex CDN failed completely, try pokemontcg.io hires then standard
-  if (!src.includes('pokemontcg.io') && !src.includes('scrydex.com')) {
-    const num = `${rawNum}`.trim();
-    img.src = `https://images.pokemontcg.io/${setId}/${num}_hires.png`;
-    return;
-  }
-  if (src.includes('pokemontcg.io') && src.includes('_hires.png')) {
-    img.src = src.replace('_hires.png', '.png');
-    return;
-  }
+  const fallbacks = [
+    `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${setId}/${num}.png`,
+    `${validAsset}/high.webp`,
+    `${validAsset}/high.png`,
+    `${validAsset}/low.webp`,
+    `${validAsset}/low.png`,
+    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`,
+    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/low.png`,
+    'https://images.pokemontcg.io/swsh3/19_hires.png'
+  ];
 
-  // 3. Last resort fallback before giving up: scrydex
-  if (!src.includes('scrydex.com')) {
-    const num = `${rawNum}`.trim();
-    const paddedNum = (setId.toLowerCase().startsWith('me') || setId.toLowerCase().startsWith('sv')) ? num.padStart(3, '0') : num;
-    img.src = `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high`;
-    return;
-  }
-  if (src.includes('scrydex.com') && src.endsWith('/high')) {
-    img.src = src.replace('/high', '/medium');
-    return;
+  let attempt = parseInt(img.dataset.errorAttempt || '0', 10);
+  
+  if (attempt < fallbacks.length) {
+    let nextSrc = fallbacks[attempt];
+    // Skip if the next fallback is exactly what just failed
+    while (attempt < fallbacks.length && img.src === nextSrc) {
+        attempt++;
+        if (attempt < fallbacks.length) nextSrc = fallbacks[attempt];
+    }
+    
+    if (attempt < fallbacks.length) {
+       img.dataset.errorAttempt = (attempt + 1).toString();
+       img.src = nextSrc;
+    }
   }
 }
 
