@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
-import { getBinders, saveBinders, getCollectedCards, SAMPLE_CARDS, type Card, type Binder } from "./types";
+import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, type Card, type Binder } from "./types";
 
 interface Props {
   onSwitchToPacks?: () => void;
@@ -27,6 +27,9 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
 
   useEffect(() => {
     refreshData();
+    const handleStorage = () => refreshData();
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, [refreshData, activeBinder]);
 
   const handleNewBinder = useCallback(() => {
@@ -50,7 +53,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const handleToggleFavorite = useCallback((id: string) => {
     setCollectedCards(prev => {
       const updated = prev.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c);
-      localStorage.setItem("tcg_my_collection", JSON.stringify(updated));
+      localStorage.setItem(getStorageKey("tcg_my_collection"), JSON.stringify(updated));
       return updated;
     });
   }, []);
@@ -105,7 +108,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
           }
           return c.binderId !== activeBinder;
         });
-        localStorage.setItem("tcg_my_collection", JSON.stringify(updated));
+        localStorage.setItem(getStorageKey("tcg_my_collection"), JSON.stringify(updated));
         return updated;
       });
       const b = getBinders();
@@ -126,7 +129,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
     if (window.confirm(`Are you sure you want to permanently delete the binder "${targetBinder.name}" and remove all ${targetBinder.count || 0} cards inside it?`)) {
       setCollectedCards(prev => {
         const updatedCards = prev.filter(c => c.binderId !== idToDelete);
-        localStorage.setItem("tcg_my_collection", JSON.stringify(updatedCards));
+        localStorage.setItem(getStorageKey("tcg_my_collection"), JSON.stringify(updatedCards));
         return updatedCards;
       });
 

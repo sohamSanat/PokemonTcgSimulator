@@ -49,7 +49,8 @@ export const InteractiveCard3D: React.FC<Props> = ({
   const imageUrl = isFastThumbnailMode 
     ? (c?.pokemon?.images?.small || c?.images?.small || getCardImageUrl(rawImage, 'low'))
     : (c?.pokemon?.images?.large || c?.images?.large || getCardImageUrl(rawImage, 'high'));
-  const isSlabbed = Boolean(c?.isSlabbed || c?.slabGrade);
+  // Force pure card (no slab) if in showcase mode per user request, and ignore 'N/A' grade
+  const isSlabbed = !showcase && Boolean(c?.isSlabbed || (c?.slabGrade && c?.slabGrade !== 'N/A'));
 
   // Determine type
   let cardType = c?.type || '';

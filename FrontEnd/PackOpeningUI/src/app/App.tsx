@@ -8,12 +8,13 @@ import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
-import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, type Binder, type Card } from './components/binder/types';
+import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, type CatalogueStore, type Binder, type Card } from './components/binder/types';
 import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
 import PSAGradingLab from './components/psa/PSAGradingLab';
+import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1147,6 +1148,7 @@ const RevealedCardItem = React.memo(({
 export default function App() {
   const { currentUser } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isHoveringStack, setIsHoveringStack] = useState(false);
 
   const [currentSet, setCurrentSet] = useState<TCGDexSet | null>(null);
@@ -1310,7 +1312,9 @@ export default function App() {
       setCacheTick(t => (t + 1) % 1000000);
     };
     onCardFullCacheUpdated.add(handleCacheUpdate);
-    return () => { onCardFullCacheUpdated.delete(handleCacheUpdate); };
+    return () => { 
+      onCardFullCacheUpdated.delete(handleCacheUpdate); 
+    };
   }, []);
 
   const toggleSound = () => {
@@ -1480,6 +1484,9 @@ export default function App() {
           return { ...card, flipped: true };
         } else if (!card.collected) {
           sound.playCardCollect(card.value);
+          if ((card.value || 0) < 1.00) {
+            saveCardToCatalogue(card, currentSet?.name || 'Unknown Set');
+          }
           return { ...card, collected: true };
         }
       }
@@ -1525,6 +1532,9 @@ export default function App() {
       // then trigger collection and exit animation just as the next card begins to flip!
       setTimeout(() => {
         sound.playCardCollect(card.value);
+        if ((card.value || 0) < 1.00) {
+          saveCardToCatalogue(card, currentSet?.name || 'Unknown Set');
+        }
         setCards(prev => prev.map(c => {
           if (c.id === card.id) {
             return { ...c, collected: true };
@@ -1627,6 +1637,14 @@ export default function App() {
             <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400 animate-bounce shrink-0" />
             <span className="tracking-wide">{activeTab === 'psa' ? 'Back to Packs' : 'PSA Grading Lab'}</span>
           </button>
+
+          <button
+            onClick={() => { sound.playButtonClick(); setIsBulkModalOpen(true); }}
+            className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2.5 cursor-pointer shrink-0 bg-[#0f1a20]/90 border-teal-500/30 text-teal-300 hover:bg-[#132028] hover:border-teal-400/60 shadow-[0_4px_15px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)]"
+          >
+            <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-400 shrink-0" />
+            <span className="tracking-wide">Bulk Vault</span>
+          </button>
         </div>
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 w-full lg:w-auto justify-center lg:justify-end mt-1 lg:mt-0">
           <button
@@ -1715,7 +1733,7 @@ export default function App() {
             transition={{ duration: 0.5 }}
             className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 text-center shrink-0"
           >
-            Pack Simulator - {currentSet?.name || 'Live Cards'}
+            {currentSet?.name || 'Live Cards'}
           </motion.h1>
 
           {/* Unified Command & Stats Console HUD */}
@@ -2271,10 +2289,10 @@ export default function App() {
                   Revealed Pokemon Cards ({revealedCards.length} / {cards.length})
                 </h3>
                 <p className="text-[11px] text-amber-300/80 mt-1 font-medium">✨ Click any card to inspect full TCGplayer & Cardmarket live price breakdown or add to your binder</p>
-                {revealedCards.length > 0 && (
+                {revealedCards.filter(c => (c.value || 0) >= 1.00).length > 0 && (
                   <button
                     onClick={() => {
-                      const unadded = revealedCards.filter(c => !binderAddedIds.has(c.id));
+                      const unadded = revealedCards.filter(c => !binderAddedIds.has(c.id) && (c.value || 0) >= 1.00);
                       if (unadded.length === 0) return;
                       setAvailableBinders(getBinders());
                       setBinderSelectModal({ cards: unadded, setName: currentSet?.name || 'Unknown Set' });
@@ -2282,7 +2300,7 @@ export default function App() {
                     className="mt-3 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white text-xs font-extrabold shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <BookOpen className="w-4 h-4 text-amber-200" />
-                    <span>+ Add All {revealedCards.length} Cards to Binder</span>
+                    <span>+ Add {revealedCards.filter(c => (c.value || 0) >= 1.00).length} Hits to Binder</span>
                   </button>
                 )}
               </div>
@@ -2803,6 +2821,7 @@ export default function App() {
         )}
       </AnimatePresence>
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <BulkCatalogueModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
       
       {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
       <div style={{ display: 'none' }} aria-hidden="true">

@@ -1,14 +1,69 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 
+export interface BulkCard {
+  id: string;
+  name: string;
+  rarity: string;
+  imageUrl: string;
+  setName: string;
+  count: number;
+}
+
+// Catalogues: { [setName]: { [cardId]: BulkCard } }
+export type CatalogueStore = Record<string, Record<string, BulkCard>>;
+
+export function getStorageKey(base: string): string {
+  if (auth?.currentUser?.uid) {
+    return `${base}_${auth.currentUser.uid}`;
+  }
+  return base;
+}
+
+export function getCatalogues(): CatalogueStore {
+  try {
+    const data = localStorage.getItem(getStorageKey('tcg_catalogues'));
+    return data ? JSON.parse(data) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveCardToCatalogue(cardData: any, setName: string): void {
+  const catalogues = getCatalogues();
+  const set = setName || 'Unknown Set';
+  if (!catalogues[set]) catalogues[set] = {};
+
+  const cardId = cardData.pokemon?.id || `bulk-${cardData.pokemon?.name}`;
+  const existing = catalogues[set][cardId];
+
+  catalogues[set][cardId] = {
+    id: cardId,
+    name: cardData.pokemon?.name || 'Pokemon Card',
+    rarity: cardData.pokemon?.rarity || 'Common',
+    imageUrl: cardData.pokemon?.images?.large || cardData.pokemon?.images?.small || '',
+    setName: set,
+    count: (existing?.count || 0) + 1,
+  };
+
+  try {
+    localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(catalogues));
+    syncToFirestore();
+  } catch (e) {
+    console.error('Failed to save card to catalogue', e);
+  }
+}
+
 export async function syncToFirestore() {
   if (!auth?.currentUser) return;
   try {
     const cards = getCollectedCards();
     const binders = getBinders();
+    const catalogues = getCatalogues();
     await setDoc(doc(db, 'users', auth.currentUser.uid), {
       cards,
       binders,
+      catalogues,
       lastUpdated: new Date().toISOString()
     }, { merge: true });
   } catch (e) {
@@ -23,8 +78,9 @@ export async function syncFromFirestore() {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data.cards) localStorage.setItem('tcg_my_collection', JSON.stringify(data.cards));
-      if (data.binders) localStorage.setItem('tcg_binders', JSON.stringify(data.binders));
+      if (data.cards) localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(data.cards));
+      if (data.binders) localStorage.setItem(getStorageKey('tcg_binders'), JSON.stringify(data.binders));
+      if (data.catalogues) localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(data.catalogues));
     }
   } catch (e) {
     console.error('Sync from Firestore failed', e);
@@ -89,15 +145,11 @@ export const SAMPLE_CARDS: (Card | null)[] = [];
 
 export const SAMPLE_BINDERS: Binder[] = [
   { id: "my-collection", name: "My Collection (Opened)", count: 0, value: 0, isCustom: false },
-  { id: "b1", name: "Chase Cards", count: 0, value: 0, isCustom: false },
-  { id: "b2", name: "Charizard Collection", count: 0, value: 0, isCustom: false },
-  { id: "b3", name: "Master Set — SV", count: 0, value: 0, isCustom: false },
-  { id: "b4", name: "Evolving Skies", count: 0, value: 0, isCustom: false },
 ];
 
 export function getCollectedCards(): Card[] {
   try {
-    const data = localStorage.getItem('tcg_my_collection');
+    const data = localStorage.getItem(getStorageKey('tcg_my_collection'));
     if (!data) return [];
     const parsed: Card[] = JSON.parse(data);
     const cleaned = parsed.filter(c => 
@@ -112,7 +164,7 @@ export function getCollectedCards(): Card[] {
       c.binderId !== 'psa-demo-vault'
     );
     if (cleaned.length !== parsed.length) {
-      localStorage.setItem('tcg_my_collection', JSON.stringify(cleaned));
+      localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cleaned));
     }
     return cleaned;
   } catch {
@@ -122,7 +174,7 @@ export function getCollectedCards(): Card[] {
 
 export function clearCollectedCards(): void {
   try {
-    localStorage.removeItem('tcg_my_collection');
+    localStorage.removeItem(getStorageKey('tcg_my_collection'));
   } catch {}
 }
 
@@ -167,7 +219,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
 
   cards.unshift(newCard);
   try {
-    localStorage.setItem('tcg_my_collection', JSON.stringify(cards));
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cards));
     getBinders();
     syncToFirestore();
   } catch (e) {
@@ -178,7 +230,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
 
 export function getBinders(): Binder[] {
   try {
-    const data = localStorage.getItem('tcg_binders');
+    const data = localStorage.getItem(getStorageKey('tcg_binders'));
     const collected = getCollectedCards();
     
     const calculateForBinder = (b: Binder): Binder => {
@@ -195,7 +247,7 @@ export function getBinders(): Binder[] {
 
     if (!data) {
       const initial = SAMPLE_BINDERS.map(calculateForBinder);
-      localStorage.setItem('tcg_binders', JSON.stringify(initial));
+      localStorage.setItem(getStorageKey('tcg_binders'), JSON.stringify(initial));
       return initial;
     }
     const binders: Binder[] = JSON.parse(data);
@@ -203,7 +255,7 @@ export function getBinders(): Binder[] {
       binders.unshift(SAMPLE_BINDERS[0]);
     }
     const allBinders = binders.map(calculateForBinder);
-    localStorage.setItem('tcg_binders', JSON.stringify(allBinders));
+    localStorage.setItem(getStorageKey('tcg_binders'), JSON.stringify(allBinders));
     return allBinders;
   } catch {
     return SAMPLE_BINDERS;
@@ -212,7 +264,7 @@ export function getBinders(): Binder[] {
 
 export function saveBinders(binders: Binder[]): void {
   try {
-    localStorage.setItem('tcg_binders', JSON.stringify(binders));
+    localStorage.setItem(getStorageKey('tcg_binders'), JSON.stringify(binders));
     syncToFirestore();
   } catch (e) {
     console.error('Failed to save binders', e);
@@ -228,7 +280,7 @@ export function updateCardSlabStatus(cardId: string, grade: string = 'N/A'): voi
       }
       return c;
     });
-    localStorage.setItem('tcg_my_collection', JSON.stringify(updated));
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(updated));
     getBinders();
     syncToFirestore();
   } catch (e) {
@@ -298,7 +350,7 @@ export function savePSAGradingResult(
       }
       return c;
     });
-    localStorage.setItem('tcg_my_collection', JSON.stringify(updated));
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(updated));
     getBinders();
     syncToFirestore();
     return gradedCard;
