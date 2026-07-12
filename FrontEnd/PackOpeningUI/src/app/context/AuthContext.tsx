@@ -29,10 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentUser(user);
       if (user) {
         import('../components/binder/types').then(module => {
-          module.syncFromFirestore().then(() => {
-            // Dispatch a storage event to trigger re-renders in other components if needed
-            window.dispatchEvent(new Event('storage'));
-          });
+          module.listenToFirestore(user.uid);
+        });
+      } else {
+        import('../components/binder/types').then(module => {
+          module.listenToFirestore(null);
         });
       }
       setLoading(false);

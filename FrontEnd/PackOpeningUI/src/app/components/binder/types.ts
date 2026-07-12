@@ -1,5 +1,5 @@
 import { auth, db } from '../../services/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 
 export interface BulkCard {
   id: string;
@@ -71,19 +71,51 @@ export async function syncToFirestore() {
   }
 }
 
-export async function syncFromFirestore() {
-  if (!auth?.currentUser) return;
+let unsubscribeFirestore: (() => void) | null = null;
+
+export function listenToFirestore(uid: string | null) {
+  if (unsubscribeFirestore) {
+    unsubscribeFirestore();
+    unsubscribeFirestore = null;
+  }
+  
+  if (!uid) return;
+
   try {
-    const docRef = doc(db, 'users', auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (data.cards) localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(data.cards));
-      if (data.binders) localStorage.setItem(getStorageKey('tcg_binders'), JSON.stringify(data.binders));
-      if (data.catalogues) localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(data.catalogues));
-    }
+    unsubscribeFirestore = onSnapshot(doc(db, 'users', uid), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let changed = false;
+
+        if (data.cards) {
+          const str = JSON.stringify(data.cards);
+          if (localStorage.getItem(getStorageKey('tcg_my_collection')) !== str) {
+            localStorage.setItem(getStorageKey('tcg_my_collection'), str);
+            changed = true;
+          }
+        }
+        if (data.binders) {
+          const str = JSON.stringify(data.binders);
+          if (localStorage.getItem(getStorageKey('tcg_binders')) !== str) {
+            localStorage.setItem(getStorageKey('tcg_binders'), str);
+            changed = true;
+          }
+        }
+        if (data.catalogues) {
+          const str = JSON.stringify(data.catalogues);
+          if (localStorage.getItem(getStorageKey('tcg_catalogues')) !== str) {
+            localStorage.setItem(getStorageKey('tcg_catalogues'), str);
+            changed = true;
+          }
+        }
+
+        if (changed) {
+          window.dispatchEvent(new Event('storage'));
+        }
+      }
+    });
   } catch (e) {
-    console.error('Sync from Firestore failed', e);
+    console.error('Listen to Firestore failed', e);
   }
 }
 

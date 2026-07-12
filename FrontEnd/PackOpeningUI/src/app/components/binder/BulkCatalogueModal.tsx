@@ -15,13 +15,23 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
   const [previewCard, setPreviewCard] = useState<BulkCard | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
+    const loadCatalogues = () => {
       const data = getCatalogues();
       setCatalogues(data);
       const sets = Object.keys(data).sort();
-      setSelectedSet(sets.length > 0 ? sets[0] : null);
+      if (!selectedSet || !sets.includes(selectedSet)) {
+        setSelectedSet(sets.length > 0 ? sets[0] : null);
+      }
+    };
+
+    if (isOpen) {
+      loadCatalogues();
+      window.addEventListener('storage', loadCatalogues);
     }
-  }, [isOpen]);
+    return () => {
+      window.removeEventListener('storage', loadCatalogues);
+    };
+  }, [isOpen, selectedSet]);
 
   const setNames = useMemo(() => Object.keys(catalogues).sort(), [catalogues]);
 
