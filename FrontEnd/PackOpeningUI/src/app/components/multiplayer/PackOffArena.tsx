@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LogOut, Copy, Check, Users } from 'lucide-react';
+import { LogOut, Copy, Check, Users, X, BookOpen } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { subscribeToMatch, updatePlayerState, updateMatchStatus, MatchState, PlayerState } from '../../services/matchmaking';
+import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, MatchState, PlayerState } from '../../services/matchmaking';
 import BoosterPackTear from '../BoosterPackTear';
 import { sound } from '../../services/sound';
 
@@ -30,6 +30,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   const { currentUser } = useAuth();
   const [match, setMatch] = useState<MatchState | null>(null);
   const [copied, setCopied] = useState(false);
+  const [viewingBookletPlayer, setViewingBookletPlayer] = useState<PlayerState | null>(null);
 
   useEffect(() => {
     const unsubscribe = subscribeToMatch(matchId, (matchData) => {
@@ -115,6 +116,17 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     return total;
   };
 
+  const getRevealedCards = (p: PlayerState | null) => {
+    if (!p || !p.cards || p.revealedIndex < 0) return [];
+    const topIdx = p.cards.length - 1 - Math.max(0, p.revealedIndex);
+    return p.cards.slice(topIdx);
+  };
+
+  const getBookletCards = (p: PlayerState | null) => {
+    if (!p) return [];
+    return [...(p.booklet || []), ...getRevealedCards(p)];
+  };
+
   const renderPlayerSide = (player: PlayerState | null, isLocal: boolean) => {
     if (!player) {
       return (
@@ -153,6 +165,12 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                 </span>
               </div>
             )}
+            <button 
+              onClick={() => setViewingBookletPlayer(player)}
+              className="mt-2 flex items-center gap-1.5 text-[10px] uppercase font-bold text-gray-400 hover:text-white border border-gray-700 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <BookOpen className="w-3 h-3" /> View Booklet
+            </button>
           </div>
         </div>
 
@@ -263,7 +281,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
         {isGameOver && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none">
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <motion.div 
               initial={{ scale: 0, y: 50, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -284,6 +302,25 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                   <span className="text-blue-400 font-bold text-3xl">${remoteRevenue.toFixed(2)}</span>
                 </div>
               </div>
+              
+              {isPlayer1 && (
+                <div className="flex gap-4 mt-8">
+                  <button 
+                    onClick={() => updateMatchPack(matchId, match.packId)}
+                    className="bg-amber-500 text-black px-6 py-3 rounded-xl font-black uppercase tracking-wider hover:bg-amber-400 transition-colors shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95"
+                  >
+                    Play Again
+                  </button>
+                  {onChangeSetRequest && (
+                    <button 
+                      onClick={onChangeSetRequest}
+                      className="bg-[#181822] text-amber-500 border-2 border-amber-500/50 px-6 py-3 rounded-xl font-black uppercase tracking-wider hover:bg-[#222230] transition-colors hover:scale-105 active:scale-95"
+                    >
+                      Change Set
+                    </button>
+                  )}
+                </div>
+              )}
             </motion.div>
           </div>
         )}
@@ -307,6 +344,65 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
           {renderPlayerSide(remotePlayer, false)}
         </div>
       </div>
+
+      {/* Booklet Modal */}
+      <AnimatePresence>
+        {viewingBookletPlayer && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col p-4 md:p-8"
+          >
+            <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto w-full shrink-0">
+              <div>
+                <h2 className="text-3xl font-black text-white">{viewingBookletPlayer.displayName}'s Booklet</h2>
+                <p className="text-gray-400 font-mono mt-1">Total Cards: {getBookletCards(viewingBookletPlayer).length} | Revenue: ${getBookletCards(viewingBookletPlayer).reduce((sum, c) => sum + (c.value || 0), 0).toFixed(2)}</p>
+              </div>
+              <button 
+                onClick={() => setViewingBookletPlayer(null)}
+                className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-white" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto max-w-6xl mx-auto w-full pr-4 pb-12 custom-scrollbar">
+              {getBookletCards(viewingBookletPlayer).length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full opacity-50">
+                  <BookOpen className="w-16 h-16 text-gray-500 mb-4" />
+                  <p className="text-xl text-gray-400 font-bold uppercase tracking-widest">Booklet is empty</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                  {getBookletCards(viewingBookletPlayer).map((card, idx) => (
+                    <motion.div 
+                      key={`${card.id}-${idx}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.02 }}
+                      className="relative group rounded-xl overflow-hidden bg-[#181822] border border-white/10 hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all"
+                    >
+                      <div className="w-full pt-[139%] relative">
+                        <img 
+                          src={card.pokemon?.images?.large || card.pokemon?.images?.small || ''}
+                          alt={card.pokemon?.name || 'Pokemon Card'}
+                          className="absolute inset-0 w-full h-full object-contain p-2 drop-shadow-xl"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-bold text-white truncate pr-2">{card.pokemon?.name}</span>
+                        <span className="text-xs font-mono text-amber-400 font-bold shrink-0">${(card.value || 0).toFixed(2)}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

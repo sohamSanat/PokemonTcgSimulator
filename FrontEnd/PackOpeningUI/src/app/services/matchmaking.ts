@@ -8,6 +8,7 @@ export interface PlayerState {
   packProgress: number;
   revealedIndex: number;
   cards: any[]; // Store generated cards so both players see the same cards for a given pack
+  booklet: any[]; // Store history of all cards pulled in this session
 }
 
 export interface MatchState {
@@ -39,7 +40,8 @@ export const createMatch = async (userId: string, displayName: string, packId: s
       isReady: false,
       packProgress: 0,
       revealedIndex: -1,
-      cards: []
+      cards: [],
+      booklet: []
     },
     player2: null
   };
@@ -74,7 +76,8 @@ export const joinMatch = async (matchId: string, userId: string, displayName: st
       isReady: false,
       packProgress: 0,
       revealedIndex: -1,
-      cards: []
+      cards: [],
+      booklet: []
     }
   });
 
@@ -116,16 +119,24 @@ export const subscribeToMatch = (matchId: string, callback: (match: MatchState |
 
 export const updateMatchPack = async (matchId: string, packId: string) => {
   const matchRef = doc(db, 'matches', matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) return;
+  const matchData = matchSnap.data() as MatchState;
   
+  const p1Booklet = [...(matchData.player1?.booklet || []), ...(matchData.player1?.cards || [])];
+  const p2Booklet = [...(matchData.player2?.booklet || []), ...(matchData.player2?.cards || [])];
+
   await updateDoc(matchRef, {
     packId,
     status: 'waiting',
     'player1.isReady': false,
     'player1.cards': [],
+    'player1.booklet': p1Booklet,
     'player1.revealedIndex': -1,
     'player1.packProgress': 0,
     'player2.isReady': false,
     'player2.cards': [],
+    'player2.booklet': p2Booklet,
     'player2.revealedIndex': -1,
     'player2.packProgress': 0,
   });
