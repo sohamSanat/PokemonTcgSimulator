@@ -1749,7 +1749,7 @@ export default function App() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Premium Leather-Bound Header */}
-      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-4 md:px-6 flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
         
         {/* Mobile Hamburger Row & Desktop Logo */}
         <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
@@ -1768,10 +1768,10 @@ export default function App() {
         <div className={`
           fixed inset-0 z-[60] w-full h-[100dvh] bg-[#14141c]/98 backdrop-blur-3xl p-6 flex flex-col gap-6 transform transition-all duration-300 ease-in-out pt-24 overflow-y-auto
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
-          lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-3 lg:transition-none lg:ml-6 lg:opacity-100 lg:pointer-events-auto
+          lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-2 lg:transition-none lg:ml-4 lg:opacity-100 lg:pointer-events-auto
         `}>
           
-          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-4 lg:gap-3.5 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto overflow-x-auto no-scrollbar">
             <motion.button
               onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); setIsMobileMenuOpen(false); }}
               whileHover={{ scale: 1.05 }}
@@ -1825,7 +1825,7 @@ export default function App() {
             </button>
           </div>
           
-          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-4 lg:gap-3 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0 shrink-0">
             <button
               onClick={toggleSound}
               className={`px-4 sm:px-4 py-3 sm:py-2 rounded-xl sm:rounded-2xl border text-sm font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 sm:gap-2 cursor-pointer shrink-0 ${soundEnabled
