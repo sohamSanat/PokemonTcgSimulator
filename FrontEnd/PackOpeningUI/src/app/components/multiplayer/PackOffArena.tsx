@@ -119,7 +119,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     const isWinner = false; // Logic for winning can be added later
 
     return (
-      <div className={`flex-1 flex flex-col items-center p-4 relative ${isLocal ? '' : 'opacity-90'}`}>
+      <div className={`w-full md:flex-1 flex flex-col items-center p-4 relative py-8 md:py-4 ${isLocal ? '' : 'opacity-90'}`}>
         {/* Player Header */}
         <div className={`w-full max-w-sm rounded-2xl p-4 mb-8 flex items-center justify-between border ${isLocal ? 'bg-amber-500/10 border-amber-500/30' : 'bg-blue-500/10 border-blue-500/30'}`}>
           <div>
@@ -216,7 +216,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       </div>
 
       {/* Split Screen Arena */}
-      <div className="flex-1 flex flex-col md:flex-row relative">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 flex flex-col md:flex-row relative">
         {/* VS Divider */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden md:flex flex-col items-center">
           <div className="w-px h-32 bg-gradient-to-b from-transparent via-amber-500/50 to-transparent"></div>
@@ -227,12 +227,12 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
         </div>
 
         {/* Left Side: Local Player */}
-        <div className="flex-1 border-b md:border-b-0 md:border-r border-white/10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1c1c24] to-[#0d0d0f] flex flex-col">
+        <div className="w-full md:flex-1 border-b md:border-b-0 md:border-r border-white/10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1c1c24] to-[#0d0d0f] flex flex-col min-h-[60vh] md:min-h-0">
           {renderPlayerSide(localPlayer, true)}
         </div>
 
         {/* Right Side: Remote Player */}
-        <div className="flex-1 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#14141c] to-[#0a0a0c] flex flex-col">
+        <div className="w-full md:flex-1 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#14141c] to-[#0a0a0c] flex flex-col min-h-[60vh] md:min-h-0">
           {renderPlayerSide(remotePlayer, false)}
         </div>
       </div>
