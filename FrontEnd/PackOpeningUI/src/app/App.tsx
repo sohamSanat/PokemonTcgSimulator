@@ -8,7 +8,7 @@ import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
-import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, type CatalogueStore, type Binder, type Card } from './components/binder/types';
+import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, type CatalogueStore, type Binder, type Card } from './components/binder/types';
 import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
@@ -24,7 +24,7 @@ const setPackPrices: Record<string, number> = setPackPricesData as Record<string
 const imageFallbacks = new Map<string, string>();
 
 interface CardData {
-  id: number;
+  id: number | string;
   originalIndex: number;
   flipped: boolean;
   collected: boolean;
@@ -709,7 +709,7 @@ const Card = React.memo(({
   );
 });
 
-const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void }) => {
+const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice, onMoveToBinder }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void; onMoveToBinder?: (c: CardData) => void }) => {
   const poke = card.pokemon;
   const [liveCardFull, setLiveCardFull] = useState<TCGDexCardFull | null>(() => cardFullCache.get(poke.id) || null);
 
@@ -1032,7 +1032,15 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   <span>Live card data</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {onAddToBinder && (
+                  {onMoveToBinder ? (
+                    <button
+                      onClick={() => onMoveToBinder(card)}
+                      className="px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg bg-blue-500/20 text-blue-300 border border-blue-500/40 hover:bg-blue-500/30"
+                    >
+                      <Layers className="w-4 h-4 text-blue-400" />
+                      <span>Move to Binder</span>
+                    </button>
+                  ) : onAddToBinder ? (
                     <button
                       onClick={() => onAddToBinder(card)}
                       className={`px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-lg ${isAddedToBinder
@@ -1052,7 +1060,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                         </>
                       )}
                     </button>
-                  )}
+                  ) : null}
                   <button
                     onClick={() => { sound.playModalClose(); onClose(); }}
                     className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer"
@@ -1266,7 +1274,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena'>('pack');
   const [matchId, setMatchId] = useState<string>('');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<number>>(new Set());
-  const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string } | null>(null);
+  const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
   const [availableBinders, setAvailableBinders] = useState<Binder[]>([]);
 
   // Sleeve animation state – set when user picks a binder
@@ -1889,7 +1897,7 @@ export default function App() {
             sound.playModalOpen();
             setInspectedViewMode('art');
             const cardData: any = {
-              id: 0,
+              id: binderCard.id,
               originalIndex: 0,
               flipped: false,
               collected: true,
@@ -1897,6 +1905,7 @@ export default function App() {
               isSlabbed: binderCard.isSlabbed || false,
               slabGrade: binderCard.slabGrade || 'N/A',
               psaDetails: binderCard.psaDetails,
+              binderId: binderCard.binderId || 'my-collection',
               pokemon: {
                 id: binderCard.id.split('-')[0] + '-' + binderCard.id.split('-')[1] || binderCard.id,
                 name: binderCard.name || 'Pokemon Card',
@@ -2771,12 +2780,16 @@ export default function App() {
             onUpdatePrice={(newPrice, newPoke) => {
               setInspectedCard(prev => prev ? { ...prev, value: newPrice, pokemon: newPoke } : null);
             }}
-            onAddToBinder={(c) => {
-              if (binderAddedIds.has(c.id)) return;
+            onAddToBinder={activeTab === 'pack' ? (c) => {
+              if (binderAddedIds.has(c.id as number)) return;
               setAvailableBinders(getBinders());
               setBinderSelectModal({ cards: [c], setName: currentSet?.name || 'Unknown Set' });
-            }}
-            isAddedToBinder={inspectedCard ? binderAddedIds.has(inspectedCard.id) : false}
+            } : undefined}
+            onMoveToBinder={activeTab === 'binder' ? (c) => {
+              setAvailableBinders(getBinders());
+              setBinderSelectModal({ cards: [c], setName: currentSet?.name || 'Unknown Set', isMove: true });
+            } : undefined}
+            isAddedToBinder={inspectedCard ? binderAddedIds.has(inspectedCard.id as number) : false}
           />
         )}
       </AnimatePresence>
@@ -2805,8 +2818,8 @@ export default function App() {
                   </div>
                   <div>
                     <h3 className="text-base font-extrabold text-white">Select Destination Binder</h3>
-                    <p className="text-xs text-gray-400">
-                      Adding {binderSelectModal.cards.length} card{binderSelectModal.cards.length > 1 ? 's' : ''} to collection
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {binderSelectModal.isMove ? 'Moving' : 'Adding'} {binderSelectModal.cards.length} card{binderSelectModal.cards.length > 1 ? 's' : ''} {binderSelectModal.isMove ? 'to binder' : 'to collection'}
                     </p>
                   </div>
                 </div>
@@ -2823,7 +2836,13 @@ export default function App() {
                   <button
                     key={b.id}
                     onClick={() => {
-                      // Queue sleeve animation before saving
+                      if (binderSelectModal.isMove) {
+                        binderSelectModal.cards.forEach(c => moveCardToBinder(c.id.toString(), b.id));
+                        setBinderSelectModal(null);
+                        return;
+                      }
+
+                      // For newly pulled cards, queue the sleeve animation
                       setSleeveQueue({
                         cards: binderSelectModal.cards,
                         setName: binderSelectModal.setName,
@@ -2867,17 +2886,22 @@ export default function App() {
                   };
                   const updated = [...availableBinders, newBinder];
                   saveBinders(updated);
-                  // Queue sleeve animation for the new binder
-                  setSleeveQueue({
-                    cards: binderSelectModal.cards,
-                    setName: binderSelectModal.setName,
-                    binderId: newId,
-                  });
-                  setBinderSelectModal(null);
+                  if (binderSelectModal.isMove) {
+                    binderSelectModal.cards.forEach(c => moveCardToBinder(c.id.toString(), newId));
+                    setBinderSelectModal(null);
+                  } else {
+                    // Queue sleeve animation for the new binder
+                    setSleeveQueue({
+                      cards: binderSelectModal.cards,
+                      setName: binderSelectModal.setName,
+                      binderId: newId,
+                    });
+                    setBinderSelectModal(null);
+                  }
                 }}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white font-extrabold text-xs tracking-wide uppercase shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
               >
-                <span>➕ Create New Binder & Add Here</span>
+                <span>➕ Create New Binder & {binderSelectModal.isMove ? 'Move' : 'Add'} Here</span>
               </button>
             </motion.div>
           </motion.div>

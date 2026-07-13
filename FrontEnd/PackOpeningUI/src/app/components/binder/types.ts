@@ -280,6 +280,28 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
   return newCard;
 }
 
+export function moveCardToBinder(cardId: string, newBinderId: string): void {
+  const cards = getCollectedCards();
+  let updated = false;
+  for (const card of cards) {
+    if (card.id === cardId) {
+      card.binderId = newBinderId;
+      updated = true;
+      break;
+    }
+  }
+  if (updated) {
+    try {
+      localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cards));
+      getBinders(); // Recalculate binder counts
+      syncToFirestore();
+      window.dispatchEvent(new Event('storage'));
+    } catch (e) {
+      console.error('Failed to move card to binder', e);
+    }
+  }
+}
+
 export function getBinders(): Binder[] {
   try {
     const data = localStorage.getItem(getStorageKey('tcg_binders'));
