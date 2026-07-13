@@ -1749,12 +1749,12 @@ export default function App() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Premium Leather-Bound Header */}
-      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-3 sm:gap-3 z-10 relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
         
         {/* Mobile Hamburger Row & Desktop Logo */}
         <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
           <div className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md">
-            <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="hidden sm:inline">POKE TCG</span>
+            <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="inline">POKE TCG</span>
           </div>
           <button 
             onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
@@ -1764,27 +1764,14 @@ export default function App() {
           </button>
         </div>
 
-        {/* Mobile Backdrop */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[50] lg:hidden"
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Navigation Container (Sidebar on Mobile, Inline on Desktop) */}
+        {/* Navigation Container (Full Screen on Mobile, Inline on Desktop) */}
         <div className={`
-          fixed inset-y-0 right-0 z-[60] w-72 bg-[#12121a]/95 backdrop-blur-3xl border-l border-white/10 p-6 flex flex-col gap-6 transform transition-transform duration-300 ease-in-out pt-24 overflow-y-auto
-          ${isMobileMenuOpen ? 'translate-x-0 shadow-[-10px_0_30px_rgba(0,0,0,0.8)]' : 'translate-x-full'}
-          lg:static lg:w-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-x-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-3 lg:transition-none lg:ml-6
+          fixed inset-0 z-[60] w-full h-[100dvh] bg-[#14141c]/98 backdrop-blur-3xl p-6 flex flex-col gap-6 transform transition-all duration-300 ease-in-out pt-24 overflow-y-auto
+          ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
+          lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-3 lg:transition-none lg:ml-6 lg:opacity-100 lg:pointer-events-auto
         `}>
           
-          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-3 lg:gap-3.5 w-full lg:w-auto">
+          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-4 lg:gap-3.5 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto">
             <motion.button
               onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); setIsMobileMenuOpen(false); }}
               whileHover={{ scale: 1.05 }}
@@ -1838,7 +1825,7 @@ export default function App() {
             </button>
           </div>
           
-          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-3 lg:gap-3 w-full lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10">
+          <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-4 lg:gap-3 w-full max-w-sm mx-auto lg:max-w-none lg:mx-0 lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0">
             <button
               onClick={toggleSound}
               className={`px-4 sm:px-4 py-3 sm:py-2 rounded-xl sm:rounded-2xl border text-sm font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 sm:gap-2 cursor-pointer shrink-0 ${soundEnabled
