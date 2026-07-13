@@ -392,7 +392,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                           loading="lazy"
                         />
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end">
                         <span className="text-xs font-bold text-white truncate pr-2">{card.pokemon?.name}</span>
                         <span className="text-xs font-mono text-amber-400 font-bold shrink-0">${(card.value || 0).toFixed(2)}</span>
                       </div>
