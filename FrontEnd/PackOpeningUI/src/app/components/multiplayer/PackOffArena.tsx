@@ -185,7 +185,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                 {renderCardStack(player.cards || [], player.revealedIndex)}
                 
                 {isLocal && player.revealedIndex < (player.cards?.length || 0) - 1 && (
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-50">
+                  <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-50">
                     <span className="px-4 py-2 rounded-full bg-amber-500 text-black font-black uppercase text-sm shadow-[0_0_20px_rgba(245,158,11,0.5)]">
                       Click to Reveal
                     </span>
@@ -392,7 +392,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                           loading="lazy"
                         />
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                         <span className="text-xs font-bold text-white truncate pr-2">{card.pokemon?.name}</span>
                         <span className="text-xs font-mono text-amber-400 font-bold shrink-0">${(card.value || 0).toFixed(2)}</span>
                       </div>

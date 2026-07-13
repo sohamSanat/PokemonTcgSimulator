@@ -448,21 +448,10 @@ export const ENERGY_POOLS_BY_ERA: Record<EnergyEra, TCGDexCardSummary[]> = {
   ]
 };
 
-const eraCycleIndices: Record<EnergyEra, number> = {
-  base: 0,
-  me: 0,
-  sv: 0,
-  sm: 0,
-  swsh: 0,
-  xy: 0
-};
-
 export async function fetchBasicEnergyCard(era: EnergyEra = 'sv'): Promise<TCGDexCardSummary> {
   const pool = ENERGY_POOLS_BY_ERA[era] || ENERGY_POOLS_BY_ERA.sv;
-  const index = eraCycleIndices[era] ?? 0;
-  const energy = pool[index % pool.length];
-  eraCycleIndices[era] = (index + 1) % pool.length;
-  return energy;
+  const index = Math.floor(Math.random() * pool.length);
+  return pool[index];
 }
 
 const rarityPoolCache = new Map<string, any[]>();
