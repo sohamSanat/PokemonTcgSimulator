@@ -152,7 +152,8 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
 
   const getBookletCards = (p: PlayerState | null) => {
     if (!p) return [];
-    return [...(p.booklet || []), ...getRevealedCards(p)];
+    const allCards = [...(p.booklet || []), ...getRevealedCards(p)];
+    return allCards.sort((a, b) => (b.value || 0) - (a.value || 0));
   };
 
   const renderPlayerSide = (player: PlayerState | null, isLocal: boolean) => {
