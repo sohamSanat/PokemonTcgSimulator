@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Users, Plus, LogIn, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { createMatch, joinMatch } from '../services/matchmaking';
-import { sound } from '../services/sound';
+import { useAuth } from '../../context/AuthContext';
+import { createMatch, joinMatch } from '../../services/matchmaking';
+import { sound } from '../../services/sound';
 
 interface PackOffLobbyProps {
   onBack: () => void;
