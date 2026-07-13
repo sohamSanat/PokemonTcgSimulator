@@ -14,6 +14,7 @@ interface PackOffArenaProps {
   renderCardStack: (cards: any[], revealedIndex: number) => React.ReactNode;
   generateCards: () => Promise<any[]> | any[]; // Function from App to generate the 11 cards
   onLoadPack?: (setId: string) => void;
+  onChangeSetRequest?: () => void;
 }
 
 export const PackOffArena: React.FC<PackOffArenaProps> = ({ 
@@ -23,7 +24,8 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   setName,
   renderCardStack,
   generateCards,
-  onLoadPack
+  onLoadPack,
+  onChangeSetRequest
 }) => {
   const { currentUser } = useAuth();
   const [match, setMatch] = useState<MatchState | null>(null);
@@ -103,6 +105,16 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     return 'unopened';
   };
 
+  const calculateRevenue = (p: PlayerState | null) => {
+    if (!p || !p.cards || p.revealedIndex < 0) return 0;
+    let total = 0;
+    const topIdx = p.cards.length - 1 - Math.max(0, p.revealedIndex);
+    for (let i = topIdx; i < p.cards.length; i++) {
+      total += p.cards[i].value || 0;
+    }
+    return total;
+  };
+
   const renderPlayerSide = (player: PlayerState | null, isLocal: boolean) => {
     if (!player) {
       return (
@@ -132,9 +144,14 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                 {player.isReady ? 'READY' : 'NOT READY'}
               </span>
             ) : (
-              <span className="text-xs font-mono text-gray-400">
-                Cards: {Math.max(0, player.revealedIndex + 1)} / {player.cards?.length || 0}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-xs font-mono text-gray-400">
+                  Cards: {Math.max(0, player.revealedIndex + 1)} / {player.cards?.length || 0}
+                </span>
+                <span className={`font-bold font-mono ${isLocal ? 'text-amber-400' : 'text-blue-400'}`}>
+                  ${calculateRevenue(player).toFixed(2)}
+                </span>
+              </div>
             )}
           </div>
         </div>
@@ -193,6 +210,25 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     );
   };
 
+  const isGameOver = 
+    localPlayer?.cards && remotePlayer?.cards &&
+    localPlayer.revealedIndex >= localPlayer.cards.length - 1 && 
+    remotePlayer.revealedIndex >= remotePlayer.cards.length - 1;
+
+  const localRevenue = calculateRevenue(localPlayer);
+  const remoteRevenue = calculateRevenue(remotePlayer);
+  
+  let winnerText = "";
+  if (isGameOver) {
+    if (localRevenue > remoteRevenue) {
+      winnerText = "You Won! 🎉";
+    } else if (remoteRevenue > localRevenue) {
+      winnerText = `${remotePlayer?.displayName} Won!`;
+    } else {
+      winnerText = "It's a Tie! 🤝";
+    }
+  }
+
   return (
     <div className="fixed inset-0 z-40 bg-[#0d0d0f] overflow-y-auto overflow-x-hidden flex flex-col">
       {/* Header */}
@@ -212,11 +248,46 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
           </div>
         </div>
         
-        <div className="w-24"></div> {/* Spacer for centering */}
+        <div className="w-24 flex justify-end">
+          {isPlayer1 && match.status !== 'playing' && onChangeSetRequest && (
+            <button 
+              onClick={onChangeSetRequest}
+              className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/50 hover:bg-amber-500/40 px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-colors"
+            >
+              Change Set
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
+        {isGameOver && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none">
+            <motion.div 
+              initial={{ scale: 0, y: 50, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
+              className="bg-[#14141c] border-2 border-white/10 rounded-3xl p-8 flex flex-col items-center shadow-[0_0_100px_rgba(245,158,11,0.2)]"
+            >
+              <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-6 drop-shadow-lg text-center">
+                {winnerText}
+              </h2>
+              <div className="flex gap-12 text-xl font-mono items-center">
+                <div className="flex flex-col items-center">
+                  <span className="text-gray-400 text-xs mb-1 uppercase tracking-widest">{localPlayer?.displayName}</span>
+                  <span className="text-amber-400 font-bold text-3xl">${localRevenue.toFixed(2)}</span>
+                </div>
+                <div className="text-gray-600 font-bold text-2xl">VS</div>
+                <div className="flex flex-col items-center">
+                  <span className="text-gray-400 text-xs mb-1 uppercase tracking-widest">{remotePlayer?.displayName}</span>
+                  <span className="text-blue-400 font-bold text-3xl">${remoteRevenue.toFixed(2)}</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {/* VS Divider */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden md:flex flex-col items-center">
           <div className="w-px h-32 bg-gradient-to-b from-transparent via-amber-500/50 to-transparent"></div>

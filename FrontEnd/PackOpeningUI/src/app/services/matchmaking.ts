@@ -113,3 +113,20 @@ export const subscribeToMatch = (matchId: string, callback: (match: MatchState |
     }
   });
 };
+
+export const updateMatchPack = async (matchId: string, packId: string) => {
+  const matchRef = doc(db, 'matches', matchId);
+  
+  await updateDoc(matchRef, {
+    packId,
+    status: 'waiting',
+    'player1.isReady': false,
+    'player1.cards': [],
+    'player1.revealedIndex': -1,
+    'player1.packProgress': 0,
+    'player2.isReady': false,
+    'player2.cards': [],
+    'player2.revealedIndex': -1,
+    'player2.packProgress': 0,
+  });
+};

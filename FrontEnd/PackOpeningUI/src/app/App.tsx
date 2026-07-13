@@ -17,6 +17,7 @@ import PSAGradingLab from './components/psa/PSAGradingLab';
 import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
+import { updateMatchPack } from './services/matchmaking';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1909,6 +1910,7 @@ export default function App() {
           <PackOffArena 
             matchId={matchId} 
             onLeave={() => setActiveTab('multiplayerLobby')}
+            onChangeSetRequest={() => setIsSetSelectorOpen(true)}
             packArts={currentPackArts}
             setName={currentSet?.name || 'Pokémon TCG'}
             generateCards={async () => {
@@ -2660,7 +2662,18 @@ export default function App() {
                         return (
                           <div
                             key={set.id}
-                            onClick={() => loadSetAndGeneratePack(set.id)}
+                            onClick={async () => {
+                              if (activeTab === 'multiplayerArena' && matchId) {
+                                try {
+                                  await updateMatchPack(matchId, set.id);
+                                  setIsSetSelectorOpen(false);
+                                } catch (err) {
+                                  console.error("Failed to update match set", err);
+                                }
+                              } else {
+                                loadSetAndGeneratePack(set.id);
+                              }
+                            }}
                             className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col items-center justify-between text-center group ${currentSet?.id === set.id
                               ? 'bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-amber-600/20 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.35)] scale-[1.02]'
                               : 'bg-[#181822]/90 border-white/15 hover:bg-[#222230] hover:border-white/30 hover:scale-[1.02] shadow-[0_4px_15px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)]'
