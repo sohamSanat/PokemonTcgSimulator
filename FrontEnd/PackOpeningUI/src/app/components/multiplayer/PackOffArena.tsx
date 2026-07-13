@@ -68,9 +68,24 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     }
   }, [isGameOver]);
 
+  useEffect(() => {
+    if (
+      match && 
+      match.status !== 'playing' && 
+      match.status !== 'finished' && 
+      localPlayer?.isReady && 
+      remotePlayer?.isReady && 
+      isPlayer1
+    ) {
+      updateMatchStatus(matchId, 'playing');
+    }
+  }, [match?.status, localPlayer?.isReady, remotePlayer?.isReady, isPlayer1, matchId]);
+
   if (!match) {
     return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
   }
+
+
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(matchId);
@@ -89,11 +104,6 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       isReady: true,
       cards 
     });
-
-    // If the other player is also ready, update match status to playing
-    if (remotePlayer?.isReady) {
-      await updateMatchStatus(matchId, 'playing');
-    }
   };
 
   const handleLocalPackProgress = (progress: number) => {
