@@ -31,6 +31,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   const [match, setMatch] = useState<MatchState | null>(null);
   const [copied, setCopied] = useState(false);
   const [viewingBookletPlayer, setViewingBookletPlayer] = useState<PlayerState | null>(null);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToMatch(matchId, (matchData) => {
@@ -53,6 +54,21 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   const isPlayer1 = match.player1?.uid === localUserId;
   const localPlayer = isPlayer1 ? match.player1 : match.player2;
   const remotePlayer = isPlayer1 ? match.player2 : match.player1;
+
+  const isGameOver = 
+    localPlayer?.cards && localPlayer.cards.length > 0 &&
+    remotePlayer?.cards && remotePlayer.cards.length > 0 &&
+    localPlayer.revealedIndex >= localPlayer.cards.length - 1 && 
+    remotePlayer.revealedIndex >= remotePlayer.cards.length - 1;
+
+  useEffect(() => {
+    if (isGameOver) {
+      const timer = setTimeout(() => setShowGameOverModal(true), 6000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowGameOverModal(false);
+    }
+  }, [isGameOver]);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(matchId);
@@ -228,12 +244,6 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     );
   };
 
-  const isGameOver = 
-    localPlayer?.cards && localPlayer.cards.length > 0 &&
-    remotePlayer?.cards && remotePlayer.cards.length > 0 &&
-    localPlayer.revealedIndex >= localPlayer.cards.length - 1 && 
-    remotePlayer.revealedIndex >= remotePlayer.cards.length - 1;
-
   const localRevenue = calculateRevenue(localPlayer);
   const remoteRevenue = calculateRevenue(remotePlayer);
   
@@ -281,7 +291,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
 
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
-        {isGameOver && (
+        {showGameOverModal && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <motion.div 
               initial={{ scale: 0, y: 50, opacity: 0 }}
