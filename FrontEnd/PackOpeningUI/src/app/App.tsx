@@ -1886,7 +1886,7 @@ export default function App() {
               setMatchId(id);
               setActiveTab('multiplayerArena');
             }}
-            selectedPackId={selectedSet?.id || 'swsh3'} 
+            selectedPackId={currentSet?.id || 'swsh3'} 
           />
         </div>
       ) : activeTab === 'multiplayerArena' ? (
@@ -1895,8 +1895,8 @@ export default function App() {
             matchId={matchId} 
             onLeave={() => setActiveTab('multiplayerLobby')}
             packArts={currentPackArts}
-            setName={selectedSet?.name || 'Pokémon TCG'}
-            generateCards={() => generateFallbackPack(currentSet?.cards || [], selectedSet)}
+            setName={currentSet?.name || 'Pokémon TCG'}
+            generateCards={() => generateFallbackPack(currentSet?.cards || [], currentSet)}
             renderCardStack={(stackCards, revealedIndex) => {
               return (
                 <AnimatePresence>
@@ -1922,7 +1922,7 @@ export default function App() {
                         offsetY={offsetY}
                         isTopCard={isTopCard}
                         isHovered={false}
-                        setName={selectedSet?.name || 'Pokémon TCG'}
+                        setName={currentSet?.name || 'Pokémon TCG'}
                       />
                     );
                   })}
