@@ -49,7 +49,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     }
   }, [match?.packId, onLoadPack]);
 
-  const localUserId = currentUser?.uid || 'guest';
+  const localUserId = currentUser?.uid || sessionStorage.getItem('guestId') || 'guest';
   const isPlayer1 = match?.player1?.uid === localUserId;
   const localPlayer = match ? (isPlayer1 ? match.player1 : match.player2) : null;
   const remotePlayer = match ? (isPlayer1 ? match.player2 : match.player1) : null;
