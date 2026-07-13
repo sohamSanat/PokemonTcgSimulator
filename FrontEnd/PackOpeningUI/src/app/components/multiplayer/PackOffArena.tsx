@@ -23,7 +23,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   renderCardStack,
   generateCards
 }) => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const [match, setMatch] = useState<MatchState | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -38,7 +38,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
   }
 
-  const localUserId = user?.uid;
+  const localUserId = currentUser?.uid;
   const isPlayer1 = match.player1?.uid === localUserId;
   const localPlayer = isPlayer1 ? match.player1 : match.player2;
   const remotePlayer = isPlayer1 ? match.player2 : match.player1;
@@ -175,7 +175,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                   I'm Ready!
                 </button>
               )}
-              {isLocal && player.isReady && match.status !== 'playing' && (
+              {isLocal && player.isReady && (
                 <p className="text-green-400 font-bold text-lg animate-pulse">Waiting for opponent to ready up...</p>
               )}
             </div>

@@ -12,19 +12,18 @@ interface PackOffLobbyProps {
 }
 
 export const PackOffLobby: React.FC<PackOffLobbyProps> = ({ onBack, onEnterArena, selectedPackId }) => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   const [joinCode, setJoinCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Guest Player';
+  const displayName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Guest Player';
 
   const handleCreate = async () => {
     try {
       setLoading(true);
       setError('');
       sound.playButtonClick();
-      const matchId = await createMatch(user?.uid || 'guest_' + Date.now(), displayName, selectedPackId);
+      const matchId = await createMatch(currentUser?.uid || 'guest', currentUser?.email?.split('@')[0] || 'Guest', selectedPackId);
       onEnterArena(matchId);
     } catch (err: any) {
       setError(err.message || 'Failed to create room');
@@ -41,7 +40,7 @@ export const PackOffLobby: React.FC<PackOffLobbyProps> = ({ onBack, onEnterArena
       setLoading(true);
       setError('');
       sound.playButtonClick();
-      await joinMatch(joinCode.toUpperCase(), user?.uid || 'guest_' + Date.now(), displayName);
+      await joinMatch(joinCode.toUpperCase(), currentUser?.uid || 'guest', currentUser?.email?.split('@')[0] || 'Guest');
       onEnterArena(joinCode.toUpperCase());
     } catch (err: any) {
       setError(err.message || 'Failed to join room');
