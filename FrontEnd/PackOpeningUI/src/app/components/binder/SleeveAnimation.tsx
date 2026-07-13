@@ -333,15 +333,11 @@ function SleeveAnimation({
           <>
             {/* Sleeve Back at z=10 */}
             <div style={{ position: "absolute", left: vx(SL_CX), top: vy(SL_CY), transform: "translate(-50%,-50%)", width: `${(SL_W / VW) * 100}%`, height: `${(SL_H / VH) * 100}%`, zIndex: 10, pointerEvents: "none" }}>
-              <img src="/sleeve.png" alt="sleeve back"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-              />
+              <div style={{ width: "100%", height: "100%", borderRadius: 6, border: "1.5px solid rgba(255, 255, 255, 0.25)", backgroundColor: "rgba(255, 255, 255, 0.04)", boxShadow: "0 2px 8px rgba(0,0,0,0.5), inset 0 0 4px rgba(255,255,255,0.1)", display: "block" }} />
             </div>
             {/* Sleeve Front Silhouette at z=20 */}
             <div style={{ position: "absolute", left: vx(SL_CX), top: vy(SL_CY), transform: "translate(-50%,-50%)", width: `${(SL_W / VW) * 100}%`, height: `${(SL_H / VH) * 100}%`, zIndex: 20, pointerEvents: "none" }}>
-              <img src="/sleeve.png" alt=""
-                style={{ width: "100%", height: "100%", objectFit: "contain", opacity: 0.22, display: "block" }}
-              />
+              <div style={{ width: "100%", height: "100%", borderRadius: 6, background: "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.1) 100%)", borderTop: "1.5px solid rgba(255,255,255,0.35)", borderLeft: "1.5px solid rgba(255,255,255,0.25)", display: "block", mixBlendMode: "screen" }} />
             </div>
           </>
         )}
@@ -393,15 +389,17 @@ function SleeveAnimation({
             }}
           >
             {/* 1. Sleeve Back */}
-            <img
-              src="/sleeve.png"
-              alt="sleeve back"
+            <div
               style={{
                 position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
+                top: "5%",
+                left: "6%",
+                width: "88%",
+                height: "90%",
+                borderRadius: "4px",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                backgroundColor: "rgba(255, 255, 255, 0.02)",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.4), inset 0 0 2px rgba(255,255,255,0.05)",
                 zIndex: 1,
                 display: "block"
               }}
@@ -424,18 +422,20 @@ function SleeveAnimation({
               }}
             />
             {/* 3. Sleeve Front Silhouette */}
-            <img
-              src="/sleeve.png"
-              alt=""
+            <div
               style={{
                 position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
+                top: "5%",
+                left: "6%",
+                width: "88%",
+                height: "90%",
+                borderRadius: "4px",
+                background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.05) 100%)",
+                borderTop: "1px solid rgba(255,255,255,0.25)",
+                borderLeft: "1px solid rgba(255,255,255,0.15)",
                 zIndex: 3,
-                opacity: 0.22,
-                display: "block"
+                display: "block",
+                mixBlendMode: "screen",
               }}
             />
 

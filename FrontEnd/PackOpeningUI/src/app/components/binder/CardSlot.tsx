@@ -200,17 +200,18 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
 
         {/* 1. Penny Sleeve Back Frame (Only for regular un-slabbed cards) */}
         {!card.isSlabbed && (
-          <img
-            src="/sleeve.png"
-            alt="sleeve back"
+          <div
             style={{
               position: "absolute",
-              inset: 2,
-              width: "calc(100% - 4px)",
-              height: "calc(100% - 4px)",
-              objectFit: "contain",
+              top: "5%",
+              left: "6%",
+              width: "88%",
+              height: "90%",
+              borderRadius: "4px",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              backgroundColor: "rgba(255, 255, 255, 0.02)",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.4), inset 0 0 2px rgba(255,255,255,0.05)",
               zIndex: 1,
-              opacity: 0.35,
               pointerEvents: "none",
             }}
           />
@@ -357,20 +358,26 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
         </div>
 
         {/* 3. Penny Sleeve Front Silhouette & Sheen Overlay */}
-        <img
-          src="/sleeve.png"
-          alt="sleeve front"
-          style={{
-            position: "absolute",
-            inset: 2,
-            width: "calc(100% - 4px)",
-            height: "calc(100% - 4px)",
-            objectFit: "contain",
-            zIndex: 5,
-            opacity: 0.08,
-            pointerEvents: "none",
-          }}
-        />
+        {!card.isSlabbed && (
+          <div
+            style={{
+              position: "absolute",
+              top: "5%",
+              left: "6%",
+              width: "88%",
+              height: "90%",
+              borderRadius: "4px",
+              background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.05) 100%)",
+              borderTop: "1px solid rgba(255,255,255,0.25)",
+              borderLeft: "1px solid rgba(255,255,255,0.15)",
+              borderRight: "1px solid rgba(255,255,255,0.05)",
+              borderBottom: "1px solid rgba(255,255,255,0.05)",
+              zIndex: 5,
+              pointerEvents: "none",
+              mixBlendMode: "screen",
+            }}
+          />
+        )}
       </div>
 
       {/* Price Tooltip — only shown when Price button is clicked */}

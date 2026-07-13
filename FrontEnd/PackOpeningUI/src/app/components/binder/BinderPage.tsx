@@ -183,9 +183,9 @@ function BinderPage({
                   <tr key={card.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: 13, cursor: "pointer", transition: "background 0.15s" }} onClick={() => onInspectCard && onInspectCard(card)}>
                     <td style={{ padding: "12px", display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ position: "relative", width: 34, height: 47, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0.35, zIndex: 1 }} />
+                        <div style={{ position: "absolute", top: "5%", left: "6%", width: "88%", height: "90%", borderRadius: "2px", border: "1px solid rgba(255, 255, 255, 0.15)", backgroundColor: "rgba(255, 255, 255, 0.02)", boxShadow: "0 1px 2px rgba(0,0,0,0.4), inset 0 0 2px rgba(255,255,255,0.05)", zIndex: 1, pointerEvents: "none" }} />
                         <img src={getCardImageUrl(card.imageUrl, 'high')} alt={card.name} style={{ position: "absolute", top: "6.5%", left: "7.5%", width: "85%", height: "87%", borderRadius: 2, objectFit: "cover", zIndex: 2 }} />
-                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0.08, zIndex: 3, pointerEvents: "none" }} />
+                        <div style={{ position: "absolute", top: "5%", left: "6%", width: "88%", height: "90%", borderRadius: "2px", background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.05) 100%)", borderTop: "1px solid rgba(255,255,255,0.25)", borderLeft: "1px solid rgba(255,255,255,0.15)", zIndex: 3, pointerEvents: "none", mixBlendMode: "screen" }} />
                       </div>
                       <span style={{ fontWeight: 600, color: "white" }}>{card.name}</span>
                     </td>
