@@ -183,9 +183,9 @@ function BinderPage({
                   <tr key={card.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: 13, cursor: "pointer", transition: "background 0.15s" }} onClick={() => onInspectCard && onInspectCard(card)}>
                     <td style={{ padding: "12px", display: "flex", alignItems: "center", gap: 10 }}>
                       <div style={{ position: "relative", width: 34, height: 47, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", zIndex: 1 }} />
+                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0.35, zIndex: 1 }} />
                         <img src={getCardImageUrl(card.imageUrl, 'low')} alt={card.name} style={{ position: "absolute", top: "6.5%", left: "7.5%", width: "85%", height: "87%", borderRadius: 2, objectFit: "cover", zIndex: 2 }} />
-                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0.22, zIndex: 3, pointerEvents: "none" }} />
+                        <img src="/sleeve.png" alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0.08, zIndex: 3, pointerEvents: "none" }} />
                       </div>
                       <span style={{ fontWeight: 600, color: "white" }}>{card.name}</span>
                     </td>

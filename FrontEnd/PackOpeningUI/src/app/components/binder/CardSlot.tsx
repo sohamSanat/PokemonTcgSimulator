@@ -176,8 +176,8 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           position: "absolute",
           inset: 0,
           background: hovered
-            ? "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 75%, rgba(255,255,255,0.18) 100%)"
-            : "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.1) 100%)",
+            ? "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 75%, rgba(255,255,255,0.05) 100%)"
+            : "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.03) 100%)",
           pointerEvents: "none",
           zIndex: 25,
           boxShadow: "inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -1px 1px rgba(0,0,0,0.8)",
@@ -191,7 +191,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           left: 14,
           right: 14,
           height: 3,
-          background: "rgba(255,255,255,0.45)",
+          background: "rgba(255,255,255,0.12)",
           borderRadius: "0 0 4px 4px",
           pointerEvents: "none",
           zIndex: 26,
@@ -210,7 +210,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
               height: "calc(100% - 4px)",
               objectFit: "contain",
               zIndex: 1,
-              opacity: 0.85,
+              opacity: 0.35,
               pointerEvents: "none",
             }}
           />
@@ -367,7 +367,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
             height: "calc(100% - 4px)",
             objectFit: "contain",
             zIndex: 5,
-            opacity: 0.22,
+            opacity: 0.08,
             pointerEvents: "none",
           }}
         />
