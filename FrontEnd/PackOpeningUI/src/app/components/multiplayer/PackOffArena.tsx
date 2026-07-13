@@ -194,9 +194,9 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-40 bg-[#0d0d0f] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-40 bg-[#0d0d0f] overflow-y-auto overflow-x-hidden flex flex-col">
       {/* Header */}
-      <div className="h-16 border-b border-white/10 bg-black/40 flex items-center justify-between px-6 shrink-0">
+      <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
         <button onClick={onLeave} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm">
           <LogOut className="w-4 h-4" /> Leave Room
         </button>
@@ -216,7 +216,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       </div>
 
       {/* Split Screen Arena */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 flex flex-col md:flex-row relative">
+      <div className="flex-1 flex flex-col md:flex-row relative">
         {/* VS Divider */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden md:flex flex-col items-center">
           <div className="w-px h-32 bg-gradient-to-b from-transparent via-amber-500/50 to-transparent"></div>
