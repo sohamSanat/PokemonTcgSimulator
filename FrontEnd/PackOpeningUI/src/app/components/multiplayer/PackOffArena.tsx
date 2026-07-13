@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, MatchState, PlayerState } from '../../services/matchmaking';
 import BoosterPackTear from '../BoosterPackTear';
 import { sound } from '../../services/sound';
+import { ErrorBoundary } from '../ErrorBoundary';
 
 interface PackOffArenaProps {
   matchId: string;
@@ -46,20 +47,17 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     }
   }, [match?.packId, onLoadPack]);
 
-  if (!match) {
-    return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
-  }
-
   const localUserId = currentUser?.uid || 'guest';
-  const isPlayer1 = match.player1?.uid === localUserId;
-  const localPlayer = isPlayer1 ? match.player1 : match.player2;
-  const remotePlayer = isPlayer1 ? match.player2 : match.player1;
+  const isPlayer1 = match?.player1?.uid === localUserId;
+  const localPlayer = match ? (isPlayer1 ? match.player1 : match.player2) : null;
+  const remotePlayer = match ? (isPlayer1 ? match.player2 : match.player1) : null;
 
-  const isGameOver = 
+  const isGameOver = !!(
     localPlayer?.cards && localPlayer.cards.length > 0 &&
     remotePlayer?.cards && remotePlayer.cards.length > 0 &&
     localPlayer.revealedIndex >= localPlayer.cards.length - 1 && 
-    remotePlayer.revealedIndex >= remotePlayer.cards.length - 1;
+    remotePlayer.revealedIndex >= remotePlayer.cards.length - 1
+  );
 
   useEffect(() => {
     if (isGameOver) {
@@ -69,6 +67,10 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       setShowGameOverModal(false);
     }
   }, [isGameOver]);
+
+  if (!match) {
+    return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
+  }
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(matchId);
@@ -259,6 +261,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   }
 
   return (
+    <ErrorBoundary>
     <div className="relative min-h-full w-full bg-[#0d0d0f] flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
@@ -415,5 +418,6 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
         )}
       </AnimatePresence>
     </div>
+    </ErrorBoundary>
   );
 };
