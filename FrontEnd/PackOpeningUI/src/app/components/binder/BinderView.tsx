@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Loader2 } from 'lucide-react';
 import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
 import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, type Card, type Binder } from "./types";
@@ -19,6 +20,15 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [collectedCards, setCollectedCards] = useState<Card[]>([]);
+  const [isSimulatingLoad, setIsSimulatingLoad] = useState<boolean>(true);
+
+  useEffect(() => {
+    // Simulate loading cards and fetching prices when the binder section is first clicked
+    const t = setTimeout(() => {
+      setIsSimulatingLoad(false);
+    }, 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   const refreshData = useCallback(() => {
     setCollectedCards(getCollectedCards());
@@ -175,21 +185,30 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
         totalPortfolioValue={totalPortfolioValue}
         setsList={setsList}
       />
-      <BinderPage
-        binderName={currentBinderObj.name}
-        cards={paginatedCards}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onToggleFavorite={handleToggleFavorite}
-        onAddCard={handleAddCard}
-        onClearBinder={handleClearBinder}
-        onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
-        totalCardsInBinder={filteredCards.length}
-        onInspectCard={onInspectCard}
-      />
+      {isSimulatingLoad ? (
+        <div className="flex-1 flex flex-col items-center justify-center h-full bg-[#0d0d0f] relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a24] to-[#0d0d0f] opacity-50 z-0"></div>
+          <Loader2 className="w-12 h-12 animate-spin text-amber-500 mb-6 z-10" />
+          <h2 className="text-xl font-bold text-white mb-2 z-10">Fetching Collection Data</h2>
+          <p className="text-sm text-gray-400 z-10">Syncing live market prices...</p>
+        </div>
+      ) : (
+        <BinderPage
+          binderName={currentBinderObj.name}
+          cards={paginatedCards}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          onToggleFavorite={handleToggleFavorite}
+          onAddCard={handleAddCard}
+          onClearBinder={handleClearBinder}
+          onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
+          totalCardsInBinder={filteredCards.length}
+          onInspectCard={onInspectCard}
+        />
+      )}
     </div>
   );
 }
