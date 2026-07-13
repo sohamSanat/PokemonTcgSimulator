@@ -229,7 +229,8 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   };
 
   const isGameOver = 
-    localPlayer?.cards && remotePlayer?.cards &&
+    localPlayer?.cards && localPlayer.cards.length > 0 &&
+    remotePlayer?.cards && remotePlayer.cards.length > 0 &&
     localPlayer.revealedIndex >= localPlayer.cards.length - 1 && 
     remotePlayer.revealedIndex >= remotePlayer.cards.length - 1;
 
@@ -248,7 +249,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-40 bg-[#0d0d0f] overflow-y-auto overflow-x-hidden flex flex-col">
+    <div className="relative min-h-full w-full bg-[#0d0d0f] flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
         <button onClick={onLeave} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm">
@@ -352,7 +353,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col p-4 md:p-8"
+            className="fixed inset-0 z-[70] bg-black/90 backdrop-blur-md flex flex-col p-4 md:p-8"
           >
             <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto w-full shrink-0">
               <div>
