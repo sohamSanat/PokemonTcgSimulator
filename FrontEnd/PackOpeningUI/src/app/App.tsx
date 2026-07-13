@@ -1894,7 +1894,7 @@ export default function App() {
           }}
         />
       ) : activeTab === 'multiplayerLobby' ? (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <PackOffLobby 
             onBack={() => setActiveTab('pack')} 
             onEnterArena={(id) => {
@@ -1905,7 +1905,7 @@ export default function App() {
           />
         </div>
       ) : activeTab === 'multiplayerArena' ? (
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
           <PackOffArena 
             matchId={matchId} 
             onLeave={() => setActiveTab('multiplayerLobby')}
