@@ -1751,14 +1751,14 @@ export default function App() {
       {/* Premium Leather-Bound Header */}
       <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-3 sm:gap-3 z-10 relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
         
-        {/* Mobile Hamburger Row */}
-        <div className="lg:hidden flex w-full justify-between items-center relative z-[70]">
+        {/* Mobile Hamburger Row & Desktop Logo */}
+        <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
           <div className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md">
-            <Package className="w-5 h-5" /> POKE TCG
+            <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="hidden sm:inline">POKE TCG</span>
           </div>
           <button 
             onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
+            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -1781,7 +1781,7 @@ export default function App() {
         <div className={`
           fixed inset-y-0 right-0 z-[60] w-72 bg-[#12121a]/95 backdrop-blur-3xl border-l border-white/10 p-6 flex flex-col gap-6 transform transition-transform duration-300 ease-in-out pt-24 overflow-y-auto
           ${isMobileMenuOpen ? 'translate-x-0 shadow-[-10px_0_30px_rgba(0,0,0,0.8)]' : 'translate-x-full'}
-          lg:static lg:w-full lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:transform-none lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-3 lg:transition-none
+          lg:static lg:w-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-x-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-3 lg:transition-none lg:ml-6
         `}>
           
           <div className="flex flex-col lg:flex-row lg:flex-wrap items-stretch lg:items-center gap-3 lg:gap-3.5 w-full lg:w-auto">
