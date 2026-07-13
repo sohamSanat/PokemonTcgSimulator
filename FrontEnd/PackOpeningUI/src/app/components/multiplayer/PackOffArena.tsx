@@ -50,7 +50,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
   }
 
-  const localUserId = currentUser?.uid;
+  const localUserId = currentUser?.uid || 'guest';
   const isPlayer1 = match.player1?.uid === localUserId;
   const localPlayer = isPlayer1 ? match.player1 : match.player2;
   const remotePlayer = isPlayer1 ? match.player2 : match.player1;
@@ -123,18 +123,18 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   };
 
   const calculateRevenue = (p: PlayerState | null) => {
-    if (!p || !p.cards || p.revealedIndex < 0) return 0;
+    if (!p || !p.cards || p.cards.length === 0 || p.revealedIndex < 0) return 0;
     let total = 0;
-    const topIdx = p.cards.length - 1 - Math.max(0, p.revealedIndex);
+    const topIdx = Math.max(0, p.cards.length - 1 - Math.max(0, p.revealedIndex));
     for (let i = topIdx; i < p.cards.length; i++) {
-      total += p.cards[i].value || 0;
+      total += p.cards[i]?.value || 0;
     }
     return total;
   };
 
   const getRevealedCards = (p: PlayerState | null) => {
-    if (!p || !p.cards || p.revealedIndex < 0) return [];
-    const topIdx = p.cards.length - 1 - Math.max(0, p.revealedIndex);
+    if (!p || !p.cards || p.cards.length === 0 || p.revealedIndex < 0) return [];
+    const topIdx = Math.max(0, p.cards.length - 1 - Math.max(0, p.revealedIndex));
     return p.cards.slice(topIdx);
   };
 
