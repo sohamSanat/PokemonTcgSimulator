@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
@@ -1247,6 +1247,7 @@ export default function App() {
   }, [sessionTotal, packCount, sessionSpent, currentUser]);
   const [isRevealingAll, setIsRevealingAll] = useState(false);
   const [cards, setCards] = useState<CardData[]>([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
   const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
@@ -1747,8 +1748,22 @@ export default function App() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Premium Leather-Bound Header */}
-      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 z-10 relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-3.5 w-full lg:w-auto justify-center lg:justify-start">
+      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-5 md:px-8 flex flex-col lg:flex-row lg:flex-wrap items-center justify-between gap-3 sm:gap-3 z-10 relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+        
+        {/* Mobile Hamburger Row */}
+        <div className="lg:hidden flex w-full justify-between items-center">
+          <div className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md">
+            <Package className="w-5 h-5" /> POKE TCG
+          </div>
+          <button 
+            onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
+            className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} lg:flex flex-wrap items-center gap-1.5 sm:gap-3.5 w-full lg:w-auto justify-center lg:justify-start pt-2 lg:pt-0`}>
           <motion.button
             onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); }}
             whileHover={{ scale: 1.05 }}
@@ -1801,7 +1816,7 @@ export default function App() {
             <span className="tracking-wide">Bulk Vault</span>
           </button>
         </div>
-        <div className={`flex-wrap items-center gap-1.5 sm:gap-3 w-full lg:w-auto justify-center lg:justify-end mt-1 lg:mt-0 ${activeTab === 'binder' ? 'hidden sm:flex' : 'flex'}`}>
+        <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} lg:flex flex-wrap items-center gap-1.5 sm:gap-3 w-full lg:w-auto justify-center lg:justify-end mt-1 lg:mt-0 ${activeTab === 'binder' ? 'hidden sm:flex lg:flex' : 'flex'}`}>
           <button
             onClick={toggleSound}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0 ${soundEnabled
