@@ -12,6 +12,8 @@ interface BoosterPackTearProps {
   setName?: string;
   packStage: 'unopened' | 'tearing' | 'opened';
   remainingCardsCount: number;
+  isRemote?: boolean;
+  overrideProgress?: number;
 }
 
 export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
@@ -23,9 +25,13 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   setName,
   packStage,
   remainingCardsCount,
+  isRemote = false,
+  overrideProgress,
 }) => {
   // Local high-performance progress state (0 to 100)
-  const [progress, setProgress] = useState<number>(0);
+  const [localProgress, setProgress] = useState<number>(0);
+  const progress = overrideProgress !== undefined ? overrideProgress : localProgress;
+
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isHoveringStack, setIsHoveringStack] = useState<boolean>(false);
   const [isAutoTearing, setIsAutoTearing] = useState<boolean>(false);
@@ -65,7 +71,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
 
   // Automated smooth tear animation when button or notch is clicked directly
   const triggerAutoTear = useCallback(() => {
-    if (packStage !== 'unopened' || isAutoTearing) return;
+    if (packStage !== 'unopened' || isAutoTearing || isRemote) return;
     setIsAutoTearing(true);
 
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -103,10 +109,9 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
     autoTearRafRef.current = requestAnimationFrame(animateAuto);
   }, [packStage, isAutoTearing, progress, onTearComplete]);
 
-  // Handle interactive glide / drag across top notch
   // Handle interactive glide / drag across top notch or swipe anywhere across top half
   const updateProgressFromEvent = useCallback((clientX: number, clientY: number, forceTearCheck = true) => {
-    if (packStage !== 'unopened' || isAutoTearing) return;
+    if (packStage !== 'unopened' || isAutoTearing || isRemote) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -223,7 +228,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 shrink-0 select-none">
       {/* Subtle non-blocking instructional pill */}
-      {packStage === 'unopened' && (
+      {packStage === 'unopened' && !isRemote && (
         <div className="h-7 flex items-center justify-center mb-3 shrink-0">
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
@@ -381,7 +386,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
       </div>
 
       {/* Button */}
-      {packStage === 'unopened' && (
+      {packStage === 'unopened' && !isRemote && (
         <div className="flex flex-col items-center gap-3.5 mt-6 z-20 shrink-0">
           <motion.button
             onClick={triggerAutoTear}
