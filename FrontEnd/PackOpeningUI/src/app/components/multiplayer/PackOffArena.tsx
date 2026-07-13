@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { LogOut, Copy, Check, Users, X, BookOpen } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, finalizeRound, transferCard, MatchState, PlayerState } from '../../services/matchmaking';
+import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, finalizeRound, setMatchRevealed, transferCard, MatchState, PlayerState } from '../../services/matchmaking';
 import BoosterPackTear from '../BoosterPackTear';
 import { sound } from '../../services/sound';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -99,18 +99,29 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
         p2LossStreak = 0;
       }
 
-      // Add a slight delay before triggering the picking phase
+      // Wait 6 seconds after reveal finishes to show the results screen
       const timer = setTimeout(() => {
-        finalizeRound(matchId, winnerId, p1LossStreak, p2LossStreak);
-      }, 3000);
+        setMatchRevealed(matchId, winnerId, p1Revenue, p2Revenue, p1LossStreak, p2LossStreak);
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [isGameOver, match?.status, isPlayer1, localRevenue, remoteRevenue, matchId, match?.player1, match?.player2]);
 
   useEffect(() => {
+    if (match?.status === 'revealed' && isPlayer1) {
+      // Wait 3 seconds on the results screen before transitioning to picking phase
+      const timer = setTimeout(() => {
+        finalizeRound(matchId);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [match?.status, isPlayer1, matchId]);
+
+  useEffect(() => {
     if (
       match && 
       match.status !== 'playing' && 
+      match.status !== 'revealed' && 
       match.status !== 'finished' && 
       match.status !== 'picking' &&
       localPlayer?.isReady && 
@@ -355,7 +366,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
 
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
-        {match.status === 'finished' && (
+        {(match.status === 'finished' || match.status === 'revealed') && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <motion.div 
               initial={{ scale: 0, y: 50, opacity: 0 }}
@@ -369,16 +380,16 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
               <div className="flex gap-12 text-xl font-mono items-center">
                 <div className="flex flex-col items-center">
                   <span className="text-gray-400 text-xs mb-1 uppercase tracking-widest">{localPlayer?.displayName}</span>
-                  <span className="text-amber-400 font-bold text-3xl">${localRevenue.toFixed(2)}</span>
+                  <span className="text-amber-400 font-bold text-3xl">${(isPlayer1 ? match.p1Revenue : match.p2Revenue)?.toFixed(2) || '0.00'}</span>
                 </div>
                 <div className="text-gray-600 font-bold text-2xl">VS</div>
                 <div className="flex flex-col items-center">
                   <span className="text-gray-400 text-xs mb-1 uppercase tracking-widest">{remotePlayer?.displayName}</span>
-                  <span className="text-blue-400 font-bold text-3xl">${remoteRevenue.toFixed(2)}</span>
+                  <span className="text-blue-400 font-bold text-3xl">${(isPlayer1 ? match.p2Revenue : match.p1Revenue)?.toFixed(2) || '0.00'}</span>
                 </div>
               </div>
               
-              {isPlayer1 && (
+              {isPlayer1 && match.status === 'finished' && (
                 <div className="flex gap-4 mt-8">
                   <button 
                     onClick={() => updateMatchPack(matchId, match.packId)}
@@ -404,8 +415,10 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
         {isPicking && (
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-start bg-black/90 backdrop-blur-md pt-24 px-8 overflow-y-auto">
             {!canPick ? (
-              <div className="text-center mt-32">
-                <h2 className="text-3xl font-black text-amber-400 animate-pulse">Waiting for opponent to pick...</h2>
+              <div className="text-center mt-32 max-w-2xl mx-auto">
+                <h2 className="text-3xl font-black text-amber-400 animate-pulse mb-4">
+                  {match.winnerId === remotePlayer?.uid ? "You lost, the winner is picking a card from your booklet..." : "Waiting for opponent to pick..."}
+                </h2>
               </div>
             ) : (
               <div className="w-full max-w-6xl mx-auto pb-12">

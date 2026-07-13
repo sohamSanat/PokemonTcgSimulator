@@ -15,8 +15,10 @@ export interface PlayerState {
 
 export interface MatchState {
   id: string;
-  status: 'waiting' | 'ready' | 'playing' | 'picking' | 'finished';
+  status: 'waiting' | 'ready' | 'playing' | 'revealed' | 'picking' | 'finished';
   winnerId: string | null;
+  p1Revenue?: number;
+  p2Revenue?: number;
   player1: PlayerState | null;
   player2: PlayerState | null;
   packId: string; // The type of pack they are opening (e.g. swsh3)
@@ -151,7 +153,19 @@ export const updateMatchPack = async (matchId: string, packId: string) => {
   });
 };
 
-export const finalizeRound = async (matchId: string, winnerId: string | null, p1LossStreak: number, p2LossStreak: number) => {
+export const setMatchRevealed = async (matchId: string, winnerId: string | null, p1Revenue: number, p2Revenue: number, p1LossStreak: number, p2LossStreak: number) => {
+  const matchRef = doc(db, 'matches', matchId);
+  await updateDoc(matchRef, {
+    status: 'revealed',
+    winnerId,
+    p1Revenue,
+    p2Revenue,
+    'player1.lossStreak': p1LossStreak,
+    'player2.lossStreak': p2LossStreak
+  });
+};
+
+export const finalizeRound = async (matchId: string) => {
   const matchRef = doc(db, 'matches', matchId);
   const matchSnap = await getDoc(matchRef);
   if (!matchSnap.exists()) return;
@@ -162,14 +176,11 @@ export const finalizeRound = async (matchId: string, winnerId: string | null, p1
   
   await updateDoc(matchRef, {
     status: 'picking',
-    winnerId,
     'player1.cards': [],
     'player1.booklet': p1Booklet,
-    'player1.lossStreak': p1LossStreak,
     'player1.hasPickedCard': false,
     'player2.cards': [],
     'player2.booklet': p2Booklet,
-    'player2.lossStreak': p2LossStreak,
     'player2.hasPickedCard': false
   });
 };
