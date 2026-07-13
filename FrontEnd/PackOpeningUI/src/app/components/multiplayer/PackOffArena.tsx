@@ -13,6 +13,7 @@ interface PackOffArenaProps {
   setName: string;
   renderCardStack: (cards: any[], revealedIndex: number) => React.ReactNode;
   generateCards: () => any[]; // Function from App to generate the 11 cards
+  onLoadPack?: (setId: string) => void;
 }
 
 export const PackOffArena: React.FC<PackOffArenaProps> = ({ 
@@ -21,7 +22,8 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   packArts, 
   setName,
   renderCardStack,
-  generateCards
+  generateCards,
+  onLoadPack
 }) => {
   const { currentUser } = useAuth();
   const [match, setMatch] = useState<MatchState | null>(null);
@@ -33,6 +35,12 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     });
     return () => unsubscribe();
   }, [matchId]);
+
+  useEffect(() => {
+    if (match?.packId && onLoadPack) {
+      onLoadPack(match.packId);
+    }
+  }, [match?.packId, onLoadPack]);
 
   if (!match) {
     return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;

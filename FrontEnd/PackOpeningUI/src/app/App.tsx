@@ -1890,13 +1890,18 @@ export default function App() {
           />
         </div>
       ) : activeTab === 'multiplayerArena' ? (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           <PackOffArena 
             matchId={matchId} 
             onLeave={() => setActiveTab('multiplayerLobby')}
             packArts={currentPackArts}
             setName={currentSet?.name || 'Pokémon TCG'}
             generateCards={() => generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet)}
+            onLoadPack={(setId) => {
+              if (currentSet?.id !== setId) {
+                loadSetAndGeneratePack(setId);
+              }
+            }}
             renderCardStack={(stackCards, revealedIndex) => {
               return (
                 <AnimatePresence>
