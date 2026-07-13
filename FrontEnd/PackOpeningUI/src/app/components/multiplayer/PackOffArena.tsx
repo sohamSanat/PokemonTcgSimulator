@@ -12,7 +12,7 @@ interface PackOffArenaProps {
   packArts: string[];
   setName: string;
   renderCardStack: (cards: any[], revealedIndex: number) => React.ReactNode;
-  generateCards: () => any[]; // Function from App to generate the 11 cards
+  generateCards: () => Promise<any[]> | any[]; // Function from App to generate the 11 cards
   onLoadPack?: (setId: string) => void;
 }
 
@@ -62,7 +62,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     sound.playButtonClick();
     
     // Generate cards for the pack when ready
-    const cards = generateCards();
+    const cards = await generateCards();
     
     await updatePlayerState(matchId, isPlayer1 ? 'player1' : 'player2', { 
       isReady: true,

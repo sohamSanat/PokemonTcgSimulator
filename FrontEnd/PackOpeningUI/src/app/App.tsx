@@ -1896,7 +1896,17 @@ export default function App() {
             onLeave={() => setActiveTab('multiplayerLobby')}
             packArts={currentPackArts}
             setName={currentSet?.name || 'Pokémon TCG'}
-            generateCards={() => generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet)}
+            generateCards={async () => {
+              if (currentSet) {
+                try {
+                  const newCards = await generatePackFromSet(currentSet);
+                  return formatAndSortCards(newCards);
+                } catch {
+                  return generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet);
+                }
+              }
+              return generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet);
+            }}
             onLoadPack={(setId) => {
               if (currentSet?.id !== setId) {
                 loadSetAndGeneratePack(setId);
@@ -1906,17 +1916,17 @@ export default function App() {
               return (
                 <AnimatePresence>
                   {stackCards.map((c, idx) => {
-                    // Internal app logic renders reverse, idx < revealedIndex implies collected
-                    if (idx < revealedIndex) return null;
+                    const topCardIndex = stackCards.length - 1 - Math.max(0, revealedIndex);
                     
-                    const isFlipped = idx === revealedIndex;
-                    const isTopCard = idx === revealedIndex || (revealedIndex === -1 && idx === 0);
+                    if (idx > topCardIndex) return null; // Collected cards
                     
-                    const visibleIndex = Math.max(0, idx - Math.max(0, revealedIndex));
-                    const stackDepth = stackCards.length - 1 - visibleIndex;
-                    const rotation = stackDepth * 2.5;
-                    const offsetX = stackDepth * 6;
-                    const offsetY = stackDepth * -6;
+                    const isTopCard = idx === topCardIndex;
+                    const isFlipped = isTopCard && revealedIndex >= 0;
+                    
+                    const midIdx = Math.floor(stackCards.length / 2);
+                    const rotation = (idx - midIdx) * 3.8;
+                    const offsetX = (idx - midIdx) * 11;
+                    const offsetY = Math.abs(idx - midIdx) * 4;
 
                     return (
                       <Card
@@ -1926,7 +1936,7 @@ export default function App() {
                         offsetX={offsetX}
                         offsetY={offsetY}
                         isTopCard={isTopCard}
-                        isHovered={false}
+                        isHovered={isTopCard}
                         setName={currentSet?.name || 'Pokémon TCG'}
                       />
                     );
