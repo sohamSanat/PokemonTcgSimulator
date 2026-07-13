@@ -9,11 +9,14 @@ export interface PlayerState {
   revealedIndex: number;
   cards: any[]; // Store generated cards so both players see the same cards for a given pack
   booklet: any[]; // Store history of all cards pulled in this session
+  lossStreak: number;
+  hasPickedCard: boolean;
 }
 
 export interface MatchState {
   id: string;
-  status: 'waiting' | 'ready' | 'playing' | 'finished';
+  status: 'waiting' | 'ready' | 'playing' | 'picking' | 'finished';
+  winnerId: string | null;
   player1: PlayerState | null;
   player2: PlayerState | null;
   packId: string; // The type of pack they are opening (e.g. swsh3)
@@ -41,9 +44,12 @@ export const createMatch = async (userId: string, displayName: string, packId: s
       packProgress: 0,
       revealedIndex: -1,
       cards: [],
-      booklet: []
+      booklet: [],
+      lossStreak: 0,
+      hasPickedCard: false
     },
-    player2: null
+    player2: null,
+    winnerId: null
   };
 
   await setDoc(matchRef, initialMatch);
@@ -77,7 +83,9 @@ export const joinMatch = async (matchId: string, userId: string, displayName: st
       packProgress: 0,
       revealedIndex: -1,
       cards: [],
-      booklet: []
+      booklet: [],
+      lossStreak: 0,
+      hasPickedCard: false
     }
   });
 
@@ -129,6 +137,7 @@ export const updateMatchPack = async (matchId: string, packId: string) => {
   await updateDoc(matchRef, {
     packId,
     status: 'waiting',
+    winnerId: null,
     'player1.isReady': false,
     'player1.cards': [],
     'player1.booklet': p1Booklet,
@@ -139,5 +148,53 @@ export const updateMatchPack = async (matchId: string, packId: string) => {
     'player2.booklet': p2Booklet,
     'player2.revealedIndex': -1,
     'player2.packProgress': 0,
+  });
+};
+
+export const finalizeRound = async (matchId: string, winnerId: string | null, p1LossStreak: number, p2LossStreak: number) => {
+  const matchRef = doc(db, 'matches', matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) return;
+  const matchData = matchSnap.data() as MatchState;
+  
+  const p1Booklet = [...(matchData.player1?.booklet || []), ...(matchData.player1?.cards || [])];
+  const p2Booklet = [...(matchData.player2?.booklet || []), ...(matchData.player2?.cards || [])];
+  
+  await updateDoc(matchRef, {
+    status: 'picking',
+    winnerId,
+    'player1.cards': [],
+    'player1.booklet': p1Booklet,
+    'player1.lossStreak': p1LossStreak,
+    'player1.hasPickedCard': false,
+    'player2.cards': [],
+    'player2.booklet': p2Booklet,
+    'player2.lossStreak': p2LossStreak,
+    'player2.hasPickedCard': false
+  });
+};
+
+export const transferCard = async (matchId: string, fromSlot: 'player1' | 'player2', toSlot: 'player1' | 'player2', cardId: string) => {
+  const matchRef = doc(db, 'matches', matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) return;
+  const matchData = matchSnap.data() as MatchState;
+  
+  const fromPlayer = matchData[fromSlot];
+  const toPlayer = matchData[toSlot];
+  
+  if (!fromPlayer || !toPlayer) return;
+  
+  const fromBooklet = [...(fromPlayer.booklet || [])];
+  const cardIndex = fromBooklet.findIndex(c => c.id === cardId);
+  if (cardIndex === -1) return;
+  
+  const [stolenCard] = fromBooklet.splice(cardIndex, 1);
+  const toBooklet = [...(toPlayer.booklet || []), stolenCard];
+  
+  await updateDoc(matchRef, {
+    [`${fromSlot}.booklet`]: fromBooklet,
+    [`${toSlot}.booklet`]: toBooklet,
+    [`${toSlot}.hasPickedCard`]: true
   });
 };

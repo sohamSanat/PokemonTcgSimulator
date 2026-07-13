@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { LogOut, Copy, Check, Users, X, BookOpen } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, MatchState, PlayerState } from '../../services/matchmaking';
+import { subscribeToMatch, updatePlayerState, updateMatchStatus, updateMatchPack, finalizeRound, transferCard, MatchState, PlayerState } from '../../services/matchmaking';
 import BoosterPackTear from '../BoosterPackTear';
 import { sound } from '../../services/sound';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { BinderExportModal } from './BinderExportModal';
 
 interface PackOffArenaProps {
   matchId: string;
@@ -33,6 +34,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
   const [copied, setCopied] = useState(false);
   const [viewingBookletPlayer, setViewingBookletPlayer] = useState<PlayerState | null>(null);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToMatch(matchId, (matchData) => {
@@ -59,20 +61,58 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     remotePlayer.revealedIndex >= remotePlayer.cards.length - 1
   );
 
-  useEffect(() => {
-    if (isGameOver) {
-      const timer = setTimeout(() => setShowGameOverModal(true), 6000);
-      return () => clearTimeout(timer);
-    } else {
-      setShowGameOverModal(false);
+  // Calculate revenue dynamically so we can use it inside the useEffect if needed
+  const calculateRevenue = (p: PlayerState | null) => {
+    if (!p || !p.cards || p.cards.length === 0 || p.revealedIndex < 0) return 0;
+    let total = 0;
+    const topIdx = Math.max(0, p.cards.length - 1 - Math.max(0, p.revealedIndex));
+    for (let i = topIdx; i < p.cards.length; i++) {
+      total += p.cards[i]?.value || 0;
     }
-  }, [isGameOver]);
+    return total;
+  };
+
+  const localRevenue = calculateRevenue(localPlayer);
+  const remoteRevenue = calculateRevenue(remotePlayer);
+
+  useEffect(() => {
+    if (isGameOver && match?.status === 'playing' && isPlayer1) {
+      // Determine winner based on revenue
+      const p1Revenue = isPlayer1 ? localRevenue : remoteRevenue;
+      const p2Revenue = isPlayer1 ? remoteRevenue : localRevenue;
+      
+      let winnerId: string | null = null;
+      let p1LossStreak = match.player1?.lossStreak || 0;
+      let p2LossStreak = match.player2?.lossStreak || 0;
+
+      if (p1Revenue > p2Revenue) {
+        winnerId = match.player1?.uid || null;
+        p1LossStreak = 0;
+        p2LossStreak += 1;
+      } else if (p2Revenue > p1Revenue) {
+        winnerId = match.player2?.uid || null;
+        p1LossStreak += 1;
+        p2LossStreak = 0;
+      } else {
+        // Tie
+        p1LossStreak = 0;
+        p2LossStreak = 0;
+      }
+
+      // Add a slight delay before triggering the picking phase
+      const timer = setTimeout(() => {
+        finalizeRound(matchId, winnerId, p1LossStreak, p2LossStreak);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isGameOver, match?.status, isPlayer1, localRevenue, remoteRevenue, matchId, match?.player1, match?.player2]);
 
   useEffect(() => {
     if (
       match && 
       match.status !== 'playing' && 
       match.status !== 'finished' && 
+      match.status !== 'picking' &&
       localPlayer?.isReady && 
       remotePlayer?.isReady && 
       isPlayer1
@@ -80,6 +120,20 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       updateMatchStatus(matchId, 'playing');
     }
   }, [match?.status, localPlayer?.isReady, remotePlayer?.isReady, isPlayer1, matchId]);
+
+  useEffect(() => {
+    if (match?.status === 'picking' && isPlayer1) {
+      const p1Eligible = (match.winnerId === match.player1?.uid) || ((match.player1?.lossStreak || 0) >= 3);
+      const p2Eligible = (match.winnerId === match.player2?.uid) || ((match.player2?.lossStreak || 0) >= 3);
+      
+      const p1Done = !p1Eligible || match.player1?.hasPickedCard;
+      const p2Done = !p2Eligible || match.player2?.hasPickedCard;
+      
+      if (p1Done && p2Done) {
+        updateMatchStatus(matchId, 'finished');
+      }
+    }
+  }, [match?.status, match?.winnerId, match?.player1?.hasPickedCard, match?.player2?.hasPickedCard, match?.player1?.lossStreak, match?.player2?.lossStreak, isPlayer1, matchId]);
 
   if (!match) {
     return <div className="flex items-center justify-center min-h-[60vh] text-white">Loading Arena...</div>;
@@ -134,15 +188,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     return 'unopened';
   };
 
-  const calculateRevenue = (p: PlayerState | null) => {
-    if (!p || !p.cards || p.cards.length === 0 || p.revealedIndex < 0) return 0;
-    let total = 0;
-    const topIdx = Math.max(0, p.cards.length - 1 - Math.max(0, p.revealedIndex));
-    for (let i = topIdx; i < p.cards.length; i++) {
-      total += p.cards[i]?.value || 0;
-    }
-    return total;
-  };
+
 
   const getRevealedCards = (p: PlayerState | null) => {
     if (!p || !p.cards || p.cards.length === 0 || p.revealedIndex < 0) return [];
@@ -256,27 +302,31 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       </div>
     );
   };
-
-  const localRevenue = calculateRevenue(localPlayer);
-  const remoteRevenue = calculateRevenue(remotePlayer);
+  // Card Stealing Logic
+  const isWinner = match?.winnerId === localPlayer?.uid;
+  const isPityPick = !isWinner && (localPlayer?.lossStreak || 0) >= 3;
+  const isPicking = match?.status === 'picking';
+  const canPick = isPicking && (isWinner || isPityPick) && !localPlayer?.hasPickedCard;
   
-  let winnerText = "";
-  if (isGameOver) {
-    if (localRevenue > remoteRevenue) {
-      winnerText = "You Won! 🎉";
-    } else if (remoteRevenue > localRevenue) {
-      winnerText = `${remotePlayer?.displayName} Won!`;
-    } else {
-      winnerText = "It's a Tie! 🤝";
-    }
-  }
+  const pickingTarget = canPick ? remotePlayer : null;
+  const pickingTargetCards = getBookletCards(pickingTarget);
+  const mostExpensiveCardId = pickingTargetCards.length > 0 ? pickingTargetCards[0].id : null;
+
+  const handlePickCard = async (cardId: string) => {
+    if (!canPick) return;
+    if (isPityPick && cardId === mostExpensiveCardId) return; // Cannot pick most expensive during pity pick
+    
+    sound.playButtonClick();
+    await transferCard(matchId, isPlayer1 ? 'player2' : 'player1', isPlayer1 ? 'player1' : 'player2', cardId);
+  };
+
 
   return (
     <ErrorBoundary>
     <div className="relative min-h-full w-full bg-[#0d0d0f] flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
-        <button onClick={onLeave} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm">
+        <button onClick={() => setShowExportModal(true)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm">
           <LogOut className="w-4 h-4" /> Leave Room
         </button>
         
@@ -305,7 +355,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
 
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
-        {showGameOverModal && (
+        {match.status === 'finished' && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <motion.div 
               initial={{ scale: 0, y: 50, opacity: 0 }}
@@ -314,7 +364,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
               className="bg-[#14141c] border-2 border-white/10 rounded-3xl p-8 flex flex-col items-center shadow-[0_0_100px_rgba(245,158,11,0.2)]"
             >
               <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 mb-6 drop-shadow-lg text-center">
-                {winnerText}
+                {match.winnerId === localPlayer?.uid ? 'YOU WON!' : match.winnerId === remotePlayer?.uid ? 'YOU LOST' : 'TIE!'}
               </h2>
               <div className="flex gap-12 text-xl font-mono items-center">
                 <div className="flex flex-col items-center">
@@ -347,6 +397,61 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                 </div>
               )}
             </motion.div>
+          </div>
+        )}
+
+        {/* Picking Phase Overlay */}
+        {isPicking && (
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-start bg-black/90 backdrop-blur-md pt-24 px-8 overflow-y-auto">
+            {!canPick ? (
+              <div className="text-center mt-32">
+                <h2 className="text-3xl font-black text-amber-400 animate-pulse">Waiting for opponent to pick...</h2>
+              </div>
+            ) : (
+              <div className="w-full max-w-6xl mx-auto pb-12">
+                <h2 className="text-4xl font-black text-white text-center mb-2">
+                  {isWinner ? "YOU WON! STEAL 1 CARD!" : "PITY PICK! CHOOSE 1 CARD"}
+                </h2>
+                <p className="text-gray-400 text-center mb-8">
+                  {isWinner 
+                    ? `Pick one card from ${pickingTarget?.displayName}'s booklet to keep.` 
+                    : `You've lost 3 times in a row. Pick any card from ${pickingTarget?.displayName}'s booklet (except the most expensive one).`}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                  {pickingTargetCards.map((card, idx) => {
+                    const isDisabled = isPityPick && card.id === mostExpensiveCardId;
+                    return (
+                      <motion.div 
+                        key={`${card.id}-${idx}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.02 }}
+                        onClick={() => handlePickCard(card.id)}
+                        className={`relative group rounded-xl overflow-hidden bg-[#181822] border-2 transition-all ${isDisabled ? 'border-red-500/50 opacity-50 cursor-not-allowed' : 'border-white/10 hover:border-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] cursor-pointer'}`}
+                      >
+                        <div className="w-full pt-[139%] relative">
+                          <img 
+                            src={card.pokemon?.images?.large || card.pokemon?.images?.small || ''}
+                            alt={card.pokemon?.name || 'Pokemon Card'}
+                            className="absolute inset-0 w-full h-full object-contain p-2 drop-shadow-xl"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent flex justify-between items-end">
+                          <span className="text-xs font-bold text-white truncate pr-2">{card.pokemon?.name}</span>
+                          <span className="text-xs font-mono text-amber-400 font-bold shrink-0">${(card.value || 0).toFixed(2)}</span>
+                        </div>
+                        {isDisabled && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                            <span className="bg-red-500 text-white font-black text-xs px-2 py-1 rounded">LOCKED</span>
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -426,6 +531,18 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
               )}
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Binder Export Modal */}
+      <AnimatePresence>
+        {showExportModal && (
+          <BinderExportModal
+            bookletCards={getBookletCards(localPlayer)}
+            setName={setName}
+            onLeave={onLeave}
+            onCancel={() => setShowExportModal(false)}
+          />
         )}
       </AnimatePresence>
     </div>
