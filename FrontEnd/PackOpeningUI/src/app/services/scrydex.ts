@@ -10,6 +10,7 @@ const SCRYDEX_API_BASE = 'https://api.scrydex.com/pokemon/v1';
 
 let jaSetsCache: Array<{ id: string; name: string; cardCount: { total: number; official: number } }> | null = null;
 let jaEnNamesCache: Record<string, string> | null = null;
+let jaCardNamesCache: Record<string, string> | null = null;
 
 async function loadJapaneseMetadata() {
   if (!jaSetsCache) {
@@ -28,8 +29,17 @@ async function loadJapaneseMetadata() {
       console.error('Failed to load /ja-en-names.json:', e);
     }
   }
+  if (!jaCardNamesCache) {
+    try {
+      const res = await fetch('/ja-card-names.json');
+      if (res.ok) jaCardNamesCache = await res.json();
+    } catch (e) {
+      console.error('Failed to load /ja-card-names.json:', e);
+    }
+  }
   if (!jaSetsCache) jaSetsCache = [];
   if (!jaEnNamesCache) jaEnNamesCache = {};
+  if (!jaCardNamesCache) jaCardNamesCache = {};
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
@@ -237,7 +247,20 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   const cacheKey = `${rawId}_ja`;
   
   if (scrydexSetCache.has(cacheKey)) {
-    return scrydexSetCache.get(cacheKey)!;
+    const cached = scrydexSetCache.get(cacheKey)!;
+    if (jaCardNamesCache && cached.cards) {
+      for (const c of cached.cards) {
+        if (c.name && (c.name.includes('Card ') || c.name.includes('Card #'))) {
+          const lookupKey = c.id;
+          const altKey = `${rawId.toLowerCase()}-${c.localId}`;
+          const realName = jaCardNamesCache[lookupKey] || jaCardNamesCache[altKey];
+          if (realName) {
+            c.name = realName;
+          }
+        }
+      }
+    }
+    return cached;
   }
 
   const s = (jaSetsCache || []).find(item => item.id.toLowerCase() === rawId.toLowerCase());
@@ -312,9 +335,12 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     // ignore
   }
   
+  const offlineNames = jaCardNamesCache || {};
   for (let i = 1; i <= totalCards; i++) {
     const cardNum = i.toString();
-    const resolvedName = resolvedCardNamesMap.get(cardNum) || `${setName} Card #${cardNum}`;
+    const lookupKey = `${prefixLow}_ja-${cardNum}`;
+    const altKey = `${prefixLow}-${cardNum}`;
+    const resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || `${setName} Card #${cardNum}`;
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
@@ -772,7 +798,7 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
   return packData.slots.map((p, idx) => ({
     id: `${p.summary.id}-${idx}-${Date.now()}`,
     localId: p.summary.localId,
-    name: p.summary.name,
+    name: (jaCardNamesCache && (jaCardNamesCache[p.summary.id] || jaCardNamesCache[`${set.id.replace(/_ja$/i, '').toLowerCase()}-${p.summary.localId}`])) || p.summary.name,
     rarity: p.defaultRarity,
     isReverseHolo: p.isReverseHolo,
     image: p.summary.image,
