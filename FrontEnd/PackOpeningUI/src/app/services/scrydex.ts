@@ -27,7 +27,7 @@ export async function fetchSingleJapaneseSet(): Promise<TCGDexSet> {
       id: `sv2a_ja-${cardNum}`,
       localId: cardNum,
       name: `Pokémon 151 Card ${cardNum}`,
-      image: `https://images.scrydex.com/pokemon/sv2a_ja-${cardNum}/large?v=1`,
+      image: `https://images.scrydex.com/pokemon/sv2a_ja-${cardNum}/large`,
       // Distribute some mock rarities so our pack generation logic functions properly
       rarity: i > 165 ? (i > 200 ? 'UR' : i > 195 ? 'SAR' : i > 185 ? 'SR' : 'AR') : (i % 5 === 0 ? 'RR' : i % 3 === 0 ? 'R' : i % 2 === 0 ? 'U' : 'C')
     });
@@ -58,7 +58,7 @@ export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean =
     id: cardId,
     localId: cardId.split('-')[1] || '1',
     name: `Pokémon 151 Card ${cardId.split('-')[1]}`,
-    image: `https://images.scrydex.com/pokemon/${cardId}/large?v=1`,
+    image: `https://images.scrydex.com/pokemon/${cardId}/large`,
     rarity: 'Common',
   };
   

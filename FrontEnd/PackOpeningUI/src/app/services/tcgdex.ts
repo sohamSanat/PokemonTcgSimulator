@@ -258,8 +258,10 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const validAsset = getTCGDexValidAssetPath(setId, num);
   
   const sLow = setId.toLowerCase();
+  // Japanese sets (e.g. sv2a_ja) use un-padded numbers on Scrydex CDN — never pad them
+  const isJapaneseSet = sLow.includes('_ja');
   let paddedNum = num;
-  if (sLow.startsWith('me') || sLow.startsWith('sv') || sLow.startsWith('sm') || sLow.startsWith('xy') || sLow.startsWith('swsh')) {
+  if (!isJapaneseSet && (sLow.startsWith('me') || sLow.startsWith('sv') || sLow.startsWith('sm') || sLow.startsWith('xy') || sLow.startsWith('swsh'))) {
     paddedNum = num.padStart(3, '0');
   }
 

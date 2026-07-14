@@ -322,7 +322,10 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
 
 const getRealCardPrice = (poke: PokemonCard): number => {
   // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
-  if (!cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
+  // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
+  // and the error fallback would overwrite the correct Scrydex CDN image URL.
+  const isJapaneseCard = poke.id?.includes('_ja');
+  if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
     fetchCardFull(poke.id).catch(() => {});
   }
   const cached = cardFullCache.get(poke.id);
@@ -1443,11 +1446,15 @@ export default function App() {
         const updated = prevCards.map(c => {
           const cached = cardFullCache.get(c.pokemon.id);
           if (cached) {
+            // Don't overwrite a valid Scrydex CDN image with a non-scrydex fallback from cache
+            const currentImageIsScrydex = c.pokemon.images?.large?.includes('scrydex.com') || c.pokemon.images?.small?.includes('scrydex.com');
+            const cachedImageIsScrydex = cached.image?.includes('scrydex.com');
+            const useImageFromCache = cached.image && (!currentImageIsScrydex || cachedImageIsScrydex);
             const updatedPoke: PokemonCard = {
               ...c.pokemon,
-              images: cached.image ? {
-                small: getCardImageUrl(cached.image, 'low'),
-                large: getCardImageUrl(cached.image, 'high'),
+              images: useImageFromCache ? {
+                small: getCardImageUrl(cached.image!, 'low'),
+                large: getCardImageUrl(cached.image!, 'high'),
               } : c.pokemon.images,
               pricing: cached.pricing || c.pokemon.pricing,
               tcgplayer: cached.tcgplayer || c.pokemon.tcgplayer,
@@ -1455,7 +1462,7 @@ export default function App() {
               illustrator: cached.illustrator || c.pokemon.illustrator,
             };
             const newVal = getRealCardPrice(updatedPoke);
-            if (newVal !== c.value || !c.pokemon.pricing?.cardmarket?.idProduct || (cached.image && !c.pokemon.images?.large?.includes(cached.image))) {
+            if (newVal !== c.value || !c.pokemon.pricing?.cardmarket?.idProduct || (useImageFromCache && cached.image && !c.pokemon.images?.large?.includes(cached.image))) {
               changed = true;
               return { ...c, value: newVal, pokemon: updatedPoke };
             }
@@ -1468,11 +1475,14 @@ export default function App() {
         if (!prev) return null;
         const cached = cardFullCache.get(prev.pokemon.id);
         if (cached) {
+          const currentImageIsScrydex = prev.pokemon.images?.large?.includes('scrydex.com') || prev.pokemon.images?.small?.includes('scrydex.com');
+          const cachedImageIsScrydex = cached.image?.includes('scrydex.com');
+          const useImageFromCache = cached.image && (!currentImageIsScrydex || cachedImageIsScrydex);
           const updatedPoke: PokemonCard = {
             ...prev.pokemon,
-            images: cached.image ? {
-              small: getCardImageUrl(cached.image, 'low'),
-              large: getCardImageUrl(cached.image, 'high'),
+            images: useImageFromCache ? {
+              small: getCardImageUrl(cached.image!, 'low'),
+              large: getCardImageUrl(cached.image!, 'high'),
             } : prev.pokemon.images,
             pricing: cached.pricing || prev.pokemon.pricing,
             tcgplayer: cached.tcgplayer || prev.pokemon.tcgplayer,
@@ -1560,7 +1570,7 @@ export default function App() {
       isLoadingPackRef.current = false;
       setIsLoadingPack(false);
     }
-  }, [packArtsManifest]);
+  }, [packArtsManifest, selectedLanguage]);
 
   // Load initial set on mount
   useEffect(() => {
