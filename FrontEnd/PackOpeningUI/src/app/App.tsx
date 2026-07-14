@@ -1581,9 +1581,13 @@ export default function App() {
     }
   }, [packArtsManifest, selectedLanguage]);
 
-  // Load initial set on mount
+  // Load initial set on mount only once
+  const hasLoadedInitialSetRef = useRef(false);
   useEffect(() => {
-    loadSetAndGeneratePack('swsh3');
+    if (!hasLoadedInitialSetRef.current) {
+      hasLoadedInitialSetRef.current = true;
+      loadSetAndGeneratePack('swsh3');
+    }
   }, [loadSetAndGeneratePack]);
 
   // Allow keyboard Left/Right arrows or A/D to cycle through pack arts when unopened
