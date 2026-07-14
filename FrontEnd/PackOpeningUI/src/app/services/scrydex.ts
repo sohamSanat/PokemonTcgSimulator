@@ -29,10 +29,15 @@ async function loadJapaneseMetadata() {
       console.error('Failed to load /ja-en-names.json:', e);
     }
   }
-  if (!jaCardNamesCache) {
+  if (!jaCardNamesCache || Object.keys(jaCardNamesCache).length === 0) {
     try {
       const res = await fetch('/ja-card-names.json');
-      if (res.ok) jaCardNamesCache = await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (Object.keys(data).length > 0) {
+          jaCardNamesCache = data;
+        }
+      }
     } catch (e) {
       console.error('Failed to load /ja-card-names.json:', e);
     }
@@ -764,6 +769,20 @@ export function getOrGenerateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
   if (!boxState || boxState.currentIndex >= boxState.packs.length) {
     boxState = generateJapaneseBox(set);
     activeJapaneseBoxes.set(cacheKey, boxState);
+  } else if (jaCardNamesCache && Object.keys(jaCardNamesCache).length > 0) {
+    const rawSetId = set.id.replace(/_ja$/i, '').toLowerCase();
+    for (const p of boxState.packs) {
+      for (const slot of p.slots) {
+        const exact = jaCardNamesCache[slot.summary.id] ||
+          jaCardNamesCache[`${rawSetId}_ja-${slot.summary.localId}`] ||
+          jaCardNamesCache[`${rawSetId}-${slot.summary.localId}`];
+        if (exact) {
+          slot.summary.name = exact;
+        } else if (slot.summary.name && (slot.summary.name.includes('Card ') || slot.summary.name.includes('Card #'))) {
+          slot.summary.name = translateJapaneseName(slot.summary.name);
+        }
+      }
+    }
   }
   return boxState;
 }
@@ -792,19 +811,29 @@ export function getJapaneseBoxStatus(setId: string): {
 
 // Generate a box-seeded Japanese pack (with guaranteed hit distributions per box)
 export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<PokemonCard[]> {
+  await loadJapaneseMetadata();
   const boxState = getOrGenerateJapaneseBox(set);
   const packData = boxState.packs[boxState.currentIndex++];
+  const rawSetId = set.id.replace(/_ja$/i, '').toLowerCase();
   
-  return packData.slots.map((p, idx) => ({
-    id: `${p.summary.id}-${idx}-${Date.now()}`,
-    localId: p.summary.localId,
-    name: (jaCardNamesCache && (jaCardNamesCache[p.summary.id] || jaCardNamesCache[`${set.id.replace(/_ja$/i, '').toLowerCase()}-${p.summary.localId}`])) || p.summary.name,
-    rarity: p.defaultRarity,
-    isReverseHolo: p.isReverseHolo,
-    image: p.summary.image,
-    images: {
-      small: p.summary.image,
-      large: p.summary.image
-    }
-  }));
+  return packData.slots.map((p, idx) => {
+    const exactName = (jaCardNamesCache && (
+      jaCardNamesCache[p.summary.id] ||
+      jaCardNamesCache[`${rawSetId}_ja-${p.summary.localId}`] ||
+      jaCardNamesCache[`${rawSetId}-${p.summary.localId}`]
+    )) || translateJapaneseName(p.summary.name);
+
+    return {
+      id: `${p.summary.id}-${idx}-${Date.now()}`,
+      localId: p.summary.localId,
+      name: exactName,
+      rarity: p.defaultRarity,
+      isReverseHolo: p.isReverseHolo,
+      image: p.summary.image,
+      images: {
+        small: p.summary.image,
+        large: p.summary.image
+      }
+    };
+  });
 }
