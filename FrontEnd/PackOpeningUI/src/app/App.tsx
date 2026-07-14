@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { fetchSingleJapaneseSet, generateJapanesePackFromSet } from './services/scrydex';
+import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -92,7 +92,7 @@ const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> =
 
   // 4. Fallback to local predownloaded path or set.logo URL
   if (set.logo) {
-    if (set.logo.endsWith('.png') || set.logo.endsWith('.webp') || set.logo.endsWith('.jpg')) {
+    if (set.logo.includes('images.scrydex.com') || set.logo.endsWith('/logo') || set.logo.endsWith('/symbol') || set.logo.endsWith('.png') || set.logo.endsWith('.webp') || set.logo.endsWith('.jpg')) {
       return set.logo;
     }
     return `${set.logo}.png`;
@@ -1102,6 +1102,11 @@ const ENGLISH_SERIES_TABS = [
 
 const JAPANESE_SERIES_TABS = [
   { id: 'sv_ja', name: 'Scarlet & Violet' },
+  { id: 'swsh_ja', name: 'Sword & Shield' },
+  { id: 'sm_ja', name: 'Sun & Moon' },
+  { id: 'xy_ja', name: 'XY Series' },
+  { id: 'bw_ja', name: 'Black & White' },
+  { id: 'classic_ja', name: 'Original / Base / Classic' },
 ];
 
 
@@ -1544,7 +1549,7 @@ export default function App() {
 
     try {
       if (selectedLanguage === 'ja') {
-        const setDetails = await fetchSingleJapaneseSet();
+        const setDetails = await fetchSingleJapaneseSet(setId);
         setCurrentSet(setDetails);
         const newCards = await generateJapanesePackFromSet(setDetails);
         setCards(formatAndSortCards(newCards));
@@ -1599,10 +1604,10 @@ export default function App() {
     if (isSetSelectorOpen && selectedSeriesId) {
       setIsLoadingSeries(true);
       if (selectedLanguage === 'ja') {
-        fetchSingleJapaneseSet()
-          .then(set => {
+        fetchJapaneseSeriesDetails(selectedSeriesId)
+          .then(data => {
             if (mounted) {
-              setCurrentSeriesData({ id: 'sv_ja', name: 'Scarlet & Violet', sets: [set] });
+              setCurrentSeriesData(data);
               setIsLoadingSeries(false);
             }
           })
