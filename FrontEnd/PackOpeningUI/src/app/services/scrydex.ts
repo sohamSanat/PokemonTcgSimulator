@@ -253,92 +253,415 @@ export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean =
   return mappedCard;
 }
 
-// Generate an authentic-style Japanese pack (often 5 or 7 cards, we will do 5 for sv2a/151 for testing)
-export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<PokemonCard[]> {
-  const pool = (set.cards || []).filter(c => Boolean(c.image));
-  if (pool.length === 0) throw new Error('No cards in Japanese set');
+// Japanese Booster Box state cache for box-seeded pull rates
+export interface JapaneseBoxSlotData {
+  summary: TCGDexCardSummary;
+  defaultRarity: string;
+  isReverseHolo?: boolean;
+}
 
+export interface JapaneseBoxPackData {
+  slots: JapaneseBoxSlotData[];
+  isGodPack?: boolean;
+}
+
+export interface JapaneseBoxState {
+  setId: string;
+  isHighClass: boolean;
+  era: 'sv' | 'swsh' | 'sm' | 'classic';
+  packs: JapaneseBoxPackData[];
+  currentIndex: number;
+}
+
+const activeJapaneseBoxes = new Map<string, JapaneseBoxState>();
+
+export function getJapaneseSetPackConfig(setId: string): {
+  rawId: string;
+  isHighClass: boolean;
+  packCountPerBox: number;
+  cardsPerPack: number;
+  era: 'sv' | 'swsh' | 'sm' | 'classic';
+} {
+  const rawId = setId.replace(/_ja$/i, '').toLowerCase();
+  
+  let era: 'sv' | 'swsh' | 'sm' | 'classic' = 'classic';
+  if (rawId.startsWith('sv') || rawId.startsWith('svk') || rawId.startsWith('svl')) era = 'sv';
+  else if ((rawId.startsWith('s') && !rawId.startsWith('sm') && !rawId.startsWith('sv') && !rawId.startsWith('svk')) || rawId.startsWith('sn')) era = 'swsh';
+  else if (rawId.startsWith('sm') || rawId.startsWith('smp')) era = 'sm';
+
+  // Check High Class / specialty sets
+  if (rawId === 'sv2a') {
+    // Pokémon Card 151: 20 packs/box, 7 cards/pack
+    return { rawId, isHighClass: true, packCountPerBox: 20, cardsPerPack: 7, era };
+  }
+  if (['sv4a', 'sv8a', 's12a', 's8b', 's4a', 'sm12a', 'sm8b'].includes(rawId)) {
+    // High Class Sets: 10 packs/box, 10 or 11 cards/pack
+    const cardsPerPack = ['s8b', 'sm12a'].includes(rawId) ? 11 : 10;
+    return { rawId, isHighClass: true, packCountPerBox: 10, cardsPerPack, era };
+  }
+  if (rawId === 'cp6') {
+    return { rawId, isHighClass: true, packCountPerBox: 15, cardsPerPack: 10, era };
+  }
+
+  // Standard Japanese Booster Boxes: 30 packs/box, 5 cards/pack
+  return { rawId, isHighClass: false, packCountPerBox: 30, cardsPerPack: 5, era };
+}
+
+export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
+  const pool = (set.cards || []).filter(c => Boolean(c.image));
+  if (pool.length === 0) {
+    throw new Error('No cards in Japanese set pool');
+  }
+
+  const config = getJapaneseSetPackConfig(set.id);
+  const { isHighClass, packCountPerBox, cardsPerPack, era } = config;
+
+  // Categorize cards by Japanese rarity slots
   const commons: TCGDexCardSummary[] = [];
   const uncommons: TCGDexCardSummary[] = [];
   const rares: TCGDexCardSummary[] = [];
   const doubleRares: TCGDexCardSummary[] = []; // RR
+  const tripleRares: TCGDexCardSummary[] = []; // RRR (SWSH VMAX/VSTAR)
   const artRares: TCGDexCardSummary[] = []; // AR
-  const superRares: TCGDexCardSummary[] = []; // SR (Full Art)
-  const specialArtRares: TCGDexCardSummary[] = []; // SAR (SIR)
+  const superRares: TCGDexCardSummary[] = []; // SR
+  const specialArtRares: TCGDexCardSummary[] = []; // SAR
+  const hyperRares: TCGDexCardSummary[] = []; // HR (SWSH/SM Rainbow)
   const ultraRares: TCGDexCardSummary[] = []; // UR (Gold)
+  const characterRares: TCGDexCardSummary[] = []; // CHR
+  const characterSuperRares: TCGDexCardSummary[] = []; // CSR
+  const aceSpecs: TCGDexCardSummary[] = []; // ACE SPEC
+  const shinyRares: TCGDexCardSummary[] = []; // S (Baby shiny)
+  const shinySuperRares: TCGDexCardSummary[] = []; // SSR
 
   for (const card of pool) {
-    const r = (card.rarity || '').toLowerCase();
-    
-    // Japanese sv2a uses specific rarities: C, U, R, RR, AR, SR, SAR, UR
+    const r = (card.rarity || '').toLowerCase().trim();
+    const nameLow = card.name.toLowerCase();
+
     if (r === 'c' || r === 'common') commons.push(card);
     else if (r === 'u' || r === 'uncommon') uncommons.push(card);
-    else if (r === 'r' || r === 'rare') rares.push(card);
+    else if (r === 'r' || r === 'rare' || r === 'holo rare') rares.push(card);
     else if (r === 'rr' || r === 'double rare') doubleRares.push(card);
+    else if (r === 'rrr' || r === 'triple rare') tripleRares.push(card);
     else if (r === 'ar' || r === 'illustration rare') artRares.push(card);
     else if (r === 'sr' || r === 'ultra rare') superRares.push(card);
     else if (r === 'sar' || r === 'special illustration rare') specialArtRares.push(card);
-    else if (r === 'ur' || r === 'hyper rare') ultraRares.push(card);
+    else if (r === 'hr' || r === 'hyper rare') hyperRares.push(card);
+    else if (r === 'ur' || r === 'secret rare' || r.includes('gold')) ultraRares.push(card);
+    else if (r === 'chr' || r === 'character rare') characterRares.push(card);
+    else if (r === 'csr' || r === 'character super rare') characterSuperRares.push(card);
+    else if (r.includes('ace spec') || nameLow.includes('ace spec')) aceSpecs.push(card);
+    else if (r === 's' || r === 'shiny rare') shinyRares.push(card);
+    else if (r === 'ssr' || r === 'shiny super rare') shinySuperRares.push(card);
     else commons.push(card); // fallback
   }
 
-  // Fallback pools just in case the API returned empty for a rarity
+  // Robust fallbacks if set metadata missed specific pools
   if (commons.length === 0) commons.push(...pool);
   if (uncommons.length === 0) uncommons.push(...pool);
   if (rares.length === 0) rares.push(...pool);
 
-  const getFrom = (p: TCGDexCardSummary[]) => p[Math.floor(Math.random() * p.length)] || pool[0];
+  const getFrom = (p: TCGDexCardSummary[], fallback: TCGDexCardSummary[] = pool): TCGDexCardSummary => {
+    if (p.length > 0) return p[Math.floor(Math.random() * p.length)];
+    if (fallback.length > 0) return fallback[Math.floor(Math.random() * fallback.length)];
+    return pool[0];
+  };
 
-  const pack: { summary: TCGDexCardSummary; isReverseHolo?: boolean; defaultRarity: string }[] = [];
-
-  // Authentic Japanese SV packs usually have 5 cards.
-  // Slot 1: Common
-  // Slot 2: Common
-  // Slot 3: Common or Uncommon
-  // Slot 4: Uncommon
-  // Slot 5: Rare or better (or Reverse Holo in standard Japanese sets, 151 has Pokeball/Masterball reverses)
-
-  pack.push({ summary: getFrom(commons), defaultRarity: 'Common' });
-  pack.push({ summary: getFrom(commons), defaultRarity: 'Common' });
-  
-  if (Math.random() < 0.5) {
-    pack.push({ summary: getFrom(commons), defaultRarity: 'Common' });
-  } else {
-    pack.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
-  }
-  
-  pack.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
-
-  // Hit slot
-  const hitRoll = Math.random();
-  let hit: TCGDexCardSummary;
-  let label = 'Rare';
-
-  if (hitRoll < 0.01 && ultraRares.length > 0) {
-    hit = getFrom(ultraRares);
-    label = 'UR';
-  } else if (hitRoll < 0.03 && specialArtRares.length > 0) {
-    hit = getFrom(specialArtRares);
-    label = 'SAR';
-  } else if (hitRoll < 0.06 && superRares.length > 0) {
-    hit = getFrom(superRares);
-    label = 'SR';
-  } else if (hitRoll < 0.15 && artRares.length > 0) {
-    hit = getFrom(artRares);
-    label = 'AR';
-  } else if (hitRoll < 0.35 && doubleRares.length > 0) {
-    hit = getFrom(doubleRares);
-    label = 'RR';
-  } else {
-    // Standard R or Reverse Holo equivalent
-    hit = getFrom(rares);
-    label = 'R';
+  // Check for "God Pack Exception" (~0.5% to 1% chance in High Class/premium sets)
+  let godPackIndex = -1;
+  if (isHighClass && Math.random() < 0.0075) {
+    godPackIndex = Math.floor(Math.random() * packCountPerBox);
   }
 
-  pack.push({ summary: hit, defaultRarity: label });
+  // ----------------------------------------------------
+  // Seed the Hit Slot (Slot 5 in standard, or main hits in high class) across the Box
+  // ----------------------------------------------------
+  const slotPulls: Array<{ summary: TCGDexCardSummary; defaultRarity: string }> = [];
 
-  return pack.map((p, idx) => ({
-    id: p.summary.id + '-' + idx, // unique key for rendering
+  if (!isHighClass) {
+    // STANDARD 30-PACK BOOSTER BOX GUARANTEES BY ERA
+    if (era === 'sv') {
+      // 1) SR, SAR, or UR: 1 Guaranteed. ~20% chance the box has a second one.
+      const svChasePool = [...specialArtRares, ...ultraRares, ...superRares];
+      if (svChasePool.length > 0) {
+        slotPulls.push({ summary: getFrom(svChasePool), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        if (Math.random() < 0.20 && svChasePool.length > 1) {
+          slotPulls.push({ summary: getFrom(svChasePool), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        }
+      }
+      // 2) ACE SPEC: 1 Guaranteed (only in sets that feature them)
+      if (aceSpecs.length > 0) {
+        slotPulls.push({ summary: getFrom(aceSpecs), defaultRarity: 'ACE SPEC' });
+      }
+      // 3) AR (Art Rare): 3 Guaranteed
+      if (artRares.length > 0) {
+        for (let i = 0; i < 3; i++) {
+          slotPulls.push({ summary: getFrom(artRares), defaultRarity: 'AR (Art Rare)' });
+        }
+      }
+      // 4) RR (Double Rare): 4 Guaranteed
+      if (doubleRares.length > 0) {
+        for (let i = 0; i < 4; i++) {
+          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+        }
+      }
+      // 5) R (Holo Rare): ~20 or 21 fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+      }
+    } else if (era === 'swsh') {
+      // 1) SR, HR, or UR: 1 Guaranteed
+      const swshSecretPool = [...ultraRares, ...hyperRares, ...superRares];
+      if (swshSecretPool.length > 0) {
+        slotPulls.push({ summary: getFrom(swshSecretPool), defaultRarity: 'Secret Hit (SR/HR/UR)' });
+      }
+      // 2) RRR (Triple Rare): 2 Guaranteed
+      if (tripleRares.length > 0) {
+        for (let i = 0; i < 2; i++) {
+          slotPulls.push({ summary: getFrom(tripleRares), defaultRarity: 'RRR (Triple Rare)' });
+        }
+      }
+      // 3) RR (Double Rare): 4 to 5 Guaranteed
+      const rrCount = Math.random() < 0.5 ? 4 : 5;
+      if (doubleRares.length > 0) {
+        for (let i = 0; i < rrCount; i++) {
+          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+        }
+      }
+      // Note: Trainer Gallery Subsets (3 CHR + 1 CSR guaranteed)
+      if (characterSuperRares.length > 0) {
+        slotPulls.push({ summary: getFrom(characterSuperRares), defaultRarity: 'CSR (Character Super Rare)' });
+      }
+      if (characterRares.length > 0) {
+        for (let i = 0; i < 3; i++) {
+          slotPulls.push({ summary: getFrom(characterRares), defaultRarity: 'CHR (Character Rare)' });
+        }
+      }
+      // 4) R (Holo Rare): ~22 fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+      }
+    } else if (era === 'sm') {
+      // 1) SR, HR, or UR: 1 Guaranteed
+      const smSecretPool = [...ultraRares, ...hyperRares, ...superRares];
+      if (smSecretPool.length > 0) {
+        slotPulls.push({ summary: getFrom(smSecretPool), defaultRarity: 'Secret Hit (SR/HR/UR)' });
+      }
+      // 2) RR (Double Rare): 3 to 4 Guaranteed
+      const rrCount = Math.random() < 0.5 ? 3 : 4;
+      if (doubleRares.length > 0) {
+        for (let i = 0; i < rrCount; i++) {
+          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+        }
+      }
+      // 3) R (Holo Rare): ~25 fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+      }
+    } else {
+      // Classic / Older Eras
+      const secretPool = [...ultraRares, ...superRares];
+      if (secretPool.length > 0) slotPulls.push({ summary: getFrom(secretPool), defaultRarity: 'Secret Hit (SR/UR)' });
+      const exCount = Math.random() < 0.5 ? 3 : 4;
+      if (doubleRares.length > 0) {
+        for (let i = 0; i < exCount; i++) slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'Double Rare / EX' });
+      }
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+      }
+    }
+  } else {
+    // HIGH CLASS / SPECIALTY BOOSTER BOX GUARANTEES
+    if (config.rawId === 'sv2a') {
+      // 151 Booster Box: 20 Packs
+      // 1 SR/SAR/UR guaranteed (~20% chance for 2nd)
+      const chase151 = [...specialArtRares, ...ultraRares, ...superRares];
+      if (chase151.length > 0) {
+        slotPulls.push({ summary: getFrom(chase151), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        if (Math.random() < 0.20 && chase151.length > 1) {
+          slotPulls.push({ summary: getFrom(chase151), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        }
+      }
+      // 3 AR guaranteed
+      if (artRares.length > 0) {
+        for (let i = 0; i < 3; i++) slotPulls.push({ summary: getFrom(artRares), defaultRarity: 'AR (Art Rare)' });
+      }
+      // 4 to 5 RR guaranteed
+      const rrCount = Math.random() < 0.5 ? 4 : 5;
+      if (doubleRares.length > 0) {
+        for (let i = 0; i < rrCount; i++) slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+      }
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+      }
+    } else {
+      // Other High Class 10-pack boxes (Shiny Treasure ex, VSTAR Universe, VMAX Climax, etc.)
+      const highChase = [...specialArtRares, ...ultraRares, ...hyperRares, ...superRares, ...shinySuperRares];
+      if (highChase.length > 0) {
+        slotPulls.push({ summary: getFrom(highChase), defaultRarity: 'Secret Hit (SAR/SSR/UR/SR)' });
+      }
+      const arPool = [...artRares, ...characterSuperRares, ...characterRares, ...shinyRares];
+      const arCount = 1 + Math.floor(Math.random() * 3);
+      if (arPool.length > 0) {
+        for (let i = 0; i < arCount; i++) slotPulls.push({ summary: getFrom(arPool), defaultRarity: 'Illustration Hit (AR/CHR/S)' });
+      }
+      while (slotPulls.length < packCountPerBox) {
+        const hitPool = [...tripleRares, ...doubleRares, ...rares];
+        slotPulls.push({ summary: getFrom(hitPool), defaultRarity: 'R / RR / RRR' });
+      }
+    }
+  }
+
+  // Truncate or pad just in case
+  if (slotPulls.length > packCountPerBox) slotPulls.length = packCountPerBox;
+  while (slotPulls.length < packCountPerBox) {
+    slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+  }
+
+  // Shuffle the seeded pulls across the packs in this box!
+  for (let i = slotPulls.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [slotPulls[i], slotPulls[j]] = [slotPulls[j], slotPulls[i]];
+  }
+
+  // ----------------------------------------------------
+  // Construct all packs in the Booster Box
+  // ----------------------------------------------------
+  const packs: JapaneseBoxPackData[] = [];
+  let pullIndex = 0;
+
+  for (let idx = 0; idx < packCountPerBox; idx++) {
+    const isThisGodPack = idx === godPackIndex;
+
+    if (isThisGodPack) {
+      // GOD PACK: Every single card is upgraded to a high-tier rarity!
+      const godPool = [
+        ...specialArtRares,
+        ...artRares,
+        ...shinySuperRares,
+        ...superRares,
+        ...hyperRares,
+        ...ultraRares,
+        ...characterSuperRares,
+        ...shinyRares,
+        ...tripleRares
+      ];
+      const slots: JapaneseBoxSlotData[] = [];
+      for (let s = 0; s < cardsPerPack; s++) {
+        const c = getFrom(godPool, rares);
+        slots.push({
+          summary: c,
+          defaultRarity: 'God Pack Hit (' + (c.rarity || 'SAR') + ')',
+          isReverseHolo: true
+        });
+      }
+      packs.push({ slots, isGodPack: true });
+      continue;
+    }
+
+    const seededHit = slotPulls[pullIndex++] || { summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' };
+
+    if (cardsPerPack === 5) {
+      // STANDARD JAPANESE 5-CARD PACK STRUCTURE
+      // Slot 1: Common (C)
+      // Slot 2: Common (C)
+      // Slot 3: Common (C) or Uncommon (U)
+      // Slot 4: Uncommon (U)
+      // Slot 5 (Hit Slot): Rare (R) or higher (All holographic!)
+      const slots: JapaneseBoxSlotData[] = [
+        { summary: getFrom(commons), defaultRarity: 'Common' },
+        { summary: getFrom(commons), defaultRarity: 'Common' },
+        { summary: Math.random() < 0.5 ? getFrom(commons) : getFrom(uncommons), defaultRarity: Math.random() < 0.5 ? 'Common' : 'Uncommon' },
+        { summary: getFrom(uncommons), defaultRarity: 'Uncommon' },
+        { summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true }
+      ];
+      packs.push({ slots, isGodPack: false });
+    } else if (config.rawId === 'sv2a') {
+      // POKÉMON 151 (7-card pack)
+      // Slot 1-3: Commons
+      // Slot 4: Uncommon
+      // Slot 5: Master Ball (1 per box) or Poké Ball Reverse Holo
+      // Slot 6: The seeded Box Hit (R, RR, AR, SR, SAR, UR)
+      // Slot 7: Energy / Holo / Uncommon
+      const isMasterBall = idx === Math.floor(packCountPerBox / 2); // Exactly 1 Masterball in box
+      const slots: JapaneseBoxSlotData[] = [
+        { summary: getFrom(commons), defaultRarity: 'Common' },
+        { summary: getFrom(commons), defaultRarity: 'Common' },
+        { summary: getFrom(commons), defaultRarity: 'Common' },
+        { summary: getFrom(uncommons), defaultRarity: 'Uncommon' },
+        { summary: getFrom([...commons, ...uncommons]), defaultRarity: isMasterBall ? 'Master Ball Reverse Holo' : 'Poké Ball Reverse Holo', isReverseHolo: true },
+        { summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true },
+        { summary: getFrom([...rares, ...uncommons]), defaultRarity: 'Uncommon / Energy' }
+      ];
+      packs.push({ slots, isGodPack: false });
+    } else {
+      // 10 or 11-CARD HIGH CLASS PACK STRUCTURE
+      const slots: JapaneseBoxSlotData[] = [];
+      // Slots 1-4: Commons
+      for (let s = 0; s < 4; s++) slots.push({ summary: getFrom(commons), defaultRarity: 'Common' });
+      // Slots 5-6: Uncommons
+      for (let s = 0; s < 2; s++) slots.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
+      // Slot 7: Reverse Holo
+      slots.push({ summary: getFrom([...commons, ...uncommons, ...rares]), defaultRarity: 'Reverse Holo', isReverseHolo: true });
+      // Slot 8: Guaranteed RR/RRR/ex/V per High Class pack
+      slots.push({ summary: getFrom([...doubleRares, ...tripleRares, ...rares]), defaultRarity: 'Double Rare / ex / V', isReverseHolo: true });
+      // Slot 9: The Box Seeded Hit
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      // Slots 10+
+      for (let s = 9; s < cardsPerPack; s++) {
+        slots.push({ summary: getFrom([...rares, ...uncommons]), defaultRarity: 'Reverse Holo / Energy', isReverseHolo: true });
+      }
+      packs.push({ slots, isGodPack: false });
+    }
+  }
+
+  return {
+    setId: set.id,
+    isHighClass,
+    era,
+    packs,
+    currentIndex: 0
+  };
+}
+
+export function getOrGenerateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
+  const cacheKey = set.id;
+  let boxState = activeJapaneseBoxes.get(cacheKey);
+  if (!boxState || boxState.currentIndex >= boxState.packs.length) {
+    boxState = generateJapaneseBox(set);
+    activeJapaneseBoxes.set(cacheKey, boxState);
+  }
+  return boxState;
+}
+
+export function resetJapaneseBox(setId: string): void {
+  activeJapaneseBoxes.delete(setId);
+}
+
+export function getJapaneseBoxStatus(setId: string): {
+  totalPacks: number;
+  openedPacks: number;
+  remainingPacks: number;
+  isHighClass: boolean;
+  era: string;
+} | null {
+  const boxState = activeJapaneseBoxes.get(setId);
+  if (!boxState) return null;
+  return {
+    totalPacks: boxState.packs.length,
+    openedPacks: boxState.currentIndex,
+    remainingPacks: boxState.packs.length - boxState.currentIndex,
+    isHighClass: boxState.isHighClass,
+    era: boxState.era
+  };
+}
+
+// Generate a box-seeded Japanese pack (with guaranteed hit distributions per box)
+export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<PokemonCard[]> {
+  const boxState = getOrGenerateJapaneseBox(set);
+  const packData = boxState.packs[boxState.currentIndex++];
+  
+  return packData.slots.map((p, idx) => ({
+    id: `${p.summary.id}-${idx}-${Date.now()}`,
     localId: p.summary.localId,
     name: p.summary.name,
     rarity: p.defaultRarity,

@@ -1775,7 +1775,10 @@ export default function App() {
       isLoadingPackRef.current = true;
       setIsLoadingPack(true);
       try {
-        const newCards = await generatePackFromSet(currentSet);
+        const isJaSet = selectedLanguage === 'ja' || currentSet.id.endsWith('_ja');
+        const newCards = isJaSet 
+          ? await generateJapanesePackFromSet(currentSet) 
+          : await generatePackFromSet(currentSet);
         setCards(formatAndSortCards(newCards));
         orchestrateSetLoading(currentSet, newCards.map(c => c.id));
       } catch {
@@ -2016,7 +2019,10 @@ export default function App() {
             generateCards={async () => {
               if (currentSet) {
                 try {
-                  const newCards = await generatePackFromSet(currentSet);
+                  const isJaSet = selectedLanguage === 'ja' || currentSet.id.endsWith('_ja');
+                  const newCards = isJaSet 
+                    ? await generateJapanesePackFromSet(currentSet) 
+                    : await generatePackFromSet(currentSet);
                   return formatAndSortCards(newCards);
                 } catch {
                   return generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet);
