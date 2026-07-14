@@ -11,6 +11,7 @@ const SCRYDEX_API_BASE = 'https://api.scrydex.com/pokemon/v1';
 let jaSetsCache: Array<{ id: string; name: string; cardCount: { total: number; official: number } }> | null = null;
 let jaEnNamesCache: Record<string, string> | null = null;
 let jaCardNamesCache: Record<string, string> | null = null;
+let pokeSpeciesDictCache: Record<string, string> | null = null;
 
 async function loadJapaneseMetadata() {
   if (!jaSetsCache) {
@@ -42,9 +43,23 @@ async function loadJapaneseMetadata() {
       console.error('Failed to load /ja-card-names.json:', e);
     }
   }
+  if (!pokeSpeciesDictCache || Object.keys(pokeSpeciesDictCache).length === 0) {
+    try {
+      const res = await fetch('/pokemon-ja-en-dict.json');
+      if (res.ok) {
+        const data = await res.json();
+        if (Object.keys(data).length > 0) {
+          pokeSpeciesDictCache = data;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load /pokemon-ja-en-dict.json:', e);
+    }
+  }
   if (!jaSetsCache) jaSetsCache = [];
   if (!jaEnNamesCache) jaEnNamesCache = {};
   if (!jaCardNamesCache) jaCardNamesCache = {};
+  if (!pokeSpeciesDictCache) pokeSpeciesDictCache = {};
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
@@ -227,13 +242,15 @@ const JA_TO_EN_DICTIONARY: Record<string, string> = {
 export function translateJapaneseName(jaName: string): string {
   if (!jaName) return jaName;
   if (JA_TO_EN_DICTIONARY[jaName]) return JA_TO_EN_DICTIONARY[jaName];
+  if (pokeSpeciesDictCache && pokeSpeciesDictCache[jaName]) return pokeSpeciesDictCache[jaName];
 
   const suffixMatch = jaName.match(/^(.*?)(ex|VMAX|VSTAR|V|GX|STAR|SAR|SR|UR|AR)$/i);
   if (suffixMatch) {
     const baseJa = suffixMatch[1].trim();
     const suffix = suffixMatch[2];
-    if (JA_TO_EN_DICTIONARY[baseJa]) {
-      return `${JA_TO_EN_DICTIONARY[baseJa]} ${suffix}`;
+    const baseEn = JA_TO_EN_DICTIONARY[baseJa] || (pokeSpeciesDictCache && pokeSpeciesDictCache[baseJa]);
+    if (baseEn) {
+      return `${baseEn} ${suffix}`;
     }
   }
 
@@ -243,6 +260,13 @@ export function translateJapaneseName(jaName: string): string {
       return rest ? `${enVal} ${rest}` : enVal;
     }
   }
+  if (pokeSpeciesDictCache) {
+    for (const [jaKey, enVal] of Object.entries(pokeSpeciesDictCache)) {
+      if (jaKey.length >= 2 && jaName.includes(jaKey)) {
+        return jaName.split(jaKey).join(enVal);
+      }
+    }
+  }
   return jaName;
 }
 
@@ -250,18 +274,20 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   await loadJapaneseMetadata();
   const rawId = setId.replace(/_ja$/i, '');
   const cacheKey = `${rawId}_ja`;
+  const jaRegex = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/;
   
   if (scrydexSetCache.has(cacheKey)) {
     const cached = scrydexSetCache.get(cacheKey)!;
     if (jaCardNamesCache && cached.cards) {
       for (const c of cached.cards) {
-        if (c.name && (c.name.includes('Card ') || c.name.includes('Card #'))) {
-          const lookupKey = c.id;
-          const altKey = `${rawId.toLowerCase()}-${c.localId}`;
-          const realName = jaCardNamesCache[lookupKey] || jaCardNamesCache[altKey];
-          if (realName) {
-            c.name = realName;
-          }
+        const lookupKey1 = c.id;
+        const lookupKey2 = `${rawId.toLowerCase()}_ja-${c.localId}`;
+        const altKey = `${rawId.toLowerCase()}-${c.localId}`;
+        const realName = jaCardNamesCache[lookupKey1] || jaCardNamesCache[lookupKey2] || jaCardNamesCache[altKey];
+        if (realName) {
+          c.name = realName;
+        } else if (c.name && (c.name.includes('Card ') || c.name.includes('Card #') || jaRegex.test(c.name))) {
+          c.name = translateJapaneseName(c.name);
         }
       }
     }
@@ -345,7 +371,10 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     const cardNum = i.toString();
     const lookupKey = `${prefixLow}_ja-${cardNum}`;
     const altKey = `${prefixLow}-${cardNum}`;
-    const resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || `${setName} Card #${cardNum}`;
+    let resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || `${setName} Card #${cardNum}`;
+    if (jaRegex.test(resolvedName) || resolvedName.includes('Card #') || resolvedName.includes('Card ')) {
+      resolvedName = translateJapaneseName(resolvedName);
+    }
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
@@ -778,7 +807,7 @@ export function getOrGenerateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
           jaCardNamesCache[`${rawSetId}-${slot.summary.localId}`];
         if (exact) {
           slot.summary.name = exact;
-        } else if (slot.summary.name && (slot.summary.name.includes('Card ') || slot.summary.name.includes('Card #'))) {
+        } else if (slot.summary.name && (slot.summary.name.includes('Card ') || slot.summary.name.includes('Card #') || /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(slot.summary.name))) {
           slot.summary.name = translateJapaneseName(slot.summary.name);
         }
       }
