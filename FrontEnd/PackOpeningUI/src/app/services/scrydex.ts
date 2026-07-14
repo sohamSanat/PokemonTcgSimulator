@@ -270,11 +270,37 @@ export function translateJapaneseName(jaName: string): string {
   return jaName;
 }
 
+export function getJapaneseCardRarity(localId: string, officialCount: number, totalCards: number, name: string = ''): string {
+  const num = parseInt(localId, 10);
+  if (isNaN(num)) return 'C';
+
+  if (name.includes('ex') || name.includes('VMAX') || name.includes('VSTAR') || name.includes('MEGA') || name.includes('BREAK') || name.includes('GX')) {
+    if (num <= officialCount) return 'RR';
+  }
+
+  if (num > officialCount) {
+    const secretNum = num - officialCount;
+    const secretTotal = Math.max(1, totalCards - officialCount);
+    const ratio = secretNum / secretTotal;
+    if (ratio <= 0.45) return 'AR';
+    if (ratio <= 0.75) return 'SR';
+    if (ratio <= 0.90) return 'SAR';
+    return 'UR';
+  }
+
+  if (num > officialCount * 0.82 || num % 7 === 0) return 'R';
+  if (num % 3 === 0 || num % 4 === 0 || num > officialCount * 0.52) return 'U';
+  return 'C';
+}
+
 export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise<TCGDexSet> {
   await loadJapaneseMetadata();
   const rawId = setId.replace(/_ja$/i, '');
   const cacheKey = `${rawId}_ja`;
   const jaRegex = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/;
+  const s = (jaSetsCache || []).find(item => item.id.toLowerCase() === rawId.toLowerCase());
+  const totalCards = s?.cardCount?.total || s?.cardCount?.official || (rawId.toLowerCase() === 'sv2a' ? 210 : 103);
+  const officialCount = s?.cardCount?.official || Math.floor(totalCards * 0.75);
   
   if (scrydexSetCache.has(cacheKey)) {
     const cached = scrydexSetCache.get(cacheKey)!;
@@ -289,16 +315,17 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
         } else if (c.name && (c.name.includes('Card ') || c.name.includes('Card #') || jaRegex.test(c.name))) {
           c.name = translateJapaneseName(c.name);
         }
+        if (c.localId && (parseInt(c.localId, 10) > officialCount || !c.rarity || c.rarity === 'C' || c.rarity === 'U')) {
+          c.rarity = getJapaneseCardRarity(c.localId, officialCount, totalCards, c.name);
+        }
       }
     }
     return cached;
   }
 
-  const s = (jaSetsCache || []).find(item => item.id.toLowerCase() === rawId.toLowerCase());
   const nameMap = jaEnNamesCache || {};
   const englishSub = nameMap[rawId] || s?.name || rawId;
   const setName = s ? englishSub : (rawId.toLowerCase() === 'sv2a' ? 'Pokémon Card 151' : `Japanese Set ${rawId}`);
-  const totalCards = s?.cardCount?.total || s?.cardCount?.official || (rawId.toLowerCase() === 'sv2a' ? 210 : 80);
 
   let logoUrl = getJapaneseSetDefaultLogo(rawId);
   let symbolUrl = getJapaneseSetDefaultSymbol(rawId);
@@ -380,7 +407,7 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
       localId: cardNum,
       name: resolvedName,
       image: `https://images.scrydex.com/pokemon/${prefixLow}_ja-${cardNum}/large`,
-      rarity: i > totalCards * 0.85 ? (i > totalCards * 0.95 ? 'UR' : i > totalCards * 0.92 ? 'SAR' : 'SR') : (i % 5 === 0 ? 'RR' : i % 3 === 0 ? 'R' : i % 2 === 0 ? 'U' : 'C')
+      rarity: getJapaneseCardRarity(cardNum, officialCount, totalCards, resolvedName)
     });
   }
 
@@ -856,7 +883,7 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       id: `${p.summary.id}-${idx}-${Date.now()}`,
       localId: p.summary.localId,
       name: exactName,
-      rarity: p.defaultRarity,
+      rarity: (p.summary.rarity && p.summary.rarity !== 'C' && p.summary.rarity !== 'U' && p.summary.rarity !== 'Common' && p.summary.rarity !== 'Uncommon') ? p.summary.rarity : (p.defaultRarity || p.summary.rarity || 'Common'),
       isReverseHolo: p.isReverseHolo,
       image: p.summary.image,
       images: {
