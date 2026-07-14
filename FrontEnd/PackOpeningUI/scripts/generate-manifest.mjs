@@ -117,6 +117,34 @@ const SET_ALIASES = {
   'Team-Rocket': ['base5', 'tr', 'team rocket', 'team-rocket', 'teamrocket']
 };
 
+const JAPANESE_SET_ALIASES = {
+  '151': ['sv2a_ja', 'sv2aja', 'sv2a', '151_ja', 'pokemon card 151_ja', 'pokemon card 151'],
+  'Ancient-Roar': ['sv4k_ja', 'sv4kja', 'sv4k', 'ancient roar_ja', 'ancient-roar_ja', 'ancient roar'],
+  'Battle-Partners': ['sv9_ja', 'sv9ja', 'sv09_ja', 'sv9', 'battle partners_ja', 'battle-partners_ja', 'battle partners'],
+  'Black-bolt': ['sv11b_ja', 'sv11bja', 'sv11b', 'black bolt_ja', 'black-bolt_ja', 'black bolt'],
+  'Clay-Burst': ['sv2d_ja', 'sv2dja', 'sv2d', 'clay burst_ja', 'clay-burst_ja', 'clay burst'],
+  'Crimson-Haze': ['sv5a_ja', 'sv5aja', 'sv5a', 'crimson haze_ja', 'crimson-haze_ja', 'crimson haze'],
+  'Future-Flash': ['sv4m_ja', 'sv4mja', 'sv4m', 'future flash_ja', 'future-flash_ja', 'future flash'],
+  'Glory-Of-Team-Rocket': ['sv10_ja', 'sv10ja', 'sv10', 'glory of team rocket_ja', 'glory of team rocket', 'glory-of-team-rocket_ja'],
+  'Hot-Wild-Arena': ['sv9a_ja', 'sv9aja', 'sv9a', 'hot wind arena_ja', 'hot wild arena_ja', 'hot wind arena', 'hot wild arena', 'hot-wild-arena_ja'],
+  'Night-Wanderer': ['sv6a_ja', 'sv6aja', 'sv6a', 'night wanderer_ja', 'night-wanderer_ja', 'night wanderer'],
+  'Paradise-Dragona': ['sv7a_ja', 'sv7aja', 'sv7a', 'paradise dragona_ja', 'paradise-dragona_ja', 'paradise dragona'],
+  'Raging-Surf': ['sv3a_ja', 'sv3aja', 'sv3a', 'raging surf_ja', 'raging-surf_ja', 'raging surf'],
+  'Ruler-Of-The-Blac-Flare': ['sv3_ja', 'sv3ja', 'sv03_ja', 'sv3', 'ruler of the black flame_ja', 'ruler of the blac flare_ja', 'ruler of the black flame', 'ruler of the blac flare'],
+  'Scarlet-Ex': ['sv1s_ja', 'sv1sja', 'sv1s', 'scarlet ex_ja', 'scarlet-ex_ja', 'scarlet ex'],
+  'Shiny-Treasure-Ex': ['sv4a_ja', 'sv4aja', 'sv4a', 'shiny treasure ex_ja', 'shiny-treasure-ex_ja', 'shiny treasure ex'],
+  'Snow-Hazard': ['sv2p_ja', 'sv2pja', 'sv2p', 'snow hazard_ja', 'snow-hazard_ja', 'snow hazard'],
+  'Stellar-Miracle': ['sv7_ja', 'sv7ja', 'sv07_ja', 'sv7', 'stellar miracle_ja', 'stellar-miracle_ja', 'stellar miracle'],
+  'Super-Electric-Breaker': ['sv8_ja', 'sv8ja', 'sv08_ja', 'sv8', 'super electric breaker_ja', 'super-electric-breaker_ja', 'super electric breaker'],
+  'Terastal-Fest-Ex': ['sv8a_ja', 'sv8aja', 'sv8a', 'terastal fest ex_ja', 'terastal-fest-ex_ja', 'terastal fest ex'],
+  'Transformation-Mask': ['sv6_ja', 'sv6ja', 'sv06_ja', 'sv6', 'transformation mask_ja', 'transformation-mask_ja', 'transformation mask'],
+  'Triplet-Beat': ['sv1a_ja', 'sv1aja', 'sv1a', 'triplet beat_ja', 'triplet-beat_ja', 'triplet beat'],
+  'Violet-Ex': ['sv1v_ja', 'sv1vja', 'sv1v', 'violet ex_ja', 'violet-ex_ja', 'violet ex'],
+  'White-Flare': ['sv11w_ja', 'sv11wja', 'sv11w', 'white flare_ja', 'white-flare_ja', 'white flare'],
+  'Wild-Force': ['sv5k_ja', 'sv5kja', 'sv5k', 'wild force_ja', 'wild-force_ja', 'wild force'],
+  'cyber-judge': ['sv5m_ja', 'sv5mja', 'sv5m', 'cyber judge_ja', 'cyber-judge_ja', 'cyber judge']
+};
+
 const manifest = {};
 const validExts = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
 
@@ -134,19 +162,44 @@ function scanDir(dir, relativePath = '') {
     const folderName = path.basename(dir);
     console.log(`Found ${images.length} arts in folder: ${folderName} (${relativePath})`);
     
-    // Add exact folder name and normalized folder name
-    manifest[folderName] = images;
-    manifest[folderName.toLowerCase()] = images;
-    const normalizedName = folderName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    manifest[normalizedName] = images;
+    const isJapaneseFolder = relativePath.toLowerCase().includes('japanese') || relativePath.toLowerCase().includes('_ja');
 
-    // Check aliases
-    for (const [key, aliases] of Object.entries(SET_ALIASES)) {
-      if (key.toLowerCase() === folderName.toLowerCase() || aliases.includes(folderName.toLowerCase())) {
-        for (const alias of aliases) {
-          manifest[alias] = images;
-          manifest[alias.toLowerCase()] = images;
-          manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+    if (isJapaneseFolder && folderName.toLowerCase() === '151') {
+      // Specifically map Japanese 151 without overwriting English 151
+      const ja151Aliases = JAPANESE_SET_ALIASES['151'];
+      for (const alias of ja151Aliases) {
+        manifest[alias] = images;
+        manifest[alias.toLowerCase()] = images;
+        manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+      }
+    } else {
+      // Add exact folder name and normalized folder name
+      manifest[folderName] = images;
+      manifest[folderName.toLowerCase()] = images;
+      const normalizedName = folderName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      manifest[normalizedName] = images;
+
+      // Check English aliases if not Japanese folder
+      if (!isJapaneseFolder) {
+        for (const [key, aliases] of Object.entries(SET_ALIASES)) {
+          if (key.toLowerCase() === folderName.toLowerCase() || aliases.includes(folderName.toLowerCase())) {
+            for (const alias of aliases) {
+              manifest[alias] = images;
+              manifest[alias.toLowerCase()] = images;
+              manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+            }
+          }
+        }
+      }
+
+      // Check Japanese aliases
+      for (const [key, aliases] of Object.entries(JAPANESE_SET_ALIASES)) {
+        if (key.toLowerCase() === folderName.toLowerCase() || aliases.includes(folderName.toLowerCase())) {
+          for (const alias of aliases) {
+            manifest[alias] = images;
+            manifest[alias.toLowerCase()] = images;
+            manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+          }
         }
       }
     }

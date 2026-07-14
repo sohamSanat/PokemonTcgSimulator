@@ -1551,6 +1551,10 @@ export default function App() {
       if (selectedLanguage === 'ja') {
         const setDetails = await fetchSingleJapaneseSet(setId);
         setCurrentSet(setDetails);
+        const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
+        if (refinedArts !== DARKNESS_ABLAZE_PACK_ARTS || setArts === DARKNESS_ABLAZE_PACK_ARTS) {
+          setCurrentPackArts(refinedArts);
+        }
         const newCards = await generateJapanesePackFromSet(setDetails);
         setCards(formatAndSortCards(newCards));
         setIsChaseCardsReady(true);
