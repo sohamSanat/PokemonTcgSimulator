@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
+import { fetchSingleJapaneseSet, generateJapanesePackFromSet } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -68,7 +69,7 @@ const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<str
   return DARKNESS_ABLAZE_PACK_ARTS;
 };
 
-const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> = {}): string | null => {
+const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> = {}, lang: string = 'en'): string | null => {
   if (!set || !set.id) return null;
   // 1. Check exact id or lowercase id in manifest
   if (manifest[set.id]) return manifest[set.id];
@@ -82,6 +83,8 @@ const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> =
   // 3. Check normalized alphanumeric id
   const normId = set.id.toLowerCase().replace(/[^a-z0-9]/g, '');
   if (manifest[normId]) return manifest[normId];
+
+
 
   if (set.id === 'sv05' || normId === 'sv05' || normId === 'sv5') {
     return '/setLogos/sv05.png';
@@ -456,6 +459,8 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   }
 };
 
+const toTitleCase = (str: string) => str.replace(/\b\w+/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+
 const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; name?: string } | TCGDexSetSummary | TCGDexSet | null): CardData[] => {
   const sourcePool = pool.length > 0 ? pool : FALLBACK_POKEMON_CARDS;
 
@@ -666,7 +671,7 @@ const Card = React.memo(({
             className="absolute bottom-6 left-0 right-0 flex justify-center transition-all duration-300 pointer-events-none"
             style={{ opacity: (isTopCard && !card.flipped) ? 1 : 0 }}
           >
-            <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold uppercase tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.6)] border border-amber-300/50 flex items-center gap-1.5">
+            <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold uppercase tracking-wider shadow-[0_4px 15px_rgba(245,158,11,0.6)] border border-amber-300/50 flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-amber-200" />
               Click to Reveal
             </span>
@@ -683,10 +688,16 @@ const Card = React.memo(({
             border: '2px solid rgba(255, 255, 250, 0.4)'
           }}
         >
+          {/* Fallback for cards without images */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-4 text-center border-[8px] border-[#333344] rounded-2xl z-0">
+            <span className="text-gray-500/80 font-black tracking-widest text-xl mb-3">{card.pokemon.id}</span>
+            <h3 className="font-bold text-white text-lg px-2 drop-shadow-md">{card.pokemon.name}</h3>
+          </div>
+
           <img
-            src={card.pokemon.images.large || card.pokemon.images.small}
+            src={card.pokemon.images?.large || card.pokemon.images?.small || ((card.pokemon as any).image ? getCardImageUrl((card.pokemon as any).image, 'high') : `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`)}
             alt={card.pokemon.name}
-            className="w-full h-full object-cover block rounded-2xl"
+            className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
             onError={(e) => {
               const num = card.pokemon.localId || card.pokemon.id?.split('-')[1] || '1';
               const setId = card.pokemon.id?.split('-')[0] || 'swsh3';
@@ -763,7 +774,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={() => { sound.playModalClose(); onClose(); }}
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-[3px] flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-[3px] flex items-center justify-center p-4 overflow-y-auto"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -1077,7 +1088,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   );
 });
 
-const SERIES_TABS = [
+const ENGLISH_SERIES_TABS = [
   { id: 'me', name: 'Mega Evolution' },
   { id: 'sv', name: 'Scarlet & Violet' },
   { id: 'swsh', name: 'Sword & Shield' },
@@ -1085,6 +1096,11 @@ const SERIES_TABS = [
   { id: 'xy', name: 'XY Series' },
   { id: 'base', name: 'Original / Base' },
 ];
+
+const JAPANESE_SERIES_TABS = [
+  { id: 'sv_ja', name: 'Scarlet & Violet' },
+];
+
 
 const RevealedCardItem = React.memo(({
   card,
@@ -1171,6 +1187,7 @@ export default function App() {
   const [showChaseModal, setShowChaseModal] = useState<boolean>(false);
   const [cacheTick, setCacheTick] = useState<number>(0);
   const [selectedSeriesId, setSelectedSeriesId] = useState<string>('swsh');
+  const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ja'>('en');
   const [currentSeriesData, setCurrentSeriesData] = useState<TCGDexSeries | null>(null);
   const [isLoadingSeries, setIsLoadingSeries] = useState<boolean>(false);
 
@@ -1273,7 +1290,7 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena'>('pack');
   const [matchId, setMatchId] = useState<string>('');
-  const [binderAddedIds, setBinderAddedIds] = useState<Set<number>>(new Set());
+  const [binderAddedIds, setBinderAddedIds] = useState<Set<string | number>>(new Set());
   const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
   const [availableBinders, setAvailableBinders] = useState<Binder[]>([]);
 
@@ -1353,14 +1370,14 @@ export default function App() {
       });
     };
 
-    const preloadSeriesLogos = async (seriesId: string) => {
+    const preloadSeriesLogos = async (seriesId: string, lang: 'en' | 'ja' = 'en') => {
       if (!isActive) return;
       try {
         const seriesData = await fetchSeriesDetails(seriesId);
         if (!isActive || !seriesData || !seriesData.sets) return;
         
         const logos = seriesData.sets
-          .map(set => getSetLogoUrl(set, setLogosManifest))
+          .map(set => getSetLogoUrl(set, setLogosManifest, lang))
           .filter(Boolean) as string[];
 
         // Preload sequentially with tiny delays so we don't clog the browser's max connection limit
@@ -1376,13 +1393,14 @@ export default function App() {
 
     const runProgressivePreload = async () => {
       // 1. First, load the logos of sets of the generation the user has currently selected
-      await preloadSeriesLogos(selectedSeriesId);
+      await preloadSeriesLogos(selectedSeriesId, selectedLanguage);
 
       // 2. Only when that loading is finished, start loading up other generation's sets' logos in the background
-      const otherSeries = SERIES_TABS.map(t => t.id).filter(id => id !== selectedSeriesId);
+      const activeTabs = ENGLISH_SERIES_TABS;
+      const otherSeries = activeTabs.map(t => t.id).filter(id => id !== selectedSeriesId);
       for (const seriesId of otherSeries) {
         if (!isActive) break;
-        await preloadSeriesLogos(seriesId);
+        await preloadSeriesLogos(seriesId, selectedLanguage);
         // Small delay between series preloads to keep network free for user interactions
         await new Promise(r => setTimeout(r, 100));
       }
@@ -1393,14 +1411,20 @@ export default function App() {
     return () => {
       isActive = false;
     };
-  }, [setLogosManifest, selectedSeriesId]);
+  }, [setLogosManifest, selectedSeriesId, selectedLanguage]);
 
   useEffect(() => {
     // Aggressively preload all card images inside the freshly generated pack
     // while the pack is sitting on the table unopened, so they load instantly when revealed
     if (cards.length > 0 && packStage === 'unopened') {
       cards.forEach(card => {
-        const imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
+        let imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
+        if (!imgUrl && (card.pokemon as any).image) {
+          imgUrl = getCardImageUrl((card.pokemon as any).image, 'high');
+        } else if (!imgUrl) {
+          imgUrl = `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`;
+        }
+        
         if (imgUrl) {
           const img = new Image();
           // Use low priority so it doesn't block UI threads, since they have time before opening
@@ -1509,20 +1533,28 @@ export default function App() {
     setPackArtIndex(Math.floor(Math.random() * setArts.length));
 
     try {
-      const setDetails = await fetchSetDetails(setId);
-      setCurrentSet(setDetails);
-      const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
-      if (refinedArts !== DARKNESS_ABLAZE_PACK_ARTS || setArts === DARKNESS_ABLAZE_PACK_ARTS) {
-        setCurrentPackArts(refinedArts);
-      }
-      const newCards = await generatePackFromSet(setDetails);
-      setCards(formatAndSortCards(newCards));
-      setIsChaseCardsReady(false);
-      orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+      if (selectedLanguage === 'ja') {
+        const setDetails = await fetchSingleJapaneseSet();
+        setCurrentSet(setDetails);
+        const newCards = await generateJapanesePackFromSet(setDetails);
+        setCards(formatAndSortCards(newCards));
         setIsChaseCardsReady(true);
-      });
+      } else {
+        const setDetails = await fetchSetDetails(setId);
+        setCurrentSet(setDetails);
+        const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
+        if (refinedArts !== DARKNESS_ABLAZE_PACK_ARTS || setArts === DARKNESS_ABLAZE_PACK_ARTS) {
+          setCurrentPackArts(refinedArts);
+        }
+        const newCards = await generatePackFromSet(setDetails);
+        setCards(formatAndSortCards(newCards));
+        setIsChaseCardsReady(false);
+        orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+          setIsChaseCardsReady(true);
+        });
+      }
     } catch (error) {
-      console.error('Failed to load set pack from TCGdex:', error);
+      console.error('Failed to load set pack:', error);
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
     } finally {
       isLoadingPackRef.current = false;
@@ -1553,25 +1585,37 @@ export default function App() {
 
   // Fetch series sets with race condition protection when modal opens or tab changes
   useEffect(() => {
-    if (!isSetSelectorOpen) return;
-    let isCurrent = true;
-    setIsLoadingSeries(true);
-    fetchSeriesDetails(selectedSeriesId)
-      .then(data => {
-        if (isCurrent && data) {
-          setCurrentSeriesData(data);
-        }
-      })
-      .catch(err => console.error('Error fetching series details:', err))
-      .finally(() => {
-        if (isCurrent) {
-          setIsLoadingSeries(false);
-        }
-      });
-    return () => {
-      isCurrent = false;
-    };
-  }, [isSetSelectorOpen, selectedSeriesId]);
+    let mounted = true;
+    if (isSetSelectorOpen && selectedSeriesId) {
+      setIsLoadingSeries(true);
+      if (selectedLanguage === 'ja') {
+        fetchSingleJapaneseSet()
+          .then(set => {
+            if (mounted) {
+              setCurrentSeriesData({ id: 'sv_ja', name: 'Scarlet & Violet', sets: [set] });
+              setIsLoadingSeries(false);
+            }
+          })
+          .catch(err => {
+            console.error('Error fetching Japanese series details:', err);
+            if (mounted) setIsLoadingSeries(false);
+          });
+      } else {
+        fetchSeriesDetails(selectedSeriesId)
+          .then(data => {
+            if (mounted) {
+              setCurrentSeriesData(data);
+              setIsLoadingSeries(false);
+            }
+          })
+          .catch(err => {
+            console.error('Error fetching series details:', err);
+            if (mounted) setIsLoadingSeries(false);
+          });
+      }
+    }
+    return () => { mounted = false; };
+  }, [selectedSeriesId, selectedLanguage, isSetSelectorOpen]);
 
   const handleStackMouseLeave = useCallback(() => {
     setIsHoveringStack(false);
@@ -1616,9 +1660,9 @@ export default function App() {
 
 
 
-  const flipTimesRef = useRef<Record<number, number>>({});
+  const flipTimesRef = useRef<Record<string | number, number>>({});
 
-  const handleCardClick = useCallback((id: number) => {
+  const handleCardClick = useCallback((id: string | number) => {
     if (isRevealingAll) return;
     const now = Date.now();
     const lastFlip = flipTimesRef.current[id] || 0;
@@ -2200,11 +2244,14 @@ export default function App() {
                     className="w-14 sm:w-16 h-20 sm:h-22 rounded-md overflow-hidden bg-black/60 shrink-0 border border-white/20 flex items-center justify-center my-1 relative"
                     style={{ aspectRatio: '63 / 88' }}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-1 text-center border-2 border-[#333344] z-0">
+                      <span className="text-gray-500/80 font-black tracking-tighter text-[8px] mb-0.5">{card.localId || card.id?.split('-').pop()}</span>
+                      <span className="font-bold text-white text-[8px] leading-tight truncate w-full">{card.name}</span>
+                    </div>
                     <img
                       src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                       alt={card.name}
-                      className="w-full h-full object-cover block"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      className="absolute inset-0 w-full h-full object-cover block z-10"
                       onError={(e) => {
                         const target = e.currentTarget as HTMLImageElement;
                         const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
@@ -2320,11 +2367,13 @@ export default function App() {
                                 className="w-9 h-12 rounded-md overflow-hidden bg-black/60 shrink-0 border border-white/20 relative flex items-center justify-center card-aspect-ratio-sm"
                                 style={{ minWidth: '36px', minHeight: '48px', aspectRatio: '63 / 88' }}
                               >
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-0.5 text-center z-0">
+                                <span className="font-bold text-white text-[6px] leading-tight truncate w-full">{card.name}</span>
+                              </div>
                               <img
                                 src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                                 alt={card.name}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block z-10"
                                 onError={(e) => {
                                   const target = e.currentTarget as HTMLImageElement;
                                   const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
@@ -2389,7 +2438,7 @@ export default function App() {
                   <motion.div
                     animate={{ y: [-10, 10, -10], scale: [0.95, 1.05, 0.95] }}
                     transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-                    className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] pointer-events-none select-none z-0"
+                    className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(10,185,129,0.3)] pointer-events-none select-none z-0"
                   >
                     ✨
                   </motion.div>
@@ -2637,7 +2686,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -2653,21 +2702,49 @@ export default function App() {
                   </h2>
                   <p className="text-xs text-gray-400 mt-1">Choose a set to open packs from</p>
                 </div>
-                <button
-                  onClick={() => { sound.playModalClose(); setIsSetSelectorOpen(false); }}
-                  className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => { sound.playModalClose(); setIsSetSelectorOpen(false); }}
+                    className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Language Toggle */}
+              <div className="flex justify-center border-b border-white/10 p-4">
+                <div className="bg-[#0f0f13] border border-white/10 rounded-full p-1 flex shadow-inner">
+                  <button
+                    onClick={() => { sound.playTabSwitch(); setSelectedLanguage('en'); setSelectedSeriesId(ENGLISH_SERIES_TABS[0].id); }}
+                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${
+                      selectedLanguage === 'en'
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => { sound.playTabSwitch(); setSelectedLanguage('ja'); setSelectedSeriesId(JAPANESE_SERIES_TABS[0].id); }}
+                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${
+                      selectedLanguage === 'ja'
+                        ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]'
+                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    Japanese
+                  </button>
+                </div>
               </div>
 
               {/* Series Tabs */}
-              <div className="flex items-center gap-2 px-6 pt-4 border-b border-white/5 overflow-x-auto">
-                {SERIES_TABS.map(tab => (
+              <div className="flex overflow-x-auto hide-scrollbar border-b border-white/10 px-4 py-2 gap-2 shrink-0">
+                {(selectedLanguage === 'en' ? ENGLISH_SERIES_TABS : JAPANESE_SERIES_TABS).map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => { sound.playTabSwitch(); setSelectedSeriesId(tab.id); }}
-                    className={`px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-colors border-b-2 whitespace-nowrap cursor-pointer ${selectedSeriesId === tab.id
+                    className={`px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-t-xl transition-all border-b-2 cursor-pointer flex-shrink-0 ${selectedSeriesId === tab.id
                       ? 'text-amber-300 border-amber-400 bg-gradient-to-r from-amber-500/20 to-orange-500/10 shadow-[0_-4px_15px_rgba(245,158,11,0.2)]'
                       : 'text-gray-400 border-transparent hover:text-white hover:bg-white/5'
                       }`}
@@ -2699,7 +2776,7 @@ export default function App() {
                   return eligibleSets.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                       {eligibleSets.map(set => {
-                        const logoSrc = getSetLogoUrl(set, setLogosManifest);
+                        const logoSrc = getSetLogoUrl(set, setLogosManifest, selectedLanguage);
                         return (
                           <div
                             key={set.id}
@@ -2745,11 +2822,15 @@ export default function App() {
                                   }}
                                 />
                               ) : (
-                                <Layers className="w-8 h-8 text-gray-500 group-hover:text-amber-400 transition-colors" />
+                                <div className="text-gray-500/80 font-black tracking-widest text-xl uppercase drop-shadow-md">
+                                  {set.id}
+                                </div>
                               )}
                             </div>
                             <div>
-                              <h4 className="text-xs font-bold text-white line-clamp-2 group-hover:text-amber-300 transition-colors">{set.name}</h4>
+                              <h4 className="font-bold text-white text-sm truncate max-w-[150px] group-hover:text-amber-300 transition-colors">
+                                {set.name}
+                              </h4>
                               <span className="text-[10px] text-gray-400 mt-1 block font-semibold">
                                 {set.cardCount?.official || set.cardCount?.total || '???'} Cards
                               </span>
@@ -2802,7 +2883,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setBinderSelectModal(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -3119,11 +3200,14 @@ export default function App() {
                         className="relative w-28 h-36 rounded-lg overflow-hidden my-1 shadow-md group-hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all duration-300 bg-black/50 border border-white/15 flex items-center justify-center shrink-0"
                         style={{ width: '100px', height: '140px' }}
                       >
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-1 text-center border-2 border-[#333344] z-0">
+                          <span className="text-gray-500/80 font-black tracking-tighter text-[10px] mb-1">{card.localId || card.id?.split('-').pop()}</span>
+                          <span className="font-bold text-white text-[10px] leading-tight line-clamp-3 w-full px-1">{card.name}</span>
+                        </div>
                         <img
                           src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
                           alt={card.name}
-                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 block p-0.5"
-                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 block p-0.5 z-10"
                           onError={(e) => {
                             const target = e.currentTarget as HTMLImageElement;
                             const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;

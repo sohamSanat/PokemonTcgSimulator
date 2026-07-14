@@ -44,9 +44,27 @@ export const InteractiveCard3D: React.FC<Props> = ({
   // Extract properties safely
   const c = card as any;
   const name = c?.name || c?.pokemon?.name || 'Pokemon Card';
-  const rawImage = c?.imageUrl || c?.pokemon?.images?.large || c?.pokemon?.images?.small || '';
-  const isFastThumbnailMode = false;
-  const imageUrl = (c?.pokemon?.images?.large || c?.images?.large || getCardImageUrl(rawImage, 'high'));
+  let rawImage = c?.imageUrl || c?.pokemon?.images?.large || c?.pokemon?.images?.small || c?.pokemon?.image || c?.image || '';
+  let computedImageUrl = c?.pokemon?.images?.large || c?.images?.large || '';
+  
+  if (!computedImageUrl) {
+    if (rawImage) {
+      computedImageUrl = getCardImageUrl(rawImage, 'high');
+    } else {
+      const cardId = c?.pokemon?.id || c?.id;
+      if (cardId) {
+        const parts = cardId.split('-');
+        const setId = parts[0].toLowerCase();
+        const num = parts[1] || '1';
+        let paddedNum = num;
+        if ((setId.startsWith('me') || setId.startsWith('sv') || setId.startsWith('sm') || setId.startsWith('xy') || setId.startsWith('swsh')) && !setId.endsWith('_ja')) {
+          paddedNum = num.padStart(3, '0');
+        }
+        computedImageUrl = `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/large`;
+      }
+    }
+  }
+  const imageUrl = computedImageUrl;
   // Force pure card (no slab) if in showcase mode per user request, and ignore 'N/A' grade
   const isSlabbed = !showcase && Boolean(c?.isSlabbed || (c?.slabGrade && c?.slabGrade !== 'N/A'));
 
@@ -293,14 +311,14 @@ export const InteractiveCard3D: React.FC<Props> = ({
                   >
                     {imageUrl ? (
                       <img
+                        className="w-full h-full object-contain block relative z-10"
                         src={imageUrl}
-                        alt={name}
-                        className="w-full h-full object-cover block"
-                        loading="lazy"
+                        alt={name || 'Pokemon Card Front'}
                         onError={(e) => {
                           const img = e.target as HTMLImageElement;
-                          const num = card?.localId || card?.id?.split('-')[1] || '1';
-                          const setId = card?.id?.split('-')[0] || 'swsh3';
+                          const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+                          const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+                          const setId = cardIdStr.split('-')[0] || 'swsh3';
                           handleCardImageError(img, setId, num);
                         }}
                       />
@@ -338,11 +356,11 @@ export const InteractiveCard3D: React.FC<Props> = ({
                       src={imageUrl}
                       alt={name}
                       className="w-full h-full object-cover block rounded-[var(--card-radius)]"
-                      loading="lazy"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
-                        const num = card?.localId || card?.id?.split('-')[1] || '1';
-                        const setId = card?.id?.split('-')[0] || 'swsh3';
+                        const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+                        const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+                        const setId = cardIdStr.split('-')[0] || 'swsh3';
                         handleCardImageError(img, setId, num);
                       }}
                     />
