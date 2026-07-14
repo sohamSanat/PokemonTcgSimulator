@@ -134,7 +134,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
     const defaultSymbol = getJapaneseSetDefaultSymbol(s.id);
     return {
       id: `${s.id}_ja`,
-      name: `${s.name} (${englishSub})`,
+      name: englishSub,
       logo: defaultLogo,
       symbol: defaultSymbol,
       cardCount: s.cardCount || { total: 100, official: 100 }
@@ -168,7 +168,7 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   const s = (jaSetsCache || []).find(item => item.id.toLowerCase() === rawId.toLowerCase());
   const nameMap = jaEnNamesCache || {};
   const englishSub = nameMap[rawId] || s?.name || rawId;
-  const setName = s ? `${s.name} (${englishSub})` : (rawId.toLowerCase() === 'sv2a' ? 'Pokémon Card 151 (Japanese)' : `Japanese Set ${rawId}`);
+  const setName = s ? englishSub : (rawId.toLowerCase() === 'sv2a' ? 'Pokémon Card 151' : `Japanese Set ${rawId}`);
   const totalCards = s?.cardCount?.total || s?.cardCount?.official || (rawId.toLowerCase() === 'sv2a' ? 210 : 80);
 
   let logoUrl = getJapaneseSetDefaultLogo(rawId);
