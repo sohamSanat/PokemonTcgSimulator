@@ -38,8 +38,14 @@ export function getJapaneseSetDefaultLogo(setId: string): string {
   if (rawId.startsWith('SV') || rawId.startsWith('SVK')) {
     return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
   }
+  if (rawId === 'SMP2') return '/setLogos/det1.png';
+  if (rawId === 'SM1+') return '/setLogos/sm1.png';
+  if (rawId === 'SM2+') return '/setLogos/sm2.png';
+  if (rawId === 'SM3+') return 'https://images.pokemontcg.io/sm35/logo.png';
+  if (rawId === 'SM4+') return '/setLogos/sm4.png';
+  if (rawId === 'SM5+') return '/setLogos/sm5.png';
   if (rawId.startsWith('SM') || rawId.startsWith('SMP')) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
+    return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId.toLowerCase())}_ja-logo/logo`;
   }
   if ((rawId.startsWith('S') && !rawId.startsWith('SV') && !rawId.startsWith('SM') && !rawId.startsWith('SVK')) || rawId.startsWith('SN')) {
     if (rawId === 'S8B') return 'https://images.scrydex.com/pokemon/swsh8b_ja-logo/logo';
@@ -73,7 +79,7 @@ export function getJapaneseSetDefaultSymbol(setId: string): string {
     return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
   }
   if (rawId.startsWith('SM') || rawId.startsWith('SMP')) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
+    return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId.toLowerCase())}_ja-symbol/symbol`;
   }
   if ((rawId.startsWith('S') && !rawId.startsWith('SV') && !rawId.startsWith('SM') && !rawId.startsWith('SVK')) || rawId.startsWith('SN')) {
     if (rawId === 'S8B') return 'https://images.scrydex.com/pokemon/swsh8b_ja-symbol/symbol';
@@ -108,7 +114,10 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   const filteredSets = allSets.filter(s => {
     const id = s.id;
     if (seriesId === 'sv_ja') {
-      return id.startsWith('SV') || id.startsWith('SVK') || id.startsWith('SVLS') || id.startsWith('SVLN');
+      if (id.startsWith('SVK') || id.startsWith('SVLS') || id.startsWith('SVLN')) return false;
+      const nameLow = (nameMap[id] || s.name || '').toLowerCase();
+      if (nameLow.includes('starter set') || nameLow.includes('deck build box') || nameLow.includes('starter deck') || nameLow.includes('build & battle') || s.name.includes('スターターセット') || s.name.includes('デッキビルド')) return false;
+      return id.startsWith('SV');
     }
     if (seriesId === 'swsh_ja') {
       return (id.startsWith('S') && !id.startsWith('SV') && !id.startsWith('SM') && !id.startsWith('SVK')) || id.startsWith('sn');

@@ -2786,6 +2786,7 @@ export default function App() {
                     if (nameLow.includes('promo')) return false;
                     if (nameLow.includes('trainer gallery') || nameLow.includes('galarian gallery')) return false;
                     if (nameLow.includes('my first battle') || nameLow.includes('scarlet & violet energy') || nameLow === 'energy' || ((selectedSeriesId.includes('sv') || selectedSeriesId === 'me') && nameLow.includes('energy'))) return false;
+                    if (selectedSeriesId.toLowerCase().includes('sv') && (nameLow.includes('starter set') || nameLow.includes('deck build box') || nameLow.includes('starter deck') || nameLow.includes('build & battle') || idLow.startsWith('svk') || idLow.startsWith('svls') || idLow.startsWith('svln'))) return false;
                     return (s.cardCount?.official || s.cardCount?.total || 0) >= 15;
                   }) || [];
                   return eligibleSets.length > 0 ? (

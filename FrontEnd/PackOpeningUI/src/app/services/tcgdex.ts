@@ -188,6 +188,7 @@ export async function fetchSeriesDetails(seriesId: string): Promise<TCGDexSeries
         if (idLow === 'sm115' || idLow === 'sm11.5' || idLow === 'sm11pt5' || (nameLow === 'hidden fates' && idLow !== 'sma' && idLow !== 'sm115sv')) return false;
         if (nameLow.includes('trainer gallery') || nameLow.includes('galarian gallery')) return false;
         if (nameLow.includes('my first battle') || nameLow.includes('scarlet & violet energy') || nameLow === 'energy' || ((seriesId.includes('sv') || seriesId === 'me') && nameLow.includes('energy'))) return false;
+        if (seriesId.toLowerCase().includes('sv') && (nameLow.includes('starter set') || nameLow.includes('deck build box') || nameLow.includes('starter deck') || nameLow.includes('build & battle') || idLow.startsWith('svk') || idLow.startsWith('svls') || idLow.startsWith('svln'))) return false;
         return true;
       });
   }
