@@ -12,6 +12,18 @@ let jaSetsCache: Array<{ id: string; name: string; cardCount: { total: number; o
 let jaEnNamesCache: Record<string, string> | null = null;
 let jaCardNamesCache: Record<string, string> | null = null;
 let pokeSpeciesDictCache: Record<string, string> | null = null;
+let jaSetPricesCache: Record<string, Record<string, number>> | null = null;
+
+export function getOfflineJapaneseCardPrice(setId: string = '', localId: string = ''): number | null {
+  if (!jaSetPricesCache) return null;
+  const rawId = setId.replace(/_ja$/i, '').toLowerCase();
+  const numKey = parseInt(localId, 10).toString();
+  const setMap = jaSetPricesCache[rawId] || jaSetPricesCache[`${rawId}_ja`];
+  if (setMap && typeof setMap[numKey] === 'number') {
+    return setMap[numKey];
+  }
+  return null;
+}
 
 async function loadJapaneseMetadata() {
   if (!jaSetsCache) {
@@ -56,10 +68,25 @@ async function loadJapaneseMetadata() {
       console.error('Failed to load /pokemon-ja-en-dict.json:', e);
     }
   }
+  if (!jaSetPricesCache || Object.keys(jaSetPricesCache).length === 0) {
+    try {
+      const res = await fetch('/ja-triplet-beat-prices.json');
+      if (res.ok) {
+        const sv1aPrices = await res.json();
+        jaSetPricesCache = {
+          'sv1a': sv1aPrices,
+          'sv1a_ja': sv1aPrices
+        };
+      }
+    } catch (e) {
+      console.error('Failed to load /ja-triplet-beat-prices.json:', e);
+    }
+  }
   if (!jaSetsCache) jaSetsCache = [];
   if (!jaEnNamesCache) jaEnNamesCache = {};
   if (!jaCardNamesCache) jaCardNamesCache = {};
   if (!pokeSpeciesDictCache) pokeSpeciesDictCache = {};
+  if (!jaSetPricesCache) jaSetPricesCache = {};
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
@@ -432,12 +459,24 @@ export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean =
     return scrydexCardFullCache.get(cardId)!;
   }
   
+  await loadJapaneseMetadata();
+  const parts = cardId.split('-');
+  const rawSetId = parts[0].replace(/_ja$/i, '').toLowerCase();
+  const localId = parts[1] || '1';
+  const pcPrice = getOfflineJapaneseCardPrice(rawSetId, localId);
+  const pricingObj = pcPrice ? {
+    tcgplayer: { holofoil: { marketPrice: pcPrice }, normal: { marketPrice: pcPrice } },
+    cardmarket: { trend: pcPrice, unit: 'USD' }
+  } : undefined;
+
   const mappedCard: TCGDexCardFull = {
     id: cardId,
-    localId: cardId.split('-')[1] || '1',
-    name: `Pokémon 151 Card ${cardId.split('-')[1]}`,
+    localId,
+    name: (jaCardNamesCache && (jaCardNamesCache[cardId] || jaCardNamesCache[`${rawSetId}_ja-${localId}`] || jaCardNamesCache[`${rawSetId}-${localId}`])) || `Card #${localId}`,
     image: `https://images.scrydex.com/pokemon/${cardId}/large`,
-    rarity: 'Common',
+    rarity: getJapaneseCardRarity(localId, 73, 103),
+    pricing: pricingObj,
+    prices: pcPrice ? [{ type: 'market', market: pcPrice }] : undefined
   };
   
   scrydexCardFullCache.set(cardId, mappedCard);
@@ -879,6 +918,13 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       jaCardNamesCache[`${rawSetId}-${p.summary.localId}`]
     )) || translateJapaneseName(p.summary.name);
 
+    const numId = p.summary.localId || exactName.match(/#([0-9]+)/)?.[1] || '';
+    const pcPrice = getOfflineJapaneseCardPrice(rawSetId, numId);
+    const pricingObj = pcPrice ? {
+      tcgplayer: { holofoil: { marketPrice: pcPrice }, normal: { marketPrice: pcPrice } },
+      cardmarket: { trend: pcPrice, unit: 'USD' }
+    } : undefined;
+
     return {
       id: `${p.summary.id}-${idx}-${Date.now()}`,
       localId: p.summary.localId,
@@ -886,6 +932,8 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       rarity: (p.summary.rarity && p.summary.rarity !== 'C' && p.summary.rarity !== 'U' && p.summary.rarity !== 'Common' && p.summary.rarity !== 'Uncommon') ? p.summary.rarity : (p.defaultRarity || p.summary.rarity || 'Common'),
       isReverseHolo: p.isReverseHolo,
       image: p.summary.image,
+      pricing: pricingObj,
+      prices: pcPrice ? [{ type: 'market', market: pcPrice }] : undefined,
       images: {
         small: p.summary.image,
         large: p.summary.image

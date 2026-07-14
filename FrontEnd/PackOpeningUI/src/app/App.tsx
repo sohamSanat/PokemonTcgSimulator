@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet } from './services/scrydex';
+import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getOfflineJapaneseCardPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -321,6 +321,18 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
 };
 
 const getRealCardPrice = (poke: PokemonCard): number => {
+  if (poke.id) {
+    const parts = poke.id.split('-');
+    const rawSetId = parts[0].replace(/_ja$/i, '').toLowerCase();
+    const localId = poke.localId || parts[1] || '';
+    if (rawSetId === 'sv1a' || poke.id.includes('_ja') || /ja$/i.test(parts[0])) {
+      const pcPrice = getOfflineJapaneseCardPrice(rawSetId, localId);
+      if (pcPrice !== null && pcPrice > 0) {
+        return Number(pcPrice.toFixed(2));
+      }
+    }
+  }
+
   // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
   // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
   // and the error fallback would overwrite the correct Scrydex CDN image URL.
@@ -446,16 +458,16 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   }
 
   const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
-  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold');
+  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold') || rarity === 'SAR' || rarity === 'SR' || rarity === 'UR';
   const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
 
   if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
     return Number((95.00 + normalizedHash * 160.00).toFixed(2));
   } else if (isSecretOrAlt) {
     return Number((32.00 + normalizedHash * 55.00).toFixed(2));
-  } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
+  } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare') || rarity === 'RR') {
     return Number((4.50 + normalizedHash * 14.00).toFixed(2));
-  } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
+  } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo') || rarity === 'AR' || rarity === 'R') {
     return Number((0.75 + normalizedHash * 3.50).toFixed(2));
   } else {
     return Number((0.01 + Math.random() * 0.09).toFixed(2));
