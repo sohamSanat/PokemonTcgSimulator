@@ -44,8 +44,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
 
-  const [selectedVendor, setSelectedVendor] = useState({
+  const [selectedVendor, setSelectedVendor] = useState<any>({
     name: "VINTAGEVAULT TCG",
+    type: "vendor",
     rating: "4.8 / 5",
     activeListings: "3,450+ Items",
     completedTrans: "12,800+",
@@ -222,31 +223,199 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     };
   }, []);
 
+  const getBoothType = (name: string, explicitType?: string) => {
+    if (explicitType) return explicitType;
+    const n = (name || "").toUpperCase();
+    if (n.includes("STAGE") || n.includes("AUCTION")) return "auction";
+    if (n.includes("SIGNING") || n.includes("AUTOGRAPH") || n.includes("SKETCH") || n.includes("ARTIST ALLEY")) return "signing";
+    if (n.includes("TOURNAMENT") || n.includes("TRADING TABLES")) return "tournament";
+    if (n.includes("SLAB CITY") || n.includes("HELP DESK") || n.includes("MERCH") || n.includes("INFO")) return "service";
+    if (n.includes("DISPLAY") || n.includes("MUSEUM") || n.includes("GALLERY")) return "gallery";
+    return "vendor";
+  };
+
+  const handleBoothSelect = (vendorObj: any) => {
+    const fullObj = {
+      ...vendorObj,
+      type: getBoothType(vendorObj.name, vendorObj.type)
+    };
+    setSelectedVendor(fullObj);
+    if (window.innerWidth < 1024) setMobileSection('vendor');
+  };
+
   const handleBoothHover = (vendorObj: any) => {
-    setSelectedVendor(vendorObj);
-    setHoveredBooth(vendorObj);
+    const fullObj = {
+      ...vendorObj,
+      type: getBoothType(vendorObj.name, vendorObj.type)
+    };
+    setSelectedVendor(fullObj);
+    setHoveredBooth(fullObj);
   };
 
   const handleBoothLeave = () => {
     setHoveredBooth(null);
   };
 
-  const marketplaceCards = [
-    { name: "Charizard Base Set Holo", grade: "PSA 10", price: 12450.0, change: "+3.4%", id: "base1-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
-    { name: "Pikachu Illustrator Promo", grade: "BGS 9.5", price: 85000.0, change: "+12.1%", id: "promo-1", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
-    { name: "Lugia 1st Edition Neo Genesis", grade: "PSA 10", price: 18200.0, change: "+1.8%", id: "neo1-9", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
-    { name: "Umbreon VMAX Alt Art (Moonbreon)", grade: "PSA 10", price: 1420.0, change: "+5.6%", id: "evs-215", img: "https://images.scrydex.com/pokemon/swsh7-215/large" },
-    { name: "Rayquaza Gold Star Holo", grade: "CGC 9.5", price: 9800.0, change: "-0.8%", id: "ex8-107", img: "https://images.scrydex.com/pokemon/ex8-107/large" },
-    { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
-    { name: "Gengar & Mimikyu GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-165", img: "https://images.scrydex.com/pokemon/sm9-165/large" },
-    { name: "Blastoise 1st Edition Shadowless", grade: "PSA 9", price: 7400.0, change: "+0.5%", id: "base1-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
-    { name: "Giratina V Alt Art Lost Origin", grade: "PSA 10", price: 650.0, change: "+4.1%", id: "lor-186", img: "https://images.scrydex.com/pokemon/swsh11-186/large" },
-    { name: "Shining Charizard Neo Destiny", grade: "PSA 9", price: 3800.0, change: "+1.2%", id: "neo4-107", img: "https://images.scrydex.com/pokemon/neo4-107/large" },
-    { name: "Poncho-wearing Pikachu (Charizard)", grade: "PSA 10", price: 4600.0, change: "+9.4%", id: "xy-p-203", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
-    { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" },
-  ];
+  // 50+ Curated Catalog Cards Generator per Vendor (Diverse Specialties & Price Ranges: $5-$50 budget, $60-$280 mid, $300-$1800 grails across English & Japanese)
+  const activeVendorCards = useMemo(() => {
+    const vName = (selectedVendor?.name || "").toUpperCase();
+    
+    // Master thematic pools
+    const pools = {
+      vintageEng: [
+        { name: "Charizard Base Set Holo", grade: "PSA 10", price: 12450.0, change: "+3.4%", id: "base1-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
+        { name: "Blastoise 1st Ed Shadowless", grade: "PSA 9", price: 7400.0, change: "+0.5%", id: "base1-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
+        { name: "Lugia 1st Ed Neo Genesis", grade: "PSA 10", price: 18200.0, change: "+1.8%", id: "neo1-9", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
+        { name: "Shining Charizard Neo Destiny", grade: "PSA 9", price: 3800.0, change: "+1.2%", id: "neo4-107", img: "https://images.scrydex.com/pokemon/neo4-107/large" },
+        { name: "Venusaur 1st Ed Base Set", grade: "PSA 9", price: 2100.0, change: "+4.1%", id: "base1-15", img: "https://images.scrydex.com/pokemon/base1-15/large" },
+        { name: "Alakazam Base Set Holo", grade: "PSA 9", price: 340.0, change: "+2.0%", id: "base1-1", img: "https://images.scrydex.com/pokemon/base1-1/large" },
+        { name: "Gengar Fossil Holo 1st Ed", grade: "PSA 9", price: 420.0, change: "+5.1%", id: "fo1-5", img: "https://images.scrydex.com/pokemon/fo1-5/large" },
+        { name: "Dragonite Fossil Holo", grade: "PSA 9", price: 310.0, change: "-0.4%", id: "fo1-4", img: "https://images.scrydex.com/pokemon/fo1-4/large" },
+        { name: "Pikachu E3 Stamp Promo", grade: "PSA 9", price: 185.0, change: "+8.3%", id: "pr-1", img: "https://images.scrydex.com/pokemon/basep-1/large" },
+        { name: "Mewtwo Base Set Holo", grade: "PSA 8", price: 120.0, change: "+1.1%", id: "base1-10", img: "https://images.scrydex.com/pokemon/base1-10/large" },
+        { name: "Zapdos 1st Ed Fossil Holo", grade: "PSA 9", price: 240.0, change: "+3.2%", id: "fo1-15", img: "https://images.scrydex.com/pokemon/fo1-15/large" },
+        { name: "Dark Charizard Team Rocket", grade: "PSA 9", price: 480.0, change: "+6.4%", id: "tr1-4", img: "https://images.scrydex.com/pokemon/tr1-4/large" },
+        { name: "Dark Dragonite Team Rocket", grade: "PSA 9", price: 290.0, change: "+2.8%", id: "tr1-5", img: "https://images.scrydex.com/pokemon/tr1-5/large" },
+        { name: "Dark Raichu Secret Rare 1st Ed", grade: "PSA 9", price: 360.0, change: "+4.5%", id: "tr1-83", img: "https://images.scrydex.com/pokemon/tr1-83/large" },
+        { name: "Sabrina's Gengar Gym Heroes", grade: "PSA 9", price: 340.0, change: "+7.1%", id: "gh1-14", img: "https://images.scrydex.com/pokemon/gh1-14/large" },
+        { name: "Blaine's Moltres Gym Heroes", grade: "PSA 9", price: 195.0, change: "+1.9%", id: "gh1-1", img: "https://images.scrydex.com/pokemon/gh1-1/large" },
+        { name: "Erika's Venusaur Gym Challenge", grade: "PSA 9", price: 280.0, change: "+3.8%", id: "gc1-4", img: "https://images.scrydex.com/pokemon/gc1-4/large" },
+        { name: "Typhlosion 1st Ed Neo Genesis", grade: "PSA 9", price: 680.0, change: "+5.2%", id: "neo1-17", img: "https://images.scrydex.com/pokemon/neo1-17/large" },
+        { name: "Pichu 1st Ed Neo Genesis", grade: "PSA 9", price: 220.0, change: "+2.4%", id: "neo1-12", img: "https://images.scrydex.com/pokemon/neo1-12/large" },
+        { name: "Shining Mewtwo Neo Destiny", grade: "PSA 9", price: 1150.0, change: "+8.9%", id: "neo4-109", img: "https://images.scrydex.com/pokemon/neo4-109/large" },
+        { name: "Shining Celebi Neo Destiny", grade: "PSA 9", price: 540.0, change: "+4.0%", id: "neo4-106", img: "https://images.scrydex.com/pokemon/neo4-106/large" }
+      ],
+      vintageJpn: [
+        { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "jp-base-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
+        { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "jp-coro-1", img: "https://images.scrydex.com/pokemon/sm35-78/large" },
+        { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "jp-neo2-1", img: "https://images.scrydex.com/pokemon/neo2-1/large" },
+        { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "jp-web-1", img: "https://images.scrydex.com/pokemon/fo1-5/large" },
+        { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "jp-vs-1", img: "https://images.scrydex.com/pokemon/base1-4/large" },
+        { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "jp-ecard-1", img: "https://images.scrydex.com/pokemon/skyridge-146/large" },
+        { name: "Crystal Ho-Oh e-Series (JPN)", grade: "PSA 9", price: 1120.0, change: "+5.3%", id: "jp-ecard-2", img: "https://images.scrydex.com/pokemon/skyridge-149/large" },
+        { name: "Japanese Vending Series 3 Mewtwo", grade: "PSA 10", price: 340.0, change: "+4.2%", id: "jp-vend-1", img: "https://images.scrydex.com/pokemon/base1-10/large" },
+        { name: "Japanese Vending Series 1 Pikachu", grade: "PSA 10", price: 280.0, change: "+6.7%", id: "jp-vend-2", img: "https://images.scrydex.com/pokemon/base1-58/large" },
+        { name: "Imakuni's Doduo Vending Promo", grade: "PSA 10", price: 210.0, change: "+3.1%", id: "jp-vend-3", img: "https://images.scrydex.com/pokemon/gym1-112/large" },
+        { name: "GB Dragonite Promo Holo (JPN)", grade: "PSA 10", price: 390.0, change: "+8.0%", id: "jp-gb-1", img: "https://images.scrydex.com/pokemon/fo1-4/large" },
+        { name: "CD Promo Charizard Holo (JPN)", grade: "PSA 10", price: 650.0, change: "+9.2%", id: "jp-cd-1", img: "https://images.scrydex.com/pokemon/base1-4/large" },
+        { name: "CD Promo Blastoise Holo (JPN)", grade: "PSA 10", price: 380.0, change: "+5.4%", id: "jp-cd-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
+        { name: "CD Promo Venusaur Holo (JPN)", grade: "PSA 10", price: 360.0, change: "+4.9%", id: "jp-cd-3", img: "https://images.scrydex.com/pokemon/base1-15/large" },
+        { name: "Japanese Gym Leader Erika Holo", grade: "PSA 9", price: 145.0, change: "+2.8%", id: "jp-gym-1", img: "https://images.scrydex.com/pokemon/gc1-16/large" },
+        { name: "Kanji Lugia Neo Genesis (JPN)", grade: "PSA 9", price: 420.0, change: "+7.5%", id: "jp-neo1-1", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
+        { name: "Japanese Neo Discovery Umbreon Holo", grade: "PSA 9", price: 380.0, change: "+6.8%", id: "jp-neo2-2", img: "https://images.scrydex.com/pokemon/neo2-13/large" },
+        { name: "Japanese Blaine's Arcanine Holo", grade: "PSA 9", price: 165.0, change: "+3.5%", id: "jp-gym-2", img: "https://images.scrydex.com/pokemon/gh1-1/large" }
+      ],
+      modernAlt: [
+        { name: "Umbreon VMAX Alt Art (Moonbreon)", grade: "PSA 10", price: 1420.0, change: "+5.6%", id: "evs-215", img: "https://images.scrydex.com/pokemon/swsh7-215/large" },
+        { name: "Giratina V Alt Art Lost Origin", grade: "PSA 10", price: 650.0, change: "+4.1%", id: "lor-186", img: "https://images.scrydex.com/pokemon/swsh11-186/large" },
+        { name: "Rayquaza VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 580.0, change: "+6.2%", id: "evs-218", img: "https://images.scrydex.com/pokemon/swsh7-218/large" },
+        { name: "Lugia V Alt Art Silver Tempest", grade: "PSA 10", price: 320.0, change: "+3.9%", id: "sit-186", img: "https://images.scrydex.com/pokemon/swsh12-186/large" },
+        { name: "Charizard V Alt Art Brilliant Stars", grade: "PSA 10", price: 240.0, change: "+2.1%", id: "brs-154", img: "https://images.scrydex.com/pokemon/swsh9-154/large" },
+        { name: "Sylveon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 310.0, change: "+4.8%", id: "evs-212", img: "https://images.scrydex.com/pokemon/swsh7-212/large" },
+        { name: "Gengar VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 390.0, change: "+7.4%", id: "fst-271", img: "https://images.scrydex.com/pokemon/swsh8-271/large" },
+        { name: "Mewtwo V Alt Art Pokemon GO", grade: "PSA 10", price: 110.0, change: "+1.9%", id: "pgo-72", img: "https://images.scrydex.com/pokemon/pgo-72/large" },
+        { name: "Espeon VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 290.0, change: "+5.0%", id: "fst-270", img: "https://images.scrydex.com/pokemon/swsh8-270/large" },
+        { name: "Leafeon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 270.0, change: "+4.3%", id: "evs-205", img: "https://images.scrydex.com/pokemon/swsh7-205/large" },
+        { name: "Dragonite V Alt Art Evolving Skies", grade: "PSA 10", price: 165.0, change: "+3.1%", id: "evs-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
+        { name: "Aerodactyl V Alt Art Lost Origin", grade: "PSA 10", price: 155.0, change: "+2.8%", id: "lor-180", img: "https://images.scrydex.com/pokemon/swsh11-180/large" },
+        { name: "Charizard ex SIR Obsidian Flames", grade: "PSA 10", price: 165.0, change: "+4.4%", id: "obf-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
+        { name: "Mew ex SIR 151", grade: "PSA 10", price: 140.0, change: "+3.2%", id: "meo-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" }
+      ],
+      jpnModern: [
+        { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, change: "+12.4%", id: "jp-iono-1", img: "https://images.scrydex.com/pokemon/sv2d-96/large" },
+        { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, change: "+8.1%", id: "jp-miriam-1", img: "https://images.scrydex.com/pokemon/sv1v-105/large" },
+        { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, change: "+9.6%", id: "jp-mb-pika", img: "https://images.scrydex.com/pokemon/sv3pt5-25/large" },
+        { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, change: "+7.2%", id: "jp-mb-gen", img: "https://images.scrydex.com/pokemon/sv3pt5-94/large" },
+        { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, change: "+5.4%", id: "jp-erika-1", img: "https://images.scrydex.com/pokemon/sv3pt5-206/large" },
+        { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, change: "+6.8%", id: "jp-zard-sar", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
+        { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, change: "+4.5%", id: "jp-mew-sar", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
+        { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, change: "+3.8%", id: "jp-vstar-pika", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
+        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, change: "+9.4%", id: "xy-p-203", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
+        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, change: "+5.1%", id: "jp-shibuya", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
+        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, change: "+8.9%", id: "jp-stamp-pika", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
+        { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, change: "+4.2%", id: "jp-climax-zard", img: "https://images.scrydex.com/pokemon/swsh8pt5-260/large" }
+      ],
+      tagTeams: [
+        { name: "Latios & Latias GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-170", img: "https://images.scrydex.com/pokemon/sm9-170/large" },
+        { name: "Gengar & Mimikyu GX Alt Art", grade: "PSA 10", price: 450.0, change: "+6.4%", id: "sm9-165", img: "https://images.scrydex.com/pokemon/sm9-165/large" },
+        { name: "Magikarp & Wailord GX Alt Art", grade: "PSA 10", price: 380.0, change: "+5.8%", id: "sm9-161", img: "https://images.scrydex.com/pokemon/sm9-161/large" },
+        { name: "Charizard & Reshiram GX Alt Art", grade: "PSA 10", price: 310.0, change: "+4.5%", id: "sm10-214", img: "https://images.scrydex.com/pokemon/sm10-214/large" },
+        { name: "Mewtwo & Mew GX Alt Art", grade: "PSA 10", price: 280.0, change: "+5.1%", id: "sm11-222", img: "https://images.scrydex.com/pokemon/sm11-222/large" },
+        { name: "Arceus & Dialga & Palkia GX Alt Art", grade: "PSA 10", price: 230.0, change: "+3.7%", id: "sm12-221", img: "https://images.scrydex.com/pokemon/sm12-221/large" },
+        { name: "Solgaleo & Lunala GX Full Art", grade: "PSA 10", price: 165.0, change: "+2.9%", id: "sm12-216", img: "https://images.scrydex.com/pokemon/sm12-216/large" },
+        { name: "Blastoise & Piplup GX Alt Art", grade: "PSA 10", price: 195.0, change: "+4.1%", id: "sm12-215", img: "https://images.scrydex.com/pokemon/sm12-215/large" }
+      ],
+      goldStarsEx: [
+        { name: "Rayquaza Gold Star Holo Deoxys", grade: "CGC 9.5", price: 9800.0, change: "-0.8%", id: "ex8-107", img: "https://images.scrydex.com/pokemon/ex8-107/large" },
+        { name: "Charizard Gold Star Delta Species", grade: "PSA 9", price: 2900.0, change: "+5.4%", id: "ex13-100", img: "https://images.scrydex.com/pokemon/ex13-100/large" },
+        { name: "Mew Gold Star Holo Dragon Frontiers", grade: "PSA 9", price: 1250.0, change: "+4.1%", id: "ex15-101", img: "https://images.scrydex.com/pokemon/ex15-101/large" },
+        { name: "Pikachu Gold Star Holo Holon Phantoms", grade: "PSA 9", price: 1480.0, change: "+6.2%", id: "ex13-104", img: "https://images.scrydex.com/pokemon/ex13-104/large" },
+        { name: "Torchic Gold Star Holo Team Rocket Returns", grade: "PSA 9", price: 1100.0, change: "+3.8%", id: "ex7-108", img: "https://images.scrydex.com/pokemon/ex7-108/large" },
+        { name: "Lugia ex Unseen Forces Holo", grade: "PSA 9", price: 890.0, change: "+5.0%", id: "ex10-105", img: "https://images.scrydex.com/pokemon/ex10-105/large" },
+        { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
+        { name: "Pikachu Illustrator Promo", grade: "BGS 9.5", price: 85000.0, change: "+12.1%", id: "promo-1", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
+        { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" }
+      ]
+    };
 
-  const filteredCards = marketplaceCards.filter((c) => {
+    // Generate budget ($5-$48) and mid-range ($50-$240) singles across both English & Japanese
+    const budgetSingles = [
+      { name: "Pikachu IR Paldea Evolved", grade: "Raw NM", price: 38.0, change: "+3.1%", id: "bgt-1", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
+      { name: "Charmander IR 151", grade: "Raw NM", price: 32.0, change: "+4.2%", id: "bgt-2", img: "https://images.scrydex.com/pokemon/sv3pt5-168/large" },
+      { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
+      { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
+      { name: "Snorlax IR 151 Promo", grade: "PSA 9", price: 24.0, change: "+0.8%", id: "bgt-5", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
+      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://images.scrydex.com/pokemon/sv3pt5-133/large" },
+      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://images.scrydex.com/pokemon/sv3pt5-149/large" },
+      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
+      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", img: "https://images.scrydex.com/pokemon/gc1-16/large" },
+      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", img: "https://images.scrydex.com/pokemon/base1-58/large" },
+      { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
+      { name: "Magikarp IR Paldea Evolved", grade: "PSA 9", price: 110.0, change: "+7.8%", id: "bgt-12", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
+      { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
+      { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
+      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
+      { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", img: "https://images.scrydex.com/pokemon/base1-63/large" },
+      { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", img: "https://images.scrydex.com/pokemon/base1-46/large" },
+      { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", img: "https://images.scrydex.com/pokemon/ju1-10/large" },
+      { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", img: "https://images.scrydex.com/pokemon/fo1-6/large" },
+      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", img: "https://images.scrydex.com/pokemon/neo1-9/large" }
+    ];
+
+    // Build specialized core array depending on vendor specialty
+    let corePool: any[] = [];
+    if (vName.includes("VINTAGEVAULT") || vName.includes("JAPANESE HIGH CLASS") || vName.includes("DOVAKINJI")) {
+      corePool = [...pools.vintageJpn, ...pools.jpnModern, ...pools.vintageEng];
+    } else if (vName.includes("ALPHA GRAILS") || vName.includes("RETRO") || vName.includes("CARBANDA") || vName.includes("WIKRATS")) {
+      corePool = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn];
+    } else if (vName.includes("MODERN ALT") || vName.includes("HIS NAME") || vName.includes("UDS")) {
+      corePool = [...pools.modernAlt, ...pools.jpnModern, ...pools.tagTeams];
+    } else if (vName.includes("GOLD STAR") || vName.includes("SPECS") || vName.includes("BRODES")) {
+      corePool = [...pools.goldStarsEx, ...pools.tagTeams, ...pools.vintageEng];
+    } else {
+      corePool = [...pools.modernAlt, ...pools.vintageJpn, ...pools.vintageEng, ...pools.tagTeams];
+    }
+
+    // Expand core inventory up to exactly 56 cards per vendor with budget, mid, and high tier varieties
+    const result: any[] = [...corePool];
+    let counter = 0;
+    while (result.length < 56) {
+      counter++;
+      const bItem = budgetSingles[counter % budgetSingles.length];
+      const isJpn = counter % 3 === 0;
+      const priceOffset = (counter * 17) % 180;
+      result.push({
+        ...bItem,
+        id: `${selectedVendor?.booth || 'booth'}-${counter}`,
+        name: isJpn && !bItem.name.includes("Japanese") ? `Japanese ${bItem.name} (Kanji)` : bItem.name,
+        grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
+        price: bItem.price + priceOffset,
+      });
+    }
+    return result;
+  }, [selectedVendor?.name, selectedVendor?.booth]);
+
+  const filteredCards = activeVendorCards.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
     if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
@@ -414,13 +583,26 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           )}
 
           {/* Catalog Header with Scroll Notice */}
-          <div className="flex items-center justify-between bg-[#111418] px-3 py-1.5 border border-[#1e293b] rounded-lg shrink-0 text-[11px] font-mono">
-            <span className="text-white font-bold flex items-center gap-1.5">
-              📦 EXPO CATALOG ({filteredCards.length} CARDS)
-            </span>
-            <span className="text-[#38bdf8] font-bold animate-pulse flex items-center gap-1">
-              📜 SCROLL DOWN FOR MORE ▾
-            </span>
+          <div className="flex flex-col gap-1.5 bg-[#111418] px-3 py-2 border border-[#1e293b] rounded-lg shrink-0 text-[11px] font-mono">
+            <div className="flex items-center justify-between">
+              <span className="text-white font-bold flex items-center gap-1.5 truncate">
+                {selectedVendor?.type !== 'vendor' ? (
+                  <span className="text-amber-400 flex items-center gap-1.5 truncate">
+                    🎪 {selectedVendor?.name} (EXPERIENCE PAVILION)
+                  </span>
+                ) : (
+                  <span className="truncate">📦 {selectedVendor?.name?.toUpperCase()} CATALOG ({filteredCards.length} CARDS)</span>
+                )}
+              </span>
+              <span className="text-[#38bdf8] font-bold animate-pulse flex items-center gap-1 shrink-0 ml-2">
+                📜 SCROLL DOWN ▾
+              </span>
+            </div>
+            {selectedVendor?.type !== 'vendor' && (
+              <div className="text-[10px] text-[#94a3b8] bg-black/50 p-2 rounded border border-amber-500/30 leading-tight">
+                ⚡ <strong className="text-amber-300">Non-Vendor Convention Pavilion:</strong> Dedicated to live event experiences E.g. auctions, signings, or exhibits. Below is general convention floor inventory! Click any vendor booth on the map to view their 50+ card catalog.
+              </div>
+            )}
           </div>
 
           {/* MARKETPLACE CARDS GRID — 2 COLS, FULL CARD, SCROLLABLE */}
@@ -692,7 +874,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "MAIN STAGE & AUCTION ARENA", rating: "5.0 / 5", activeListings: "125 Grails Live", completedTrans: "50,000+", booth: "Zone 1", specialties: ["Live Auctions", "Celebrity Signings", "Trophy Card Reveals"], discountScore: 95 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "MAIN STAGE & AUCTION ARENA", rating: "5.0 / 5", activeListings: "125 Grails Live", completedTrans: "50,000+", booth: "Zone 1", specialties: ["Live Auctions", "Celebrity Signings", "Trophy Card Reveals"], discountScore: 95 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "MAIN STAGE & AUCTION ARENA", rating: "5.0 / 5", activeListings: "125 Grails Live", completedTrans: "50,000+", booth: "Zone 1", specialties: ["Live Auctions", "Celebrity Signings", "Trophy Card Reveals"], discountScore: 95 })}
               />
               <circle cx="55" cy="55" r="10" fill="#38bdf8" fillOpacity="0.2" stroke="#38bdf8" strokeWidth="1.5" />
               <text x="55" y="59" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="monospace" fontWeight="900">1</text>
@@ -705,7 +887,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "ARTIST ALLEY & SIGNINGS", rating: "5.0 / 5", activeListings: "450 Signed Prints", completedTrans: "9,200+", booth: "Zone 2", specialties: ["Mitsuhiro Arita Signings", "Custom Sketch Cards", "Original Art"], discountScore: 65 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "ARTIST ALLEY & SIGNINGS", rating: "5.0 / 5", activeListings: "450 Signed Prints", completedTrans: "9,200+", booth: "Zone 2", specialties: ["Mitsuhiro Arita Signings", "Custom Sketch Cards", "Original Art"], discountScore: 65 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "ARTIST ALLEY & SIGNINGS", rating: "5.0 / 5", activeListings: "450 Signed Prints", completedTrans: "9,200+", booth: "Zone 2", specialties: ["Mitsuhiro Arita Signings", "Custom Sketch Cards", "Original Art"], discountScore: 65 })}
               />
               <circle cx="55" cy="148" r="8" fill="#c084fc" fillOpacity="0.2" stroke="#c084fc" strokeWidth="1" />
               <text x="55" y="152" textAnchor="middle" fill="#c084fc" fontSize="8" fontFamily="monospace" fontWeight="bold">2</text>
@@ -717,7 +899,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "ARTIST ALLEY B — SKETCH CARDS", rating: "4.8 / 5", activeListings: "320 Prints", completedTrans: "6,100+", booth: "Zone 2B", specialties: ["Sketch Cards", "Watercolors", "Fan Art Prints"], discountScore: 60 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "ARTIST ALLEY B — SKETCH CARDS", rating: "4.8 / 5", activeListings: "320 Prints", completedTrans: "6,100+", booth: "Zone 2B", specialties: ["Sketch Cards", "Watercolors", "Fan Art Prints"], discountScore: 60 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "ARTIST ALLEY B — SKETCH CARDS", rating: "4.8 / 5", activeListings: "320 Prints", completedTrans: "6,100+", booth: "Zone 2B", specialties: ["Sketch Cards", "Watercolors", "Fan Art Prints"], discountScore: 60 })}
               />
               <circle cx="55" cy="218" r="8" fill="#c084fc" fillOpacity="0.15" stroke="#c084fc" strokeWidth="0.8" />
               <text x="55" y="222" textAnchor="middle" fill="#c084fc" fontSize="8" fontFamily="monospace" fontWeight="bold">2</text>
@@ -728,7 +910,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#2dd4bf] hover:fill-[#2dd4bf]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "AUTOGRAPH PIT", rating: "4.9 / 5", activeListings: "Celebrity Meet & Greet", completedTrans: "15,000+", booth: "Zone 3", specialties: ["Pro Player Signings", "Illustrator Autographs", "Photo Ops"], discountScore: 80 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "AUTOGRAPH PIT", rating: "4.9 / 5", activeListings: "Celebrity Meet & Greet", completedTrans: "15,000+", booth: "Zone 3", specialties: ["Pro Player Signings", "Illustrator Autographs", "Photo Ops"], discountScore: 80 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "AUTOGRAPH PIT", rating: "4.9 / 5", activeListings: "Celebrity Meet & Greet", completedTrans: "15,000+", booth: "Zone 3", specialties: ["Pro Player Signings", "Illustrator Autographs", "Photo Ops"], discountScore: 80 })}
               />
               <circle cx="210" cy="55" r="10" fill="#2dd4bf" fillOpacity="0.2" stroke="#2dd4bf" strokeWidth="1.5" />
               <text x="210" y="59" textAnchor="middle" fill="#2dd4bf" fontSize="10" fontFamily="monospace" fontWeight="900">3</text>
@@ -741,7 +923,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#fbbf24] hover:fill-[#fbbf24]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TOURNAMENT AREA A", rating: "5.0 / 5", activeListings: "64-Player Bracket", completedTrans: "3,200+", booth: "Zone 4", specialties: ["Standard Format", "Expanded", "Draft Pods"], discountScore: 70 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "TOURNAMENT AREA A", rating: "5.0 / 5", activeListings: "64-Player Bracket", completedTrans: "3,200+", booth: "Zone 4", specialties: ["Standard Format", "Expanded", "Draft Pods"], discountScore: 70 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "TOURNAMENT AREA A", rating: "5.0 / 5", activeListings: "64-Player Bracket", completedTrans: "3,200+", booth: "Zone 4", specialties: ["Standard Format", "Expanded", "Draft Pods"], discountScore: 70 })}
               />
               <circle cx="340" cy="55" r="10" fill="#fbbf24" fillOpacity="0.2" stroke="#fbbf24" strokeWidth="1.5" />
               <text x="340" y="59" textAnchor="middle" fill="#fbbf24" fontSize="10" fontFamily="monospace" fontWeight="900">4</text>
@@ -754,7 +936,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "INFO & CONVENTION HELP DESK", rating: "5.0 / 5", activeListings: "Event Guide", completedTrans: "10,000+", booth: "Zone 5 Desk", specialties: ["Map Assistance", "Lost & Found", "Event Schedules"], discountScore: 90 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "INFO & CONVENTION HELP DESK", rating: "5.0 / 5", activeListings: "Event Guide", completedTrans: "10,000+", booth: "Zone 5 Desk", specialties: ["Map Assistance", "Lost & Found", "Event Schedules"], discountScore: 90 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "INFO & CONVENTION HELP DESK", rating: "5.0 / 5", activeListings: "Event Guide", completedTrans: "10,000+", booth: "Zone 5 Desk", specialties: ["Map Assistance", "Lost & Found", "Event Schedules"], discountScore: 90 })}
               />
               <text x="490" y="75" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace">5</text>
               <text x="490" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Info Desk</text>
@@ -763,7 +945,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "OFFICIAL MERCHANDISE STORE", rating: "4.9 / 5", activeListings: "1,200 Merch Items", completedTrans: "25,000+", booth: "Zone 8 Merch", specialties: ["Convention Hoodies", "Playmats", "Limited Pins"], discountScore: 85 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "OFFICIAL MERCHANDISE STORE", rating: "4.9 / 5", activeListings: "1,200 Merch Items", completedTrans: "25,000+", booth: "Zone 8 Merch", specialties: ["Convention Hoodies", "Playmats", "Limited Pins"], discountScore: 85 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "OFFICIAL MERCHANDISE STORE", rating: "4.9 / 5", activeListings: "1,200 Merch Items", completedTrans: "25,000+", booth: "Zone 8 Merch", specialties: ["Convention Hoodies", "Playmats", "Limited Pins"], discountScore: 85 })}
               />
               <text x="565" y="75" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace">8</text>
               <text x="565" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Merch</text>
@@ -773,7 +955,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TCG VENDORS (A-M)", rating: "4.7 / 5", activeListings: "8,500+ Items", completedTrans: "42,000+", booth: "Zone 5", specialties: ["Alpha Grails", "VintageVault", "Modern Grails Co."], discountScore: 75 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "TCG VENDORS (A-M)", rating: "4.7 / 5", activeListings: "8,500+ Items", completedTrans: "42,000+", booth: "Zone 5", specialties: ["Alpha Grails", "VintageVault", "Modern Grails Co."], discountScore: 75 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "TCG VENDORS (A-M)", rating: "4.7 / 5", activeListings: "8,500+ Items", completedTrans: "42,000+", booth: "Zone 5", specialties: ["Alpha Grails", "VintageVault", "Modern Grails Co."], discountScore: 75 })}
               />
               <circle cx="180" cy="162" r="12" fill="#38bdf8" fillOpacity="0.15" stroke="#38bdf8" strokeWidth="1.5" />
               <text x="180" y="166" textAnchor="middle" fill="#38bdf8" fontSize="11" fontFamily="monospace" fontWeight="900">5</text>
@@ -785,7 +967,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "ALPHA GRAILS", rating: "4.9 / 5", activeListings: "4,200+", completedTrans: "19,500+", booth: "5A", specialties: ["WOTC Sealed", "1st Ed Base", "Trophy Cards"], discountScore: 82 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "ALPHA GRAILS", rating: "4.9 / 5", activeListings: "4,200+", completedTrans: "19,500+", booth: "5A", specialties: ["WOTC Sealed", "1st Ed Base", "Trophy Cards"], discountScore: 82 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "ALPHA GRAILS", rating: "4.9 / 5", activeListings: "4,200+", completedTrans: "19,500+", booth: "5A", specialties: ["WOTC Sealed", "1st Ed Base", "Trophy Cards"], discountScore: 82 })}
               />
               <text x="268" y="152" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Classics</text>
 
@@ -793,7 +975,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#2dd4bf] hover:fill-[#2dd4bf]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "VINTAGEVAULT TCG", rating: "4.8 / 5", activeListings: "3,450+", completedTrans: "12,800+", booth: "5B", specialties: ["Japanese WOTC", "e-Series", "Neo Destiny"], discountScore: 75 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "VINTAGEVAULT TCG", rating: "4.8 / 5", activeListings: "3,450+", completedTrans: "12,800+", booth: "5B", specialties: ["Japanese WOTC", "e-Series", "Neo Destiny"], discountScore: 75 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "VINTAGEVAULT TCG", rating: "4.8 / 5", activeListings: "3,450+", completedTrans: "12,800+", booth: "5B", specialties: ["Japanese WOTC", "e-Series", "Neo Destiny"], discountScore: 75 })}
               />
               <text x="352" y="152" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Autograph Pit</text>
 
@@ -802,7 +984,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "DIGIMONCRAFT COLLECTIBLES", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Digimon TCG", "Ghost Rares", "Alt Art Promos"], discountScore: 68 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "DIGIMONCRAFT COLLECTIBLES", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Digimon TCG", "Ghost Rares", "Alt Art Promos"], discountScore: 68 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "DIGIMONCRAFT COLLECTIBLES", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Digimon TCG", "Ghost Rares", "Alt Art Promos"], discountScore: 68 })}
               />
               <text x="268" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">DigimonCraft</text>
 
@@ -810,7 +992,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "HIS NAME TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["One Piece Manga Rares", "Lorcana Enchanteds", "Modern Grails"], discountScore: 74 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "HIS NAME TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["One Piece Manga Rares", "Lorcana Enchanteds", "Modern Grails"], discountScore: 74 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "HIS NAME TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["One Piece Manga Rares", "Lorcana Enchanteds", "Modern Grails"], discountScore: 74 })}
               />
               <text x="352" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">His Name</text>
 
@@ -826,13 +1008,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "SLAB CITY PSA ON-SITE", rating: "5.0 / 5", activeListings: "4,600+ Slabs", completedTrans: "31,000+", booth: "Zone 5E", specialties: ["PSA 10 Slabs", "BGS Black Labels", "CGC 10 Pristine"], discountScore: 80 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "SLAB CITY PSA ON-SITE", rating: "5.0 / 5", activeListings: "4,600+ Slabs", completedTrans: "31,000+", booth: "Zone 5E", specialties: ["PSA 10 Slabs", "BGS Black Labels", "CGC 10 Pristine"], discountScore: 80 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "SLAB CITY PSA ON-SITE", rating: "5.0 / 5", activeListings: "4,600+ Slabs", completedTrans: "31,000+", booth: "Zone 5E", specialties: ["PSA 10 Slabs", "BGS Black Labels", "CGC 10 Pristine"], discountScore: 80 })}
               />
               <rect x="530" y="135" width="70" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "RETRO POKÉMON HQ", rating: "4.6 / 5", activeListings: "1,850+ Items", completedTrans: "8,200+", booth: "Zone X", specialties: ["Gym Challenge", "Fossil / Jungle 1st Ed", "Team Rocket Boxes"], discountScore: 72 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "RETRO POKÉMON HQ", rating: "4.6 / 5", activeListings: "1,850+ Items", completedTrans: "8,200+", booth: "Zone X", specialties: ["Gym Challenge", "Fossil / Jungle 1st Ed", "Team Rocket Boxes"], discountScore: 72 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "RETRO POKÉMON HQ", rating: "4.6 / 5", activeListings: "1,850+ Items", completedTrans: "8,200+", booth: "Zone X", specialties: ["Gym Challenge", "Fossil / Jungle 1st Ed", "Team Rocket Boxes"], discountScore: 72 })}
               />
               <text x="565" y="158" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace">X</text>
 
@@ -841,7 +1023,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#fb923c] hover:fill-[#fb923c]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TCG VENDORS (N-Z)", rating: "4.6 / 5", activeListings: "6,200+ Items", completedTrans: "28,000+", booth: "Zone 6", specialties: ["Sealed Kings", "Slab City PSA", "Energy Supply Co."], discountScore: 68 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "TCG VENDORS (N-Z)", rating: "4.6 / 5", activeListings: "6,200+ Items", completedTrans: "28,000+", booth: "Zone 6", specialties: ["Sealed Kings", "Slab City PSA", "Energy Supply Co."], discountScore: 68 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "TCG VENDORS (N-Z)", rating: "4.6 / 5", activeListings: "6,200+ Items", completedTrans: "28,000+", booth: "Zone 6", specialties: ["Sealed Kings", "Slab City PSA", "Energy Supply Co."], discountScore: 68 })}
               />
               <text x="180" y="228" textAnchor="middle" fill="#475569" fontSize="8" fontFamily="monospace" fontWeight="bold">0</text>
               <text x="180" y="250" textAnchor="middle" fill="#334155" fontSize="5" fontFamily="monospace">Sealed</text>
@@ -851,7 +1033,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#34d399] hover:fill-[#34d399]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "SPECIALS ZONE TRADING", rating: "4.9 / 5", activeListings: "950+ Items", completedTrans: "5,400+", booth: "6A", specialties: ["Mario & Luigi Pikachu", "Poncho Pikachu", "Special Delivery Charizard"], discountScore: 78 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "SPECIALS ZONE TRADING", rating: "4.9 / 5", activeListings: "950+ Items", completedTrans: "5,400+", booth: "6A", specialties: ["Mario & Luigi Pikachu", "Poncho Pikachu", "Special Delivery Charizard"], discountScore: 78 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "SPECIALS ZONE TRADING", rating: "4.9 / 5", activeListings: "950+ Items", completedTrans: "5,400+", booth: "6A", specialties: ["Mario & Luigi Pikachu", "Poncho Pikachu", "Special Delivery Charizard"], discountScore: 78 })}
               />
               <text x="268" y="222" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Specials</text>
 
@@ -859,14 +1041,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "GOLD STAR COLLECTORS", rating: "4.8 / 5", activeListings: "1,120+ Items", completedTrans: "6,900+", booth: "6B", specialties: ["Gold Star Espeon", "Shining Charizard", "Crystal Lugia"], discountScore: 76 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "GOLD STAR COLLECTORS", rating: "4.8 / 5", activeListings: "1,120+ Items", completedTrans: "6,900+", booth: "6B", specialties: ["Gold Star Espeon", "Shining Charizard", "Crystal Lugia"], discountScore: 76 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "GOLD STAR COLLECTORS", rating: "4.8 / 5", activeListings: "1,120+ Items", completedTrans: "6,900+", booth: "6B", specialties: ["Gold Star Espeon", "Shining Charizard", "Crystal Lugia"], discountScore: 76 })}
               />
 
               <rect x="230" y="235" width="75" height="25" rx="2" fill="#0a1420" stroke="#1e3a5f" strokeWidth="0.8"
                 className="cursor-pointer hover:stroke-[#22d3ee] hover:fill-[#22d3ee]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "SEALED PRODUCT KINGDOM", rating: "4.7 / 5", activeListings: "3,100+ Boxes", completedTrans: "14,200+", booth: "6C", specialties: ["Evolving Skies Booster Boxes", "Team Up Sealed", "Vintage Packs"], discountScore: 70 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "SEALED PRODUCT KINGDOM", rating: "4.7 / 5", activeListings: "3,100+ Boxes", completedTrans: "14,200+", booth: "6C", specialties: ["Evolving Skies Booster Boxes", "Team Up Sealed", "Vintage Packs"], discountScore: 70 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "SEALED PRODUCT KINGDOM", rating: "4.7 / 5", activeListings: "3,100+ Boxes", completedTrans: "14,200+", booth: "6C", specialties: ["Evolving Skies Booster Boxes", "Team Up Sealed", "Vintage Packs"], discountScore: 70 })}
               />
               <text x="268" y="252" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Sealed</text>
 
@@ -881,13 +1063,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "MODERN ALT ART VAULT", rating: "4.9 / 5", activeListings: "2,400+ Singles", completedTrans: "11,500+", booth: "Booth 16", specialties: ["Giratina V Alt", "Moonbreon", "Rayquaza VMAX Alt"], discountScore: 82 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "MODERN ALT ART VAULT", rating: "4.9 / 5", activeListings: "2,400+ Singles", completedTrans: "11,500+", booth: "Booth 16", specialties: ["Giratina V Alt", "Moonbreon", "Rayquaza VMAX Alt"], discountScore: 82 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "MODERN ALT ART VAULT", rating: "4.9 / 5", activeListings: "2,400+ Singles", completedTrans: "11,500+", booth: "Booth 16", specialties: ["Giratina V Alt", "Moonbreon", "Rayquaza VMAX Alt"], discountScore: 82 })}
               />
               <rect x="530" y="205" width="70" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "JAPANESE HIGH CLASS HUB", rating: "4.8 / 5", activeListings: "3,800+ Items", completedTrans: "18,400+", booth: "Booth 46", specialties: ["Shiny Treasure EX", "VSTAR Universe", "Terastal Festival EX"], discountScore: 78 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "JAPANESE HIGH CLASS HUB", rating: "4.8 / 5", activeListings: "3,800+ Items", completedTrans: "18,400+", booth: "Booth 46", specialties: ["Shiny Treasure EX", "VSTAR Universe", "Terastal Festival EX"], discountScore: 78 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "JAPANESE HIGH CLASS HUB", rating: "4.8 / 5", activeListings: "3,800+ Items", completedTrans: "18,400+", booth: "Booth 46", specialties: ["Shiny Treasure EX", "VSTAR Universe", "Terastal Festival EX"], discountScore: 78 })}
               />
 
               {/* ===== ZONE 7-8: DOVAKINJI & BOTTOM VENDORS ===== */}
@@ -895,7 +1077,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "DISPLAY & CASES GALLERY", rating: "5.0 / 5", activeListings: "Acrylic Cases & Stands", completedTrans: "6,500+", booth: "Zone 7 Display", specialties: ["UV Protection Booster Box Cases", "Custom Slab Frames", "LED Displays"], discountScore: 65 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "DISPLAY & CASES GALLERY", rating: "5.0 / 5", activeListings: "Acrylic Cases & Stands", completedTrans: "6,500+", booth: "Zone 7 Display", specialties: ["UV Protection Booster Box Cases", "Custom Slab Frames", "LED Displays"], discountScore: 65 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "DISPLAY & CASES GALLERY", rating: "5.0 / 5", activeListings: "Acrylic Cases & Stands", completedTrans: "6,500+", booth: "Zone 7 Display", specialties: ["UV Protection Booster Box Cases", "Custom Slab Frames", "LED Displays"], discountScore: 65 })}
               />
               <text x="82" y="302" textAnchor="middle" fill="#475569" fontSize="6" fontFamily="monospace">Display</text>
 
@@ -904,7 +1086,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "SEALED PRODUCT ZONE 7", rating: "4.8 / 5", activeListings: "4,100+ Boxes", completedTrans: "21,000+", booth: "Zone 7", specialties: ["WOTC Booster Packs", "EX Era Boxes", "Sun & Moon Booster Boxes"], discountScore: 75 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "SEALED PRODUCT ZONE 7", rating: "4.8 / 5", activeListings: "4,100+ Boxes", completedTrans: "21,000+", booth: "Zone 7", specialties: ["WOTC Booster Packs", "EX Era Boxes", "Sun & Moon Booster Boxes"], discountScore: 75 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "SEALED PRODUCT ZONE 7", rating: "4.8 / 5", activeListings: "4,100+ Boxes", completedTrans: "21,000+", booth: "Zone 7", specialties: ["WOTC Booster Packs", "EX Era Boxes", "Sun & Moon Booster Boxes"], discountScore: 75 })}
               />
               <circle cx="180" cy="302" r="12" fill="#38bdf8" fillOpacity="0.15" stroke="#38bdf8" strokeWidth="1.5" />
               <text x="180" y="306" textAnchor="middle" fill="#38bdf8" fontSize="11" fontFamily="monospace" fontWeight="900">6</text>
@@ -913,7 +1095,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#fbbf24] hover:fill-[#fbbf24]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "FILMERA GRADED CARDS", rating: "4.7 / 5", activeListings: "1,600+ Slabs", completedTrans: "8,900+", booth: "7A Filmera", specialties: ["PSA 9 & 10 Vintage", "Japanese Promos", "PSA Submission Service"], discountScore: 70 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "FILMERA GRADED CARDS", rating: "4.7 / 5", activeListings: "1,600+ Slabs", completedTrans: "8,900+", booth: "7A Filmera", specialties: ["PSA 9 & 10 Vintage", "Japanese Promos", "PSA Submission Service"], discountScore: 70 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "FILMERA GRADED CARDS", rating: "4.7 / 5", activeListings: "1,600+ Slabs", completedTrans: "8,900+", booth: "7A Filmera", specialties: ["PSA 9 & 10 Vintage", "Japanese Promos", "PSA Submission Service"], discountScore: 70 })}
               />
               <text x="250" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Filmera</text>
               <text x="290" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">DH</text>
@@ -922,7 +1104,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "CARBANDA VINTAGE TCG", rating: "4.9 / 5", activeListings: "2,200+ Cards", completedTrans: "12,100+", booth: "7B Carbanda", specialties: ["Shadowless Holos", "Skyridge Crystal Types", "Aquapolis Holos"], discountScore: 84 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "CARBANDA VINTAGE TCG", rating: "4.9 / 5", activeListings: "2,200+ Cards", completedTrans: "12,100+", booth: "7B Carbanda", specialties: ["Shadowless Holos", "Skyridge Crystal Types", "Aquapolis Holos"], discountScore: 84 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "CARBANDA VINTAGE TCG", rating: "4.9 / 5", activeListings: "2,200+ Cards", completedTrans: "12,100+", booth: "7B Carbanda", specialties: ["Shadowless Holos", "Skyridge Crystal Types", "Aquapolis Holos"], discountScore: 84 })}
               />
               <text x="335" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Carbanda</text>
               <text x="375" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Brodes</text>
@@ -932,7 +1114,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TRADING TABLES ZONE 8", rating: "5.0 / 5", activeListings: "Open Trading & Barter", completedTrans: "10,000+ Trades Today", booth: "Zone 8", specialties: ["Collector Meetups", "Open Binder Trading", "Community Appraisal"], discountScore: 90 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "TRADING TABLES ZONE 8", rating: "5.0 / 5", activeListings: "Open Trading & Barter", completedTrans: "10,000+ Trades Today", booth: "Zone 8", specialties: ["Collector Meetups", "Open Binder Trading", "Community Appraisal"], discountScore: 90 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "TRADING TABLES ZONE 8", rating: "5.0 / 5", activeListings: "Open Trading & Barter", completedTrans: "10,000+ Trades Today", booth: "Zone 8", specialties: ["Collector Meetups", "Open Binder Trading", "Community Appraisal"], discountScore: 90 })}
               />
               <circle cx="248" cy="320" r="10" fill="#f472b6" fillOpacity="0.2" stroke="#f472b6" strokeWidth="1.5" />
               <text x="248" y="324" textAnchor="middle" fill="#f472b6" fontSize="9" fontFamily="monospace" fontWeight="bold">3</text>
@@ -942,7 +1124,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "BRODES TCG SYNDICATE", rating: "4.8 / 5", activeListings: "1,900+ Items", completedTrans: "9,300+", booth: "Booth 15", specialties: ["Japanese S&V Master Sets", "Promo Cards", "High Grade Slabs"], discountScore: 76 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "BRODES TCG SYNDICATE", rating: "4.8 / 5", activeListings: "1,900+ Items", completedTrans: "9,300+", booth: "Booth 15", specialties: ["Japanese S&V Master Sets", "Promo Cards", "High Grade Slabs"], discountScore: 76 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "BRODES TCG SYNDICATE", rating: "4.8 / 5", activeListings: "1,900+ Items", completedTrans: "9,300+", booth: "Booth 15", specialties: ["Japanese S&V Master Sets", "Promo Cards", "High Grade Slabs"], discountScore: 76 })}
               />
 
               {/* ===== BOTTOM ROW ===== */}
@@ -950,14 +1132,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "VINTAGE ACCESSORIES & BINDERS", rating: "4.9 / 5", activeListings: "500+ Binders & Sleeves", completedTrans: "11,000+", booth: "Booth A1", specialties: ["Toploaders & Semi-Rigids", "Custom Leather Binders", "Penny Sleeves Bulk"], discountScore: 80 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "VINTAGE ACCESSORIES & BINDERS", rating: "4.9 / 5", activeListings: "500+ Binders & Sleeves", completedTrans: "11,000+", booth: "Booth A1", specialties: ["Toploaders & Semi-Rigids", "Custom Leather Binders", "Penny Sleeves Bulk"], discountScore: 80 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "VINTAGE ACCESSORIES & BINDERS", rating: "4.9 / 5", activeListings: "500+ Binders & Sleeves", completedTrans: "11,000+", booth: "Booth A1", specialties: ["Toploaders & Semi-Rigids", "Custom Leather Binders", "Penny Sleeves Bulk"], discountScore: 80 })}
               />
 
               <rect x="140" y="350" width="80" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TRADING TABLES ZONE 8 (EAST)", rating: "5.0 / 5", activeListings: "Open Tables A-F", completedTrans: "8,500+", booth: "Zone 8 East", specialties: ["Modern Trade Pods", "Quick Cash Offers", "Single Card Swaps"], discountScore: 85 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "TRADING TABLES ZONE 8 (EAST)", rating: "5.0 / 5", activeListings: "Open Tables A-F", completedTrans: "8,500+", booth: "Zone 8 East", specialties: ["Modern Trade Pods", "Quick Cash Offers", "Single Card Swaps"], discountScore: 85 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "TRADING TABLES ZONE 8 (EAST)", rating: "5.0 / 5", activeListings: "Open Tables A-F", completedTrans: "8,500+", booth: "Zone 8 East", specialties: ["Modern Trade Pods", "Quick Cash Offers", "Single Card Swaps"], discountScore: 85 })}
               />
               <circle cx="180" cy="377" r="12" fill="#f472b6" fillOpacity="0.15" stroke="#f472b6" strokeWidth="1.5" />
               <text x="180" y="381" textAnchor="middle" fill="#f472b6" fontSize="11" fontFamily="monospace" fontWeight="900">8</text>
@@ -967,7 +1149,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "WIKRATS POKÉMON EMPORIUM", rating: "4.7 / 5", activeListings: "1,350+ Items", completedTrans: "6,400+", booth: "Booth 8A", specialties: ["WOTC Holos", "EX Era Delta Species", "Level X Cards"], discountScore: 68 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "WIKRATS POKÉMON EMPORIUM", rating: "4.7 / 5", activeListings: "1,350+ Items", completedTrans: "6,400+", booth: "Booth 8A", specialties: ["WOTC Holos", "EX Era Delta Species", "Level X Cards"], discountScore: 68 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "WIKRATS POKÉMON EMPORIUM", rating: "4.7 / 5", activeListings: "1,350+ Items", completedTrans: "6,400+", booth: "Booth 8A", specialties: ["WOTC Holos", "EX Era Delta Species", "Level X Cards"], discountScore: 68 })}
               />
               <text x="257" y="382" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Wikrats</text>
 
@@ -975,7 +1157,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "UDS COLLECTIBLES & SLABS", rating: "4.8 / 5", activeListings: "2,100+ Slabs", completedTrans: "11,800+", booth: "Booth 8B", specialties: ["PSA 10 Modern Grails", "Sun & Moon Alt Arts", "Tag Team Promos"], discountScore: 74 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "UDS COLLECTIBLES & SLABS", rating: "4.8 / 5", activeListings: "2,100+ Slabs", completedTrans: "11,800+", booth: "Booth 8B", specialties: ["PSA 10 Modern Grails", "Sun & Moon Alt Arts", "Tag Team Promos"], discountScore: 74 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "UDS COLLECTIBLES & SLABS", rating: "4.8 / 5", activeListings: "2,100+ Slabs", completedTrans: "11,800+", booth: "Booth 8B", specialties: ["PSA 10 Modern Grails", "Sun & Moon Alt Arts", "Tag Team Promos"], discountScore: 74 })}
               />
               <text x="322" y="382" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">UDS</text>
 
@@ -983,7 +1165,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "SPECS GRADED GRAILS", rating: "4.9 / 5", activeListings: "3,100+ Items", completedTrans: "16,200+", booth: "Booth 8C", specialties: ["BGS 10 Gold Labels", "1st Ed Neo Destiny", "Trophy Kangaskhan"], discountScore: 82 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "SPECS GRADED GRAILS", rating: "4.9 / 5", activeListings: "3,100+ Items", completedTrans: "16,200+", booth: "Booth 8C", specialties: ["BGS 10 Gold Labels", "1st Ed Neo Destiny", "Trophy Kangaskhan"], discountScore: 82 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "SPECS GRADED GRAILS", rating: "4.9 / 5", activeListings: "3,100+ Items", completedTrans: "16,200+", booth: "Booth 8C", specialties: ["BGS 10 Gold Labels", "1st Ed Neo Destiny", "Trophy Kangaskhan"], discountScore: 82 })}
               />
               <text x="387" y="382" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Specs</text>
 
@@ -992,7 +1174,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 className="cursor-pointer hover:fill-opacity-[0.25] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "DOVAKINJI COLLECTIBLES", rating: "4.9 / 5", activeListings: "1,890+ Items", completedTrans: "8,400+", booth: "VIP 10", specialties: ["Japanese S&V Promos", "151 Master Sets", "High Class Boxes"], discountScore: 88 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => { setSelectedVendor({ name: "DOVAKINJI COLLECTIBLES", rating: "4.9 / 5", activeListings: "1,890+ Items", completedTrans: "8,400+", booth: "VIP 10", specialties: ["Japanese S&V Promos", "151 Master Sets", "High Class Boxes"], discountScore: 88 }); if (window.innerWidth < 1024) setMobileSection('vendor'); }}
+                onClick={() => handleBoothSelect({ name: "DOVAKINJI COLLECTIBLES", rating: "4.9 / 5", activeListings: "1,890+ Items", completedTrans: "8,400+", booth: "VIP 10", specialties: ["Japanese S&V Promos", "151 Master Sets", "High Class Boxes"], discountScore: 88 })}
               />
               <text x="467" y="375" textAnchor="middle" fill="#f472b6" fontSize="6" fontFamily="monospace" fontWeight="bold">Dovakinji</text>
               <text x="467" y="395" textAnchor="middle" fill="#475569" fontSize="6" fontFamily="monospace">10</text>
@@ -1071,169 +1253,221 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
             </div>
           </div>
 
-          {/* Selected Vendor Profile Spotlight Card */}
+          {/* Selected Vendor / Pavilion Spotlight Card */}
           <div className="flex flex-col gap-2 flex-1">
             <div className="flex items-center gap-1.5 px-1">
               <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" />
               <h2 className="text-xs sm:text-sm font-black tracking-wider text-white uppercase font-mono">
-                SELECTED VENDOR SPOTLIGHT
+                {selectedVendor?.type !== 'vendor' ? 'CONVENTION EXPERIENCE SPOTLIGHT' : 'SELECTED VENDOR SPOTLIGHT'}
               </h2>
             </div>
 
-            <div className="bg-gradient-to-b from-[#111418] to-[#0d1015] border border-[#38bdf8]/40 rounded-2xl p-3.5 flex flex-col gap-3 shadow-[0_0_25px_rgba(56,189,248,0.12)] flex-1">
+            <div className={`bg-gradient-to-b ${selectedVendor?.type !== 'vendor' ? 'from-[#1a1423] to-[#0f0d14] border-purple-500/50 shadow-[0_0_25px_rgba(192,132,252,0.15)]' : 'from-[#111418] to-[#0d1015] border-[#38bdf8]/40 shadow-[0_0_25px_rgba(56,189,248,0.12)]'} border rounded-2xl p-3.5 flex flex-col gap-3 flex-1`}>
               <div className="flex flex-col gap-0.5">
                 <span className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono font-bold">
-                  Active Vendor Profile:
+                  {selectedVendor?.type !== 'vendor' ? 'Active Pavilion Details:' : 'Active Vendor Profile:'}
                 </span>
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <h3 className="text-base sm:text-lg font-black text-white tracking-wide">
-                    {selectedVendor.name}
+                    {selectedVendor?.name}
                   </h3>
-                  <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 text-[8px] font-black uppercase rounded-full border border-yellow-500/50 flex items-center gap-1 shadow-sm">
-                    Premier <Check className="w-2.5 h-2.5" />
+                  <span className={`px-2 py-0.5 ${selectedVendor?.type !== 'vendor' ? 'bg-purple-500/20 text-purple-300 border-purple-500/50' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/50'} text-[8px] font-black uppercase rounded-full border flex items-center gap-1 shadow-sm`}>
+                    {selectedVendor?.type !== 'vendor' ? 'Live Pavilion ⚡' : 'Premier Vendor'} <Check className="w-2.5 h-2.5" />
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs bg-black/60 p-2 rounded-xl border border-white/5">
-                <div className="flex flex-col">
-                  <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                    Active Listings
-                  </span>
-                  <span className="font-mono font-black text-white text-xs sm:text-sm">
-                    {selectedVendor.activeListings}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                    Completed Trans.
-                  </span>
-                  <span className="font-mono font-black text-white text-xs sm:text-sm">
-                    {selectedVendor.completedTrans}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0.5 col-span-2 pt-1.5 border-t border-white/5">
-                  <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                    Reputation Score
-                  </span>
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-black text-amber-300 text-xs sm:text-sm">
-                      {selectedVendor.rating}
-                    </span>
-                    <div className="flex gap-0.5 text-yellow-500">
-                      <Star className="w-3 h-3 fill-current" />
-                      <Star className="w-3 h-3 fill-current" />
-                      <Star className="w-3 h-3 fill-current" />
-                      <Star className="w-3 h-3 fill-current" />
-                      <Star className="w-3 h-3 text-[#94a3b8]" />
+              {selectedVendor?.type !== 'vendor' ? (
+                /* NON-VENDOR EXPERIENCE PAVILION PANEL */
+                <div className="flex flex-col gap-3 flex-1">
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-black/60 p-2.5 rounded-xl border border-purple-500/20 font-mono">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] text-[#94a3b8] uppercase">Current Status</span>
+                      <span className="font-black text-emerald-400 text-xs sm:text-sm">🟢 Open & Active</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[8px] text-[#94a3b8] uppercase">Live Participants</span>
+                      <span className="font-black text-white text-xs sm:text-sm">{selectedVendor?.completedTrans || "240+ Present"}</span>
+                    </div>
+                    <div className="col-span-2 pt-1.5 border-t border-white/5 flex justify-between items-center text-[11px]">
+                      <span className="text-[#94a3b8]">Pavilion Category:</span>
+                      <span className="font-black text-purple-300 uppercase">{selectedVendor?.type}</span>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="flex flex-col gap-1.5">
-                <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
-                  Featured Inventory Grails
-                </h4>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {[
-                    { name: "Base Charizard", grade: "PSA 10", price: "12.4k" },
-                    { name: "Lugia 1st Ed", grade: "BGS 9.5", price: "18.2k" },
-                    { name: "Moonbreon Alt", grade: "PSA 10", price: "1.4k" },
-                  ].map((item, i) => (
-                    <div
-                      key={i}
+                  <div className="flex flex-col gap-1.5">
+                    <h4 className="text-[9px] text-purple-300 uppercase tracking-widest font-mono border-b border-purple-500/30 pb-1 font-bold">
+                      Pavilion Highlights & Schedule
+                    </h4>
+                    <ul className="text-[11px] text-white/90 list-disc list-inside flex flex-col gap-1 leading-relaxed font-mono bg-black/40 p-2 rounded-lg border border-white/5">
+                      {(selectedVendor?.specialties || ["Live Event Schedule", "Celebrity Meet & Greet", "Open Queue Station"]).map((spec: string, idx: number) => (
+                        <li key={idx} className="truncate text-purple-200">{spec}</li>
+                      ))}
+                      <li className="text-amber-300 font-bold truncate">⚡ Next Slot starting in ~15 mins!</li>
+                    </ul>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-purple-500/30">
+                    <button
                       onClick={() => {
-                        if (onInspectCard) {
-                          onInspectCard({
-                            id: `grail-${i}`,
-                            name: item.name,
-                            currentPrice: parseFloat(item.price.replace('k', '')) * 1000,
-                            isSlabbed: true,
-                            slabGrade: item.grade,
-                            imageUrl: i === 0 ? "https://images.scrydex.com/pokemon/base1-4/large" : i === 1 ? "https://images.scrydex.com/pokemon/neo1-9/large" : "https://images.scrydex.com/pokemon/swsh7-215/large"
-                          });
-                        }
+                        if (window.innerWidth < 1024) setMobileSection('market');
                       }}
-                      className="bg-black/70 border border-[#1e293b]/60 rounded-lg p-1.5 flex flex-col items-center text-center gap-0.5 hover:border-[#38bdf8] transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md group"
+                      className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-[11px] font-bold py-2 px-2 rounded-xl transition-all text-center truncate border border-purple-500/40 font-mono"
                     >
-                      <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform">
-                        <Award className="w-3.5 h-3.5 text-amber-400" />
-                      </div>
-                      <span className="text-[8px] font-bold leading-tight text-white truncate w-full">
-                        {item.name}
+                      [Browse Floor Cards ({filteredCards.length})]
+                    </button>
+                    <button
+                      onClick={() => alert(`Checked into virtual queue for ${selectedVendor?.name}!`)}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white text-[11px] font-black py-2 px-2 rounded-xl transition-all text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(192,132,252,0.4)]"
+                    >
+                      [Check In / Queue] <Zap className="w-3 h-3 fill-current" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* VENDOR PROFILE PANEL */
+                <>
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-black/60 p-2 rounded-xl border border-white/5">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+                        Active Listings
                       </span>
-                      <div className="flex w-full justify-between items-center px-0.5 pt-0.5 border-t border-white/5">
-                        <span className="text-[7px] text-[#38bdf8] font-bold">
-                          {item.grade}
+                      <span className="font-mono font-black text-white text-xs sm:text-sm">
+                        {selectedVendor.activeListings}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+                        Completed Trans.
+                      </span>
+                      <span className="font-mono font-black text-white text-xs sm:text-sm">
+                        {selectedVendor.completedTrans}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 col-span-2 pt-1.5 border-t border-white/5">
+                      <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+                        Reputation Score
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono font-black text-amber-300 text-xs sm:text-sm">
+                          {selectedVendor.rating}
                         </span>
-                        <span className="text-[7px] font-mono text-green-400 font-black">
-                          ${item.price}
+                        <div className="flex gap-0.5 text-yellow-500">
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 fill-current" />
+                          <Star className="w-3 h-3 text-[#94a3b8]" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
+                      Featured Inventory Grails
+                    </h4>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {activeVendorCards.slice(0, 3).map((item, i) => (
+                        <div
+                          key={i}
+                          onClick={() => {
+                            if (onInspectCard) {
+                              onInspectCard({
+                                id: item.id || `grail-${i}`,
+                                name: item.name,
+                                currentPrice: typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('k', '')) * 1000,
+                                isSlabbed: true,
+                                slabGrade: item.grade,
+                                imageUrl: item.img
+                              });
+                            }
+                          }}
+                          className="bg-black/70 border border-[#1e293b]/60 rounded-lg p-1.5 flex flex-col items-center text-center gap-0.5 hover:border-[#38bdf8] transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md group"
+                        >
+                          <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
+                            {item.img ? (
+                              <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <Award className="w-3.5 h-3.5 text-amber-400" />
+                            )}
+                          </div>
+                          <span className="text-[8px] font-bold leading-tight text-white truncate w-full">
+                            {item.name}
+                          </span>
+                          <div className="flex w-full justify-between items-center px-0.5 pt-0.5 border-t border-white/5">
+                            <span className="text-[7px] text-[#38bdf8] font-bold truncate">
+                              {item.grade}
+                            </span>
+                            <span className="text-[7px] font-mono text-green-400 font-black">
+                              ${typeof item.price === 'number' ? item.price.toLocaleString() : item.price}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5 pt-0.5">
+                    <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
+                      Vendor Specialties & Insights
+                    </h4>
+                    <div className="flex gap-2 items-center">
+                      <ul className="text-[11px] text-white/90 list-disc list-inside flex-1 leading-relaxed font-mono">
+                        {(selectedVendor?.specialties || []).map((spec: string, index: number) => (
+                          <li key={index} className="truncate">{spec}</li>
+                        ))}
+                      </ul>
+
+                      <div className="relative w-10 h-10 shrink-0 flex items-center justify-center">
+                        <svg
+                          viewBox="0 0 36 36"
+                          className="w-full h-full transform -rotate-90"
+                        >
+                          <path
+                            className="text-black/70"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                          />
+                          <path
+                            className="text-[#2dd4bf]"
+                            strokeDasharray={`${selectedVendor?.discountScore || 75}, 100`}
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                          />
+                        </svg>
+                        <span className="absolute text-[9px] font-mono font-bold text-white">
+                          {selectedVendor?.discountScore || 75}%
                         </span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5 pt-0.5">
-                <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
-                  Vendor Specialties & Insights
-                </h4>
-                <div className="flex gap-2 items-center">
-                  <ul className="text-[11px] text-white/90 list-disc list-inside flex-1 leading-relaxed font-mono">
-                    {selectedVendor.specialties.map((spec, index) => (
-                      <li key={index} className="truncate">{spec}</li>
-                    ))}
-                  </ul>
-
-                  <div className="relative w-10 h-10 shrink-0 flex items-center justify-center">
-                    <svg
-                      viewBox="0 0 36 36"
-                      className="w-full h-full transform -rotate-90"
-                    >
-                      <path
-                        className="text-black/70"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                      />
-                      <path
-                        className="text-[#2dd4bf]"
-                        strokeDasharray={`${selectedVendor.discountScore}, 100`}
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                      />
-                    </svg>
-                    <span className="absolute text-[9px] font-mono font-bold text-white">
-                      {selectedVendor.discountScore}%
+                    <span className="text-[8px] text-[#2dd4bf] font-black tracking-wider uppercase text-right block mt-[-4px]">
+                      ⚡ TENDS TO OFFER PREMIER DEALS
                     </span>
                   </div>
-                </div>
-                <span className="text-[8px] text-[#2dd4bf] font-black tracking-wider uppercase text-right block mt-[-4px]">
-                  ⚡ TENDS TO OFFER PREMIER DEALS
-                </span>
-              </div>
 
-              <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-[#1e293b]/60">
-                <button
-                  onClick={() => {
-                    if (window.innerWidth < 1024) setMobileSection('market');
-                  }}
-                  className="bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold py-2 px-2 rounded-xl transition-all text-center truncate border border-white/10"
-                >
-                  [Catalog ({filteredCards.length})]
-                </button>
-                <button
-                  onClick={() => alert(`Direct Secure Comm Channel opened with ${selectedVendor.name}.`)}
-                  className="bg-gradient-to-r from-[#38bdf8] to-[#2dd4bf] hover:from-[#38bdf8]/90 hover:to-[#2dd4bf]/90 text-black text-[11px] font-black py-2 px-2 rounded-xl transition-all text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
-                >
-                  [Message VIP] <Zap className="w-3 h-3 fill-current" />
-                </button>
-              </div>
+                  <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-[#1e293b]/60">
+                    <button
+                      onClick={() => {
+                        if (window.innerWidth < 1024) setMobileSection('market');
+                      }}
+                      className="bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold py-2 px-2 rounded-xl transition-all text-center truncate border border-white/10"
+                    >
+                      [Catalog ({filteredCards.length})]
+                    </button>
+                    <button
+                      onClick={() => alert(`Direct Secure Comm Channel opened with ${selectedVendor.name}.`)}
+                      className="bg-gradient-to-r from-[#38bdf8] to-[#2dd4bf] hover:from-[#38bdf8]/90 hover:to-[#2dd4bf]/90 text-black text-[11px] font-black py-2 px-2 rounded-xl transition-all text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+                    >
+                      [Message VIP] <Zap className="w-3 h-3 fill-current" />
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>
