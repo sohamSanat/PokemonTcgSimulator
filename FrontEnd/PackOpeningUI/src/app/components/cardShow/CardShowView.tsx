@@ -446,7 +446,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       { name: "Charizard VMAX Shiny Rainbow (DA)", grade: "Raw NM", price: 120.0, change: "+3.9%", id: "bgt-30", img: "https://images.scrydex.com/pokemon/swsh3-20/large" }
     ];
 
-    const dynamicJpnPool = getCardShowDynamicJapaneseCards(120);
+    const dynamicJpnPool = getCardShowDynamicJapaneseCards(4000);
 
     // Differentiate Vendor Archetypes so tables either sell realistic RAW Ungraded regular set cards OR apply PSA value multipliers
     const isHighEndSlabGrailVendor = vName.includes("ALPHA GRAILS") || vName.includes("GOLD STAR") || vName.includes("SLAB CITY") || vName.includes("VINTAGEVAULT") || vName.includes("SPECS GRADED");
@@ -508,18 +508,18 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     const jpnModSlice = getDisjointSlice(pools.jpnModern, 4, 3);
     const rawSlice = getDisjointSlice(rawBinderSingles, 8, 7);
 
-    // Japanese regular sets have 870 cards, slice with step size 36 to ensure disjoint Japanese catalogs per vendor
-    const startJpn = (vendorIdx * 36) % (dynamicJpnPool.length - 40);
-    const jpnSlice = dynamicJpnPool.slice(startJpn, startJpn + 40);
+    // Japanese regular sets have 2445 cards, slice with step size 80 to ensure disjoint Japanese catalogs of 100 cards per vendor
+    const startJpn = (vendorIdx * 80) % (dynamicJpnPool.length - 110);
+    const jpnSlice = dynamicJpnPool.slice(startJpn, startJpn + 100);
 
     let finalVendorPool: any[] = [];
 
     if (isHighEndSlabGrailVendor) {
       // 1. High-End Glass Case Vendors (15-20% of floor): Sell graded grails & slabs ($250 - $18,000)
       // Ensure Japanese regular set expensive chase cards & slabs are featured prominently!
-      const topGrails = seededShuffle([...engSlice, ...gsSlice, ...jpnVintSlice, ...jpnSlice.slice(0, 10)]);
-      const midSlabs = seededShuffle([...modAltSlice, ...ttSlice, ...jpnModSlice, ...jpnSlice.slice(10, 24)]);
-      const rawHighlights = seededShuffle([...rawSlice, ...jpnSlice.slice(24, 34)]);
+      const topGrails = seededShuffle([...engSlice, ...gsSlice, ...jpnVintSlice, ...jpnSlice.slice(0, 35)]);
+      const midSlabs = seededShuffle([...modAltSlice, ...ttSlice, ...jpnModSlice, ...jpnSlice.slice(35, 75)]);
+      const rawHighlights = seededShuffle([...rawSlice, ...jpnSlice.slice(75, 100)]);
       const combined = [...topGrails, ...midSlabs, ...rawHighlights];
       finalVendorPool = combined.map((c, idx) => {
         const assignedGrade = c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5");
@@ -532,7 +532,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           grade: assignedGrade,
           price: finalPrice,
         };
-      }).slice(0, 60);
+      }).slice(0, 110);
     } else if (isJapaneseSpecialty) {
       // 2. Japanese Hub / Import Tables: Sell expensive regular set Japanese cards (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
       // For specialty raw tables like Retro Pokémon HQ, sell raw regular set cards right at rawPrice ($15 - $380).
@@ -540,7 +540,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       const jpnMasterList = seededShuffle([...jpnSlice, ...jpnModSlice, ...jpnVintSlice, ...rawSlice.filter(c => c.name?.includes("Japanese"))]);
       const isRawSpecialty = vName.includes("RETRO POKÉMON");
       let idx = 0;
-      while (finalVendorPool.length < 60) {
+      while (finalVendorPool.length < 110) {
         idx++;
         const item = jpnMasterList[idx % jpnMasterList.length];
         const baseRaw = (item as any).rawPrice || (item.price ? Math.min(item.price, item.price / ((item as any).grade?.includes("PSA") ? 2.5 : 1)) : 45);
@@ -570,7 +570,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       const modRaw = seededShuffle([...rawSlice, ...modAltSlice, ...ttSlice, ...jpnSlice.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))]);
       const modSlabs = seededShuffle([...modAltSlice]);
       let idx = 0;
-      while (finalVendorPool.length < 56) {
+      while (finalVendorPool.length < 110) {
         idx++;
         if (idx <= 14 && idx < modSlabs.length) {
           const s = modSlabs[idx];
@@ -597,11 +597,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // 4. Standard Floor Vendors, Trade Tables & General Sellers (70% OF THE SHOW! Zone 8, A-M, N-Z, Carbanda, Brodes, etc.)
       // Featuring raw regular set cards across English & Japanese ($10 to $180) + centerpieces!
       const allRaw = seededShuffle([...rawSlice, ...jpnSlice, ...ttSlice]);
-      const showcaseItems = seededShuffle([...jpnVintSlice, ...modAltSlice, ...jpnSlice.slice(0, 6)]);
+      const showcaseItems = seededShuffle([...jpnVintSlice, ...modAltSlice, ...jpnSlice.slice(0, 12)]);
       let idx = 0;
-      while (finalVendorPool.length < 56) {
+      while (finalVendorPool.length < 110) {
         idx++;
-        if (idx <= 6 && idx < showcaseItems.length) {
+        if (idx <= 10 && idx < showcaseItems.length) {
           const sc = showcaseItems[idx];
           const baseRaw = (sc as any).rawPrice || (sc.price ? ((sc as any).grade?.includes("PSA") ? sc.price / 2.6 : sc.price) : 60);
           const grade = idx % 2 === 0 ? "PSA 10" : "PSA 9";

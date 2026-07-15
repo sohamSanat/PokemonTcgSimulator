@@ -118,30 +118,47 @@ for (const gen of generations) {
       // Sort by price descending
       validCards.sort((a, b) => b.price_numeric - a.price_numeric);
 
-      // Take top 10 cards
-      const top10 = validCards.slice(0, 10);
+      // Take top 50 cards priced at $2.00 or above to populate a massive hits pool
+      const top50 = validCards.filter(c => c.price_numeric >= 2.0).slice(0, 50);
 
-      for (const card of top10) {
+      for (const card of top50) {
         const nameParts = card.name.split('#');
         const cleanName = nameParts[0].trim();
-        const displayName = cleanName.toLowerCase().startsWith('japanese') ? cleanName : `Japanese ${cleanName} (${setFolder})`;
-
-        const cardId = `${setId}_ja-${card.cardNum}`;
         const cleanSet = setId.toLowerCase();
-        
-        // Image URL mapping: try Japanese card scan first
-        let imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${card.cardNum}/large`;
+
+        // 1. Compile Japanese version
+        const jpDisplayName = cleanName.toLowerCase().startsWith('japanese') ? cleanName : `Japanese ${cleanName} (${setFolder})`;
+        const jpCardId = `${setId}_ja-${card.cardNum}`;
+        let jpImgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${card.cardNum}/large`;
         if (cleanSet.startsWith('base') || cleanSet.startsWith('neo') || cleanSet.startsWith('fo') || cleanSet.startsWith('ju') || cleanSet.startsWith('gc') || cleanSet.startsWith('gh')) {
-          imgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
+          jpImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
         }
 
         allTopCards.push({
-          id: cardId,
+          id: jpCardId,
           setId: `${setId}_ja`,
           num: card.cardNum,
-          name: displayName,
+          name: jpDisplayName,
           rawPrice: card.price_numeric,
-          img: imgUrl
+          img: jpImgUrl
+        });
+        totalCardsCompiled++;
+
+        // 2. Compile English version
+        const engDisplayName = `${cleanName} (${setFolder})`;
+        const engCardId = `${setId}-${card.cardNum}`;
+        let engImgUrl = `https://images.scrydex.com/pokemon/${cleanSet}-${card.cardNum}/large`;
+        if (cleanSet.startsWith('base') || cleanSet.startsWith('neo') || cleanSet.startsWith('fo') || cleanSet.startsWith('ju') || cleanSet.startsWith('gc') || cleanSet.startsWith('gh')) {
+          engImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
+        }
+
+        allTopCards.push({
+          id: engCardId,
+          setId: `${setId}`,
+          num: card.cardNum,
+          name: engDisplayName,
+          rawPrice: card.price_numeric,
+          img: engImgUrl
         });
         totalCardsCompiled++;
       }
