@@ -206,6 +206,13 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     if (!res.ok) throw new Error(`Failed to fetch set details for ${setId}`);
     const data: TCGDexSet = await res.json();
     if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${setId}`);
+    // Map over cards and assign fallback image url if not provided in sets response
+    data.cards = data.cards.map(c => {
+      if (!c.image) {
+        c.image = getTCGDexValidAssetPath(setId, c.localId);
+      }
+      return c;
+    });
     const enriched = enrichSetSummary(data);
     setDetailsCache.set(cacheKey, enriched);
     return enriched;
@@ -547,7 +554,7 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
 
   let gallerySetId: string | null = null;
   if (isCrownZenith) gallerySetId = 'swsh12pt5gg';
-  else if (setIdLower === 'swsh4pt5' || setNameLower.includes('shining fates')) gallerySetId = 'swsh4pt5sv';
+  else if (setIdLower === 'swsh4pt5' || setIdLower === 'swsh4.5' || setNameLower.includes('shining fates')) gallerySetId = 'swsh4.5sv';
   else if (setIdLower === 'swsh9' || setNameLower.includes('brilliant stars')) gallerySetId = 'swsh9tg';
   else if (setIdLower === 'swsh10' || setNameLower.includes('astral radiance')) gallerySetId = 'swsh10tg';
   else if (setIdLower === 'swsh11' || setNameLower.includes('lost origin')) gallerySetId = 'swsh11tg';
@@ -742,7 +749,12 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
 
   // Combine fetched gallery sub-set with inline TG/GG cards
   const isShinyVaultSet = setIdLower === 'swsh4.5sv' || setIdLower === 'swsh4pt5sv' || setIdLower === 'sma' || setIdLower === 'sm115sv' || setNameLower.includes('shiny vault');
-  const fetchedGallery = (gallerySetData?.cards || []).filter((c: any) => Boolean(c.image));
+  const fetchedGallery = (gallerySetData?.cards || []).map((c: any) => {
+    if (!c.image) {
+      c.image = getTCGDexValidAssetPath(gallerySetId || '', c.localId);
+    }
+    return c;
+  });
   const inlineGallery = pool.filter(c => (c.localId || '').startsWith('TG') || (c.localId || '').startsWith('GG') || (c.localId || '').startsWith('SV') || (c.id || '').includes('-tg') || (c.id || '').includes('-gg') || (c.id || '').includes('-sv') || (c.rarity || '').toLowerCase().includes('shiny') || (c.rarity || '').toLowerCase().includes('classic collection'));
   const galleryPool = isShinyVaultSet ? pool : [...fetchedGallery, ...inlineGallery];
 
