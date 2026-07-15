@@ -271,22 +271,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 }}
                 className="bg-[#111418] border border-[#1e293b] rounded-xl overflow-hidden group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] relative transform hover:-translate-y-0.5"
               >
-                {/* Fixed Height Image Box with relative block image so 100% full card is shown top-to-bottom without clipping */}
-                <div className="h-56 sm:h-64 w-full bg-gradient-to-b from-white/5 via-black/40 to-black/80 relative flex items-center justify-center p-3 overflow-hidden shrink-0">
+                {/* Image box: width-driven so the full card always shows without cropping */}
+                <div className="w-full bg-black/60 relative p-2 shrink-0">
                   <img
                     src={card.img}
                     alt={card.name}
-                    className="relative z-10 h-full max-h-full w-auto max-w-full object-contain filter drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 block mx-auto"
+                    className="w-full h-auto block rounded-lg filter drop-shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
-                  <div className="absolute top-2 right-2 z-20">
+                  <div className="absolute top-3 right-3 z-20">
                     <div className="w-5 h-5 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8] shadow-md">
                       <Check className="w-3 h-3 text-[#38bdf8]" />
                     </div>
                   </div>
-                  <div className="absolute top-2 left-2 z-20">
+                  <div className="absolute top-3 left-3 z-20">
                     <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/40 text-amber-300 font-bold shadow-md">
                       {card.grade}
                     </span>
