@@ -236,21 +236,25 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
 
 export function getTCGDexValidAssetPath(setId: string, rawNum: string | number): string {
   const sLow = setId.toLowerCase();
+  const isJpn = sLow.endsWith('_ja') || sLow.includes('_ja_') || sLow.includes('_ja');
+  const cleanSetId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
+  const langPrefix = isJpn ? 'ja' : 'en';
+
   let seriesPrefix = 'swsh';
-  if (sLow.startsWith('me')) seriesPrefix = 'me';
-  else if (sLow.startsWith('sv')) seriesPrefix = 'sv';
-  else if (sLow.startsWith('sm')) seriesPrefix = 'sm';
-  else if (sLow.startsWith('xy')) seriesPrefix = 'xy';
-  else if (sLow.startsWith('base')) seriesPrefix = 'base';
-  else if (sLow.startsWith('bw')) seriesPrefix = 'bw';
-  else if (sLow.startsWith('dp')) seriesPrefix = 'dp';
-  else if (sLow.startsWith('ex')) seriesPrefix = 'ex';
+  if (cleanSetId.startsWith('me')) seriesPrefix = 'me';
+  else if (cleanSetId.startsWith('sv')) seriesPrefix = 'sv';
+  else if (cleanSetId.startsWith('sm')) seriesPrefix = 'sm';
+  else if (cleanSetId.startsWith('xy')) seriesPrefix = 'xy';
+  else if (cleanSetId.startsWith('base')) seriesPrefix = 'base';
+  else if (cleanSetId.startsWith('bw')) seriesPrefix = 'bw';
+  else if (cleanSetId.startsWith('dp')) seriesPrefix = 'dp';
+  else if (cleanSetId.startsWith('ex')) seriesPrefix = 'ex';
 
   let numStr = `${rawNum}`.trim();
-  if (sLow.startsWith('me') || sLow.startsWith('sv')) {
+  if (cleanSetId.startsWith('me') || cleanSetId.startsWith('sv')) {
     numStr = numStr.padStart(3, '0');
   }
-  return `https://assets.tcgdex.net/en/${seriesPrefix}/${setId}/${numStr}`;
+  return `https://assets.tcgdex.net/${langPrefix}/${seriesPrefix}/${cleanSetId}/${numStr}`;
 }
 
 export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1') {
@@ -259,25 +263,37 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const validAsset = getTCGDexValidAssetPath(setId, num);
   
   const sLow = setId.toLowerCase();
-  const isJapaneseSet = sLow.includes('_ja') || img.src.includes('_ja');
+  const isJapaneseSet = sLow.includes('_ja') || img.src.includes('_ja') || img.src.includes('/ja/');
+  const cleanId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
+  const cleanAsset = getTCGDexValidAssetPath(cleanId, num);
+
   let paddedNum = num;
-  if (!isJapaneseSet && (sLow.startsWith('me') || sLow.startsWith('sv') || sLow.startsWith('sm') || sLow.startsWith('xy') || sLow.startsWith('swsh'))) {
+  if (cleanId.startsWith('me') || cleanId.startsWith('sv') || cleanId.startsWith('sm') || cleanId.startsWith('xy') || cleanId.startsWith('swsh')) {
     paddedNum = num.padStart(3, '0');
   }
 
-  const cleanId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
-
+  // Define reliable fallback chain
   const fallbacks = isJapaneseSet ? [
+    `${validAsset}/high.webp`,
+    `${validAsset}/high.png`,
+    `https://assets.tcgdex.net/ja/sv/sv2a/${paddedNum}/high.webp`,
+    `https://assets.tcgdex.net/ja/swsh/s12a/${paddedNum}/high.webp`,
+    `https://assets.tcgdex.net/ja/swsh/s8b/${paddedNum}/high.webp`,
     `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/large`,
-    `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/high.png`,
-    `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/low.png`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
     `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/high.png`,
-    `${validAsset}/high.webp`,
-    `${validAsset}/high.png`,
-    'https://images.pokemontcg.io/swsh3/19_hires.png'
+    `${cleanAsset}/high.webp`,
+    `${cleanAsset}/high.png`,
+    // Direct pokemontcg.io high-res scans for corresponding card number and set
+    `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}.png`,
+    // If exact card number not found on pokemontcg, try promo/vintage equivalents
+    `https://images.pokemontcg.io/base1/${num}_hires.png`,
+    `https://images.pokemontcg.io/sm35/40_hires.png`,
+    `https://images.pokemontcg.io/cel25/111_hires.png`,
+    `https://images.pokemontcg.io/np/${num}_hires.png`
   ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
@@ -292,7 +308,6 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
 
   // Robustly determine the next fallback without relying on React-volatile dataset
   const currentIndex = fallbacks.findIndex(url => img.src === url || img.src.includes(url));
-  
   let nextAttempt = currentIndex === -1 ? 0 : currentIndex + 1;
   
   // Skip over any fallback that is exactly what just failed

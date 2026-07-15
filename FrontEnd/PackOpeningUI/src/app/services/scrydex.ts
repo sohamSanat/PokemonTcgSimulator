@@ -995,8 +995,22 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
       const cleanSet = prefix.replace(/_ja_ja$/i, '_ja').replace(/_ja$/i, '');
       const num = numStr || '1';
       
-      const imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num}/large`;
+      let eraPrefix = 'swsh';
+      if (cleanSet.toLowerCase().startsWith('sv')) eraPrefix = 'sv';
+      else if (cleanSet.toLowerCase().startsWith('sm')) eraPrefix = 'sm';
+      else if (cleanSet.toLowerCase().startsWith('xy')) eraPrefix = 'xy';
+      else if (cleanSet.toLowerCase().startsWith('base')) eraPrefix = 'base';
+      else if (cleanSet.toLowerCase().startsWith('bw')) eraPrefix = 'bw';
+      else if (cleanSet.toLowerCase().startsWith('dp')) eraPrefix = 'dp';
+      else if (cleanSet.toLowerCase().startsWith('ex')) eraPrefix = 'ex';
       
+      const paddedNumStr = (eraPrefix === 'sv' || eraPrefix === 'me') ? num.toString().padStart(3, '0') : num;
+      const tcgdexAssetUrl = `https://assets.tcgdex.net/ja/${eraPrefix}/${cleanSet.toLowerCase()}/${paddedNumStr}/high.webp`;
+      const scrydexUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num}/large`;
+      const imgUrl = (cleanSet.toLowerCase().startsWith('base') || cleanSet.toLowerCase().startsWith('neo') || cleanSet.toLowerCase().startsWith('fo'))
+        ? `https://images.pokemontcg.io/${cleanSet.toLowerCase()}/${num}_hires.png`
+        : tcgdexAssetUrl;
+
       results.push({
         id: `${cleanSet}_ja-${num}`,
         setId: `${cleanSet}_ja`,
