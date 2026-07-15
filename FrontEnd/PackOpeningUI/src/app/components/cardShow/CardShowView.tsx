@@ -89,6 +89,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     }
     
     handleCardImageError(img, setId, num, () => {
+      // 1. IMMEDIATE: hide the card container in the DOM right now — zero placeholder flash
+      //    Walk up from the img to find the card container marked with data-card-container
+      const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
+      if (cardContainer) {
+        cardContainer.style.display = 'none';
+      }
+      // 2. Also update React state so this card is excluded from filteredCards on every subsequent render
       const card = activeVendorCards.find(c => c.id === cardId);
       const origId = card?.originalId || cardId || `${setId}-${num}`;
       if (origId) {
@@ -414,36 +421,36 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
     // Generate realistic budget ($5-$48) and mid-range raw ($50-$120) ungraded binder singles across English & Japanese
     const rawBinderSingles = [
-      { name: "Pikachu IR Paldea Evolved", grade: "Raw NM", price: 38.0, change: "+3.1%", id: "bgt-1", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
-      { name: "Charmander IR 151", grade: "Raw NM", price: 32.0, change: "+4.2%", id: "bgt-2", img: "https://images.scrydex.com/pokemon/sv3pt5-168/large" },
-      { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
-      { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
-      { name: "Snorlax IR 151 Promo", grade: "Raw NM", price: 24.0, change: "+0.8%", id: "bgt-5", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
-      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp" },
-      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://assets.tcgdex.net/ja/SV/SV2a/149/high.webp" },
-      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://assets.tcgdex.net/ja/S/S12a/205/high.webp" },
-      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
-      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", img: "https://images.pokemontcg.io/base1/58_hires.png" },
-      { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
-      { name: "Magikarp IR Paldea Evolved", grade: "Raw NM", price: 110.0, change: "+7.8%", id: "bgt-12", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
-      { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
-      { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
-      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://assets.tcgdex.net/ja/S/S12a/183/high.webp" },
-      { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", img: "https://images.pokemontcg.io/base1/63_hires.png" },
-      { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", img: "https://images.pokemontcg.io/base1/46_hires.png" },
-      { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", img: "https://images.pokemontcg.io/ju1/10_hires.png" },
-      { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", img: "https://images.pokemontcg.io/fo1/6_hires.png" },
-      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
-      { name: "Mew ex SIR 151", grade: "Raw NM", price: 85.0, change: "+5.1%", id: "bgt-21", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
-      { name: "Zapdos ex SIR 151", grade: "Raw NM", price: 42.0, change: "+3.4%", id: "bgt-22", img: "https://images.scrydex.com/pokemon/sv3pt5-202/large" },
-      { name: "Alakazam ex SIR 151", grade: "Raw NM", price: 34.0, change: "+2.8%", id: "bgt-23", img: "https://images.scrydex.com/pokemon/sv3pt5-201/large" },
-      { name: "Erika's Invitation SIR 151", grade: "Raw NM", price: 36.0, change: "+1.9%", id: "bgt-24", img: "https://images.scrydex.com/pokemon/sv3pt5-203/large" },
-      { name: "Charizard ex SIR Obsidian Flames", grade: "Raw NM", price: 55.0, change: "+4.0%", id: "bgt-25", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
-      { name: "Tyranitar V Alt Art Battle Styles", grade: "Raw NM", price: 115.0, change: "+6.1%", id: "bgt-26", img: "https://images.scrydex.com/pokemon/swsh5-155/large" },
-      { name: "Empoleon V Alt Art Battle Styles", grade: "Raw NM", price: 40.0, change: "+2.2%", id: "bgt-27", img: "https://images.scrydex.com/pokemon/swsh5-146/large" },
-      { name: "Dragonite V Alt Art Evolving Skies", grade: "Raw NM", price: 130.0, change: "+5.8%", id: "bgt-28", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
-      { name: "Noivern V Alt Art Evolving Skies", grade: "Raw NM", price: 35.0, change: "+1.5%", id: "bgt-29", img: "https://images.scrydex.com/pokemon/swsh7-196/large" },
-      { name: "Charizard VMAX Shiny Rainbow (DA)", grade: "Raw NM", price: 120.0, change: "+3.9%", id: "bgt-30", img: "https://images.scrydex.com/pokemon/swsh3-20/large" }
+      { name: "Pikachu IR Paldea Evolved", grade: "Raw NM", price: 38.0, change: "+3.1%", id: "bgt-1", originalId: "sv2-203", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
+      { name: "Charmander IR 151", grade: "Raw NM", price: 32.0, change: "+4.2%", id: "bgt-2", originalId: "sv3pt5-168", img: "https://images.scrydex.com/pokemon/sv3pt5-168/large" },
+      { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", originalId: "sv3pt5-170", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
+      { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", originalId: "sv3pt5-166", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
+      { name: "Snorlax IR 151", grade: "Raw NM", price: 24.0, change: "+0.8%", id: "bgt-5", originalId: "sv3pt5-181", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
+      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", originalId: "sv2a_ja-133", img: "https://images.scrydex.com/pokemon/sv2a_ja-133/large" },
+      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", originalId: "sv2a_ja-149", img: "https://images.scrydex.com/pokemon/sv2a_ja-149/large" },
+      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", originalId: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", originalId: "gym2-16", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
+      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", originalId: "base1-58", img: "https://images.pokemontcg.io/base1/58_hires.png" },
+      { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", originalId: "sv3-225", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
+      { name: "Magikarp IR Triplet Beat", grade: "Raw NM", price: 110.0, change: "+7.8%", id: "bgt-12", originalId: "sv1a-80", img: "https://images.scrydex.com/pokemon/sv1a-80/large" },
+      { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", originalId: "swsh7-175", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
+      { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", originalId: "swsh8-245", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
+      { name: "Japanese VSTAR Universe Mew VMAX SAR", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", originalId: "swsh12a_ja-183", img: "https://images.scrydex.com/pokemon/swsh12a_ja-183/large" },
+      { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", originalId: "base1-63", img: "https://images.pokemontcg.io/base1/63_hires.png" },
+      { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", originalId: "base1-46", img: "https://images.pokemontcg.io/base1/46_hires.png" },
+      { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", originalId: "ju1-10", img: "https://images.pokemontcg.io/ju1/10_hires.png" },
+      { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", originalId: "fo1-6", img: "https://images.pokemontcg.io/fo1/6_hires.png" },
+      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", originalId: "neo1-9", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
+      { name: "Mew ex SIR 151", grade: "Raw NM", price: 85.0, change: "+5.1%", id: "bgt-21", originalId: "sv3pt5-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
+      { name: "Zapdos ex SIR 151", grade: "Raw NM", price: 42.0, change: "+3.4%", id: "bgt-22", originalId: "sv3pt5-202", img: "https://images.scrydex.com/pokemon/sv3pt5-202/large" },
+      { name: "Alakazam ex SIR 151", grade: "Raw NM", price: 34.0, change: "+2.8%", id: "bgt-23", originalId: "sv3pt5-201", img: "https://images.scrydex.com/pokemon/sv3pt5-201/large" },
+      { name: "Erika's Invitation SIR 151", grade: "Raw NM", price: 36.0, change: "+1.9%", id: "bgt-24", originalId: "sv3pt5-203", img: "https://images.scrydex.com/pokemon/sv3pt5-203/large" },
+      { name: "Charizard ex SIR Obsidian Flames", grade: "Raw NM", price: 55.0, change: "+4.0%", id: "bgt-25", originalId: "sv3-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
+      { name: "Tyranitar V Alt Art Battle Styles", grade: "Raw NM", price: 115.0, change: "+6.1%", id: "bgt-26", originalId: "swsh5-155", img: "https://images.scrydex.com/pokemon/swsh5-155/large" },
+      { name: "Empoleon V Alt Art Battle Styles", grade: "Raw NM", price: 40.0, change: "+2.2%", id: "bgt-27", originalId: "swsh5-146", img: "https://images.scrydex.com/pokemon/swsh5-146/large" },
+      { name: "Dragonite V Alt Art Evolving Skies", grade: "Raw NM", price: 130.0, change: "+5.8%", id: "bgt-28", originalId: "swsh7-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
+      { name: "Noivern V Alt Art Evolving Skies", grade: "Raw NM", price: 35.0, change: "+1.5%", id: "bgt-29", originalId: "swsh7-196", img: "https://images.scrydex.com/pokemon/swsh7-196/large" },
+      { name: "Charizard VMAX Rainbow Shiny", grade: "Raw NM", price: 120.0, change: "+3.9%", id: "bgt-30", originalId: "swsh3-20", img: "https://images.scrydex.com/pokemon/swsh3-20/large" }
     ];
 
     const dynamicJpnPool = getCardShowDynamicJapaneseCards(4000);
@@ -847,6 +854,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                   }
                 }}
                 className="bg-[#111418] border border-[#1e293b] rounded-xl group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] transform hover:-translate-y-0.5"
+                data-card-container="true"
               >
                 {/* Full card image — w-full h-auto guarantees no cropping */}
                 <div className="w-full relative p-2 bg-black/40 rounded-t-xl">
@@ -1623,6 +1631,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                             }
                           }}
                           className="bg-black/70 border border-[#1e293b]/60 rounded-lg p-1.5 flex flex-col items-center text-center gap-0.5 hover:border-[#38bdf8] transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md group"
+                          data-card-container="true"
                         >
                           <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
                             {item.img ? (
