@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards } from "../../services/scrydex";
 import {
   Menu,
   Search,
@@ -43,6 +44,67 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
+  const [metadataLoaded, setMetadataLoaded] = useState(false);
+
+  useEffect(() => {
+    loadJapaneseMetadata().then(() => {
+      setMetadataLoaded(true);
+    });
+  }, []);
+
+  const handleCardShowImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
+    const img = e.currentTarget;
+    const attempt = parseInt(img.dataset.errorAttempt || '0', 10);
+    if (attempt >= 3) {
+      img.src = '/sleevedCard.png';
+      img.style.objectFit = 'contain';
+      img.style.padding = '8px';
+      return;
+    }
+    
+    img.dataset.errorAttempt = (attempt + 1).toString();
+    const currentSrc = img.src;
+    
+    const match = currentSrc.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
+                  cardId?.match(/^([a-z0-9_-]+)[/-]([0-9]+)/i);
+                  
+    if (match) {
+      let [, setId, numStr] = match;
+      setId = setId.toLowerCase();
+      const cleanId = setId.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
+      const num = parseInt(numStr, 10) || 1;
+      const pad3 = numStr.padStart(3, '0');
+      const isJapan = isJpn || setId.includes('_ja') || currentSrc.includes('_ja') || cardId?.includes('_ja') || cardId?.includes('jp-');
+      
+      if (attempt === 0) {
+        if (isJapan) {
+          if (cleanId.startsWith('sv')) {
+            img.src = `https://assets.tcgdex.net/ja/sv/${cleanId}/${pad3}/high.webp`;
+          } else if (cleanId.startsWith('swsh')) {
+            img.src = `https://assets.tcgdex.net/ja/swsh/${cleanId}/${pad3}/high.webp`;
+          } else {
+            img.src = `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`;
+          }
+        } else {
+          img.src = `https://assets.tcgdex.net/en/sv/${cleanId}/${pad3}/high.webp`;
+        }
+      } else if (attempt === 1) {
+        if (isJapan) {
+          img.src = `https://assets.tcgdex.net/ja/sv/${cleanId}/${pad3}/high.webp`;
+        } else {
+          img.src = `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`;
+        }
+      } else {
+        img.src = '/sleevedCard.png';
+        img.style.objectFit = 'contain';
+        img.style.padding = '8px';
+      }
+    } else {
+      img.src = '/sleevedCard.png';
+      img.style.objectFit = 'contain';
+      img.style.padding = '8px';
+    }
+  };
 
   const [selectedVendor, setSelectedVendor] = useState<any>({
     name: "VINTAGEVAULT TCG",
@@ -286,24 +348,24 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Shining Celebi Neo Destiny", grade: "PSA 9", price: 540.0, change: "+4.0%", id: "neo4-106", img: "https://images.scrydex.com/pokemon/neo4-106/large" }
       ],
       vintageJpn: [
-        { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "jp-base-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
-        { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "jp-coro-1", img: "https://images.scrydex.com/pokemon/sm35-78/large" },
-        { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "jp-neo2-1", img: "https://images.scrydex.com/pokemon/neo2-1/large" },
-        { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "jp-web-1", img: "https://images.scrydex.com/pokemon/fo1-5/large" },
-        { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "jp-vs-1", img: "https://images.scrydex.com/pokemon/base1-4/large" },
-        { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "jp-ecard-1", img: "https://images.scrydex.com/pokemon/skyridge-146/large" },
-        { name: "Crystal Ho-Oh e-Series (JPN)", grade: "PSA 9", price: 1120.0, change: "+5.3%", id: "jp-ecard-2", img: "https://images.scrydex.com/pokemon/skyridge-149/large" },
-        { name: "Japanese Vending Series 3 Mewtwo", grade: "PSA 10", price: 340.0, change: "+4.2%", id: "jp-vend-1", img: "https://images.scrydex.com/pokemon/base1-10/large" },
-        { name: "Japanese Vending Series 1 Pikachu", grade: "PSA 10", price: 280.0, change: "+6.7%", id: "jp-vend-2", img: "https://images.scrydex.com/pokemon/base1-58/large" },
-        { name: "Imakuni's Doduo Vending Promo", grade: "PSA 10", price: 210.0, change: "+3.1%", id: "jp-vend-3", img: "https://images.scrydex.com/pokemon/gym1-112/large" },
-        { name: "GB Dragonite Promo Holo (JPN)", grade: "PSA 10", price: 390.0, change: "+8.0%", id: "jp-gb-1", img: "https://images.scrydex.com/pokemon/fo1-4/large" },
-        { name: "CD Promo Charizard Holo (JPN)", grade: "PSA 10", price: 650.0, change: "+9.2%", id: "jp-cd-1", img: "https://images.scrydex.com/pokemon/base1-4/large" },
-        { name: "CD Promo Blastoise Holo (JPN)", grade: "PSA 10", price: 380.0, change: "+5.4%", id: "jp-cd-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
-        { name: "CD Promo Venusaur Holo (JPN)", grade: "PSA 10", price: 360.0, change: "+4.9%", id: "jp-cd-3", img: "https://images.scrydex.com/pokemon/base1-15/large" },
-        { name: "Japanese Gym Leader Erika Holo", grade: "PSA 9", price: 145.0, change: "+2.8%", id: "jp-gym-1", img: "https://images.scrydex.com/pokemon/gc1-16/large" },
-        { name: "Kanji Lugia Neo Genesis (JPN)", grade: "PSA 9", price: 420.0, change: "+7.5%", id: "jp-neo1-1", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
-        { name: "Japanese Neo Discovery Umbreon Holo", grade: "PSA 9", price: 380.0, change: "+6.8%", id: "jp-neo2-2", img: "https://images.scrydex.com/pokemon/neo2-13/large" },
-        { name: "Japanese Blaine's Arcanine Holo", grade: "PSA 9", price: 165.0, change: "+3.5%", id: "jp-gym-2", img: "https://images.scrydex.com/pokemon/gh1-1/large" }
+        { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "jp-base-4", img: "https://images.scrydex.com/pokemon/base1_ja-4/large" },
+        { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "jp-coro-1", img: "https://images.scrydex.com/pokemon/sm35_ja-78/large" },
+        { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "jp-neo2-1", img: "https://images.scrydex.com/pokemon/neo2_ja-1/large" },
+        { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "jp-web-1", img: "https://images.scrydex.com/pokemon/fo1_ja-5/large" },
+        { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "jp-vs-1", img: "https://images.scrydex.com/pokemon/base1_ja-4/large" },
+        { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "jp-ecard-1", img: "https://images.scrydex.com/pokemon/skyridge_ja-146/large" },
+        { name: "Crystal Ho-Oh e-Series (JPN)", grade: "PSA 9", price: 1120.0, change: "+5.3%", id: "jp-ecard-2", img: "https://images.scrydex.com/pokemon/skyridge_ja-149/large" },
+        { name: "Japanese Vending Series 3 Mewtwo", grade: "PSA 10", price: 340.0, change: "+4.2%", id: "jp-vend-1", img: "https://images.scrydex.com/pokemon/base1_ja-10/large" },
+        { name: "Japanese Vending Series 1 Pikachu", grade: "PSA 10", price: 280.0, change: "+6.7%", id: "jp-vend-2", img: "https://images.scrydex.com/pokemon/base1_ja-58/large" },
+        { name: "Imakuni's Doduo Vending Promo", grade: "PSA 10", price: 210.0, change: "+3.1%", id: "jp-vend-3", img: "https://images.scrydex.com/pokemon/gym1_ja-112/large" },
+        { name: "GB Dragonite Promo Holo (JPN)", grade: "PSA 10", price: 390.0, change: "+8.0%", id: "jp-gb-1", img: "https://images.scrydex.com/pokemon/fo1_ja-4/large" },
+        { name: "CD Promo Charizard Holo (JPN)", grade: "PSA 10", price: 650.0, change: "+9.2%", id: "jp-cd-1", img: "https://images.scrydex.com/pokemon/base1_ja-4/large" },
+        { name: "CD Promo Blastoise Holo (JPN)", grade: "PSA 10", price: 380.0, change: "+5.4%", id: "jp-cd-2", img: "https://images.scrydex.com/pokemon/base1_ja-2/large" },
+        { name: "CD Promo Venusaur Holo (JPN)", grade: "PSA 10", price: 360.0, change: "+4.9%", id: "jp-cd-3", img: "https://images.scrydex.com/pokemon/base1_ja-15/large" },
+        { name: "Japanese Gym Leader Erika Holo", grade: "PSA 9", price: 145.0, change: "+2.8%", id: "jp-gym-1", img: "https://images.scrydex.com/pokemon/gc1_ja-16/large" },
+        { name: "Kanji Lugia Neo Genesis (JPN)", grade: "PSA 9", price: 420.0, change: "+7.5%", id: "jp-neo1-1", img: "https://images.scrydex.com/pokemon/neo1_ja-9/large" },
+        { name: "Japanese Neo Discovery Umbreon Holo", grade: "PSA 9", price: 380.0, change: "+6.8%", id: "jp-neo2-2", img: "https://images.scrydex.com/pokemon/neo2_ja-13/large" },
+        { name: "Japanese Blaine's Arcanine Holo", grade: "PSA 9", price: 165.0, change: "+3.5%", id: "jp-gym-2", img: "https://images.scrydex.com/pokemon/gh1_ja-1/large" }
       ],
       modernAlt: [
         { name: "Umbreon VMAX Alt Art (Moonbreon)", grade: "PSA 10", price: 1420.0, change: "+5.6%", id: "evs-215", img: "https://images.scrydex.com/pokemon/swsh7-215/large" },
@@ -322,18 +384,18 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Mew ex SIR 151", grade: "PSA 10", price: 140.0, change: "+3.2%", id: "meo-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" }
       ],
       jpnModern: [
-        { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, change: "+12.4%", id: "jp-iono-1", img: "https://images.scrydex.com/pokemon/sv2d-96/large" },
-        { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, change: "+8.1%", id: "jp-miriam-1", img: "https://images.scrydex.com/pokemon/sv1v-105/large" },
-        { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, change: "+9.6%", id: "jp-mb-pika", img: "https://images.scrydex.com/pokemon/sv3pt5-25/large" },
-        { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, change: "+7.2%", id: "jp-mb-gen", img: "https://images.scrydex.com/pokemon/sv3pt5-94/large" },
-        { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, change: "+5.4%", id: "jp-erika-1", img: "https://images.scrydex.com/pokemon/sv3pt5-206/large" },
-        { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, change: "+6.8%", id: "jp-zard-sar", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
-        { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, change: "+4.5%", id: "jp-mew-sar", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
-        { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, change: "+3.8%", id: "jp-vstar-pika", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
-        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, change: "+9.4%", id: "xy-p-203", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
-        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, change: "+5.1%", id: "jp-shibuya", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
-        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, change: "+8.9%", id: "jp-stamp-pika", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
-        { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, change: "+4.2%", id: "jp-climax-zard", img: "https://images.scrydex.com/pokemon/swsh8pt5-260/large" }
+        { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, change: "+12.4%", id: "jp-iono-1", img: "https://images.scrydex.com/pokemon/sv2d_ja-96/large" },
+        { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, change: "+8.1%", id: "jp-miriam-1", img: "https://images.scrydex.com/pokemon/sv1v_ja-105/large" },
+        { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, change: "+9.6%", id: "jp-mb-pika", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-25/large" },
+        { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, change: "+7.2%", id: "jp-mb-gen", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-94/large" },
+        { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, change: "+5.4%", id: "jp-erika-1", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-206/large" },
+        { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, change: "+6.8%", id: "jp-zard-sar", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
+        { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, change: "+4.5%", id: "jp-mew-sar", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
+        { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, change: "+3.8%", id: "jp-vstar-pika", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, change: "+9.4%", id: "xy-p-203", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, change: "+5.1%", id: "jp-shibuya", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, change: "+8.9%", id: "jp-stamp-pika", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, change: "+4.2%", id: "jp-climax-zard", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
       ],
       tagTeams: [
         { name: "Latios & Latias GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-170", img: "https://images.scrydex.com/pokemon/sm9-170/large" },
@@ -353,7 +415,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Torchic Gold Star Holo Team Rocket Returns", grade: "PSA 9", price: 1100.0, change: "+3.8%", id: "ex7-108", img: "https://images.scrydex.com/pokemon/ex7-108/large" },
         { name: "Lugia ex Unseen Forces Holo", grade: "PSA 9", price: 890.0, change: "+5.0%", id: "ex10-105", img: "https://images.scrydex.com/pokemon/ex10-105/large" },
         { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
-        { name: "Pikachu Illustrator Promo", grade: "BGS 9.5", price: 85000.0, change: "+12.1%", id: "promo-1", img: "https://images.scrydex.com/pokemon/xy12-35/large" },
+        { name: "Pikachu Illustrator Promo", grade: "BGS 9.5", price: 85000.0, change: "+12.1%", id: "promo-1", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
         { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" }
       ]
     };
@@ -365,35 +427,37 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
       { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
       { name: "Snorlax IR 151 Promo", grade: "PSA 9", price: 24.0, change: "+0.8%", id: "bgt-5", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
-      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://images.scrydex.com/pokemon/sv3pt5-133/large" },
-      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://images.scrydex.com/pokemon/sv3pt5-149/large" },
-      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
-      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", img: "https://images.scrydex.com/pokemon/gc1-16/large" },
-      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", img: "https://images.scrydex.com/pokemon/base1-58/large" },
+      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-133/large" },
+      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-149/large" },
+      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", img: "https://images.scrydex.com/pokemon/gc1_ja-16/large" },
+      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", img: "https://images.scrydex.com/pokemon/base1_ja-58/large" },
       { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
       { name: "Magikarp IR Paldea Evolved", grade: "PSA 9", price: 110.0, change: "+7.8%", id: "bgt-12", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
       { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
       { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
-      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://images.scrydex.com/pokemon/swsh12pt5-205/large" },
+      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
       { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", img: "https://images.scrydex.com/pokemon/base1-63/large" },
       { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", img: "https://images.scrydex.com/pokemon/base1-46/large" },
       { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", img: "https://images.scrydex.com/pokemon/ju1-10/large" },
       { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", img: "https://images.scrydex.com/pokemon/fo1-6/large" },
-      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", img: "https://images.scrydex.com/pokemon/neo1-9/large" }
+      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", img: "https://images.scrydex.com/pokemon/neo1_ja-9/large" }
     ];
+
+    const dynamicJpnPool = getCardShowDynamicJapaneseCards(120);
 
     // Build specialized core array depending on vendor specialty
     let corePool: any[] = [];
     if (vName.includes("VINTAGEVAULT") || vName.includes("JAPANESE HIGH CLASS") || vName.includes("DOVAKINJI")) {
-      corePool = [...pools.vintageJpn, ...pools.jpnModern, ...pools.vintageEng];
+      corePool = [...dynamicJpnPool, ...pools.vintageJpn, ...pools.jpnModern, ...pools.vintageEng];
     } else if (vName.includes("ALPHA GRAILS") || vName.includes("RETRO") || vName.includes("CARBANDA") || vName.includes("WIKRATS")) {
-      corePool = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn];
+      corePool = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn, ...dynamicJpnPool.slice(0, 30)];
     } else if (vName.includes("MODERN ALT") || vName.includes("HIS NAME") || vName.includes("UDS")) {
-      corePool = [...pools.modernAlt, ...pools.jpnModern, ...pools.tagTeams];
+      corePool = [...pools.modernAlt, ...pools.jpnModern, ...pools.tagTeams, ...dynamicJpnPool.slice(0, 40)];
     } else if (vName.includes("GOLD STAR") || vName.includes("SPECS") || vName.includes("BRODES")) {
-      corePool = [...pools.goldStarsEx, ...pools.tagTeams, ...pools.vintageEng];
+      corePool = [...pools.goldStarsEx, ...pools.tagTeams, ...pools.vintageEng, ...dynamicJpnPool.slice(0, 20)];
     } else {
-      corePool = [...pools.modernAlt, ...pools.vintageJpn, ...pools.vintageEng, ...pools.tagTeams];
+      corePool = [...dynamicJpnPool.slice(0, 45), ...pools.modernAlt, ...pools.vintageJpn, ...pools.vintageEng, ...pools.tagTeams];
     }
 
     // Expand core inventory up to exactly 56 cards per vendor with budget, mid, and high tier varieties
@@ -401,19 +465,30 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     let counter = 0;
     while (result.length < 56) {
       counter++;
-      const bItem = budgetSingles[counter % budgetSingles.length];
       const isJpn = counter % 3 === 0;
-      const priceOffset = (counter * 17) % 180;
-      result.push({
-        ...bItem,
-        id: `${selectedVendor?.booth || 'booth'}-${counter}`,
-        name: isJpn && !bItem.name.includes("Japanese") ? `Japanese ${bItem.name} (Kanji)` : bItem.name,
-        grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
-        price: bItem.price + priceOffset,
-      });
+      if (isJpn && dynamicJpnPool.length > 0) {
+        const jItem = dynamicJpnPool[counter % dynamicJpnPool.length];
+        const priceOffset = (counter * 17) % 180;
+        result.push({
+          ...jItem,
+          id: `${selectedVendor?.booth || 'booth'}-jp-${counter}`,
+          grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
+          price: (jItem.price || 45) + priceOffset,
+        });
+      } else {
+        const bItem = budgetSingles[counter % budgetSingles.length];
+        const priceOffset = (counter * 17) % 180;
+        result.push({
+          ...bItem,
+          id: `${selectedVendor?.booth || 'booth'}-${counter}`,
+          name: bItem.name,
+          grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
+          price: bItem.price + priceOffset,
+        });
+      }
     }
     return result;
-  }, [selectedVendor?.name, selectedVendor?.booth]);
+  }, [selectedVendor?.name, selectedVendor?.booth, metadataLoaded]);
 
   const filteredCards = activeVendorCards.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -633,9 +708,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                     src={card.img}
                     alt={card.name}
                     className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLElement).style.display = 'none';
-                    }}
+                    onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                   />
                   {/* Grade badge — top left, outside card art area */}
                   <div className="absolute top-3 left-3 z-10">
@@ -1387,7 +1460,12 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                         >
                           <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
                             {item.img ? (
-                              <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+                              <img
+                                src={item.img}
+                                alt={item.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
+                              />
                             ) : (
                               <Award className="w-3.5 h-3.5 text-amber-400" />
                             )}

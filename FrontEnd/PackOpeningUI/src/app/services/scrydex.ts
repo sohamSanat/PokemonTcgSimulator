@@ -10,11 +10,11 @@ const SCRYDEX_API_BASE = 'https://api.scrydex.com/pokemon/v1';
 
 let jaSetsCache: Array<{ id: string; name: string; cardCount: { total: number; official: number } }> | null = null;
 let jaEnNamesCache: Record<string, string> | null = null;
-let jaCardNamesCache: Record<string, string> | null = null;
+export let jaCardNamesCache: Record<string, string> | null = null;
 let pokeSpeciesDictCache: Record<string, string> | null = null;
 export let jaCardPricesCache: Record<string, number> | null = null;
 
-async function loadJapaneseMetadata() {
+export async function loadJapaneseMetadata() {
   if (!jaSetsCache) {
     try {
       const res = await fetch('/ja-sets.json');
@@ -972,4 +972,45 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       prices: [{ market: realPrice }]
     };
   });
+}
+
+export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
+  if (!jaCardPricesCache || Object.keys(jaCardPricesCache).length === 0) {
+    return [];
+  }
+  const results: any[] = [];
+  const keys = Object.keys(jaCardPricesCache);
+  
+  // Filter for authentic Japanese card keys with real prices (e.g. sv2d_ja-96, sv3pt5_ja-25, swsh12a_ja-205, sv4a_ja-348, sm12a_ja-192, base1_ja-4, fo1_ja-5, neo1_ja-9, etc.)
+  const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && jaCardPricesCache![k] > 0.5 && !k.includes('logo'));
+  
+  // Sort or pick a diverse sample across Generations 1, 2, and 3 (and modern SARs / UR / SR)
+  const step = Math.max(1, Math.floor(validKeys.length / count));
+  for (let i = 0; i < Math.min(validKeys.length, count * step); i += step) {
+    const key = validKeys[i];
+    const price = jaCardPricesCache[key];
+    if (price && price > 0.5) {
+      const rawName = jaCardNamesCache?.[key] || jaCardNamesCache?.[key.replace(/_ja_ja-/i, '_ja-')] || `Japanese Card #${key.split('-')[1] || key}`;
+      const [prefix, num] = key.split('-');
+      const cleanSet = prefix.replace(/_ja_ja$/i, '_ja').replace(/_ja$/i, '');
+      const paddedNum = (num || '1').toString().padStart(3, '0');
+      
+      let imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num || 1}/large`;
+      if (cleanSet.startsWith('sv')) {
+        imgUrl = `https://assets.tcgdex.net/ja/sv/${cleanSet}/${paddedNum}/high.webp`;
+      } else if (cleanSet.startsWith('swsh')) {
+        imgUrl = `https://assets.tcgdex.net/ja/swsh/${cleanSet}/${paddedNum}/high.webp`;
+      }
+      
+      results.push({
+        id: key.replace(/_ja_ja-/i, '_ja-'),
+        name: translateJapaneseName(rawName),
+        grade: price > 60 ? "PSA 10" : price > 25 ? "PSA 9" : "Raw NM",
+        price: Number((price * (price > 60 ? 1.4 : 1.15)).toFixed(2)),
+        change: `+${(Math.random() * 14 + 1.2).toFixed(1)}%`,
+        img: imgUrl
+      });
+    }
+  }
+  return results;
 }
