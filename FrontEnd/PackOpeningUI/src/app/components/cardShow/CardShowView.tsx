@@ -242,8 +242,18 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
             </div>
           )}
 
-          {/* MARKETPLACE CARDS GRID — VISIBLE RIGHT FROM PIXEL 1 (ZERO SCROLL NEEDED TO SEE CARDS!) */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 flex-1 overflow-y-auto pr-1 pb-4">
+          {/* Catalog Header with Scroll Notice */}
+          <div className="flex items-center justify-between bg-[#111418] px-3 py-1.5 border border-[#1e293b] rounded-lg shrink-0 text-[11px] font-mono">
+            <span className="text-white font-bold flex items-center gap-1.5">
+              📦 EXPO CATALOG ({filteredCards.length} CARDS)
+            </span>
+            <span className="text-[#38bdf8] font-bold animate-pulse flex items-center gap-1">
+              📜 SCROLL DOWN FOR MORE ▾
+            </span>
+          </div>
+
+          {/* MARKETPLACE CARDS GRID — FULL CARD RATIO & SMOOTH SCROLL CONTAINER */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1 overflow-y-auto pr-1.5 pb-6 max-h-[calc(100vh-14rem)] custom-scrollbar">
             {filteredCards.map((card, i) => (
               <div
                 key={i}
@@ -259,41 +269,46 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                     });
                   }
                 }}
-                className="bg-[#111418]/90 border border-[#1e293b]/80 rounded-xl overflow-hidden group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] relative transform hover:-translate-y-0.5"
+                className="bg-[#111418] border border-[#1e293b] rounded-xl overflow-hidden group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] relative transform hover:-translate-y-0.5"
               >
-                <div className="aspect-[3/4] bg-gradient-to-b from-white/5 to-black/70 p-1.5 relative flex items-center justify-center">
+                {/* 100% Full Card Aspect Box (Exact 63:88 Card Ratio) guaranteeing full uncropped visibility! */}
+                <div className="w-full aspect-[63/88] bg-gradient-to-b from-white/5 via-black/40 to-black/80 relative flex items-center justify-center overflow-hidden shrink-0">
                   <img
                     src={card.img}
                     alt={card.name}
-                    className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+                    className="absolute inset-2 w-[calc(100%-16px)] h-[calc(100%-16px)] object-contain filter drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 m-auto"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
-                  <div className="absolute top-1.5 right-1.5">
-                    <div className="w-4 h-4 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8] shadow-md">
-                      <Check className="w-2.5 h-2.5 text-[#38bdf8]" />
+                  <div className="absolute top-2 right-2 z-10">
+                    <div className="w-5 h-5 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8] shadow-md">
+                      <Check className="w-3 h-3 text-[#38bdf8]" />
                     </div>
                   </div>
-                  <div className="absolute bottom-1.5 left-1.5 right-1.5">
-                    <div className="bg-black/90 backdrop-blur px-1 py-0.5 rounded text-[8px] font-mono border border-white/10 uppercase text-center truncate text-amber-300 font-bold shadow-md">
-                      {card.grade} | {card.name}
-                    </div>
+                  <div className="absolute top-2 left-2 z-10">
+                    <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/40 text-amber-300 font-bold shadow-md">
+                      {card.grade}
+                    </span>
                   </div>
                 </div>
-                <div className="p-1.5 flex flex-col gap-0.5 bg-black/80 border-t border-white/10">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[9px] text-[#94a3b8] font-mono">
-                      Market
+
+                {/* Card Info Footer */}
+                <div className="p-2.5 flex flex-col gap-1 bg-[#0e1117] border-t border-white/10 flex-1 justify-between shrink-0">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-white leading-tight line-clamp-1 group-hover:text-[#38bdf8] transition-colors">
+                      {card.name}
                     </span>
-                    <span className="text-xs font-mono font-black text-white">
-                      ${card.price.toLocaleString()}
+                    <span className="text-[10px] text-[#94a3b8] font-mono">
+                      Market Value
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-[9px] font-mono pt-0.5 border-t border-white/5">
-                    <span className="text-green-400 font-bold">{card.change}</span>
-                    <span className="text-[#38bdf8] font-bold group-hover:underline flex items-center gap-0.5">
-                      <Eye className="w-3 h-3" /> INSPECT
+                  <div className="flex justify-between items-center pt-1 border-t border-white/5 mt-1">
+                    <span className="text-sm font-mono font-black text-white">
+                      ${card.price.toLocaleString()}
+                    </span>
+                    <span className="text-green-400 font-bold text-[10px] font-mono">
+                      {card.change}
                     </span>
                   </div>
                 </div>
