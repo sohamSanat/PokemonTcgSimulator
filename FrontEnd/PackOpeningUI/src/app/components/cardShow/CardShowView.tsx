@@ -271,22 +271,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 }}
                 className="bg-[#111418] border border-[#1e293b] rounded-xl overflow-hidden group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] relative transform hover:-translate-y-0.5"
               >
-                {/* 100% Full Card Aspect Box (Exact 63:88 Card Ratio) guaranteeing full uncropped visibility! */}
-                <div className="w-full aspect-[63/88] bg-gradient-to-b from-white/5 via-black/40 to-black/80 relative flex items-center justify-center overflow-hidden shrink-0">
+                {/* Fixed Height Image Box with relative block image so 100% full card is shown top-to-bottom without clipping */}
+                <div className="h-56 sm:h-64 w-full bg-gradient-to-b from-white/5 via-black/40 to-black/80 relative flex items-center justify-center p-3 overflow-hidden shrink-0">
                   <img
                     src={card.img}
                     alt={card.name}
-                    className="absolute inset-2 w-[calc(100%-16px)] h-[calc(100%-16px)] object-contain filter drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 m-auto"
+                    className="relative z-10 h-full max-h-full w-auto max-w-full object-contain filter drop-shadow-2xl transition-transform duration-300 group-hover:scale-105 block mx-auto"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
-                  <div className="absolute top-2 right-2 z-10">
+                  <div className="absolute top-2 right-2 z-20">
                     <div className="w-5 h-5 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8] shadow-md">
                       <Check className="w-3 h-3 text-[#38bdf8]" />
                     </div>
                   </div>
-                  <div className="absolute top-2 left-2 z-10">
+                  <div className="absolute top-2 left-2 z-20">
                     <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/40 text-amber-300 font-bold shadow-md">
                       {card.grade}
                     </span>
