@@ -301,8 +301,8 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     paddedNum = num.padStart(3, '0');
   }
 
-  // Define reliable fallback chain
-  const fallbacks = isJapaneseSet ? [
+  // Define reliable fallback chain of specific card scans (no generic placeholders)
+  const specificFallbacks = isJapaneseSet ? [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}.png`,
@@ -321,13 +321,7 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `${cleanAsset}/high.png`,
     // Direct pokemontcg.io high-res scans for corresponding card number and set
     `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
-    `https://images.pokemontcg.io/${cleanId}/${num}.png`,
-    // Guaranteed Japanese high-res backup scans so card art never shows blank/black area
-    `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
-    `https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp`,
-    `https://images.scrydex.com/pokemon/swsh12a_ja-205/large`,
-    `https://images.pokemontcg.io/np/47_hires.png`,
-    `https://images.pokemontcg.io/fo1/5_hires.png`
+    `https://images.pokemontcg.io/${cleanId}/${num}.png`
   ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
@@ -336,9 +330,22 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/low.png`,
     `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
-    `https://images.pokemontcg.io/${setId}/${num}.png`,
+    `https://images.pokemontcg.io/${setId}/${num}.png`
+  ];
+
+  // Generic fallback cards for Pack Opening view to avoid blank frames
+  const genericBackups = isJapaneseSet ? [
+    `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
+    `https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp`,
+    `https://images.scrydex.com/pokemon/swsh12a_ja-205/large`,
+    `https://images.pokemontcg.io/np/47_hires.png`,
+    `https://images.pokemontcg.io/fo1/5_hires.png`
+  ] : [
     'https://images.pokemontcg.io/swsh3/19_hires.png'
   ];
+
+  // If onFailed callback is registered (Card Show Mode), completely omit generic backups so we can trigger callback and hide the card
+  const fallbacks = onFailed ? specificFallbacks : [...specificFallbacks, ...genericBackups];
 
   // Robustly determine the next fallback without relying on React-volatile dataset
   const currentIndex = fallbacks.findIndex(url => img.src === url || img.src.includes(url));
