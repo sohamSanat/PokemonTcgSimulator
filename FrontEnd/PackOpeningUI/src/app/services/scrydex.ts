@@ -991,19 +991,16 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
     const price = jaCardPricesCache[key];
     if (price && price > 0.5) {
       const rawName = jaCardNamesCache?.[key] || jaCardNamesCache?.[key.replace(/_ja_ja-/i, '_ja-')] || `Japanese Card #${key.split('-')[1] || key}`;
-      const [prefix, num] = key.split('-');
+      const [prefix, numStr] = key.split('-');
       const cleanSet = prefix.replace(/_ja_ja$/i, '_ja').replace(/_ja$/i, '');
-      const paddedNum = (num || '1').toString().padStart(3, '0');
+      const num = numStr || '1';
       
-      let imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num || 1}/large`;
-      if (cleanSet.startsWith('sv')) {
-        imgUrl = `https://assets.tcgdex.net/ja/sv/${cleanSet}/${paddedNum}/high.webp`;
-      } else if (cleanSet.startsWith('swsh')) {
-        imgUrl = `https://assets.tcgdex.net/ja/swsh/${cleanSet}/${paddedNum}/high.webp`;
-      }
+      const imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num}/large`;
       
       results.push({
-        id: key.replace(/_ja_ja-/i, '_ja-'),
+        id: `${cleanSet}_ja-${num}`,
+        setId: `${cleanSet}_ja`,
+        num: num,
         name: translateJapaneseName(rawName),
         grade: price > 60 ? "PSA 10" : price > 25 ? "PSA 9" : "Raw NM",
         price: Number((price * (price > 60 ? 1.4 : 1.15)).toFixed(2)),
@@ -1014,3 +1011,4 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
   }
   return results;
 }
+

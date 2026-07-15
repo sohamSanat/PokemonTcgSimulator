@@ -259,15 +259,26 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const validAsset = getTCGDexValidAssetPath(setId, num);
   
   const sLow = setId.toLowerCase();
-  // Japanese sets (e.g. sv2a_ja) use un-padded numbers on Scrydex CDN — never pad them
-  const isJapaneseSet = sLow.includes('_ja');
+  const isJapaneseSet = sLow.includes('_ja') || img.src.includes('_ja');
   let paddedNum = num;
   if (!isJapaneseSet && (sLow.startsWith('me') || sLow.startsWith('sv') || sLow.startsWith('sm') || sLow.startsWith('xy') || sLow.startsWith('swsh'))) {
     paddedNum = num.padStart(3, '0');
   }
 
-  // Prioritize tcgdex and scrydex since pokemontcg.io can return false-positive 200 OK card backs
-  const fallbacks = [
+  const cleanId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
+
+  const fallbacks = isJapaneseSet ? [
+    `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/large`,
+    `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/high.png`,
+    `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/low.png`,
+    `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
+    `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
+    `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/large`,
+    `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/high.png`,
+    `${validAsset}/high.webp`,
+    `${validAsset}/high.png`,
+    'https://images.pokemontcg.io/swsh3/19_hires.png'
+  ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}/low.webp`,

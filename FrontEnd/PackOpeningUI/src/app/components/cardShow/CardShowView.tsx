@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards } from "../../services/scrydex";
+import { handleCardImageError } from "../../services/tcgdex";
 import {
   Menu,
   Search,
@@ -54,57 +55,30 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
   const handleCardShowImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
     const img = e.currentTarget;
-    const attempt = parseInt(img.dataset.errorAttempt || '0', 10);
-    if (attempt >= 3) {
-      img.src = '/sleevedCard.png';
-      img.style.objectFit = 'contain';
-      img.style.padding = '8px';
-      return;
-    }
+    let setId = 'swsh3';
+    let num = '1';
     
-    img.dataset.errorAttempt = (attempt + 1).toString();
-    const currentSrc = img.src;
-    
-    const match = currentSrc.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
-                  cardId?.match(/^([a-z0-9_-]+)[/-]([0-9]+)/i);
-                  
-    if (match) {
-      let [, setId, numStr] = match;
-      setId = setId.toLowerCase();
-      const cleanId = setId.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
-      const num = parseInt(numStr, 10) || 1;
-      const pad3 = numStr.padStart(3, '0');
-      const isJapan = isJpn || setId.includes('_ja') || currentSrc.includes('_ja') || cardId?.includes('_ja') || cardId?.includes('jp-');
-      
-      if (attempt === 0) {
-        if (isJapan) {
-          if (cleanId.startsWith('sv')) {
-            img.src = `https://assets.tcgdex.net/ja/sv/${cleanId}/${pad3}/high.webp`;
-          } else if (cleanId.startsWith('swsh')) {
-            img.src = `https://assets.tcgdex.net/ja/swsh/${cleanId}/${pad3}/high.webp`;
-          } else {
-            img.src = `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`;
-          }
-        } else {
-          img.src = `https://assets.tcgdex.net/en/sv/${cleanId}/${pad3}/high.webp`;
-        }
-      } else if (attempt === 1) {
-        if (isJapan) {
-          img.src = `https://assets.tcgdex.net/ja/sv/${cleanId}/${pad3}/high.webp`;
-        } else {
-          img.src = `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`;
-        }
-      } else {
-        img.src = '/sleevedCard.png';
-        img.style.objectFit = 'contain';
-        img.style.padding = '8px';
+    if (cardId && cardId.includes('-')) {
+      const parts = cardId.split('-');
+      if (parts.length >= 2 && !parts[0].includes('booth') && !parts[0].match(/^[0-9]+$/)) {
+        setId = parts[0];
+        num = parts[1];
       }
-    } else {
-      img.src = '/sleevedCard.png';
-      img.style.objectFit = 'contain';
-      img.style.padding = '8px';
     }
+    
+    const match = img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i);
+    if (match && (setId === 'swsh3' || cardId?.includes('booth'))) {
+      setId = match[1];
+      num = match[2];
+    }
+    
+    if (isJpn && !setId.toLowerCase().includes('_ja')) {
+      setId = `${setId}_ja`;
+    }
+    
+    handleCardImageError(img, setId, num);
   };
+
 
   const [selectedVendor, setSelectedVendor] = useState<any>({
     name: "VINTAGEVAULT TCG",
@@ -449,19 +423,25 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // Build specialized core array depending on vendor specialty
     let corePool: any[] = [];
     if (vName.includes("VINTAGEVAULT") || vName.includes("JAPANESE HIGH CLASS") || vName.includes("DOVAKINJI")) {
-      corePool = [...dynamicJpnPool, ...pools.vintageJpn, ...pools.jpnModern, ...pools.vintageEng];
+      corePool = [...pools.vintageJpn, ...pools.jpnModern, ...pools.vintageEng, ...dynamicJpnPool.slice(0, 30)];
     } else if (vName.includes("ALPHA GRAILS") || vName.includes("RETRO") || vName.includes("CARBANDA") || vName.includes("WIKRATS")) {
-      corePool = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn, ...dynamicJpnPool.slice(0, 30)];
+      corePool = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn, ...dynamicJpnPool.slice(0, 25)];
     } else if (vName.includes("MODERN ALT") || vName.includes("HIS NAME") || vName.includes("UDS")) {
-      corePool = [...pools.modernAlt, ...pools.jpnModern, ...pools.tagTeams, ...dynamicJpnPool.slice(0, 40)];
+      corePool = [...pools.modernAlt, ...pools.jpnModern, ...pools.tagTeams, ...dynamicJpnPool.slice(0, 25)];
     } else if (vName.includes("GOLD STAR") || vName.includes("SPECS") || vName.includes("BRODES")) {
-      corePool = [...pools.goldStarsEx, ...pools.tagTeams, ...pools.vintageEng, ...dynamicJpnPool.slice(0, 20)];
+      corePool = [...pools.goldStarsEx, ...pools.tagTeams, ...pools.vintageEng, ...dynamicJpnPool.slice(0, 25)];
     } else {
-      corePool = [...dynamicJpnPool.slice(0, 45), ...pools.modernAlt, ...pools.vintageJpn, ...pools.vintageEng, ...pools.tagTeams];
+      corePool = [...pools.modernAlt, ...pools.vintageJpn, ...pools.vintageEng, ...pools.tagTeams, ...dynamicJpnPool.slice(0, 30)];
     }
 
     // Expand core inventory up to exactly 56 cards per vendor with budget, mid, and high tier varieties
-    const result: any[] = [...corePool];
+    const result: any[] = corePool.map((c: any, i: number) => ({
+      ...c,
+      id: `${selectedVendor?.booth || 'booth'}-core-${i}`,
+      originalId: c.id,
+      setId: (c as any).setId || (c.id ? c.id.split('-')[0] : 'swsh3'),
+      num: (c as any).num || (c.id && c.id.includes('-') ? c.id.split('-')[1] : '1')
+    }));
     let counter = 0;
     while (result.length < 56) {
       counter++;
@@ -472,6 +452,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         result.push({
           ...jItem,
           id: `${selectedVendor?.booth || 'booth'}-jp-${counter}`,
+          originalId: jItem.id,
+          setId: (jItem as any).setId || (jItem.id ? jItem.id.split('-')[0] : 'swsh3'),
+          num: (jItem as any).num || (jItem.id && jItem.id.includes('-') ? jItem.id.split('-')[1] : '1'),
           grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
           price: (jItem.price || 45) + priceOffset,
         });
@@ -481,6 +464,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         result.push({
           ...bItem,
           id: `${selectedVendor?.booth || 'booth'}-${counter}`,
+          originalId: bItem.id,
+          setId: (bItem as any).setId || (bItem.id ? bItem.id.split('-')[0] : 'swsh3'),
+          num: (bItem as any).num || (bItem.id && bItem.id.includes('-') ? bItem.id.split('-')[1] : '1'),
           name: bItem.name,
           grade: counter % 4 === 0 ? "PSA 10" : counter % 4 === 1 ? "PSA 9" : counter % 4 === 2 ? "CGC 9.5" : "Raw NM",
           price: bItem.price + priceOffset,
