@@ -1153,21 +1153,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               {/* Corner booth top-right */}
               <rect x="460" y="40" width="60" height="80" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
-                onMouseEnter={() => handleBoothHover({ name: "INFO & CONVENTION HELP DESK", rating: "5.0 / 5", activeListings: "Event Guide", completedTrans: "10,000+", booth: "Zone 5 Desk", specialties: ["Map Assistance", "Lost & Found", "Event Schedules"], discountScore: 90 })}
+                onMouseEnter={() => handleBoothHover({ name: "PALDEAN PALACE VENDORS", rating: "4.8 / 5", activeListings: "1,850+ Items", completedTrans: "9,200+", booth: "Zone 5 Desk", specialties: ["Paldean Fates SIRs", "Illustration Rares", "Gold Hyper Rares"], discountScore: 80 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => handleBoothSelect({ name: "INFO & CONVENTION HELP DESK", rating: "5.0 / 5", activeListings: "Event Guide", completedTrans: "10,000+", booth: "Zone 5 Desk", specialties: ["Map Assistance", "Lost & Found", "Event Schedules"], discountScore: 90 })}
+                onClick={() => handleBoothSelect({ name: "PALDEAN PALACE VENDORS", rating: "4.8 / 5", activeListings: "1,850+ Items", completedTrans: "9,200+", booth: "Zone 5 Desk", specialties: ["Paldean Fates SIRs", "Illustration Rares", "Gold Hyper Rares"], discountScore: 80 })}
               />
               <text x="490" y="75" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace">5</text>
-              <text x="490" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Info Desk</text>
+              <text x="490" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Paldean Palace</text>
 
               <rect x="530" y="40" width="70" height="80" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
                 className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
-                onMouseEnter={() => handleBoothHover({ name: "OFFICIAL MERCHANDISE STORE", rating: "4.9 / 5", activeListings: "1,200 Merch Items", completedTrans: "25,000+", booth: "Zone 8 Merch", specialties: ["Convention Hoodies", "Playmats", "Limited Pins"], discountScore: 85 })}
+                onMouseEnter={() => handleBoothHover({ name: "NEO DESTINY SPECIALIST", rating: "4.9 / 5", activeListings: "1,420+ Items", completedTrans: "8,400+", booth: "Zone 8 Merch", specialties: ["Neo Destiny Shinings", "Neo Revelation Holos", "1st Edition Neo Classics"], discountScore: 82 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => handleBoothSelect({ name: "OFFICIAL MERCHANDISE STORE", rating: "4.9 / 5", activeListings: "1,200 Merch Items", completedTrans: "25,000+", booth: "Zone 8 Merch", specialties: ["Convention Hoodies", "Playmats", "Limited Pins"], discountScore: 85 })}
+                onClick={() => handleBoothSelect({ name: "NEO DESTINY SPECIALIST", rating: "4.9 / 5", activeListings: "1,420+ Items", completedTrans: "8,400+", booth: "Zone 8 Merch", specialties: ["Neo Destiny Shinings", "Neo Revelation Holos", "1st Edition Neo Classics"], discountScore: 82 })}
               />
               <text x="565" y="75" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace">8</text>
-              <text x="565" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Merch</text>
+              <text x="565" y="90" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Neo Destiny</text>
+              <text x="565" y="102" textAnchor="middle" fill="#334155" fontSize="5.5" fontFamily="monospace">Specialist</text>
 
               {/* ===== ZONE 5: TCG VENDORS A-M (center) ===== */}
               <rect x="140" y="135" width="80" height="55" rx="3" fill="#0c1824" stroke="#38bdf8" strokeWidth="1" strokeOpacity="0.4"
@@ -1581,6 +1582,25 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       </div>
                     </div>
                   </div>
+
+                  {/* Dedicated Known For / Specialties Block */}
+                  {selectedVendor.specialties && selectedVendor.specialties.length > 0 && (
+                    <div className="flex flex-col gap-1.5 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
+                      <h4 className="text-[9px] text-[#38bdf8] uppercase tracking-widest border-b border-[#38bdf8]/30 pb-1 font-bold flex items-center gap-1">
+                        👑 KNOWN FOR / SPECIALTIES
+                      </h4>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {selectedVendor.specialties.map((spec: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-0.5 rounded bg-[#38bdf8]/10 text-[#38bdf8] text-[10px] border border-[#38bdf8]/20 font-bold"
+                          >
+                            {spec}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-1.5">
                     <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
