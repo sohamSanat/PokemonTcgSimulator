@@ -1,0 +1,507 @@
+{
+  "metadata": {
+    "set_name": "Snow Hazard",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/snow-hazard/sv2p_ja",
+    "release_date": "2023/04/14",
+    "scraped_at": "2026-07-15T11:46:13.497936",
+    "elapsed_seconds": 16.77,
+    "total_cards_scraped": 99
+  },
+  "cards": [
+    {
+      "name": "Surskit #1",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Masquerain #2",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Combee #3",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Vespiquen #4",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Snover #5",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Abomasnow #6",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Bounsweet #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Steenee #8",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Tsareena #9",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Bramblin #10",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Bramblin #11",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Brambleghast #12",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Rellor #13",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Rellor #14",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Wo-Chien ex #15",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Marill #16",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Azumarill #17",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Luvdisc #18",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Eiscue #19",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Cetoddle #20",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Cetoddle #21",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Cetitan #22",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Veluza #23",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Frigibax #24",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Frigibax #25",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Arctibax #26",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Baxcalibur #27",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Chien-Pao ex #28",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Slowpoke #29",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Slowking ex #30",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Gothita #31",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Gothorita #32",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Gothitelle #33",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Mimikyu #34",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Sinistea #35",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Polteageist #36",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Rabsca #37",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Mankey #38",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Primeape #39",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Annihilape ex #40",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Sudowoodo #41",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Glimmet #42",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Glimmet #43",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Glimmora #44",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Murkrow #45",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Honchkrow #46",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Maschiff #47",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Maschiff #48",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Mabosstiff #49",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Bronzor #50",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Bronzong #51",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Corviknight #52",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Cufant #53",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Copperajah ex #54",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Orthworm #55",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Dunsparce #56",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Dudunsparce #57",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Wingull #58",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Pelipper #59",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Slakoth #60",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Vigoroth #61",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Slaking #62",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Rookidee #63",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Corvisquire #64",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Squawkabilly ex #65",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Super Rod #66",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Fighting Au Lait #67",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Grusha #68",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Giacomo #69",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Calamitous Snowy Mountain #70",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Reversal Energy #71",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Bramblin #72",
+      "current_value": "$2.58",
+      "price_numeric": 2.58
+    },
+    {
+      "name": "Marill #73",
+      "current_value": "$19.15",
+      "price_numeric": 19.15
+    },
+    {
+      "name": "Eiscue #74",
+      "current_value": "$6.95",
+      "price_numeric": 6.95
+    },
+    {
+      "name": "Frigibax #75",
+      "current_value": "$7.91",
+      "price_numeric": 7.91
+    },
+    {
+      "name": "Arctibax #76",
+      "current_value": "$5.35",
+      "price_numeric": 5.35
+    },
+    {
+      "name": "Baxcalibur #77",
+      "current_value": "$10.38",
+      "price_numeric": 10.38
+    },
+    {
+      "name": "Gothorita #78",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Rabsca #79",
+      "current_value": "$2.13",
+      "price_numeric": 2.13
+    },
+    {
+      "name": "Sudowoodo #80",
+      "current_value": "$9.65",
+      "price_numeric": 9.65
+    },
+    {
+      "name": "Orthworm #81",
+      "current_value": "$2.43",
+      "price_numeric": 2.43
+    },
+    {
+      "name": "Rookidee #82",
+      "current_value": "$4.66",
+      "price_numeric": 4.66
+    },
+    {
+      "name": "Dudunsparce #83",
+      "current_value": "$2.68",
+      "price_numeric": 2.68
+    },
+    {
+      "name": "Wo-Chien ex #84",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Chien-Pao ex #85",
+      "current_value": "$2.21",
+      "price_numeric": 2.21
+    },
+    {
+      "name": "Slowking ex #86",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Annihilape ex #87",
+      "current_value": "$3.09",
+      "price_numeric": 3.09
+    },
+    {
+      "name": "Copperajah ex #88",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Squawkabilly ex #89",
+      "current_value": "$1.17",
+      "price_numeric": 1.17
+    },
+    {
+      "name": "Grusha #90",
+      "current_value": "$5.34",
+      "price_numeric": 5.34
+    },
+    {
+      "name": "Giacomo #91",
+      "current_value": "$1.17",
+      "price_numeric": 1.17
+    },
+    {
+      "name": "Wo-Chien ex #92",
+      "current_value": "$15.40",
+      "price_numeric": 15.4
+    },
+    {
+      "name": "Chien-Pao ex #93",
+      "current_value": "$39.73",
+      "price_numeric": 39.73
+    },
+    {
+      "name": "Squawkabilly ex #94",
+      "current_value": "$18.76",
+      "price_numeric": 18.76
+    },
+    {
+      "name": "Grusha #95",
+      "current_value": "$39.07",
+      "price_numeric": 39.07
+    },
+    {
+      "name": "Giacomo #96",
+      "current_value": "$6.71",
+      "price_numeric": 6.71
+    },
+    {
+      "name": "Chien-Pao ex #97",
+      "current_value": "$14.74",
+      "price_numeric": 14.74
+    },
+    {
+      "name": "Super Rod #98",
+      "current_value": "$16.17",
+      "price_numeric": 16.17
+    },
+    {
+      "name": "Basic Water Energy #99",
+      "current_value": "$14.03",
+      "price_numeric": 14.03
+    }
+  ]
+}

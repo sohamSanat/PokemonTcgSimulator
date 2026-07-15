@@ -1,0 +1,10 @@
+{
+  "description": "This web application streamlines rule management for teams, allowing users to easily create, edit, and share guidelines to enhance collaboration and productivity.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

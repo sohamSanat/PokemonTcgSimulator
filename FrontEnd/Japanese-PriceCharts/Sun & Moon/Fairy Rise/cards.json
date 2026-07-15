@@ -1,0 +1,297 @@
+{
+  "metadata": {
+    "set_name": "Fairy Rise",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/fairy-rise/sm7b_ja",
+    "release_date": "2018/08/03",
+    "scraped_at": "2026-07-15T12:16:03.110092",
+    "elapsed_seconds": 18.77,
+    "total_cards_scraped": 57
+  },
+  "cards": [
+    {
+      "name": "Tangela #1",
+      "current_value": "$1.18",
+      "price_numeric": 1.18
+    },
+    {
+      "name": "Tangrowth #2",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Treecko #3",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Grovyle #4",
+      "current_value": "$1.11",
+      "price_numeric": 1.11
+    },
+    {
+      "name": "Sceptile-GX #5",
+      "current_value": "$2.36",
+      "price_numeric": 2.36
+    },
+    {
+      "name": "Wurmple #6",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Silcoon #7",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Beautifly #8",
+      "current_value": "$0.68",
+      "price_numeric": 0.68
+    },
+    {
+      "name": "Nincada #9",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Ninjask #10",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Combee #11",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Vespiquen #12",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Shaymin #13",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Alolan Vulpix #14",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Shedinja #15",
+      "current_value": "$1.22",
+      "price_numeric": 1.22
+    },
+    {
+      "name": "Sableye #16",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Giratina #17",
+      "current_value": "$3.26",
+      "price_numeric": 3.26
+    },
+    {
+      "name": "Sigilyph-GX #18",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Yamask #19",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Cofagrigus #20",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Litwick #21",
+      "current_value": "$6.27",
+      "price_numeric": 6.27
+    },
+    {
+      "name": "Lampent #22",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Chandelure #23",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Meloetta #24",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Alolan Ninetales-GX #25",
+      "current_value": "$4.54",
+      "price_numeric": 4.54
+    },
+    {
+      "name": "Jigglypuff #26",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Wigglytuff #27",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Ralts #28",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Kirlia #29",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Gardevoir #30",
+      "current_value": "$6.39",
+      "price_numeric": 6.39
+    },
+    {
+      "name": "Dedenne #31",
+      "current_value": "$3.27",
+      "price_numeric": 3.27
+    },
+    {
+      "name": "Carbink #32",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Xerneas ◇ #33",
+      "current_value": "$2.73",
+      "price_numeric": 2.73
+    },
+    {
+      "name": "Cutiefly #34",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Ribombee #35",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Morelull #36",
+      "current_value": "$0.74",
+      "price_numeric": 0.74
+    },
+    {
+      "name": "Shiinotic #37",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Mimikyu-GX #38",
+      "current_value": "$13.62",
+      "price_numeric": 13.62
+    },
+    {
+      "name": "Tapu Lele #39",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Tapu Fini #40",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Kecleon #41",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Net Ball #42",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Adventure Bag #43",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Morty #48",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Mina #49",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Life Forest ◇ #50",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Sceptile-GX #51",
+      "current_value": "$11.29",
+      "price_numeric": 11.29
+    },
+    {
+      "name": "Sigilyph-GX #52",
+      "current_value": "$4.88",
+      "price_numeric": 4.88
+    },
+    {
+      "name": "Alolan Ninetales-GX #53",
+      "current_value": "$26.18",
+      "price_numeric": 26.18
+    },
+    {
+      "name": "Mimikyu-GX #54",
+      "current_value": "$63.97",
+      "price_numeric": 63.97
+    },
+    {
+      "name": "Morty #55",
+      "current_value": "$11.56",
+      "price_numeric": 11.56
+    },
+    {
+      "name": "Mina #56",
+      "current_value": "$71.09",
+      "price_numeric": 71.09
+    },
+    {
+      "name": "Sceptile-GX #57",
+      "current_value": "$34.99",
+      "price_numeric": 34.99
+    },
+    {
+      "name": "Mimikyu-GX #60",
+      "current_value": "$103.00",
+      "price_numeric": 103
+    },
+    {
+      "name": "Net Ball #61",
+      "current_value": "$40.45",
+      "price_numeric": 40.45
+    },
+    {
+      "name": "Adventure Bag #62",
+      "current_value": "$8.39",
+      "price_numeric": 8.39
+    },
+    {
+      "name": "Spell Tag #63",
+      "current_value": "$3.74",
+      "price_numeric": 3.74
+    }
+  ]
+}

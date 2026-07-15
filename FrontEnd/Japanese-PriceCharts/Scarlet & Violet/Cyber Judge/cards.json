@@ -1,0 +1,512 @@
+{
+  "metadata": {
+    "set_name": "Cyber Judge",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/cyber-judge/sv5m_ja",
+    "release_date": "2024/01/26",
+    "scraped_at": "2026-07-15T11:41:11.776154",
+    "elapsed_seconds": 17.99,
+    "total_cards_scraped": 100
+  },
+  "cards": [
+    {
+      "name": "Scyther #1",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Pineco #2",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Seedot #3",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Nuzleaf #4",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Shiftry #5",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Shroomish #6",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Breloom #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Deerling #8",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Sawsbuck #9",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Grubbin #10",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Dhelmise #11",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Bramblin #12",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Brambleghast #13",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Rellor #14",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Rabsca #15",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Iron Leaves ex #16",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Slugma #17",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Magcargo #18",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Victini #19",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Litten #20",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Torracat #21",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Incineroar ex #22",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Pikachu #23",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Raichu #24",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Electabuzz #25",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Electivire #26",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Charjabug #27",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Vikavolt #28",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Zeraora #29",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Iron Thorns #30",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Mr. Mime #31",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Girafarig #32",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Cutiefly #33",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Ribombee #34",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Iron Valiant #35",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Iron Crown ex #36",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Meditite #37",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Medicham #38",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Drilbur #39",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Excadrill #40",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Iron Boulder ex #41",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Farigiraf ex #42",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Forretress #43",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Scizor ex #44",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Mawile #45",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Beldum #46",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Metang #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Metagross #48",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Meltan #49",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Melmetal #50",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Iron Treads #51",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Miraidon #52",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Lickitung #53",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Lickilicky #54",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Skitty #55",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Delcatty #56",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Pidove #57",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Tranquill #58",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Unfezant #59",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Drampa #60",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hand Trimmer #61",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Prime Catcher #62",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Reboot Pod #63",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Hero's Cape #64",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Future Booster Energy Capsule #65",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Heavy Baton #66",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Ciphermaniac's Codebreaking #67",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Salvatore #68",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Bianca's Devotion #69",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Full Metal Lab #70",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Mist Energy #71",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Shiftry #72",
+      "current_value": "$2.90",
+      "price_numeric": 2.9
+    },
+    {
+      "name": "Deerling #73",
+      "current_value": "$19.17",
+      "price_numeric": 19.17
+    },
+    {
+      "name": "Sawsbuck #74",
+      "current_value": "$18.82",
+      "price_numeric": 18.82
+    },
+    {
+      "name": "Litten #75",
+      "current_value": "$14.76",
+      "price_numeric": 14.76
+    },
+    {
+      "name": "Charjabug #76",
+      "current_value": "$2.41",
+      "price_numeric": 2.41
+    },
+    {
+      "name": "Iron Thorns #77",
+      "current_value": "$1.94",
+      "price_numeric": 1.94
+    },
+    {
+      "name": "Cutiefly #78",
+      "current_value": "$2.78",
+      "price_numeric": 2.78
+    },
+    {
+      "name": "Excadrill #79",
+      "current_value": "$2.88",
+      "price_numeric": 2.88
+    },
+    {
+      "name": "Metagross #80",
+      "current_value": "$8.83",
+      "price_numeric": 8.83
+    },
+    {
+      "name": "Meltan #81",
+      "current_value": "$2.43",
+      "price_numeric": 2.43
+    },
+    {
+      "name": "Lickitung #82",
+      "current_value": "$9.61",
+      "price_numeric": 9.61
+    },
+    {
+      "name": "Drampa #83",
+      "current_value": "$10.53",
+      "price_numeric": 10.53
+    },
+    {
+      "name": "Iron Leaves ex #84",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Incineroar ex #85",
+      "current_value": "$1.70",
+      "price_numeric": 1.7
+    },
+    {
+      "name": "Iron Crown ex #86",
+      "current_value": "$1.43",
+      "price_numeric": 1.43
+    },
+    {
+      "name": "Iron Boulder ex #87",
+      "current_value": "$1.27",
+      "price_numeric": 1.27
+    },
+    {
+      "name": "Farigiraf ex #88",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Scizor ex #89",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Ciphermaniac's Codebreaking #90",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Salvatore #91",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Bianca's Devotion #92",
+      "current_value": "$2.71",
+      "price_numeric": 2.71
+    },
+    {
+      "name": "Iron Leaves ex #93",
+      "current_value": "$20.77",
+      "price_numeric": 20.77
+    },
+    {
+      "name": "Iron Crown ex #94",
+      "current_value": "$32.73",
+      "price_numeric": 32.73
+    },
+    {
+      "name": "Iron Boulder ex #95",
+      "current_value": "$14.75",
+      "price_numeric": 14.75
+    },
+    {
+      "name": "Salvatore #96",
+      "current_value": "$10.37",
+      "price_numeric": 10.37
+    },
+    {
+      "name": "Bianca's Devotion #97",
+      "current_value": "$28.88",
+      "price_numeric": 28.88
+    },
+    {
+      "name": "Iron Leaves ex #98",
+      "current_value": "$6.02",
+      "price_numeric": 6.02
+    },
+    {
+      "name": "Iron Crown ex #99",
+      "current_value": "$5.33",
+      "price_numeric": 5.33
+    },
+    {
+      "name": "Iron Boulder ex #100",
+      "current_value": "$5.06",
+      "price_numeric": 5.06
+    }
+  ]
+}

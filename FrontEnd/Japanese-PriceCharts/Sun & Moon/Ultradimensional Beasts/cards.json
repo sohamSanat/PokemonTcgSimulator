@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "set_name": "Ultradimensional Beasts",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/ultradimensional-beasts/sm4a_ja",
+    "release_date": "2017/09/15",
+    "scraped_at": "2026-07-15T12:21:01.520457",
+    "elapsed_seconds": 16.93,
+    "total_cards_scraped": 47
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Kakuna #2",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Beedrill #3",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Exeggcute #4",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Shelmet #5",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Accelgor #6",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Magikarp #7",
+      "current_value": "$11.33",
+      "price_numeric": 11.33
+    },
+    {
+      "name": "Gyarados-GX #8",
+      "current_value": "$8.10",
+      "price_numeric": 8.1
+    },
+    {
+      "name": "Swinub #9",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Mamoswine #11",
+      "current_value": "$1.58",
+      "price_numeric": 1.58
+    },
+    {
+      "name": "Feebas #12",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Milotic #13",
+      "current_value": "$12.99",
+      "price_numeric": 12.99
+    },
+    {
+      "name": "Pikachu #15",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Alolan Raichu #16",
+      "current_value": "$5.71",
+      "price_numeric": 5.71
+    },
+    {
+      "name": "Misdreavus #17",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Mismagius #18",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Spoink #19",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Grumpig #20",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Oranguru #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Nihilego-GX #22",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Mankey #23",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Primeape #24",
+      "current_value": "$1.74",
+      "price_numeric": 1.74
+    },
+    {
+      "name": "Regirock #25",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Stufful #26",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Bewear #27",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Houndour #28",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Houndoom #29",
+      "current_value": "$4.55",
+      "price_numeric": 4.55
+    },
+    {
+      "name": "Deino #30",
+      "current_value": "$5.05",
+      "price_numeric": 5.05
+    },
+    {
+      "name": "Guzzlord-GX #33",
+      "current_value": "$4.09",
+      "price_numeric": 4.09
+    },
+    {
+      "name": "Jigglypuff #34",
+      "current_value": "$4.68",
+      "price_numeric": 4.68
+    },
+    {
+      "name": "Wigglytuff #35",
+      "current_value": "$7.98",
+      "price_numeric": 7.98
+    },
+    {
+      "name": "Xerneas #36",
+      "current_value": "$1.19",
+      "price_numeric": 1.19
+    },
+    {
+      "name": "Alolan Exeggutor-GX #37",
+      "current_value": "$5.83",
+      "price_numeric": 5.83
+    },
+    {
+      "name": "Jangmo-o #38",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Hakamo-o #39",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Kommo-o #40",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Miltank #41",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Swablu #42",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Altaria #43",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Dashing Pouch #46",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Lusamine #47",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Sea of Nothingness #48",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Devoured Field #49",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Gyarados-GX #51",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Nihilego-GX #52",
+      "current_value": "$17.14",
+      "price_numeric": 17.14
+    },
+    {
+      "name": "Guzzlord-GX #53",
+      "current_value": "$12.32",
+      "price_numeric": 12.32
+    },
+    {
+      "name": "Alolan Exeggutor-GX #54",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+**Goal:** Generate a high-fidelity, comprehensive Figma design for a complex, multi-paneled dark-mode TCG convention management dashboard based on **Gemini_Generated_Image_orbiqgorbiqgorbi.png**. The design must be pixel-perfect and structurally accurate, breaking down into reusable components where appropriate (e.g., card components, vendor stats).
+
+**Overall Canvas & Style:**
+
+* **Grid:** Specify a strict grid layout, likely a 12-column grid with Auto Layout for columns and containers.
+* **Theme:** Deep, dark mode interface. Primary background: charcoal/dark grey. Secondary background: Deep blue-grey.
+* **Accent Colors:** Vibrant pink, purple, and light teal-blue for accent lighting, progress bars, and map paths.
+
+---
+
+**1. Main Horizontal Header Bar (Full Width):**
+
+* **Menu:** Include a burger menu icon on the far left.
+* **Global Title:** Create the large centered title **"GLOBAL CARD SHOW CIRCUIT"** using clean, bold typography.
+* **Search Input:** A centered 'Search Expo' input field with a search icon on the far right.
+* **User/Notification:** Include a user avatar icon and a notification bell with an alert badge, positioned on the far right. Include **"Bash Floor"** as text above the avatar.
+
+**2. Layout Breakdown (Three Columns):**
+
+* **Main Body:** Organise the main content area into three distinct columns. Use precise column widths relative to each other, ensuring ample padding and negative space. Replicate the spacing and depth of the original layout.
+
+---
+
+**Column A: EXPO MARKETPLACE & VENDOR GALLERY (Left)**
+
+* **Header:** Title **"EXPO MARKETPLACE & VENDOR GALLERY"** (Bold).
+* **Filter Panel Component:**
+* 'FILTER' button.
+* Dropdown components for: **"Grade"**, **"Card Type"**, **"Card Type"**, **"Set"**, **"Borderless Set"**. Replicate value text (e.g., 'Garatlees Set', but correct any clear typos like 'Borderless' for fidelity). Include all chevron icons.
+* **Price Range Slider:** Specify a horizontal slider component with numerical fields and markers for **200**, **50**, **1,000**.
+
+
+* **Dynamic Card Controls (Preserve Duplicate Logic):** Replicate two identical settings panels stacked vertically. Both must be labeled **"PSA 10 Charizard"**. Specify that while the labels and structure are identical, the 'Market Arbitrage Potential' value (37% for the top, 54% for the bottom) and numerical set prices differ. Replicate all sliders and percentage meters precisely.
+* **Marketplace Card Grid Component:**
+* **Grid Structure:** Arrange a **3-column, 4-row grid of twelve graded card components**.
+* **Nested Component Structure (PER CARD):** Specify that *each* of the 12 card components must include: 1. A placeholder image container for a graded TCG card. 2. Graded card label text (e.g., 'Grade', 'PSA 10 Charizard'). 3. Price values. 4. An interactive checkbox element (e.g., 'Add to Watchlist'). *Demand the exact duplication of this 12-item grid structure and text data.* Preserving the quantity and grid is crucial.
+
+
+
+---
+
+**Column B: LIVE INTERACTIVE FLOOR PLAN (Center)**
+
+* **Header Container:** A container bar with the text **"LOS ANGELES EXPO - DAY 2"** as a centered title. Below this, include the header **"LIVE INTERACTIVE FLOOR PLAN"**.
+* **Live Stream Overlays:** Include text toggles for **"Buyers"** and **"Foot traffic"**. Create live video feed placeholder containers, complete with media control icons (play, camera symbols). Include the specific small text markers and overlay indicators on the video.
+* **Technical Map Graphic:** Specify the highly detailed, blueprint-style technical floor plan map. Request precise replication of:
+* **Data Paths:** The blue and pink path lines, specifying their accurate colors and glowing gradient effects.
+* **Interactive Points:** The glowing light sources (teal, pink) and their exact locations on the map.
+* **Labels:** Every text label must be replicated (e.g., Booth numbers 1-10, 'Main Stage', 'Artist Alley', 'TCG Vendors (A-M)', 'Dovakinji'). Include the Map Legend text below the map with correct numbering (1-6). *Placeholders are acceptable for map details, but the core layout, path colors, and major labels must be structure-perfect.*
+
+
+
+---
+
+**Column C: EVENT INTELLIGENCE & LIVE FEEDS (Right)**
+
+* **Header:** Title **"EVENT INTELLIGENCE & LIVE FEEDS"**.
+* **Alerts & Market Pulse (Live Ticker Logic):**
+* Specify heading **"LIVE ALERTS & MARKET PULSE"**.
+* Replicate the vertical sequence of live feed containers with accurate text: **"Live Overview"**, **"Main Stage"**, **"Live"**, each with correct text summaries of alerts (e.g., simulated transaction details, specific alert codes like "J-101", "Dovakinji"). Include all camera icons. Include the Map Overview legend graphic below this sequence with accurate text labels.
+
+
+* **Selected Vendor Profile:**
+* Specify heading **"SELECTED VENDOR PROFILE & HIGHLIGHTS"**.
+* Vendor Details: Precise text and formatting for **"SELECTED VENDOR: VINTAGEVAULT TCG"**, the **PREMIER** badge with a verified check. Replicate statistical text and numerical values: Active Listings (3,450+ Items), Completed Transactions (12,800+), User Rating (4.8 / 5) with a full star rating graphic.
+
+
+* **Vendor Featured Spotlight:** Heading **"VENDOR'S FEATURED INVENTORY SPOTLIGHT"**. Specify a 3-item horizontal grid of featured cards, replicated perfectly with card placeholder images, correct names, grades, and prices as data placeholders.
+* **Vendor Specialties:**
+* Specify heading **"VENDOR SPECIALTIES & INSIGHTS"**.
+* **Primary Set Focus:** Preserving the bullet list text verbatim: **"WOTC Japanese (Kanji)", "e-Series (JPN)", "Neo Destiny"**.
+* **Market Arbitrage Potential:** A dynamic progress circle component with a 75% score and text **"TENDS TO OFFER GOOD DEALS"**.
+
+
+* **Footer Actions:** Two distinct button components: **"[View All VINTAGEVAULT TCG Listings]"**, **"[Message Vendor]"**. Text label: **"Booth 104 (Map Link)"** with accurate link formatting.
+
+---
+
+**3. Global Footer (Stylized Graphics & Transaction Ticker):**
+
+* **Stylized Cityscape Footer:** Create a stylized footer area with a stylized text element **"HOLLYWOOD HILLS"** centered. Below it, add the graphic of the LA cityscape with its signature wireframe effects and landmarks (e.g., Tokyo Tower, pointed building as placeholders with accurate wireframe styling).
+* **Simulated Transaction Ticker (Bottom Edge):** Include a very small, bottom-aligned text element across the absolute bottom edge of the frame: **"Simulated Transaction: Buyer 409 acquired 1st Ed Base Set Charizard from 'Vintage Vault'"**. Preserve this text and its simulated transaction purpose explicitly.

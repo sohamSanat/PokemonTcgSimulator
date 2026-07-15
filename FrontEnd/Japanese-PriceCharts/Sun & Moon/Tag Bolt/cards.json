@@ -1,0 +1,587 @@
+{
+  "metadata": {
+    "set_name": "Tag Bolt",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/tag-bolt/sm9_ja",
+    "release_date": "2018/12/07",
+    "scraped_at": "2026-07-15T12:13:35.873593",
+    "elapsed_seconds": 16.89,
+    "total_cards_scraped": 115
+  },
+  "cards": [
+    {
+      "name": "Celebi & Venusaur GX #1",
+      "current_value": "$18.21",
+      "price_numeric": 18.21
+    },
+    {
+      "name": "Weedle #2",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Weedle #3",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Kakuna #4",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Beedrill #5",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Paras #6",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Parasect #7",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Exeggcute #8",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Pinsir #9",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Charmander #10",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Charmander #11",
+      "current_value": "$2.34",
+      "price_numeric": 2.34
+    },
+    {
+      "name": "Charmeleon #12",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Charizard #13",
+      "current_value": "$7.49",
+      "price_numeric": 7.49
+    },
+    {
+      "name": "Vulpix #14",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Ninetales #15",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Ponyta #16",
+      "current_value": "$1.06",
+      "price_numeric": 1.06
+    },
+    {
+      "name": "Rapidash #17",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Moltres #18",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Magikarp & Wailord-GX #19",
+      "current_value": "$28.41",
+      "price_numeric": 28.41
+    },
+    {
+      "name": "Squirtle #20",
+      "current_value": "$3.68",
+      "price_numeric": 3.68
+    },
+    {
+      "name": "Squirtle #21",
+      "current_value": "$1.96",
+      "price_numeric": 1.96
+    },
+    {
+      "name": "Wartortle #22",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Blastoise #23",
+      "current_value": "$4.28",
+      "price_numeric": 4.28
+    },
+    {
+      "name": "Psyduck #24",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Golduck #25",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    },
+    {
+      "name": "Staryu #26",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Magikarp #27",
+      "current_value": "$1.01",
+      "price_numeric": 1.01
+    },
+    {
+      "name": "Gyarados #28",
+      "current_value": "$2.36",
+      "price_numeric": 2.36
+    },
+    {
+      "name": "Lapras #29",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Articuno #30",
+      "current_value": "$1.31",
+      "price_numeric": 1.31
+    },
+    {
+      "name": "Pikachu & Zekrom-GX #31",
+      "current_value": "$23.16",
+      "price_numeric": 23.16
+    },
+    {
+      "name": "Alolan Geodude #32",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Alolan Geodude #33",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Alolan Graveler #34",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Alolan Golem #35",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Voltorb #36",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Electrode #37",
+      "current_value": "$12.41",
+      "price_numeric": 12.41
+    },
+    {
+      "name": "Gengar & Mimikyu-GX #38",
+      "current_value": "$107.42",
+      "price_numeric": 107.42
+    },
+    {
+      "name": "Nidoran ♀ #39",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Nidorina #40",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Nidoqueen #41",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Nidoran♂ #42",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Nidorino #43",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Nidoking #44",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Tentacool #45",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Tentacruel #46",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Grimer #47",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Muk #48",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Starmie #49",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Mr. Mime #50",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Jynx #51",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Mankey #52",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Primeape #53",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Hitmonlee #54",
+      "current_value": "$2.69",
+      "price_numeric": 2.69
+    },
+    {
+      "name": "Hitmonchan #55",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Omanyte #56",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Omastar #57",
+      "current_value": "$1.10",
+      "price_numeric": 1.1
+    },
+    {
+      "name": "Kabuto #58",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Kabutops #59",
+      "current_value": "$1.10",
+      "price_numeric": 1.1
+    },
+    {
+      "name": "Latias & Latios-GX #60",
+      "current_value": "$21.03",
+      "price_numeric": 21.03
+    },
+    {
+      "name": "Alolan Exeggutor #61",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Dratini #62",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Dratini #63",
+      "current_value": "$1.16",
+      "price_numeric": 1.16
+    },
+    {
+      "name": "Dragonair #64",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Dragonite #65",
+      "current_value": "$2.77",
+      "price_numeric": 2.77
+    },
+    {
+      "name": "Eevee & Snorlax-GX #66",
+      "current_value": "$34.69",
+      "price_numeric": 34.69
+    },
+    {
+      "name": "Pidgey #67",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Pidgey #68",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Pidgeotto #69",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Pidgeot #70",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Meowth #71",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Persian #72",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Farfetch'd #73",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Kangaskhan #74",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Tauros #75",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Aerodactyl #76",
+      "current_value": "$1.39",
+      "price_numeric": 1.39
+    },
+    {
+      "name": "Escape Rope #77",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Judge Whistle #78",
+      "current_value": "$0.89",
+      "price_numeric": 0.89
+    },
+    {
+      "name": "Unidentified Fossil #79",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Ultra Ball #80",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Rare Candy #81",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Pokémon Communication #82",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Buff Padding #83",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Erika's Hospitality #84",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Judge #85",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Cynthia #86",
+      "current_value": "$1.19",
+      "price_numeric": 1.19
+    },
+    {
+      "name": "Brock's Grit #87",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Sabrina's Suggestion #88",
+      "current_value": "$1.52",
+      "price_numeric": 1.52
+    },
+    {
+      "name": "Bill's Analysis #89",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Lavender Town #90",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Viridian Forest #91",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Aqua Patch #92",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Field Blower #93",
+      "current_value": "$5.89",
+      "price_numeric": 5.89
+    },
+    {
+      "name": "Choice Band #94",
+      "current_value": "$2.72",
+      "price_numeric": 2.72
+    },
+    {
+      "name": "Volkner #95",
+      "current_value": "$3.47",
+      "price_numeric": 3.47
+    },
+    {
+      "name": "Celebi & Venusaur GX #96",
+      "current_value": "$21.00",
+      "price_numeric": 21
+    },
+    {
+      "name": "Celebi & Venusaur GX #97",
+      "current_value": "$85.00",
+      "price_numeric": 85
+    },
+    {
+      "name": "Magikarp & Wailord-GX #98",
+      "current_value": "$60.32",
+      "price_numeric": 60.32
+    },
+    {
+      "name": "Magikarp & Wailord-GX #99",
+      "current_value": "$349.99",
+      "price_numeric": 349.99
+    },
+    {
+      "name": "Pikachu & Zekrom-GX #100",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    },
+    {
+      "name": "Gengar & Mimikyu-GX #102",
+      "current_value": "$249.67",
+      "price_numeric": 249.67
+    },
+    {
+      "name": "Latias & Latios-GX #105",
+      "current_value": "$1,809.01",
+      "price_numeric": 1809.01
+    },
+    {
+      "name": "Eevee & Snorlax-GX #106",
+      "current_value": "$72.30",
+      "price_numeric": 72.3
+    },
+    {
+      "name": "Erika's Hospitality #107",
+      "current_value": "$113.83",
+      "price_numeric": 113.83
+    },
+    {
+      "name": "Brock's Grit #108",
+      "current_value": "$19.48",
+      "price_numeric": 19.48
+    },
+    {
+      "name": "Sabrina's Suggestion #109",
+      "current_value": "$90.04",
+      "price_numeric": 90.04
+    },
+    {
+      "name": "Celebi & Venusaur GX #110",
+      "current_value": "$45.62",
+      "price_numeric": 45.62
+    },
+    {
+      "name": "Magikarp & Wailord-GX #111",
+      "current_value": "$89.78",
+      "price_numeric": 89.78
+    },
+    {
+      "name": "Gengar & Mimikyu-GX #113",
+      "current_value": "$287.50",
+      "price_numeric": 287.5
+    },
+    {
+      "name": "Latias & Latios-GX #114",
+      "current_value": "$83.01",
+      "price_numeric": 83.01
+    },
+    {
+      "name": "Eevee & Snorlax-GX #115",
+      "current_value": "$84.01",
+      "price_numeric": 84.01
+    },
+    {
+      "name": "Pokémon Communication #116",
+      "current_value": "$16.00",
+      "price_numeric": 16
+    },
+    {
+      "name": "Judge Whistle #117",
+      "current_value": "$4.69",
+      "price_numeric": 4.69
+    },
+    {
+      "name": "Brooklet Hill #118",
+      "current_value": "$8.99",
+      "price_numeric": 8.99
+    },
+    {
+      "name": "• Draw a card.",
+      "current_value": "$4.69",
+      "price_numeric": 4.69
+    }
+  ]
+}

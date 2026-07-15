@@ -1,0 +1,307 @@
+{
+  "metadata": {
+    "set_name": "Thunderclap Spark",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/thunderclap-spark/sm7a_ja",
+    "release_date": "2018/07/06",
+    "scraped_at": "2026-07-15T12:17:07.329306",
+    "elapsed_seconds": 19.81,
+    "total_cards_scraped": 59
+  },
+  "cards": [
+    {
+      "name": "Pinsir #1",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Shuckle #2",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Wurmple #3",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Cascoon #4",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Dustox #5",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Virizion-GX #6",
+      "current_value": "$1.57",
+      "price_numeric": 1.57
+    },
+    {
+      "name": "Skiddo #7",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Gogoat #8",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Tapu Bulu #9",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Moltres #10",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Slugma #11",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Magcargo-GX #12",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Victini #14",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Litleo #15",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Pyroar #16",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Lapras #17",
+      "current_value": "$2.30",
+      "price_numeric": 2.3
+    },
+    {
+      "name": "Suicune #18",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Cubchoo #19",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Beartic #20",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "White Kyurem #21",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Popplio #22",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Brionne #23",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Primarina #24",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Bruxish #25",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Electabuzz #26",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Electivire #27",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Pachirisu #28",
+      "current_value": "$3.71",
+      "price_numeric": 3.71
+    },
+    {
+      "name": "Blitzle #29",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Zebstrika #30",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Stunfisk #31",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Tapu Koko #32",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Zeraora-GX #33",
+      "current_value": "$2.30",
+      "price_numeric": 2.3
+    },
+    {
+      "name": "Onix #34",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Alolan Diglett #35",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Alolan Dugtrio #36",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Steelix #37",
+      "current_value": "$1.01",
+      "price_numeric": 1.01
+    },
+    {
+      "name": "Dialga #38",
+      "current_value": "$1.28",
+      "price_numeric": 1.28
+    },
+    {
+      "name": "Cobalion #40",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Genesect-GX #41",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Magearna #42",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Ditto ◇ #43",
+      "current_value": "$8.43",
+      "price_numeric": 8.43
+    },
+    {
+      "name": "Kecleon #44",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Pokémon Catcher #51",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Mixed Herbs #52",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Kahili #55",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Sightseer #56",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Thunder Mountain ◇ #58",
+      "current_value": "$3.62",
+      "price_numeric": 3.62
+    },
+    {
+      "name": "Double Colorless Energy #59",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Unit Energy GFW #60",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Virizion-GX #61",
+      "current_value": "$7.46",
+      "price_numeric": 7.46
+    },
+    {
+      "name": "Magcargo-GX #62",
+      "current_value": "$4.66",
+      "price_numeric": 4.66
+    },
+    {
+      "name": "Zeraora-GX #63",
+      "current_value": "$12.99",
+      "price_numeric": 12.99
+    },
+    {
+      "name": "Genesect-GX #64",
+      "current_value": "$8.38",
+      "price_numeric": 8.38
+    },
+    {
+      "name": "Judge #66",
+      "current_value": "$8.34",
+      "price_numeric": 8.34
+    },
+    {
+      "name": "Virizion-GX #67",
+      "current_value": "$16.99",
+      "price_numeric": 16.99
+    },
+    {
+      "name": "Magcargo-GX #68",
+      "current_value": "$10.48",
+      "price_numeric": 10.48
+    },
+    {
+      "name": "Genesect-GX #70",
+      "current_value": "$17.99",
+      "price_numeric": 17.99
+    },
+    {
+      "name": "Custom Catcher #72",
+      "current_value": "$3.37",
+      "price_numeric": 3.37
+    },
+    {
+      "name": "Custom Catcher#72RarityウルトラレアYou may play 2 Custom Catcher cards at once. • If you played 1 card, draw cards until you have 3 cards in your hand.",
+      "current_value": "$3.37",
+      "price_numeric": 3.37
+    }
+  ]
+}

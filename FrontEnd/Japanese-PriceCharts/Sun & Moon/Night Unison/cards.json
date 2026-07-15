@@ -1,0 +1,337 @@
+{
+  "metadata": {
+    "set_name": "Night Unison",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/night-unison/sm9a_ja",
+    "release_date": "2019/01/11",
+    "scraped_at": "2026-07-15T12:13:09.596250",
+    "elapsed_seconds": 17.76,
+    "total_cards_scraped": 65
+  },
+  "cards": [
+    {
+      "name": "Venonat #1",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Venomoth-GX #2",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Bellsprout #3",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Weepinbell #4",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Victreebel #5",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Grubbin #6",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Tentacool #7",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Tentacruel #8",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Seaking #10",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Kyurem #11",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Froakie #12",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Frogadier #13",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Pikachu #14",
+      "current_value": "$4.27",
+      "price_numeric": 4.27
+    },
+    {
+      "name": "Raichu #15",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Dedenne-GX #16",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Charjabug #17",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Vikavolt #18",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Zeraora #19",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Marshadow #20",
+      "current_value": "$2.72",
+      "price_numeric": 2.72
+    },
+    {
+      "name": "Wooper #21",
+      "current_value": "$2.80",
+      "price_numeric": 2.8
+    },
+    {
+      "name": "Quagsire #22",
+      "current_value": "$2.13",
+      "price_numeric": 2.13
+    },
+    {
+      "name": "Gligar #23",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Gliscor #24",
+      "current_value": "$0.73",
+      "price_numeric": 0.73
+    },
+    {
+      "name": "Greninja & Zoroark-GX #25",
+      "current_value": "$14.25",
+      "price_numeric": 14.25
+    },
+    {
+      "name": "Carvanha #26",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Sharpedo #27",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Greninja #28",
+      "current_value": "$16.49",
+      "price_numeric": 16.49
+    },
+    {
+      "name": "Malamar #30",
+      "current_value": "$1.16",
+      "price_numeric": 1.16
+    },
+    {
+      "name": "Gardevoir & Sylveon-GX #31",
+      "current_value": "$30.78",
+      "price_numeric": 30.78
+    },
+    {
+      "name": "Clefairy #32",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Clefable #33",
+      "current_value": "$0.96",
+      "price_numeric": 0.96
+    },
+    {
+      "name": "Togepi #34",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Togetic #35",
+      "current_value": "$1.35",
+      "price_numeric": 1.35
+    },
+    {
+      "name": "Togekiss #36",
+      "current_value": "$2.09",
+      "price_numeric": 2.09
+    },
+    {
+      "name": "Spritzee #37",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Aromatisse #38",
+      "current_value": "$1.61",
+      "price_numeric": 1.61
+    },
+    {
+      "name": "Rattata #39",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Raticate #40",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Lickitung #41",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Lickilicky #42",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Electromagnetic Radar #43",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Surprise Box #44",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Pokégear 3.0 #45",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Stealthy Hood #46",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Fairy Charm Lightning #47",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Fairy Charm Ability #48",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Janine #49",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Koga's Trap #50",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Lt. Surge's Strategy #51",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Electropower #52",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Enhanced Hammer #53",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Max Potion #54",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Guzma #55",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Venomoth-GX #56",
+      "current_value": "$5.92",
+      "price_numeric": 5.92
+    },
+    {
+      "name": "Dedenne-GX #57",
+      "current_value": "$21.50",
+      "price_numeric": 21.5
+    },
+    {
+      "name": "Greninja & Zoroark-GX #58",
+      "current_value": "$27.55",
+      "price_numeric": 27.55
+    },
+    {
+      "name": "Greninja & Zoroark-GX #59",
+      "current_value": "$199.99",
+      "price_numeric": 199.99
+    },
+    {
+      "name": "Gardevoir & Sylveon-GX #60",
+      "current_value": "$55.00",
+      "price_numeric": 55
+    },
+    {
+      "name": "Janine #62",
+      "current_value": "$25.02",
+      "price_numeric": 25.02
+    },
+    {
+      "name": "Koga's Trap #63",
+      "current_value": "$22.36",
+      "price_numeric": 22.36
+    },
+    {
+      "name": "Venomoth-GX #64",
+      "current_value": "$9.65",
+      "price_numeric": 9.65
+    },
+    {
+      "name": "Dedenne-GX #65",
+      "current_value": "$26.66",
+      "price_numeric": 26.66
+    },
+    {
+      "name": "Greninja & Zoroark-GX #66",
+      "current_value": "$61.52",
+      "price_numeric": 61.52
+    },
+    {
+      "name": "Electromagnetic Radar #68",
+      "current_value": "$2.97",
+      "price_numeric": 2.97
+    },
+    {
+      "name": "Aether Paradise Conservation Area #70",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    }
+  ]
+}

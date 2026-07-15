@@ -1,0 +1,437 @@
+{
+  "metadata": {
+    "set_name": "Time Gazer",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/time-gazer/swsh10d_ja",
+    "release_date": "2022/04/08",
+    "scraped_at": "2026-07-15T11:52:20.831189",
+    "elapsed_seconds": 19.95,
+    "total_cards_scraped": 85
+  },
+  "cards": [
+    {
+      "name": "Yanma #1",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Yanmega #2",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Leafeon #3",
+      "current_value": "$1.24",
+      "price_numeric": 1.24
+    },
+    {
+      "name": "Shaymin #4",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Petilil #5",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hisuian Lilligant #6",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Hisuian Lilligant V #7",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Hisuian Lilligant VSTAR #8",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Cyndaquil #9",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Quilava #10",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Poliwag #11",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Poliwhirl #12",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Politoed #13",
+      "current_value": "$1.14",
+      "price_numeric": 1.14
+    },
+    {
+      "name": "Mantine #14",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Oshawott #15",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Dewott #16",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Ducklett #17",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Swanna #18",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Electrike #19",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Manectric #20",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Luxray V #21",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Regieleki #22",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Hisuian Typhlosion #23",
+      "current_value": "$1.51",
+      "price_numeric": 1.51
+    },
+    {
+      "name": "Mawile #24",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Jirachi V #25",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Drifloon #26",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Drifblim #27",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Cresselia #28",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Hisuian Growlithe #29",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Hisuian Arcanine #30",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Poliwrath #31",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Machamp V #32",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Machamp VMAX #33",
+      "current_value": "$1.26",
+      "price_numeric": 1.26
+    },
+    {
+      "name": "Sudowoodo #34",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Cranidos #35",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Rampardos #36",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Mienfoo #37",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Mienshao #38",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Spinarak #39",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Ariados #40",
+      "current_value": "$6.05",
+      "price_numeric": 6.05
+    },
+    {
+      "name": "Hisuian Samurott #41",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Nickit #42",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Thievul #43",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Magnemite #44",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Magneton #45",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Magnezone #46",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Registeel #47",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Origin Forme Dialga V #48",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    },
+    {
+      "name": "Origin Forme Dialga VSTAR #49",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Pawniard #50",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Bisharp #51",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Eevee #52",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Chatot #53",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Regigigas #54",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Rufflet #55",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hisuian Braviary #56",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Skwovet #57",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Greedent #58",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Wyrdeer V #59",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Switch Cart #60",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Unidentified Fossil #62",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Feather Ball #63",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Adaman #64",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Gardenia's Vigor #65",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Zisu #66",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Hisuian Lilligant V #68",
+      "current_value": "$7.95",
+      "price_numeric": 7.95
+    },
+    {
+      "name": "Hisuian Lilligant V #69",
+      "current_value": "$24.81",
+      "price_numeric": 24.81
+    },
+    {
+      "name": "Luxray V #70",
+      "current_value": "$4.28",
+      "price_numeric": 4.28
+    },
+    {
+      "name": "Jirachi V #71",
+      "current_value": "$18.98",
+      "price_numeric": 18.98
+    },
+    {
+      "name": "Machamp V #72",
+      "current_value": "$4.43",
+      "price_numeric": 4.43
+    },
+    {
+      "name": "Machamp V #73",
+      "current_value": "$80.38",
+      "price_numeric": 80.38
+    },
+    {
+      "name": "Origin Forme Dialga V #74",
+      "current_value": "$8.42",
+      "price_numeric": 8.42
+    },
+    {
+      "name": "Origin Forme Dialga V #75",
+      "current_value": "$57.99",
+      "price_numeric": 57.99
+    },
+    {
+      "name": "Wyrdeer V #76",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Adaman #77",
+      "current_value": "$7.91",
+      "price_numeric": 7.91
+    },
+    {
+      "name": "Gardenia's Vigor #78",
+      "current_value": "$15.55",
+      "price_numeric": 15.55
+    },
+    {
+      "name": "Zisu #79",
+      "current_value": "$1.76",
+      "price_numeric": 1.76
+    },
+    {
+      "name": "Hisuian Lilligant VSTAR #80",
+      "current_value": "$6.35",
+      "price_numeric": 6.35
+    },
+    {
+      "name": "Machamp VMAX #81",
+      "current_value": "$12.24",
+      "price_numeric": 12.24
+    },
+    {
+      "name": "Origin Forme Dialga VSTAR #82",
+      "current_value": "$12.81",
+      "price_numeric": 12.81
+    },
+    {
+      "name": "Adaman #83",
+      "current_value": "$5.63",
+      "price_numeric": 5.63
+    },
+    {
+      "name": "Gardenia's Vigor #84",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Zisu #85",
+      "current_value": "$2.87",
+      "price_numeric": 2.87
+    },
+    {
+      "name": "Origin Forme Dialga VSTAR #86",
+      "current_value": "$14.96",
+      "price_numeric": 14.96
+    },
+    {
+      "name": "Path to the Peak #88",
+      "current_value": "$12.87",
+      "price_numeric": 12.87
+    }
+  ]
+}

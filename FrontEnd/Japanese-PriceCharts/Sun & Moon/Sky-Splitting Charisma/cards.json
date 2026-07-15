@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "set_name": "Sky-Splitting Charisma",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/sky-splitting-charisma/sm7_ja",
+    "release_date": "2018/06/01",
+    "scraped_at": "2026-07-15T12:17:33.840243",
+    "elapsed_seconds": 18.21,
+    "total_cards_scraped": 72
+  },
+  "cards": [
+    {
+      "name": "Treecko #1",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Treecko #2",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Grovyle #3",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Sceptile #4",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Seedot #5",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Shiftry-GX #8",
+      "current_value": "$1.94",
+      "price_numeric": 1.94
+    },
+    {
+      "name": "Surskit #9",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Volbeat #11",
+      "current_value": "$1.63",
+      "price_numeric": 1.63
+    },
+    {
+      "name": "Illumise #12",
+      "current_value": "$1.91",
+      "price_numeric": 1.91
+    },
+    {
+      "name": "Tropius #13",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Dhelmise #14",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Torchic #15",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Torchic #16",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Combusken #17",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Blaziken-GX #18",
+      "current_value": "$5.17",
+      "price_numeric": 5.17
+    },
+    {
+      "name": "Torkoal #19",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Oricorio #20",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Mudkip #21",
+      "current_value": "$8.33",
+      "price_numeric": 8.33
+    },
+    {
+      "name": "Mudkip #22",
+      "current_value": "$8.25",
+      "price_numeric": 8.25
+    },
+    {
+      "name": "Swampert #24",
+      "current_value": "$4.88",
+      "price_numeric": 4.88
+    },
+    {
+      "name": "Wailmer #25",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Wailord #26",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Luvdisc #30",
+      "current_value": "$4.39",
+      "price_numeric": 4.39
+    },
+    {
+      "name": "Kyogre #32",
+      "current_value": "$5.66",
+      "price_numeric": 5.66
+    },
+    {
+      "name": "Manectric #34",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Plusle #35",
+      "current_value": "$4.05",
+      "price_numeric": 4.05
+    },
+    {
+      "name": "Minun #36",
+      "current_value": "$4.19",
+      "price_numeric": 4.19
+    },
+    {
+      "name": "Oricorio #37",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Spoink #38",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Shuppet #40",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Banette #41",
+      "current_value": "$5.62",
+      "price_numeric": 5.62
+    },
+    {
+      "name": "Deoxys #42",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Deoxys #43",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Deoxys #44",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Meditite #45",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Regirock #49",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Groudon #50",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Minior #51",
+      "current_value": "$1.85",
+      "price_numeric": 1.85
+    },
+    {
+      "name": "Beldum #52",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Beldum #53",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Metagross #55",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Registeel #56",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Jirachi ◇ #57",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Celesteela #58",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Kartana #59",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Stakataka-GX #60",
+      "current_value": "$4.81",
+      "price_numeric": 4.81
+    },
+    {
+      "name": "Altaria-GX #61",
+      "current_value": "$6.20",
+      "price_numeric": 6.2
+    },
+    {
+      "name": "Bagon #62",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Shelgon #64",
+      "current_value": "$4.34",
+      "price_numeric": 4.34
+    },
+    {
+      "name": "Salamence #65",
+      "current_value": "$3.12",
+      "price_numeric": 3.12
+    },
+    {
+      "name": "Latias ◇ #66",
+      "current_value": "$6.37",
+      "price_numeric": 6.37
+    },
+    {
+      "name": "Latios ◇ #67",
+      "current_value": "$8.36",
+      "price_numeric": 8.36
+    },
+    {
+      "name": "Rayquaza-GX #68",
+      "current_value": "$11.53",
+      "price_numeric": 11.53
+    },
+    {
+      "name": "Wingull #69",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Whismur #71",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Whismur #72",
+      "current_value": "$5.86",
+      "price_numeric": 5.86
+    },
+    {
+      "name": "Loudred #73",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Exploud #74",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Skitty #75",
+      "current_value": "$1.69",
+      "price_numeric": 1.69
+    },
+    {
+      "name": "Delcatty #76",
+      "current_value": "$3.98",
+      "price_numeric": 3.98
+    },
+    {
+      "name": "Swablu #77",
+      "current_value": "$2.18",
+      "price_numeric": 2.18
+    },
+    {
+      "name": "Kecleon #78",
+      "current_value": "$4.49",
+      "price_numeric": 4.49
+    },
+    {
+      "name": "Steven's Resolve #88",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Lillie #92",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Lisia #93",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Shiftry-GX #97",
+      "current_value": "$7.19",
+      "price_numeric": 7.19
+    },
+    {
+      "name": "Blaziken-GX #98",
+      "current_value": "$15.50",
+      "price_numeric": 15.5
+    },
+    {
+      "name": "Stakataka-GX #99",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Rayquaza-GX #101",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Steven's Resolve #102",
+      "current_value": "$69.99",
+      "price_numeric": 69.99
+    },
+    {
+      "name": "Altaria-GX #108",
+      "current_value": "$39.77",
+      "price_numeric": 39.77
+    },
+    {
+      "name": "Rainbow Brush #111",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "set_name": "Awakened Heroes",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/awakened-heroes/sm4s_ja",
+    "release_date": "2017/09/15",
+    "scraped_at": "2026-07-15T12:21:25.884244",
+    "elapsed_seconds": 14.74,
+    "total_cards_scraped": 33
+  },
+  "cards": [
+    {
+      "name": "Cacnea #1",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Karrablast #3",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Skiddo #4",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Gogoat #5",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Alolan Marowak #6",
+      "current_value": "$6.83",
+      "price_numeric": 6.83
+    },
+    {
+      "name": "Numel #7",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Starmie #10",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Octillery #12",
+      "current_value": "$1.71",
+      "price_numeric": 1.71
+    },
+    {
+      "name": "Shellos #15",
+      "current_value": "$2.37",
+      "price_numeric": 2.37
+    },
+    {
+      "name": "Alolan Golem-GX #18",
+      "current_value": "$4.72",
+      "price_numeric": 4.72
+    },
+    {
+      "name": "Emolga #19",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Gastly #20",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Haunter #21",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Gengar #22",
+      "current_value": "$69.99",
+      "price_numeric": 69.99
+    },
+    {
+      "name": "Chimecho #23",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Pumpkaboo #24",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Salazzle #27",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Cubone #28",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Gastrodon #29",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Buzzwole-GX #30",
+      "current_value": "$5.60",
+      "price_numeric": 5.6
+    },
+    {
+      "name": "Mawile #31",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Aron #32",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Aggron #34",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Kartana-GX #37",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Starly #38",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Minccino #42",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Cinccino #43",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Type: Null #44",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Fighting Memory #49",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Buzzwole-GX #52",
+      "current_value": "$17.99",
+      "price_numeric": 17.99
+    },
+    {
+      "name": "Silvally-GX #54",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Alolan Golem-GX #56",
+      "current_value": "$13.49",
+      "price_numeric": 13.49
+    },
+    {
+      "name": "Warp Energy #61",
+      "current_value": "$8.99",
+      "price_numeric": 8.99
+    }
+  ]
+}

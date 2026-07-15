@@ -1,0 +1,507 @@
+{
+  "metadata": {
+    "set_name": "Clay Burst",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/clay-burst/sv2d_ja",
+    "release_date": "2023/04/14",
+    "scraped_at": "2026-07-15T11:45:47.827135",
+    "elapsed_seconds": 17.43,
+    "total_cards_scraped": 99
+  },
+  "cards": [
+    {
+      "name": "Hoppip #1",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Skiploom #2",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Jumpluff #3",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Pineco #4",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Forretress ex #5",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Heracross #6",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Tarountula #7",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Tarountula #8",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Spidops #9",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Numel #10",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Camerupt #11",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Fletchinder #12",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Talonflame #13",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Charcadet #14",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Charcadet #15",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Chi-Yu ex #16",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Pikachu #17",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Raichu #18",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Shinx #19",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Luxio #20",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Luxray #21",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Pincurchin #22",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Tadbulb #23",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Tadbulb #24",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Bellibolt ex #25",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Jigglypuff #26",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Wigglytuff #27",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Spiritomb #28",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Sandygast #29",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Palossand #30",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Ceruledge #31",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Tinkatink #32",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Tinkatink #33",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Tinkatuff #34",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Tinkaton ex #35",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Larvitar #36",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Pupitar #37",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Barboach #38",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Whiscash #39",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Croagunk #40",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Toxicroak #41",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Crabrawler #42",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Crabominable #43",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Passimian #44",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Nacli #45",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Nacli #46",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Naclstack #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Garganacl #48",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Ting-Lu ex #49",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Sneasel #50",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Weavile #51",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Tyranitar #52",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Shroodle #53",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Shroodle #54",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Grafaiai #55",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Bombirdier #56",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Noibat #57",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Noivern ex #58",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Girafarig #59",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Farigiraf #60",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Fletchling #61",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Tandemaus #62",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Tandemaus #63",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Maushold #64",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Flamigo #65",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Delivery Drone #66",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Bravery Charm #67",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Saguaro #68",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Iono #69",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Calamitous Wasteland #70",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Therapeutic Energy #71",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Heracross #72",
+      "current_value": "$4.88",
+      "price_numeric": 4.88
+    },
+    {
+      "name": "Fletchinder #73",
+      "current_value": "$4.10",
+      "price_numeric": 4.1
+    },
+    {
+      "name": "Raichu #74",
+      "current_value": "$22.58",
+      "price_numeric": 22.58
+    },
+    {
+      "name": "Sandygast #75",
+      "current_value": "$2.31",
+      "price_numeric": 2.31
+    },
+    {
+      "name": "Tinkatink #76",
+      "current_value": "$6.02",
+      "price_numeric": 6.02
+    },
+    {
+      "name": "Tinkatuff #77",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Nacli #78",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Tyranitar #79",
+      "current_value": "$13.13",
+      "price_numeric": 13.13
+    },
+    {
+      "name": "Grafaiai #80",
+      "current_value": "$2.22",
+      "price_numeric": 2.22
+    },
+    {
+      "name": "Maushold #81",
+      "current_value": "$35.34",
+      "price_numeric": 35.34
+    },
+    {
+      "name": "Flamigo #82",
+      "current_value": "$2.96",
+      "price_numeric": 2.96
+    },
+    {
+      "name": "Farigiraf #83",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Forretress ex #84",
+      "current_value": "$1.18",
+      "price_numeric": 1.18
+    },
+    {
+      "name": "Chi-Yu ex #85",
+      "current_value": "$2.03",
+      "price_numeric": 2.03
+    },
+    {
+      "name": "Bellibolt ex #86",
+      "current_value": "$2.09",
+      "price_numeric": 2.09
+    },
+    {
+      "name": "Tinkaton ex #87",
+      "current_value": "$4.60",
+      "price_numeric": 4.6
+    },
+    {
+      "name": "Ting-Lu ex #88",
+      "current_value": "$1.22",
+      "price_numeric": 1.22
+    },
+    {
+      "name": "Noivern ex #89",
+      "current_value": "$1.65",
+      "price_numeric": 1.65
+    },
+    {
+      "name": "Saguaro #90",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Iono #91",
+      "current_value": "$21.37",
+      "price_numeric": 21.37
+    },
+    {
+      "name": "Chi-Yu ex #92",
+      "current_value": "$42.13",
+      "price_numeric": 42.13
+    },
+    {
+      "name": "Tinkaton ex #93",
+      "current_value": "$47.50",
+      "price_numeric": 47.5
+    },
+    {
+      "name": "Ting-Lu ex #94",
+      "current_value": "$9.49",
+      "price_numeric": 9.49
+    },
+    {
+      "name": "Saguaro #95",
+      "current_value": "$9.60",
+      "price_numeric": 9.6
+    },
+    {
+      "name": "Iono #96",
+      "current_value": "$303.66",
+      "price_numeric": 303.66
+    },
+    {
+      "name": "Ting-Lu ex #97",
+      "current_value": "$4.60",
+      "price_numeric": 4.6
+    },
+    {
+      "name": "Superior Energy Retrieval #98",
+      "current_value": "$6.75",
+      "price_numeric": 6.75
+    },
+    {
+      "name": "Basic Grass Energy #99",
+      "current_value": "$5.98",
+      "price_numeric": 5.98
+    }
+  ]
+}

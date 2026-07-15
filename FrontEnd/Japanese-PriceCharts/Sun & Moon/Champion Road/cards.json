@@ -1,0 +1,392 @@
+{
+  "metadata": {
+    "set_name": "Champion Road",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/champion-road/sm6b_ja",
+    "release_date": "2018/05/30",
+    "scraped_at": "2026-07-15T12:18:06.442623",
+    "elapsed_seconds": 18.92,
+    "total_cards_scraped": 76
+  },
+  "cards": [
+    {
+      "name": "Bellsprout #1",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Weepinbell #2",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Victreebel #3",
+      "current_value": "$2.32",
+      "price_numeric": 2.32
+    },
+    {
+      "name": "Scyther #4",
+      "current_value": "$2.96",
+      "price_numeric": 2.96
+    },
+    {
+      "name": "Spinarak #5",
+      "current_value": "$0.54",
+      "price_numeric": 0.54
+    },
+    {
+      "name": "Ariados #6",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Cacnea #7",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Cacturne #8",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Slugma #9",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Magcargo #10",
+      "current_value": "$1.19",
+      "price_numeric": 1.19
+    },
+    {
+      "name": "Torchic #11",
+      "current_value": "$1.06",
+      "price_numeric": 1.06
+    },
+    {
+      "name": "Combusken #12",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Blaziken #13",
+      "current_value": "$10.50",
+      "price_numeric": 10.5
+    },
+    {
+      "name": "Articuno-GX #14",
+      "current_value": "$4.79",
+      "price_numeric": 4.79
+    },
+    {
+      "name": "Totodile #15",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Croconaw #16",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Feraligatr #17",
+      "current_value": "$3.82",
+      "price_numeric": 3.82
+    },
+    {
+      "name": "Lotad #18",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Lombre #19",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Ludicolo #20",
+      "current_value": "$1.23",
+      "price_numeric": 1.23
+    },
+    {
+      "name": "Voltorb #21",
+      "current_value": "$1.93",
+      "price_numeric": 1.93
+    },
+    {
+      "name": "Electrode-GX #22",
+      "current_value": "$6.64",
+      "price_numeric": 6.64
+    },
+    {
+      "name": "Chinchou #23",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Lanturn #24",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Mr. Mime-GX #25",
+      "current_value": "$3.46",
+      "price_numeric": 3.46
+    },
+    {
+      "name": "Gulpin #26",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Swalot #27",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Lunatone #28",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Solrock #29",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Shuppet #30",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Banette-GX #31",
+      "current_value": "$3.55",
+      "price_numeric": 3.55
+    },
+    {
+      "name": "Onix #32",
+      "current_value": "$0.54",
+      "price_numeric": 0.54
+    },
+    {
+      "name": "Phanpy #33",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Donphan #34",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Larvitar #35",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Pupitar #36",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Sneasel #37",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Tyranitar #38",
+      "current_value": "$11.15",
+      "price_numeric": 11.15
+    },
+    {
+      "name": "Sableye #39",
+      "current_value": "$1.11",
+      "price_numeric": 1.11
+    },
+    {
+      "name": "Steelix #40",
+      "current_value": "$6.31",
+      "price_numeric": 6.31
+    },
+    {
+      "name": "Scizor-GX #41",
+      "current_value": "$4.24",
+      "price_numeric": 4.24
+    },
+    {
+      "name": "Mawile #42",
+      "current_value": "$1.38",
+      "price_numeric": 1.38
+    },
+    {
+      "name": "Bagon #43",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Shelgon #44",
+      "current_value": "$2.43",
+      "price_numeric": 2.43
+    },
+    {
+      "name": "Salamence-GX #45",
+      "current_value": "$6.35",
+      "price_numeric": 6.35
+    },
+    {
+      "name": "Kangaskhan #46",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Dunsparce #47",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Ho-Oh #48",
+      "current_value": "$2.81",
+      "price_numeric": 2.81
+    },
+    {
+      "name": "Slakoth #49",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Vigoroth #50",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Slaking #51",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Energy Recycle System #52",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Energy Switch #53",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Super Scoop Up #54",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Rare Candy #55",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Life Herb #56",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Friend Ball #57",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "PokéNav #58",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Switch #59",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lure Ball #60",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Underground Expedition #61",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "TV Reporter #62",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Apricorn Maker #63",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Bill's Maintenance #64",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Copycat #65",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Rainbow Energy #66",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Articuno-GX #67",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Electrode-GX #68",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Mr. Mime-GX #69",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Banette-GX #70",
+      "current_value": "$9.95",
+      "price_numeric": 9.95
+    },
+    {
+      "name": "Scizor-GX #71",
+      "current_value": "$45.00",
+      "price_numeric": 45
+    },
+    {
+      "name": "Salamence-GX #72",
+      "current_value": "$10.12",
+      "price_numeric": 10.12
+    },
+    {
+      "name": "Apricorn Maker #75",
+      "current_value": "$27.95",
+      "price_numeric": 27.95
+    },
+    {
+      "name": "Bill's Maintenance #76",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Salamence-GX #83",
+      "current_value": "$45.00",
+      "price_numeric": 45
+    },
+    {
+      "name": "PokéNav #85",
+      "current_value": "$6.03",
+      "price_numeric": 6.03
+    }
+  ]
+}

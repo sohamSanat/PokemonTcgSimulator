@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "set_name": "Jet-Black Spirit",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/jet-black-spirit/swsh6k_ja",
+    "release_date": "2021/04/23",
+    "scraped_at": "2026-07-15T11:57:11.822837",
+    "elapsed_seconds": 17.68,
+    "total_cards_scraped": 95
+  },
+  "cards": [
+    {
+      "name": "Ledyba #1",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Ledian #2",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Celebi V #3",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Celebi VMAX #4",
+      "current_value": "$1.76",
+      "price_numeric": 1.76
+    },
+    {
+      "name": "Seedot #5",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Grookey #6",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Thwackey #7",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Rillaboom #8",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Psyduck #9",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Golduck #10",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Sneasel #11",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Weavile #12",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Castform Rainy Form #13",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Luvdisc #14",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Tympole #15",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Tapu Fini #16",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Arctovish V #17",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Mareep #18",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Flaaffy #19",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Ampharos #20",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Blitzle #21",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Zebstrika #22",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Emolga #23",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Zeraora V #24",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Gastly #25",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Haunter #26",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Gengar #27",
+      "current_value": "$5.83",
+      "price_numeric": 5.83
+    },
+    {
+      "name": "Sableye #28",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Cresselia #29",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Golett #30",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Golurk #31",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Inkay #32",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Malamar #33",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Cutiefly #34",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Ribombee #35",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Shadow Rider Calyrex V #36",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Shadow Rider Calyrex VMAX #37",
+      "current_value": "$1.06",
+      "price_numeric": 1.06
+    },
+    {
+      "name": "Palpitoad #38",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Seismitoad #39",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Crabrawler #40",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Crabominable #41",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Clobbopus #42",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Grapploct #43",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Koffing #44",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Weezing #45",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Galarian Weezing #46",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Nuzleaf #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Shiftry #48",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Metagross V #49",
+      "current_value": "$0.68",
+      "price_numeric": 0.68
+    },
+    {
+      "name": "Metagross VMAX #50",
+      "current_value": "$1.62",
+      "price_numeric": 1.62
+    },
+    {
+      "name": "Cobalion #51",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Blissey V #52",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Castform #53",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Kecleon #54",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Fletchling #55",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Fletchinder #56",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Talonflame #57",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Skwovet #58",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Greedent #59",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Fog Crystal #60",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Weeding Gloves #61",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Justified Gloves #62",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Rapid Strike Scroll of Skies #63",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Caitlin #64",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Agatha #65",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Peonia #66",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Siebold #67",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Old Cemetery #68",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Spiral Energy #69",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lucky Energy #70",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Celebi V #71",
+      "current_value": "$10.25",
+      "price_numeric": 10.25
+    },
+    {
+      "name": "Arctovish V #72",
+      "current_value": "$2.47",
+      "price_numeric": 2.47
+    },
+    {
+      "name": "Zeraora V #73",
+      "current_value": "$11.67",
+      "price_numeric": 11.67
+    },
+    {
+      "name": "Zeraora V #74",
+      "current_value": "$79.84",
+      "price_numeric": 79.84
+    },
+    {
+      "name": "Shadow Rider Calyrex V #75",
+      "current_value": "$8.73",
+      "price_numeric": 8.73
+    },
+    {
+      "name": "Shadow Rider Calyrex V #76",
+      "current_value": "$24.97",
+      "price_numeric": 24.97
+    },
+    {
+      "name": "Metagross V #77",
+      "current_value": "$4.88",
+      "price_numeric": 4.88
+    },
+    {
+      "name": "Blissey V #78",
+      "current_value": "$8.97",
+      "price_numeric": 8.97
+    },
+    {
+      "name": "Blissey V #79",
+      "current_value": "$33.53",
+      "price_numeric": 33.53
+    },
+    {
+      "name": "Caitlin #80",
+      "current_value": "$59.26",
+      "price_numeric": 59.26
+    },
+    {
+      "name": "Agatha #81",
+      "current_value": "$3.71",
+      "price_numeric": 3.71
+    },
+    {
+      "name": "Peonia #82",
+      "current_value": "$14.22",
+      "price_numeric": 14.22
+    },
+    {
+      "name": "Siebold #83",
+      "current_value": "$4.52",
+      "price_numeric": 4.52
+    },
+    {
+      "name": "Celebi VMAX #84",
+      "current_value": "$13.78",
+      "price_numeric": 13.78
+    },
+    {
+      "name": "Shadow Rider Calyrex VMAX #85",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Shadow Rider Calyrex VMAX #86",
+      "current_value": "$279.99",
+      "price_numeric": 279.99
+    },
+    {
+      "name": "Metagross VMAX #87",
+      "current_value": "$15.95",
+      "price_numeric": 15.95
+    },
+    {
+      "name": "Caitlin #88",
+      "current_value": "$23.00",
+      "price_numeric": 23
+    },
+    {
+      "name": "Agatha #89",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Peonia #90",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Siebold #91",
+      "current_value": "$3.06",
+      "price_numeric": 3.06
+    },
+    {
+      "name": "Electrode #92",
+      "current_value": "$13.50",
+      "price_numeric": 13.5
+    },
+    {
+      "name": "Fog Crystal #93",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Echoing Horn #94",
+      "current_value": "$4.91",
+      "price_numeric": 4.91
+    },
+    {
+      "name": "Psychic Energy #95",
+      "current_value": "$13.68",
+      "price_numeric": 13.68
+    }
+  ]
+}

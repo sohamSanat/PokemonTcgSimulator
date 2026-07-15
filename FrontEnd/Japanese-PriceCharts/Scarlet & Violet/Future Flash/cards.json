@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "set_name": "Future Flash",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/future-flash/sv4m_ja",
+    "release_date": "2023/10/27",
+    "scraped_at": "2026-07-15T11:42:43.541370",
+    "elapsed_seconds": 17.24,
+    "total_cards_scraped": 95
+  },
+  "cards": [
+    {
+      "name": "Surskit #1",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Masquerain #2",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Blipbug #3",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Dottler #4",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Orbeetle #5",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Toedscool #6",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Toedscool #7",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Toedscruel #8",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Wo-Chien #9",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Pansear #10",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Simisear #11",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Iron Moth #12",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Feebas #13",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Milotic #14",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Panpour #15",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Simipour #16",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Vanillite #17",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Vanillish #18",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Vanilluxe #19",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Iron Bundle #20",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Chien-Pao #21",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Elekid #22",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Blitzle #23",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Zebstrika #24",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Oricorio #25",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Toxel #26",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Iron Hands ex #27",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Chimecho #28",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Pumpkaboo #29",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Gourgeist #30",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Flittle #31",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Flittle #32",
+      "current_value": "$0.04",
+      "price_numeric": 0.04
+    },
+    {
+      "name": "Espathra #33",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Tinkatink #34",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Tinkatink #35",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Tinkatuff #36",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Tinkaton #37",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Iron Valiant ex #38",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Onix #39",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Toxtricity ex #40",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Steelix #41",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Durant #42",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Honedge #43",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Doublade #44",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Aegislash ex #45",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Altaria ex #46",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Tatsugiri #47",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Porygon #48",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Porygon2 #49",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Porygon-Z #50",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Aipom #51",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Ambipom #52",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Miltank #53",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Swablu #54",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Tandemaus #55",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Tandemaus #56",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Maushold ex #57",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Iron Jugulis #58",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Counter Catcher #59",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Techno Radar #60",
+      "current_value": "$0.02",
+      "price_numeric": 0.02
+    },
+    {
+      "name": "Cursed Duster #61",
+      "current_value": "$0.01",
+      "price_numeric": 0.01
+    },
+    {
+      "name": "Future Booster Energy Capsule #62",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Technical Machine: Evolution #63",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Roark #64",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Professor Turo's Scenario #65",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Tulip #66",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Dottler #67",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Toedscruel #68",
+      "current_value": "$2.39",
+      "price_numeric": 2.39
+    },
+    {
+      "name": "Iron Moth #69",
+      "current_value": "$3.06",
+      "price_numeric": 3.06
+    },
+    {
+      "name": "Vanillish #70",
+      "current_value": "$4.56",
+      "price_numeric": 4.56
+    },
+    {
+      "name": "Iron Bundle #71",
+      "current_value": "$1.93",
+      "price_numeric": 1.93
+    },
+    {
+      "name": "Blitzle #72",
+      "current_value": "$3.15",
+      "price_numeric": 3.15
+    },
+    {
+      "name": "Espathra #73",
+      "current_value": "$3.06",
+      "price_numeric": 3.06
+    },
+    {
+      "name": "Steelix #74",
+      "current_value": "$9.91",
+      "price_numeric": 9.91
+    },
+    {
+      "name": "Aipom #75",
+      "current_value": "$9.47",
+      "price_numeric": 9.47
+    },
+    {
+      "name": "Swablu #76",
+      "current_value": "$10.51",
+      "price_numeric": 10.51
+    },
+    {
+      "name": "Porygon-Z #77",
+      "current_value": "$4.71",
+      "price_numeric": 4.71
+    },
+    {
+      "name": "Iron Jugulis #78",
+      "current_value": "$3.34",
+      "price_numeric": 3.34
+    },
+    {
+      "name": "Iron Hands ex #79",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Iron Valiant ex #80",
+      "current_value": "$1.74",
+      "price_numeric": 1.74
+    },
+    {
+      "name": "Toxtricity ex #81",
+      "current_value": "$1.67",
+      "price_numeric": 1.67
+    },
+    {
+      "name": "Aegislash ex #82",
+      "current_value": "$1.52",
+      "price_numeric": 1.52
+    },
+    {
+      "name": "Altaria ex #83",
+      "current_value": "$1.91",
+      "price_numeric": 1.91
+    },
+    {
+      "name": "Maushold ex #84",
+      "current_value": "$14.36",
+      "price_numeric": 14.36
+    },
+    {
+      "name": "Roark #85",
+      "current_value": "$1.68",
+      "price_numeric": 1.68
+    },
+    {
+      "name": "Professor Turo's Scenario #86",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Tulip #87",
+      "current_value": "$4.27",
+      "price_numeric": 4.27
+    },
+    {
+      "name": "Iron Hands ex #88",
+      "current_value": "$14.41",
+      "price_numeric": 14.41
+    },
+    {
+      "name": "Iron Valiant ex #89",
+      "current_value": "$24.49",
+      "price_numeric": 24.49
+    },
+    {
+      "name": "Altaria ex #90",
+      "current_value": "$57.12",
+      "price_numeric": 57.12
+    },
+    {
+      "name": "Professor Turo's Scenario #91",
+      "current_value": "$5.80",
+      "price_numeric": 5.8
+    },
+    {
+      "name": "Tulip #92",
+      "current_value": "$13.36",
+      "price_numeric": 13.36
+    },
+    {
+      "name": "Iron Valiant ex #93",
+      "current_value": "$7.09",
+      "price_numeric": 7.09
+    },
+    {
+      "name": "Counter Catcher #94",
+      "current_value": "$8.51",
+      "price_numeric": 8.51
+    },
+    {
+      "name": "Basic Metal Energy #95",
+      "current_value": "$10.56",
+      "price_numeric": 10.56
+    }
+  ]
+}

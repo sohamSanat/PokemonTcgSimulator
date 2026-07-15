@@ -1,0 +1,482 @@
+{
+  "metadata": {
+    "set_name": "Legendary Heartbeat",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/legendary-heartbeat/swsh3a_ja",
+    "release_date": "2020/07/10",
+    "scraped_at": "2026-07-15T12:01:13.826549",
+    "elapsed_seconds": 20.23,
+    "total_cards_scraped": 94
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Kakuna #2",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Beedrill #3",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Exeggcute #4",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Exeggutor #5",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Yanma #6",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Yanmega #7",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Pineco #8",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Celebi #9",
+      "current_value": "$20.14",
+      "price_numeric": 20.14
+    },
+    {
+      "name": "Shaymin #10",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Genesect #11",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Dhelmise #12",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Zarude V #13",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Ampharos V #14",
+      "current_value": "$1.03",
+      "price_numeric": 1.03
+    },
+    {
+      "name": "Raikou #15",
+      "current_value": "$19.86",
+      "price_numeric": 19.86
+    },
+    {
+      "name": "Electrike #16",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Manectric #17",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Joltik #18",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Galvantula #19",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Zekrom #20",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Zeraora #21",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Pincurchin #22",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Clefairy #23",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Clefable #24",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Girafarig #25",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Shuppet #26",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Banette #27",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Dedenne #28",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Xerneas #29",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Diancie #30",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Alcremie V #31",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Alcremie VMAX #32",
+      "current_value": "$2.83",
+      "price_numeric": 2.83
+    },
+    {
+      "name": "Zacian #33",
+      "current_value": "$12.08",
+      "price_numeric": 12.08
+    },
+    {
+      "name": "Wooper #34",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Quagsire #35",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Shuckle #36",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Regirock #37",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Riolu #38",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Zygarde #39",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Rockruff #40",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Lycanroc #41",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Coalossal V #42",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Coalossal VMAX #43",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Zamazenta #44",
+      "current_value": "$7.45",
+      "price_numeric": 7.45
+    },
+    {
+      "name": "Forretress #45",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Steelix V #46",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Beldum #47",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Metang #48",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Metagross #49",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Jirachi #50",
+      "current_value": "$32.64",
+      "price_numeric": 32.64
+    },
+    {
+      "name": "Lucario #51",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Dialga #52",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Galarian Stunfisk #53",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Magearna #54",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Lugia #55",
+      "current_value": "$2.66",
+      "price_numeric": 2.66
+    },
+    {
+      "name": "Rayquaza #56",
+      "current_value": "$57.31",
+      "price_numeric": 57.31
+    },
+    {
+      "name": "Chatot #57",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Togekiss V #58",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Togekiss VMAX #59",
+      "current_value": "$1.47",
+      "price_numeric": 1.47
+    },
+    {
+      "name": "Tornadus #60",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Pikipek #61",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Trumbeak #62",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Toucannon #63",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Great Ball #64",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Switch #65",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Pokémon Catcher #66",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Moomoo Cheese #67",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Hero's Medal #68",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Rocky Helmet #69",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Beauty #70",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Opal #72",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Marnie #73",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Aromatic Grass Energy #74",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Stone Fighting Energy #75",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Twin Energy #76",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Zarude V #77",
+      "current_value": "$5.85",
+      "price_numeric": 5.85
+    },
+    {
+      "name": "Ampharos V #78",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Alcremie V #79",
+      "current_value": "$16.95",
+      "price_numeric": 16.95
+    },
+    {
+      "name": "Coalossal V #80",
+      "current_value": "$2.76",
+      "price_numeric": 2.76
+    },
+    {
+      "name": "Steelix V #81",
+      "current_value": "$3.18",
+      "price_numeric": 3.18
+    },
+    {
+      "name": "Togekiss V #82",
+      "current_value": "$4.23",
+      "price_numeric": 4.23
+    },
+    {
+      "name": "Beauty #83",
+      "current_value": "$7.40",
+      "price_numeric": 7.4
+    },
+    {
+      "name": "Allister #84",
+      "current_value": "$15.16",
+      "price_numeric": 15.16
+    },
+    {
+      "name": "Opal #85",
+      "current_value": "$1.81",
+      "price_numeric": 1.81
+    },
+    {
+      "name": "Alcremie VMAX #86",
+      "current_value": "$13.47",
+      "price_numeric": 13.47
+    },
+    {
+      "name": "Coalossal VMAX #87",
+      "current_value": "$9.45",
+      "price_numeric": 9.45
+    },
+    {
+      "name": "Togekiss VMAX #88",
+      "current_value": "$13.12",
+      "price_numeric": 13.12
+    },
+    {
+      "name": "Beauty #89",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Allister #90",
+      "current_value": "$7.23",
+      "price_numeric": 7.23
+    },
+    {
+      "name": "Opal #91",
+      "current_value": "$2.27",
+      "price_numeric": 2.27
+    },
+    {
+      "name": "Oranguru #92",
+      "current_value": "$13.10",
+      "price_numeric": 13.1
+    },
+    {
+      "name": "Hero's Medal #93",
+      "current_value": "$4.45",
+      "price_numeric": 4.45
+    },
+    {
+      "name": "Cape of Toughness #94",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Beauty#89RarityハイパーレアIf you go first, you may play this card during your first turn.",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    }
+  ]
+}

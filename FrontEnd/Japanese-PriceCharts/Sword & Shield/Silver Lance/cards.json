@@ -1,0 +1,472 @@
+{
+  "metadata": {
+    "set_name": "Silver Lance",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/silver-lance/swsh6h_ja",
+    "release_date": "2021/04/23",
+    "scraped_at": "2026-07-15T11:58:10.947205",
+    "elapsed_seconds": 18.94,
+    "total_cards_scraped": 92
+  },
+  "cards": [
+    {
+      "name": "Snover #1",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Abomasnow #2",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Dwebble #3",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Crustle #4",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Deerling #5",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Sawsbuck #6",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Bounsweet #7",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Steenee #8",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Tsareena #9",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Zarude #10",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Castform Sunny Form #11",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Litleo #12",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Pyroar #13",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Volcanion V #14",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Scorbunny #15",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Raboot #16",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Cinderace #17",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Lapras #18",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Castform Snowy Form #19",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Snorunt #20",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Froslass #21",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Spheal #22",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Sealeo #23",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Walrein #24",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Bergmite #25",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Avalugg #26",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Ice Rider Calyrex V #27",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Ice Rider Calyrex VMAX #28",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Galarian Rapidash V #29",
+      "current_value": "$1.17",
+      "price_numeric": 1.17
+    },
+    {
+      "name": "Galarian Slowpoke #30",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Drowzee #31",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hypno #32",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Ralts #33",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Kirlia #34",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Gardevoir #35",
+      "current_value": "$1.04",
+      "price_numeric": 1.04
+    },
+    {
+      "name": "Shuppet #36",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Banette #37",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hippopotas #38",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Hippowdon #39",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Gallade #40",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Rockruff #41",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Lycanroc #42",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Sandaconda V #43",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Sandaconda VMAX #44",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Galarian Slowking #45",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Qwilfish #46",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Liepard V #47",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Aron #48",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Lairon #49",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Aggron #50",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Tauros #51",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Porygon #52",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Porygon2 #53",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Porygon-Z #54",
+      "current_value": "$1.01",
+      "price_numeric": 1.01
+    },
+    {
+      "name": "Teddiursa #55",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Ursaring #56",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Tornadus V #57",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Tornadus VMAX #58",
+      "current_value": "$0.89",
+      "price_numeric": 0.89
+    },
+    {
+      "name": "Furfrou #59",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Expedition Uniform #60",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Fire-Resistant Gloves #63",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Flannery #65",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Doctor #66",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Peony #67",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Melony #68",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Path to the Peak #69",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Impact Energy #70",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Volcanion V #71",
+      "current_value": "$3.98",
+      "price_numeric": 3.98
+    },
+    {
+      "name": "Ice Rider Calyrex V #72",
+      "current_value": "$6.22",
+      "price_numeric": 6.22
+    },
+    {
+      "name": "Ice Rider Calyrex V #73",
+      "current_value": "$20.51",
+      "price_numeric": 20.51
+    },
+    {
+      "name": "Galarian Rapidash V #74",
+      "current_value": "$12.16",
+      "price_numeric": 12.16
+    },
+    {
+      "name": "Galarian Rapidash V #75",
+      "current_value": "$52.49",
+      "price_numeric": 52.49
+    },
+    {
+      "name": "Sandaconda V #76",
+      "current_value": "$1.82",
+      "price_numeric": 1.82
+    },
+    {
+      "name": "Liepard V #77",
+      "current_value": "$2.82",
+      "price_numeric": 2.82
+    },
+    {
+      "name": "Tornadus V #78",
+      "current_value": "$2.57",
+      "price_numeric": 2.57
+    },
+    {
+      "name": "Tornadus V #79",
+      "current_value": "$28.69",
+      "price_numeric": 28.69
+    },
+    {
+      "name": "Flannery #80",
+      "current_value": "$14.45",
+      "price_numeric": 14.45
+    },
+    {
+      "name": "Doctor #81",
+      "current_value": "$7.82",
+      "price_numeric": 7.82
+    },
+    {
+      "name": "Peony #82",
+      "current_value": "$2.34",
+      "price_numeric": 2.34
+    },
+    {
+      "name": "Melony #83",
+      "current_value": "$13.22",
+      "price_numeric": 13.22
+    },
+    {
+      "name": "Ice Rider Calyrex VMAX #84",
+      "current_value": "$9.64",
+      "price_numeric": 9.64
+    },
+    {
+      "name": "Ice Rider Calyrex VMAX #85",
+      "current_value": "$199.99",
+      "price_numeric": 199.99
+    },
+    {
+      "name": "Sandaconda VMAX #86",
+      "current_value": "$6.75",
+      "price_numeric": 6.75
+    },
+    {
+      "name": "Tornadus VMAX #87",
+      "current_value": "$5.81",
+      "price_numeric": 5.81
+    },
+    {
+      "name": "Flannery #88",
+      "current_value": "$14.50",
+      "price_numeric": 14.5
+    },
+    {
+      "name": "Doctor #89",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Peony #90",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Melony #91",
+      "current_value": "$10.98",
+      "price_numeric": 10.98
+    },
+    {
+      "name": "Bronzong #92",
+      "current_value": "$14.00",
+      "price_numeric": 14
+    },
+    {
+      "name": "Welcoming Lantern #93",
+      "current_value": "$8.93",
+      "price_numeric": 8.93
+    },
+    {
+      "name": "Rugged Helmet #94",
+      "current_value": "$1.85",
+      "price_numeric": 1.85
+    },
+    {
+      "name": "Water Energy #95",
+      "current_value": "$20.01",
+      "price_numeric": 20.01
+    }
+  ]
+}

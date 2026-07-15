@@ -1,0 +1,527 @@
+{
+  "metadata": {
+    "set_name": "Triplet Beat",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/triplet-beat/sv1a_ja",
+    "release_date": "2023/03/10",
+    "scraped_at": "2026-07-15T11:46:44.141996",
+    "elapsed_seconds": 18.48,
+    "total_cards_scraped": 103
+  },
+  "cards": [
+    {
+      "name": "Tropius #1",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Foongus #2",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Amoonguss #3",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Sprigatito #4",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Sprigatito #5",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Floragato #6",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Meowscarada ex #7",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Nymble #8",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Nymble #9",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Lokix #10",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Paldean Tauros #11",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Larvesta #12",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Volcarona #13",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Litleo #14",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Pyroar #15",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Oricorio #16",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Fuecoco #17",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Fuecoco #18",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Crocalor #19",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Skeledirge ex #20",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Paldean Tauros #21",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Magikarp #22",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Gyarados #23",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Delibird #24",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Buizel #25",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Floatzel #26",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Quaxly #27",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Quaxly #28",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Quaxwell #29",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Quaquaval ex #30",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Wattrel #31",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Wattrel #32",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Kilowattrel #33",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Misdreavus #34",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Mismagius #35",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Spoink #36",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Grumpig #37",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Dedenne ex #38",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Oranguru #39",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Tinkatink #40",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Tinkatink #41",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Tinkatuff #42",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Tinkaton #43",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Diglett #44",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Dugtrio #45",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Paldean Tauros #46",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Makuhita #47",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Hariyama #48",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Rockruff #49",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Lycanroc ex #50",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Falinks #51",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Paldean Wooper #52",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Paldean Wooper #53",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Paldean Clodsire ex #54",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Sableye #55",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Seviper #56",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Deino #57",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Zweilous #58",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Hydreigon #59",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Salandit #60",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Salazzle #61",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Yungoos #62",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Gumshoos #63",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Superior Energy Retrieval #64",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Great Ball #65",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Dendra #66",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Clavell #67",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Falkner #68",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Boss's Orders #69",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Artazon #70",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Practice Studio #71",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Jet Energy #72",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Luminous Energy #73",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Tropius #74",
+      "current_value": "$3.52",
+      "price_numeric": 3.52
+    },
+    {
+      "name": "Sprigatito #75",
+      "current_value": "$18.54",
+      "price_numeric": 18.54
+    },
+    {
+      "name": "Floragato #76",
+      "current_value": "$7.87",
+      "price_numeric": 7.87
+    },
+    {
+      "name": "Pyroar #77",
+      "current_value": "$3.24",
+      "price_numeric": 3.24
+    },
+    {
+      "name": "Fuecoco #78",
+      "current_value": "$16.00",
+      "price_numeric": 16
+    },
+    {
+      "name": "Crocalor #79",
+      "current_value": "$5.29",
+      "price_numeric": 5.29
+    },
+    {
+      "name": "Magikarp #80",
+      "current_value": "$181.74",
+      "price_numeric": 181.74
+    },
+    {
+      "name": "Quaxly #81",
+      "current_value": "$4.48",
+      "price_numeric": 4.48
+    },
+    {
+      "name": "Quaxwell #82",
+      "current_value": "$2.88",
+      "price_numeric": 2.88
+    },
+    {
+      "name": "Mismagius #83",
+      "current_value": "$14.10",
+      "price_numeric": 14.1
+    },
+    {
+      "name": "Paldean Tauros #84",
+      "current_value": "$3.43",
+      "price_numeric": 3.43
+    },
+    {
+      "name": "Paldean Wooper #85",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Meowscarada ex #86",
+      "current_value": "$3.88",
+      "price_numeric": 3.88
+    },
+    {
+      "name": "Skeledirge ex #87",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Quaquaval ex #88",
+      "current_value": "$1.23",
+      "price_numeric": 1.23
+    },
+    {
+      "name": "Dedenne ex #89",
+      "current_value": "$13.62",
+      "price_numeric": 13.62
+    },
+    {
+      "name": "Lycanroc ex #90",
+      "current_value": "$1.54",
+      "price_numeric": 1.54
+    },
+    {
+      "name": "Paldean Clodsire ex #91",
+      "current_value": "$3.13",
+      "price_numeric": 3.13
+    },
+    {
+      "name": "Dendra #92",
+      "current_value": "$4.59",
+      "price_numeric": 4.59
+    },
+    {
+      "name": "Clavell #93",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Falkner #94",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Boss's Orders #95",
+      "current_value": "$7.40",
+      "price_numeric": 7.4
+    },
+    {
+      "name": "Meowscarada ex #96",
+      "current_value": "$47.88",
+      "price_numeric": 47.88
+    },
+    {
+      "name": "Skeledirge ex #97",
+      "current_value": "$47.23",
+      "price_numeric": 47.23
+    },
+    {
+      "name": "Quaquaval ex #98",
+      "current_value": "$21.76",
+      "price_numeric": 21.76
+    },
+    {
+      "name": "Dendra #99",
+      "current_value": "$49.07",
+      "price_numeric": 49.07
+    },
+    {
+      "name": "Boss's Orders #100",
+      "current_value": "$17.39",
+      "price_numeric": 17.39
+    },
+    {
+      "name": "Meowscarada ex #101",
+      "current_value": "$10.32",
+      "price_numeric": 10.32
+    },
+    {
+      "name": "Skeledirge ex #102",
+      "current_value": "$7.46",
+      "price_numeric": 7.46
+    },
+    {
+      "name": "Quaquaval ex #103",
+      "current_value": "$6.54",
+      "price_numeric": 6.54
+    }
+  ]
+}

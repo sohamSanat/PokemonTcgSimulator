@@ -1,0 +1,587 @@
+{
+  "metadata": {
+    "set_name": "Miracle Twin",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/miracle-twin/sm11_ja",
+    "release_date": "2019/05/31",
+    "scraped_at": "2026-07-15T12:09:55.334031",
+    "elapsed_seconds": 17.64,
+    "total_cards_scraped": 115
+  },
+  "cards": [
+    {
+      "name": "Yanma #1",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Yanmega #2",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Celebi #3",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Shroomish #4",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Sewaddle #5",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Sewaddle #6",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Swadloon #7",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Leavanny #8",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Foongus #9",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Amoonguss #10",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Slowpoke & Psyduck-GX #11",
+      "current_value": "$45.29",
+      "price_numeric": 45.29
+    },
+    {
+      "name": "Lapras #12",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Finneon #13",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Lumineon #14",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Basculin #15",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Tirtouga #16",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Carracosta #17",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Dewpider #18",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Araquanid #19",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Wimpod #20",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Golisopod #21",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Joltik #22",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Galvantula #23",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Tynamo #24",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Tynamo #25",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Eelektrik #26",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Eelektross #27",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Tapu Koko #28",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Mewtwo & Mew-GX #29",
+      "current_value": "$32.71",
+      "price_numeric": 32.71
+    },
+    {
+      "name": "Exeggcute #30",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Exeggutor #31",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Jynx #32",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Wynaut #33",
+      "current_value": "$1.76",
+      "price_numeric": 1.76
+    },
+    {
+      "name": "Latios-GX #34",
+      "current_value": "$3.68",
+      "price_numeric": 3.68
+    },
+    {
+      "name": "Skorupi #35",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Elgyem #36",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Beheeyem #37",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Honedge #38",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Honedge #39",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Doublade #40",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Aegislash #41",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Necrozma #42",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Onix #43",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Steelix #44",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Aerodactyl-GX #45",
+      "current_value": "$1.48",
+      "price_numeric": 1.48
+    },
+    {
+      "name": "Heracross #46",
+      "current_value": "$0.74",
+      "price_numeric": 0.74
+    },
+    {
+      "name": "Breloom #47",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Relicanth #48",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Drilbur #49",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Excadrill #50",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Archen #51",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Archeops #52",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Terrakion #53",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Mega Sableye & Tyranitar-GX #54",
+      "current_value": "$18.30",
+      "price_numeric": 18.3
+    },
+    {
+      "name": "Sableye #55",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Drapion #56",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Purrloin #57",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Liepard #58",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Scraggy #59",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Scrafty #60",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Yveltal #61",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Cottonee #62",
+      "current_value": "$3.39",
+      "price_numeric": 3.39
+    },
+    {
+      "name": "Whimsicott #63",
+      "current_value": "$1.43",
+      "price_numeric": 1.43
+    },
+    {
+      "name": "Dedenne #64",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Dratini #65",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Dratini #66",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Dragonair #67",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Dragonite #68",
+      "current_value": "$3.32",
+      "price_numeric": 3.32
+    },
+    {
+      "name": "Dragonite-GX #69",
+      "current_value": "$5.45",
+      "price_numeric": 5.45
+    },
+    {
+      "name": "Noibat #70",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Noivern #71",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Tauros #72",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Slakoth #73",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Slakoth #74",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Vigoroth #75",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Slaking #76",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Yungoos #77",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Gumshoos #78",
+      "current_value": "$0.74",
+      "price_numeric": 0.74
+    },
+    {
+      "name": "Oranguru #79",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Komala #80",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    },
+    {
+      "name": "Great Potion #81",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Stadium Nav #82",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Unidentified Fossil #83",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Giant Bomb #84",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Misty's Favor #85",
+      "current_value": "$1.10",
+      "price_numeric": 1.1
+    },
+    {
+      "name": "Channeler #86",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Blue's Tactics #87",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Slumbering Forest #88",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Pokémon Research Lab #89",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Weakness Guard Energy #90",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Pal Pad #91",
+      "current_value": "$5.35",
+      "price_numeric": 5.35
+    },
+    {
+      "name": "Pokégear 3.0 #92",
+      "current_value": "$7.22",
+      "price_numeric": 7.22
+    },
+    {
+      "name": "Mysterious Treasure #93",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Sightseer #94",
+      "current_value": "$9.91",
+      "price_numeric": 9.91
+    },
+    {
+      "name": "Slowpoke & Psyduck-GX #95",
+      "current_value": "$69.37",
+      "price_numeric": 69.37
+    },
+    {
+      "name": "Slowpoke & Psyduck-GX #96",
+      "current_value": "$260.00",
+      "price_numeric": 260
+    },
+    {
+      "name": "Mewtwo & Mew-GX #97",
+      "current_value": "$74.62",
+      "price_numeric": 74.62
+    },
+    {
+      "name": "Mewtwo & Mew-GX #98",
+      "current_value": "$432.85",
+      "price_numeric": 432.85
+    },
+    {
+      "name": "Latios-GX #99",
+      "current_value": "$18.43",
+      "price_numeric": 18.43
+    },
+    {
+      "name": "Aerodactyl-GX #100",
+      "current_value": "$4.55",
+      "price_numeric": 4.55
+    },
+    {
+      "name": "Mega Sableye & Tyranitar-GX #101",
+      "current_value": "$30.97",
+      "price_numeric": 30.97
+    },
+    {
+      "name": "Mega Sableye & Tyranitar-GX #102",
+      "current_value": "$200.00",
+      "price_numeric": 200
+    },
+    {
+      "name": "Dragonite-GX #103",
+      "current_value": "$20.74",
+      "price_numeric": 20.74
+    },
+    {
+      "name": "Misty's Favor #104",
+      "current_value": "$181.73",
+      "price_numeric": 181.73
+    },
+    {
+      "name": "Channeler #105",
+      "current_value": "$7.07",
+      "price_numeric": 7.07
+    },
+    {
+      "name": "Blue's Tactics #106",
+      "current_value": "$34.62",
+      "price_numeric": 34.62
+    },
+    {
+      "name": "Mewtwo & Mew-GX #108",
+      "current_value": "$146.67",
+      "price_numeric": 146.67
+    },
+    {
+      "name": "Latios-GX #109",
+      "current_value": "$28.25",
+      "price_numeric": 28.25
+    },
+    {
+      "name": "Aerodactyl-GX #110",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Mega Sableye & Tyranitar-GX #111",
+      "current_value": "$55.00",
+      "price_numeric": 55
+    },
+    {
+      "name": "Dragonite-GX #112",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Cherish Ball #113",
+      "current_value": "$9.76",
+      "price_numeric": 9.76
+    },
+    {
+      "name": "Giant Bomb #114",
+      "current_value": "$2.92",
+      "price_numeric": 2.92
+    },
+    {
+      "name": "Weakness Guard Energy #115",
+      "current_value": "$4.74",
+      "price_numeric": 4.74
+    },
+    {
+      "name": "Weakness Guard Energy#115RarityウルトラレアThis card provides Colorless Energy.",
+      "current_value": "$4.74",
+      "price_numeric": 4.74
+    }
+  ]
+}

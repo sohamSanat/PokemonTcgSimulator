@@ -1,0 +1,682 @@
+{
+  "metadata": {
+    "set_name": "Battle Partners",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/battle-partners/sv9_ja",
+    "release_date": "2025/01/24",
+    "scraped_at": "2026-07-15T11:37:11.078169",
+    "elapsed_seconds": 21.59,
+    "total_cards_scraped": 134
+  },
+  "cards": [
+    {
+      "name": "Caterpie #1",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Metapod #2",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Butterfree #3",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Paras #4",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Parasect #5",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Maractus #6",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Karrablast #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Shelmet #8",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Accelgor #9",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Sprigatito #10",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Floragato #11",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Meowscarada #12",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Magmar #13",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Magmortar #14",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "N's Darumaka #15",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "N's Darmanitan #16",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Volcanion ex #17",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Articuno #18",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Remoraid #19",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Octillery #20",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Lotad #21",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Lombre #22",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Ludicolo #23",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Wailmer #24",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Wailord #25",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Iono's Voltorb #26",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Iono's Electrode #27",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "N's Joltik #28",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Iono's Tadbulb #29",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Iono's Bellibolt ex #30",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Iono's Wattrel #31",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Iono's Kilowattrel #32",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lillie's Clefairy ex #33",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Mr. Mime #34",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Shuppet #35",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Banette #36",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Beldum #37",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Metang #38",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Metagross #39",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "N's Sigilyph #40",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Lillie's Cutiefly #41",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lillie's Ribombee #42",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lillie's Comfey #43",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Swinub #44",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Piloswine #45",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Mamoswine ex #46",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Larvitar #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Pupitar #48",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Regirock #49",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Pancham #50",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Rockruff #51",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lycanroc #52",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Hop's Silicobra #53",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Hop's Sandaconda #54",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Klawf #55",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Koffing #56",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Weezing #57",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Tyranitar #58",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "N's Purrloin #59",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "N's Zorua #60",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "N's Zoroark ex #61",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Pangoro #62",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Escavalier #63",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "N's Klink #64",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "N's Klang #65",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "N's Klinklang #66",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Magearna #67",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hop's Corviknight #68",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Hop's Zacian ex #69",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Bagon #70",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Shelgon #71",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Salamence ex #72",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Druddigon #73",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "N's Reshiram #74",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Hop's Snorlax #75",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Sentret #76",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Furret #77",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Dunsparce #78",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Dudunsparce ex #79",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Noibat #80",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Noivern #81",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Komala #82",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Hop's Rookidee #83",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Hop's Corvisquire #84",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Hop's Wooloo #85",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hop's Dubwool #86",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Hop's Cramorant #87",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Super Potion #88",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "N's PP Up #89",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Exchange Ticket #90",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Hop's Bag #91",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Hop's Choice Band #92",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Lillie's Pearl #93",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Iris's Fighting Spirit #94",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Ruffian #95",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Brock's Scouting #96",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "N's Castle #97",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Levincia #98",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Postwick #99",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Spike Energy #100",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Maractus #101",
+      "current_value": "$1.60",
+      "price_numeric": 1.6
+    },
+    {
+      "name": "Articuno #102",
+      "current_value": "$9.34",
+      "price_numeric": 9.34
+    },
+    {
+      "name": "Wailord #103",
+      "current_value": "$6.46",
+      "price_numeric": 6.46
+    },
+    {
+      "name": "Iono's Kilowattrel #104",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Lillie's Ribombee #105",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Swinub #106",
+      "current_value": "$1.71",
+      "price_numeric": 1.71
+    },
+    {
+      "name": "Lycanroc #107",
+      "current_value": "$1.78",
+      "price_numeric": 1.78
+    },
+    {
+      "name": "N's Zorua #108",
+      "current_value": "$5.73",
+      "price_numeric": 5.73
+    },
+    {
+      "name": "N's Reshiram #109",
+      "current_value": "$14.53",
+      "price_numeric": 14.53
+    },
+    {
+      "name": "Furret #110",
+      "current_value": "$3.77",
+      "price_numeric": 3.77
+    },
+    {
+      "name": "Noibat #111",
+      "current_value": "$2.82",
+      "price_numeric": 2.82
+    },
+    {
+      "name": "Hop's Wooloo #112",
+      "current_value": "$1.46",
+      "price_numeric": 1.46
+    },
+    {
+      "name": "Volcanion ex #113",
+      "current_value": "$1.03",
+      "price_numeric": 1.03
+    },
+    {
+      "name": "Iono's Bellibolt ex #114",
+      "current_value": "$2.58",
+      "price_numeric": 2.58
+    },
+    {
+      "name": "Lillie's Clefairy ex #115",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "Mamoswine ex #116",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "N's Zoroark ex #117",
+      "current_value": "$4.32",
+      "price_numeric": 4.32
+    },
+    {
+      "name": "Hop's Zacian ex #118",
+      "current_value": "$1.44",
+      "price_numeric": 1.44
+    },
+    {
+      "name": "Salamence ex #119",
+      "current_value": "$1.56",
+      "price_numeric": 1.56
+    },
+    {
+      "name": "Dudunsparce ex #120",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Iris's Fighting Spirit #121",
+      "current_value": "$2.27",
+      "price_numeric": 2.27
+    },
+    {
+      "name": "Ruffian #122",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Brock's Scouting #123",
+      "current_value": "$1.62",
+      "price_numeric": 1.62
+    },
+    {
+      "name": "Volcanion ex #124",
+      "current_value": "$13.03",
+      "price_numeric": 13.03
+    },
+    {
+      "name": "Iono's Bellibolt ex #125",
+      "current_value": "$39.65",
+      "price_numeric": 39.65
+    },
+    {
+      "name": "Lillie's Clefairy ex #126",
+      "current_value": "$127.20",
+      "price_numeric": 127.2
+    },
+    {
+      "name": "N's Zoroark ex #127",
+      "current_value": "$42.15",
+      "price_numeric": 42.15
+    },
+    {
+      "name": "Hop's Zacian ex #128",
+      "current_value": "$22.49",
+      "price_numeric": 22.49
+    },
+    {
+      "name": "Salamence ex #129",
+      "current_value": "$40.52",
+      "price_numeric": 40.52
+    },
+    {
+      "name": "Iono's Bellibolt ex #130",
+      "current_value": "$12.80",
+      "price_numeric": 12.8
+    },
+    {
+      "name": "N's Zoroark ex #131",
+      "current_value": "$12.92",
+      "price_numeric": 12.92
+    },
+    {
+      "name": "Spike Energy #132",
+      "current_value": "$4.12",
+      "price_numeric": 4.12
+    },
+    {
+      "name": "Iris's Fighting Spirit#121RarityスーパーレアYou can use this card only if you discard a card from your hand.",
+      "current_value": "$2.27",
+      "price_numeric": 2.27
+    },
+    {
+      "name": "Spike Energy#132RarityウルトラレアAs long as this card is attached to a Pokémon, it provides Colorless Energy.",
+      "current_value": "$4.12",
+      "price_numeric": 4.12
+    }
+  ]
+}

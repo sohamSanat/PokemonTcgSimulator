@@ -1,0 +1,472 @@
+{
+  "metadata": {
+    "set_name": "Hot Air Arena",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/hot-air-arena/sv9a_ja",
+    "release_date": "2025/03/14",
+    "scraped_at": "2026-07-15T11:35:46.987029",
+    "elapsed_seconds": 16.52,
+    "total_cards_scraped": 92
+  },
+  "cards": [
+    {
+      "name": "Ethan's Pinsir #1",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Yanma #2",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Yanmega ex #3",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Cynthia's Roselia #4",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Cynthia's Roserade #5",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Shaymin #6",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Dwebble #7",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Crustle #8",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Applin #9",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Dipplin #10",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hydrapple #11",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Teal Mask Ogerpon #12",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Ponyta #13",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Rapidash #14",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Ethan's Cyndaquil #15",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Ethan's Quilava #16",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Ethan's Typhlosion #17",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Ethan's Slugma #18",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Ethan's Magcargo #19",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Ethan's Ho-Oh ex #20",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Hearthflame Mask Ogerpon #21",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Misty's Psyduck #22",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Misty's Staryu #23",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Misty's Starmie #24",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Misty's Magikarp #25",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Misty's Gyarados #26",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Misty's Lapras #27",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Cynthia's Feebas #28",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Cynthia's Milotic #29",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Buizel #30",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Floatzel #31",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Dondozo ex #32",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Wellspring Mask Ogerpon #33",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Electabuzz #34",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Electivire ex #35",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Ethan's Pichu #36",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Electrike #37",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Manectric #38",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Rotom #39",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Zeraora #40",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Ethan's Sudowoodo #41",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Cynthia's Gible #42",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Cynthia's Gabite #43",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Cynthia's Garchomp ex #44",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Mudbray #45",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Mudsdale #46",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Arven's Toedscool #47",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Arven's Toedscruel #48",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Cornerstone Mask Ogerpon #49",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Cynthia's Spiritomb #50",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Arven's Maschiff #51",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Arven's Mabosstiff ex #52",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Tauros #53",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Arven's Skwovet #54",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Arven's Greedent #55",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Sacred Ash #56",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Arven's Sandwich #57",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Switch #58",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Pokemon Catcher #59",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Cynthia's Power Weight #60",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Emcee's Excitement #61",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Judge #62",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Ethan's Adventure #63",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Yanma #64",
+      "current_value": "$2.73",
+      "price_numeric": 2.73
+    },
+    {
+      "name": "Cynthia's Roserade #65",
+      "current_value": "$7.80",
+      "price_numeric": 7.8
+    },
+    {
+      "name": "Shaymin #66",
+      "current_value": "$6.39",
+      "price_numeric": 6.39
+    },
+    {
+      "name": "Crustle #67",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Hydrapple #68",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Rapidash #69",
+      "current_value": "$4.79",
+      "price_numeric": 4.79
+    },
+    {
+      "name": "Ethan's Typhlosion #70",
+      "current_value": "$14.15",
+      "price_numeric": 14.15
+    },
+    {
+      "name": "Misty's Psyduck #71",
+      "current_value": "$40.69",
+      "price_numeric": 40.69
+    },
+    {
+      "name": "Misty's Lapras #72",
+      "current_value": "$23.07",
+      "price_numeric": 23.07
+    },
+    {
+      "name": "Electrike #73",
+      "current_value": "$2.18",
+      "price_numeric": 2.18
+    },
+    {
+      "name": "Rotom #74",
+      "current_value": "$2.32",
+      "price_numeric": 2.32
+    },
+    {
+      "name": "Arven's Greedent #75",
+      "current_value": "$2.21",
+      "price_numeric": 2.21
+    },
+    {
+      "name": "Yanmega ex #76",
+      "current_value": "$1.35",
+      "price_numeric": 1.35
+    },
+    {
+      "name": "Ethan's Ho-Oh ex #77",
+      "current_value": "$4.37",
+      "price_numeric": 4.37
+    },
+    {
+      "name": "Dondozo ex #78",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Electivire ex #79",
+      "current_value": "$1.64",
+      "price_numeric": 1.64
+    },
+    {
+      "name": "Cynthia's Garchomp ex #80",
+      "current_value": "$5.91",
+      "price_numeric": 5.91
+    },
+    {
+      "name": "Arven's Mabosstiff ex #81",
+      "current_value": "$1.43",
+      "price_numeric": 1.43
+    },
+    {
+      "name": "Emcee's Excitement #82",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Judge #83",
+      "current_value": "$1.34",
+      "price_numeric": 1.34
+    },
+    {
+      "name": "Ethan's Adventure #84",
+      "current_value": "$2.69",
+      "price_numeric": 2.69
+    },
+    {
+      "name": "Yanmega ex #85",
+      "current_value": "$15.36",
+      "price_numeric": 15.36
+    },
+    {
+      "name": "Ethan's Ho-Oh ex #86",
+      "current_value": "$126.89",
+      "price_numeric": 126.89
+    },
+    {
+      "name": "Cynthia's Garchomp ex #87",
+      "current_value": "$203.42",
+      "price_numeric": 203.42
+    },
+    {
+      "name": "Arven's Mabosstiff ex #88",
+      "current_value": "$21.87",
+      "price_numeric": 21.87
+    },
+    {
+      "name": "Ethan's Adventure #89",
+      "current_value": "$42.16",
+      "price_numeric": 42.16
+    },
+    {
+      "name": "Ethan's Ho-Oh ex #90",
+      "current_value": "$17.51",
+      "price_numeric": 17.51
+    },
+    {
+      "name": "Cynthia's Garchomp ex #91",
+      "current_value": "$29.06",
+      "price_numeric": 29.06
+    },
+    {
+      "name": "Levincia #92",
+      "current_value": "$6.60",
+      "price_numeric": 6.6
+    }
+  ]
+}

@@ -1,0 +1,1262 @@
+{
+  "metadata": {
+    "set_name": "Shiny Star V",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/shiny-star-v/swsh4a_ja",
+    "release_date": "2020/11/20",
+    "scraped_at": "2026-07-15T12:00:19.932647",
+    "elapsed_seconds": 31.38,
+    "total_cards_scraped": 250
+  },
+  "cards": [
+    {
+      "name": "Rowlet #1",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Dartrix #2",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Decidueye #3",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Wimpod #4",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Golisopod #5",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Grookey #6",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Thwackey #7",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Rillaboom #8",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Rillaboom V #9",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Rillaboom VMAX #10",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Blipbug #11",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Dottler #12",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Orbeetle #13",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Gossifleur #14",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Eldegoss #15",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Eldegoss V #16",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Applin #17",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Flapple #18",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Appletun #19",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Heatran #20",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Reshiram #21",
+      "current_value": "$1.40",
+      "price_numeric": 1.4
+    },
+    {
+      "name": "Scorbunny #22",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Raboot #23",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Cinderace #24",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Sizzlipede #25",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Centiskorch #26",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Centiskorch V #27",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Centiskorch VMAX #28",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Galarian Mr. Mime #29",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Galarian Mr. Rime #30",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Lapras V #31",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Lapras VMAX #32",
+      "current_value": "$1.45",
+      "price_numeric": 1.45
+    },
+    {
+      "name": "Suicune #33",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Feebas #34",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Milotic #35",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Kyogre #36",
+      "current_value": "$3.31",
+      "price_numeric": 3.31
+    },
+    {
+      "name": "Galarian Darumaka #37",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Galarian Darmanitan #38",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Sobble #39",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Drizzile #40",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Inteleon #41",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Chewtle #42",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Drednaw #43",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Cramorant #44",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Arrokuda #45",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Barraskewda #46",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Snom #47",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Frosmoth #48",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Eiscue #49",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Dracovish #50",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Arctovish #51",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Rotom #52",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Tapu Koko #53",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Yamper #54",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Boltund #55",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Boltund V #56",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Toxel #57",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Toxtricity #58",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Toxtricity V #59",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Toxtricity VMAX #60",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Pincurchin #61",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Morpeko #62",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Dracozolt #63",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Arctozolt #64",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Clefairy #65",
+      "current_value": "$0.54",
+      "price_numeric": 0.54
+    },
+    {
+      "name": "Clefable #66",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Galarian Ponyta #67",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Galarian Rapidash #68",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Gastly #69",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Haunter #70",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Gengar #71",
+      "current_value": "$20.50",
+      "price_numeric": 20.5
+    },
+    {
+      "name": "Galarian Corsola #72",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Galarian Cursola #73",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Sigilyph #74",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Dedenne #75",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Sinistea #76",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Polteageist #77",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Hatenna #78",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hattrem #79",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Hatterene #80",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Milcery #81",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Alcremie #82",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Indeedee #83",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Indeedee V #84",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Dreepy #85",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Drakloak #86",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Dragapult #87",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Dragapult V #88",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Dragapult VMAX #89",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Galarian Farfetch'd #90",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Galarian Sirfetch'd #91",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Galarian Yamask #92",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Galarian Runerigus #93",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Rolycoly #94",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Carkol #95",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Coalossal #96",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Silicobra #97",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Sandaconda #98",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Clobbopus #99",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Grapploct #100",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Falinks #101",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Falinks V #102",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Stonjourner #103",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Koffing #104",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Galarian Weezing #105",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Spinarak #106",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Ariados #107",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Crobat V #108",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Crobat VMAX #109",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Galarian Zigzagoon #110",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Galarian Linoone #111",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Galarian Obstagoon #112",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Croagunk #113",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Toxicroak #114",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Trubbish #115",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Garbodor #116",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Yveltal #117",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Hoopa #118",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Nickit #119",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Thievul #120",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Impidimp #121",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Morgrem #122",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Grimmsnarl #123",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Eternatus V #124",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Eternatus VMAX #125",
+      "current_value": "$0.74",
+      "price_numeric": 0.74
+    },
+    {
+      "name": "Galarian Meowth #126",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Galarian Perrserker #127",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Galarian Stunfisk #128",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Honedge #129",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Doublade #130",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Aegislash #131",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Corviknight #132",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Cufant #133",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Copperajah #134",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Duraludon #135",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Zacian #136",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Zacian V #137",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Zamazenta #138",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Zamazenta V #139",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Ditto V #140",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Ditto VMAX #141",
+      "current_value": "$1.80",
+      "price_numeric": 1.8
+    },
+    {
+      "name": "Minccino #142",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Cinccino #143",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Ducklett #144",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Swanna #145",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Bunnelby #146",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Oranguru #147",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Skwovet #148",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Greedent #149",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Rookidee #150",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Corvisquire #151",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Wooloo #152",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Dubwool #153",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Dubwool V #154",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Cramorant V #155",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Team Yell Towel #156",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Scoop Up Net #157",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Quick Ball #158",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Evolution Incense #159",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Hyper Potion #160",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Turbo Patch #161",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Capacious Bucket #162",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Tool Scrapper #163",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Ordinary Rod #164",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Rare Fossil #165",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Metal Saucer #166",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Rotom Bike #167",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Rusted Sword #168",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Rusted Shield #169",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Cape of Toughness #170",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Air Balloon #171",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Bird Keeper #172",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Piers #173",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Professor's Research #174",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Ball Guy #175",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Boss's Orders #176",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Marnie #177",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Rose #178",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Turffield Stadium #179",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Training Court #180",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Glimwood Tangle #181",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Rose Tower #182",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Heat Fire Energy #183",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Speed Lightning Energy #184",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Horror Psychic Energy #185",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Hiding Darkness Energy #186",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Aurora Energy #187",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Capture Energy #188",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Twin Energy #189",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Powerful Colorless Energy #190",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Cara Liss #191",
+      "current_value": "$1.88",
+      "price_numeric": 1.88
+    },
+    {
+      "name": "Gym Trainer #192",
+      "current_value": "$1.23",
+      "price_numeric": 1.23
+    },
+    {
+      "name": "Bird Keeper #193",
+      "current_value": "$2.61",
+      "price_numeric": 2.61
+    },
+    {
+      "name": "Piers #194",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Skyla #195",
+      "current_value": "$21.06",
+      "price_numeric": 21.06
+    },
+    {
+      "name": "Ball Guy #196",
+      "current_value": "$4.20",
+      "price_numeric": 4.2
+    },
+    {
+      "name": "Poké Kid #197",
+      "current_value": "$11.46",
+      "price_numeric": 11.46
+    },
+    {
+      "name": "Marnie #198",
+      "current_value": "$60.79",
+      "price_numeric": 60.79
+    },
+    {
+      "name": "Rose #199",
+      "current_value": "$1.23",
+      "price_numeric": 1.23
+    },
+    {
+      "name": "Rowlet #200",
+      "current_value": "$2.78",
+      "price_numeric": 2.78
+    },
+    {
+      "name": "Dartrix #201",
+      "current_value": "$2.51",
+      "price_numeric": 2.51
+    },
+    {
+      "name": "Decidueye #202",
+      "current_value": "$2.28",
+      "price_numeric": 2.28
+    },
+    {
+      "name": "Grookey #203",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Thwackey #204",
+      "current_value": "$1.53",
+      "price_numeric": 1.53
+    },
+    {
+      "name": "Rillaboom #205",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Blipbug #206",
+      "current_value": "$1.02",
+      "price_numeric": 1.02
+    },
+    {
+      "name": "Dottler #207",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Orbeetle #208",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Gossifleur #209",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Eldegoss #210",
+      "current_value": "$1.11",
+      "price_numeric": 1.11
+    },
+    {
+      "name": "Applin #211",
+      "current_value": "$3.87",
+      "price_numeric": 3.87
+    },
+    {
+      "name": "Flapple #212",
+      "current_value": "$2.61",
+      "price_numeric": 2.61
+    },
+    {
+      "name": "Appletun #213",
+      "current_value": "$3.55",
+      "price_numeric": 3.55
+    },
+    {
+      "name": "Scorbunny #214",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Raboot #215",
+      "current_value": "$1.87",
+      "price_numeric": 1.87
+    },
+    {
+      "name": "Cinderace #216",
+      "current_value": "$3.60",
+      "price_numeric": 3.6
+    },
+    {
+      "name": "Sizzlipede #217",
+      "current_value": "$1.70",
+      "price_numeric": 1.7
+    },
+    {
+      "name": "Centiskorch #218",
+      "current_value": "$2.52",
+      "price_numeric": 2.52
+    },
+    {
+      "name": "Galarian Mr. Mime #219",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Galarian Mr. Rime #220",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Suicune #221",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Galarian Darumaka #222",
+      "current_value": "$1.73",
+      "price_numeric": 1.73
+    },
+    {
+      "name": "Galarian Darmanitan #223",
+      "current_value": "$2.17",
+      "price_numeric": 2.17
+    },
+    {
+      "name": "Sobble #224",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Drizzile #225",
+      "current_value": "$1.22",
+      "price_numeric": 1.22
+    },
+    {
+      "name": "Inteleon #226",
+      "current_value": "$1.94",
+      "price_numeric": 1.94
+    },
+    {
+      "name": "Chewtle #227",
+      "current_value": "$2.95",
+      "price_numeric": 2.95
+    },
+    {
+      "name": "Drednaw #228",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Cramorant #229",
+      "current_value": "$1.85",
+      "price_numeric": 1.85
+    },
+    {
+      "name": "Arrokuda #230",
+      "current_value": "$1.87",
+      "price_numeric": 1.87
+    },
+    {
+      "name": "Barraskewda #231",
+      "current_value": "$1.51",
+      "price_numeric": 1.51
+    },
+    {
+      "name": "Snom #232",
+      "current_value": "$3.02",
+      "price_numeric": 3.02
+    },
+    {
+      "name": "Frosmoth #233",
+      "current_value": "$2.77",
+      "price_numeric": 2.77
+    },
+    {
+      "name": "Eiscue #234",
+      "current_value": "$3.06",
+      "price_numeric": 3.06
+    },
+    {
+      "name": "Dracovish #235",
+      "current_value": "$2.72",
+      "price_numeric": 2.72
+    },
+    {
+      "name": "Arctovish #236",
+      "current_value": "$2.30",
+      "price_numeric": 2.3
+    },
+    {
+      "name": "Rotom #237",
+      "current_value": "$1.94",
+      "price_numeric": 1.94
+    },
+    {
+      "name": "Yamper #238",
+      "current_value": "$10.12",
+      "price_numeric": 10.12
+    },
+    {
+      "name": "Boltund #239",
+      "current_value": "$3.37",
+      "price_numeric": 3.37
+    },
+    {
+      "name": "Toxel #240",
+      "current_value": "$2.19",
+      "price_numeric": 2.19
+    },
+    {
+      "name": "Toxtricity #241",
+      "current_value": "$2.35",
+      "price_numeric": 2.35
+    },
+    {
+      "name": "Pincurchin #242",
+      "current_value": "$3.40",
+      "price_numeric": 3.4
+    },
+    {
+      "name": "Morpeko #243",
+      "current_value": "$4.84",
+      "price_numeric": 4.84
+    },
+    {
+      "name": "Dracozolt #244",
+      "current_value": "$2.76",
+      "price_numeric": 2.76
+    },
+    {
+      "name": "Arctozolt #245",
+      "current_value": "$2.22",
+      "price_numeric": 2.22
+    },
+    {
+      "name": "Galarian Ponyta #246",
+      "current_value": "$8.10",
+      "price_numeric": 8.1
+    },
+    {
+      "name": "Galarian Rapidash #247",
+      "current_value": "$4.34",
+      "price_numeric": 4.34
+    },
+    {
+      "name": "Galarian Corsola #248",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Galarian Cursola #249",
+      "current_value": "$1.74",
+      "price_numeric": 1.74
+    },
+    {
+      "name": "Dedenne #250",
+      "current_value": "$2.89",
+      "price_numeric": 2.89
+    }
+  ]
+}

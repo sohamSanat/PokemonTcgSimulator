@@ -1,0 +1,402 @@
+{
+  "metadata": {
+    "set_name": "Forbidden Light",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/forbidden-light/sm6_ja",
+    "release_date": "2018/03/02",
+    "scraped_at": "2026-07-15T12:19:02.523911",
+    "elapsed_seconds": 16.46,
+    "total_cards_scraped": 78
+  },
+  "cards": [
+    {
+      "name": "Exeggcute #1",
+      "current_value": "$1.60",
+      "price_numeric": 1.6
+    },
+    {
+      "name": "Alolan Exeggutor #2",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Scatterbug #3",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Scatterbug #4",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Spewpa #5",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Vivillon #6",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Gogoat #8",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Pheromosa #9",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Alolan Marowak #10",
+      "current_value": "$2.13",
+      "price_numeric": 2.13
+    },
+    {
+      "name": "Fennekin #12",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Delphox #14",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Litleo #15",
+      "current_value": "$2.22",
+      "price_numeric": 2.22
+    },
+    {
+      "name": "Pyroar #16",
+      "current_value": "$1.81",
+      "price_numeric": 1.81
+    },
+    {
+      "name": "Froakie #18",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Greninja-GX #20",
+      "current_value": "$8.69",
+      "price_numeric": 8.69
+    },
+    {
+      "name": "Clauncher #21",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Clawitzer #22",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Amaura #23",
+      "current_value": "$3.75",
+      "price_numeric": 3.75
+    },
+    {
+      "name": "Aurorus #24",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Avalugg #26",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Volcanion ◇ #27",
+      "current_value": "$7.98",
+      "price_numeric": 7.98
+    },
+    {
+      "name": "Helioptile #28",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Espurr #30",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Meowstic #31",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Honedge #32",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Honedge #33",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Aegislash #35",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Inkay #36",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Skrelp #38",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Dragalge #39",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Hoopa #40",
+      "current_value": "$3.51",
+      "price_numeric": 3.51
+    },
+    {
+      "name": "Cubone #41",
+      "current_value": "$11.43",
+      "price_numeric": 11.43
+    },
+    {
+      "name": "Pancham #42",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Binacle #43",
+      "current_value": "$3.65",
+      "price_numeric": 3.65
+    },
+    {
+      "name": "Tyrunt #45",
+      "current_value": "$2.98",
+      "price_numeric": 2.98
+    },
+    {
+      "name": "Tyrantrum #46",
+      "current_value": "$8.21",
+      "price_numeric": 8.21
+    },
+    {
+      "name": "Hawlucha #47",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Zygarde #48",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Zygarde #49",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Zygarde-GX #50",
+      "current_value": "$4.65",
+      "price_numeric": 4.65
+    },
+    {
+      "name": "Diancie ◇ #51",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Rockruff #52",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Lycanroc #53",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Pangoro #54",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Yveltal-GX #55",
+      "current_value": "$5.32",
+      "price_numeric": 5.32
+    },
+    {
+      "name": "Guzzlord #56",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Flabébé #57",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Flabébé #58",
+      "current_value": "$2.95",
+      "price_numeric": 2.95
+    },
+    {
+      "name": "Floette #59",
+      "current_value": "$2.95",
+      "price_numeric": 2.95
+    },
+    {
+      "name": "Florges #60",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Sylveon #61",
+      "current_value": "$23.96",
+      "price_numeric": 23.96
+    },
+    {
+      "name": "Dedenne #62",
+      "current_value": "$8.21",
+      "price_numeric": 8.21
+    },
+    {
+      "name": "Xerneas-GX #64",
+      "current_value": "$8.06",
+      "price_numeric": 8.06
+    },
+    {
+      "name": "Goomy #65",
+      "current_value": "$1.48",
+      "price_numeric": 1.48
+    },
+    {
+      "name": "Goomy #66",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Sliggoo #67",
+      "current_value": "$2.73",
+      "price_numeric": 2.73
+    },
+    {
+      "name": "Goodra #68",
+      "current_value": "$1.33",
+      "price_numeric": 1.33
+    },
+    {
+      "name": "Ultra Necrozma-GX #69",
+      "current_value": "$5.29",
+      "price_numeric": 5.29
+    },
+    {
+      "name": "Eevee #70",
+      "current_value": "$16.85",
+      "price_numeric": 16.85
+    },
+    {
+      "name": "Bunnelby #71",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Furfrou #73",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Noibat #74",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Noivern #75",
+      "current_value": "$1.07",
+      "price_numeric": 1.07
+    },
+    {
+      "name": "Rare Candy #80",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Mysterious Treasure #83",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Diantha #86",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Bonnie #90",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lillie #91",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Unit Energy FDF #94",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Greninja-GX #95",
+      "current_value": "$45.00",
+      "price_numeric": 45
+    },
+    {
+      "name": "Yveltal-GX #97",
+      "current_value": "$14.96",
+      "price_numeric": 14.96
+    },
+    {
+      "name": "Xerneas-GX #98",
+      "current_value": "$17.95",
+      "price_numeric": 17.95
+    },
+    {
+      "name": "Ultra Necrozma-GX #99",
+      "current_value": "$17.99",
+      "price_numeric": 17.99
+    },
+    {
+      "name": "Zygarde-GX #104",
+      "current_value": "$42.92",
+      "price_numeric": 42.92
+    },
+    {
+      "name": "Xerneas-GX #106",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Ultra Necrozma-GX #107",
+      "current_value": "$29.95",
+      "price_numeric": 29.95
+    },
+    {
+      "name": "Eneporter #108",
+      "current_value": "$5.97",
+      "price_numeric": 5.97
+    },
+    {
+      "name": "Unit Energy Fighting Darkness Fairy #110",
+      "current_value": "$26.88",
+      "price_numeric": 26.88
+    }
+  ]
+}

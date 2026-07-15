@@ -1,0 +1,217 @@
+{
+  "metadata": {
+    "set_name": "Collection Sun",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/collection-sun/sm1s_ja",
+    "release_date": "2016/12/09",
+    "scraped_at": "2026-07-15T12:26:32.282415",
+    "elapsed_seconds": 16.9,
+    "total_cards_scraped": 41
+  },
+  "cards": [
+    {
+      "name": "Caterpie #1",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Metapod #2",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Butterfree #3",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Tsareena #8",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Growlithe #9",
+      "current_value": "$3.98",
+      "price_numeric": 3.98
+    },
+    {
+      "name": "Arcanine #10",
+      "current_value": "$7.60",
+      "price_numeric": 7.6
+    },
+    {
+      "name": "Torkoal #11",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Psyduck #12",
+      "current_value": "$5.44",
+      "price_numeric": 5.44
+    },
+    {
+      "name": "Lapras-GX #16",
+      "current_value": "$4.16",
+      "price_numeric": 4.16
+    },
+    {
+      "name": "Wishiwashi #17",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Pyukumuku #20",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Golbat #22",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Crobat #23",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Espeon-GX #24",
+      "current_value": "$11.70",
+      "price_numeric": 11.7
+    },
+    {
+      "name": "Toxapex #26",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Cosmog #27",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Cosmoem #28",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Makuhita #29",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Alolan Meowth #32",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Krokorok #35",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Krookodile #36",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Alolan Diglett #37",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Alolan Dugtrio #38",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Skarmory #39",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Solgaleo-GX #40",
+      "current_value": "$3.91",
+      "price_numeric": 3.91
+    },
+    {
+      "name": "Cutiefly #41",
+      "current_value": "$3.16",
+      "price_numeric": 3.16
+    },
+    {
+      "name": "Kangaskhan #43",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Eevee #44",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Spinda #45",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Lillipup #46",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Herdier #47",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Stoutland #48",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Gumshoos-GX #50",
+      "current_value": "$1.24",
+      "price_numeric": 1.24
+    },
+    {
+      "name": "Bewear #52",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Rotom Dex #56",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Espeon-GX #62",
+      "current_value": "$55.50",
+      "price_numeric": 55.5
+    },
+    {
+      "name": "Professor Kukui #66",
+      "current_value": "$39.90",
+      "price_numeric": 39.9
+    },
+    {
+      "name": "Espeon-GX #68",
+      "current_value": "$62.99",
+      "price_numeric": 62.99
+    },
+    {
+      "name": "Gumshoos-GX #70",
+      "current_value": "$16.99",
+      "price_numeric": 16.99
+    },
+    {
+      "name": "Rotom Dex #72",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Metal Energy #73",
+      "current_value": "$19.97",
+      "price_numeric": 19.97
+    }
+  ]
+}

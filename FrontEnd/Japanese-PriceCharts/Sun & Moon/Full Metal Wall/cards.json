@@ -1,0 +1,352 @@
+{
+  "metadata": {
+    "set_name": "Full Metal Wall",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/full-metal-wall/sm9b_ja",
+    "release_date": "2019/02/01",
+    "scraped_at": "2026-07-15T12:12:38.630679",
+    "elapsed_seconds": 16.64,
+    "total_cards_scraped": 68
+  },
+  "cards": [
+    {
+      "name": "Pheromosa & Buzzwole-GX #1",
+      "current_value": "$3.54",
+      "price_numeric": 3.54
+    },
+    {
+      "name": "Caterpie #2",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Metapod #3",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Butterfree #4",
+      "current_value": "$0.82",
+      "price_numeric": 0.82
+    },
+    {
+      "name": "Tangela #5",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Tangrowth #6",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Kartana #7",
+      "current_value": "$0.73",
+      "price_numeric": 0.73
+    },
+    {
+      "name": "Squirtle #8",
+      "current_value": "$1.63",
+      "price_numeric": 1.63
+    },
+    {
+      "name": "Wartortle #9",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Blastoise-GX #10",
+      "current_value": "$6.49",
+      "price_numeric": 6.49
+    },
+    {
+      "name": "Slowpoke #11",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Slowbro #12",
+      "current_value": "$5.27",
+      "price_numeric": 5.27
+    },
+    {
+      "name": "Pyukumuku #13",
+      "current_value": "$3.41",
+      "price_numeric": 3.41
+    },
+    {
+      "name": "Ekans #14",
+      "current_value": "$1.03",
+      "price_numeric": 1.03
+    },
+    {
+      "name": "Arbok #15",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Zubat #16",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Golbat #17",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Crobat #18",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Drowzee #19",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Hypno #20",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Sandshrew #21",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Sandslash #22",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Geodude #23",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Graveler #24",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Golem #25",
+      "current_value": "$1.17",
+      "price_numeric": 1.17
+    },
+    {
+      "name": "Hitmontop #26",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Riolu #27",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Stakataka #28",
+      "current_value": "$1.57",
+      "price_numeric": 1.57
+    },
+    {
+      "name": "Lucario & Melmetal-GX #29",
+      "current_value": "$9.33",
+      "price_numeric": 9.33
+    },
+    {
+      "name": "Alolan Diglett #30",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Alolan Dugtrio #31",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Aron #32",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Lairon #33",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Aggron #34",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Lucario #35",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Genesect #36",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Meltan #37",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Melmetal #38",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Spearow #39",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Fearow #40",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Glameow #41",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Purugly #42",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Celesteela-GX #43",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Devolution Spray Z #44",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Beast Bringer #45",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Metal Core Barrier #46",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Ultra Forest Kartenvoy #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Green's Exploration #48",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Molayne #49",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Power Plant #50",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Ultra Ball #51",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Metal Frying Pan #53",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Acerola #54",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Pheromosa & Buzzwole-GX #55",
+      "current_value": "$14.57",
+      "price_numeric": 14.57
+    },
+    {
+      "name": "Pheromosa & Buzzwole-GX #56",
+      "current_value": "$32.74",
+      "price_numeric": 32.74
+    },
+    {
+      "name": "Blastoise-GX #57",
+      "current_value": "$27.66",
+      "price_numeric": 27.66
+    },
+    {
+      "name": "Lucario & Melmetal-GX #58",
+      "current_value": "$33.56",
+      "price_numeric": 33.56
+    },
+    {
+      "name": "Lucario & Melmetal-GX #59",
+      "current_value": "$86.50",
+      "price_numeric": 86.5
+    },
+    {
+      "name": "Celesteela-GX #60",
+      "current_value": "$6.23",
+      "price_numeric": 6.23
+    },
+    {
+      "name": "Green's Exploration #61",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    },
+    {
+      "name": "Molayne #62",
+      "current_value": "$5.34",
+      "price_numeric": 5.34
+    },
+    {
+      "name": "Pheromosa & Buzzwole-GX #63",
+      "current_value": "$25.67",
+      "price_numeric": 25.67
+    },
+    {
+      "name": "Blastoise-GX #64",
+      "current_value": "$62.93",
+      "price_numeric": 62.93
+    },
+    {
+      "name": "Lucario & Melmetal-GX #65",
+      "current_value": "$36.56",
+      "price_numeric": 36.56
+    },
+    {
+      "name": "Celesteela-GX #66",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Beast Bringer #67",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Metal Core Barrier #68",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Mt. Coronet #69",
+      "current_value": "$14.84",
+      "price_numeric": 14.84
+    }
+  ]
+}

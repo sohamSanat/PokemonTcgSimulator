@@ -1,0 +1,387 @@
+{
+  "metadata": {
+    "set_name": "Dream League",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/dream-league/sm11b_ja",
+    "release_date": "2019/08/02",
+    "scraped_at": "2026-07-15T12:09:02.807775",
+    "elapsed_seconds": 18.39,
+    "total_cards_scraped": 75
+  },
+  "cards": [
+    {
+      "name": "Oddish #1",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Gloom #2",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Vileplume-GX #3",
+      "current_value": "$9.60",
+      "price_numeric": 9.6
+    },
+    {
+      "name": "Slugma #4",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Magcargo #5",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Torkoal #6",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Sneasel #7",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Weavile #8",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Piplup #9",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Prinplup #10",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Empoleon #11",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Tympole #12",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Wishiwashi #13",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Dewpider #14",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Araquanid #15",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Pikachu #16",
+      "current_value": "$1.48",
+      "price_numeric": 1.48
+    },
+    {
+      "name": "Raichu #17",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Magnemite #18",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Magneton #19",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Solgaleo & Lunala-GX #20",
+      "current_value": "$15.20",
+      "price_numeric": 15.2
+    },
+    {
+      "name": "Koffing #21",
+      "current_value": "$1.64",
+      "price_numeric": 1.64
+    },
+    {
+      "name": "Weezing #22",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Natu #23",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Xatu #24",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Ralts #25",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Kirlia #26",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Gallade #27",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Mimikyu #28",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Onix #29",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Drilbur #30",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Excadrill #31",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Palpitoad #32",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Seismitoad #33",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Steelix #34",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Clefairy #35",
+      "current_value": "$0.68",
+      "price_numeric": 0.68
+    },
+    {
+      "name": "Reshiram & Zekrom-GX #36",
+      "current_value": "$46.78",
+      "price_numeric": 46.78
+    },
+    {
+      "name": "Lillipup #37",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Herdier #38",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Stoutland #39",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Type: Null #40",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Silvally-GX #41",
+      "current_value": "$2.60",
+      "price_numeric": 2.6
+    },
+    {
+      "name": "Lana's Fishing Rod #42",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Lillie's Poké Doll #43",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Will #44",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "N's Resolve #45",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Roxie #46",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Rosa #47",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Clay #48",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Lillie's Full Force #49",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Torkoal #50",
+      "current_value": "$13.58",
+      "price_numeric": 13.58
+    },
+    {
+      "name": "Weavile #51",
+      "current_value": "$8.64",
+      "price_numeric": 8.64
+    },
+    {
+      "name": "Piplup #52",
+      "current_value": "$74.15",
+      "price_numeric": 74.15
+    },
+    {
+      "name": "Wishiwashi #53",
+      "current_value": "$18.01",
+      "price_numeric": 18.01
+    },
+    {
+      "name": "Pikachu #54",
+      "current_value": "$121.75",
+      "price_numeric": 121.75
+    },
+    {
+      "name": "Magnemite #55",
+      "current_value": "$16.28",
+      "price_numeric": 16.28
+    },
+    {
+      "name": "Koffing #56",
+      "current_value": "$23.88",
+      "price_numeric": 23.88
+    },
+    {
+      "name": "Gallade #57",
+      "current_value": "$10.35",
+      "price_numeric": 10.35
+    },
+    {
+      "name": "Mimikyu #58",
+      "current_value": "$61.10",
+      "price_numeric": 61.1
+    },
+    {
+      "name": "Excadrill #59",
+      "current_value": "$3.58",
+      "price_numeric": 3.58
+    },
+    {
+      "name": "Steelix #60",
+      "current_value": "$22.81",
+      "price_numeric": 22.81
+    },
+    {
+      "name": "Stoutland #61",
+      "current_value": "$10.56",
+      "price_numeric": 10.56
+    },
+    {
+      "name": "Vileplume-GX #62",
+      "current_value": "$72.23",
+      "price_numeric": 72.23
+    },
+    {
+      "name": "Solgaleo & Lunala-GX #63",
+      "current_value": "$273.26",
+      "price_numeric": 273.26
+    },
+    {
+      "name": "Reshiram & Zekrom-GX #64",
+      "current_value": "$253.51",
+      "price_numeric": 253.51
+    },
+    {
+      "name": "Silvally-GX #65",
+      "current_value": "$31.00",
+      "price_numeric": 31
+    },
+    {
+      "name": "N's Resolve #66",
+      "current_value": "$57.41",
+      "price_numeric": 57.41
+    },
+    {
+      "name": "Rosa #67",
+      "current_value": "$275.00",
+      "price_numeric": 275
+    },
+    {
+      "name": "Lillie's Full Force #68",
+      "current_value": "$207.99",
+      "price_numeric": 207.99
+    },
+    {
+      "name": "Vileplume-GX #69",
+      "current_value": "$40.68",
+      "price_numeric": 40.68
+    },
+    {
+      "name": "Solgaleo & Lunala-GX #70",
+      "current_value": "$132.50",
+      "price_numeric": 132.5
+    },
+    {
+      "name": "Reshiram & Zekrom-GX #71",
+      "current_value": "$128.59",
+      "price_numeric": 128.59
+    },
+    {
+      "name": "Silvally-GX #72",
+      "current_value": "$28.49",
+      "price_numeric": 28.49
+    },
+    {
+      "name": "Lana's Fishing Rod #73",
+      "current_value": "$8.19",
+      "price_numeric": 8.19
+    },
+    {
+      "name": "Lillie's Poké Doll #74",
+      "current_value": "$34.48",
+      "price_numeric": 34.48
+    },
+    {
+      "name": "Power Plant #75",
+      "current_value": "$9.09",
+      "price_numeric": 9.09
+    }
+  ]
+}

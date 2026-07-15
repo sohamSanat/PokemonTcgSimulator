@@ -1,0 +1,392 @@
+{
+  "metadata": {
+    "set_name": "Shield",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/shield/swsh1h_ja",
+    "release_date": "2019/12/06",
+    "scraped_at": "2026-07-15T12:03:36.191545",
+    "elapsed_seconds": 20.41,
+    "total_cards_scraped": 76
+  },
+  "cards": [
+    {
+      "name": "Blipbug #1",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Dottler #2",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Orbeetle #3",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Gossifleur #4",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Eldegoss #5",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Torkoal V #6",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Scorbunny #7",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Raboot #8",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Cinderace #9",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Goldeen #10",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Seaking #11",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Qwilfish #12",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Chewtle #13",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Drednaw #14",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Snom #15",
+      "current_value": "$1.69",
+      "price_numeric": 1.69
+    },
+    {
+      "name": "Frosmoth #16",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Chinchou #17",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Lanturn #18",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Morpeko V #19",
+      "current_value": "$1.28",
+      "price_numeric": 1.28
+    },
+    {
+      "name": "Morpeko VMAX #20",
+      "current_value": "$3.09",
+      "price_numeric": 3.09
+    },
+    {
+      "name": "Galarian Ponyta #21",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Galarian Rapidash #22",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Munna #23",
+      "current_value": "$6.44",
+      "price_numeric": 6.44
+    },
+    {
+      "name": "Musharna #24",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Indeedee V #25",
+      "current_value": "$1.71",
+      "price_numeric": 1.71
+    },
+    {
+      "name": "Hitmonlee #26",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Hitmonchan #27",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Rhyhorn #28",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Rhydon #29",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Rhyperior #30",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Silicobra #31",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Sandaconda #32",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Galarian Zigzagoon #33",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Galarian Linoone #34",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Galarian Obstagoon #35",
+      "current_value": "$1.11",
+      "price_numeric": 1.11
+    },
+    {
+      "name": "Sableye V #36",
+      "current_value": "$2.45",
+      "price_numeric": 2.45
+    },
+    {
+      "name": "Skorupi #37",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Drapion #38",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Mawile #39",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Pawniard #40",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Bisharp #41",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Cufant #42",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Copperajah #43",
+      "current_value": "$1.06",
+      "price_numeric": 1.06
+    },
+    {
+      "name": "Zamazenta V #44",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Snorlax V #45",
+      "current_value": "$6.38",
+      "price_numeric": 6.38
+    },
+    {
+      "name": "Snorlax VMAX #46",
+      "current_value": "$34.17",
+      "price_numeric": 34.17
+    },
+    {
+      "name": "Hoothoot #47",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Noctowl #48",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Oranguru #49",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Wooloo #50",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Dubwool #51",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Quick Ball #52",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Rare Candy #53",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Metal Saucer #54",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Sitrus Berry #55",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Vitality Band #56",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Lucky Egg #57",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Team Yell Grunt #58",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Marnie #59",
+      "current_value": "$17.67",
+      "price_numeric": 17.67
+    },
+    {
+      "name": "Aurora Energy #60",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Torkoal V #61",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Morpeko V #62",
+      "current_value": "$12.62",
+      "price_numeric": 12.62
+    },
+    {
+      "name": "Indeedee V #63",
+      "current_value": "$2.97",
+      "price_numeric": 2.97
+    },
+    {
+      "name": "Sableye V #64",
+      "current_value": "$4.58",
+      "price_numeric": 4.58
+    },
+    {
+      "name": "Zamazenta V #65",
+      "current_value": "$8.13",
+      "price_numeric": 8.13
+    },
+    {
+      "name": "Snorlax V #66",
+      "current_value": "$14.26",
+      "price_numeric": 14.26
+    },
+    {
+      "name": "Team Yell Grunt #67",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Marnie #68",
+      "current_value": "$350.00",
+      "price_numeric": 350
+    },
+    {
+      "name": "Morpeko VMAX #69",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Snorlax VMAX #70",
+      "current_value": "$59.50",
+      "price_numeric": 59.5
+    },
+    {
+      "name": "Team Yell Grunt #71",
+      "current_value": "$5.34",
+      "price_numeric": 5.34
+    },
+    {
+      "name": "Marnie #72",
+      "current_value": "$114.80",
+      "price_numeric": 114.8
+    },
+    {
+      "name": "Zamazenta V #73",
+      "current_value": "$50.36",
+      "price_numeric": 50.36
+    },
+    {
+      "name": "Quick Ball #74",
+      "current_value": "$110.00",
+      "price_numeric": 110
+    },
+    {
+      "name": "Metal Saucer #75",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Quick Ball#74RarityウルトラレアYou can play this card only if you discard another card from your hand.",
+      "current_value": "$110.00",
+      "price_numeric": 110
+    }
+  ]
+}

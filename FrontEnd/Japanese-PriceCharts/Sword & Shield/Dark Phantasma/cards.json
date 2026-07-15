@@ -1,0 +1,492 @@
+{
+  "metadata": {
+    "set_name": "Dark Phantasma",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/dark-phantasma/swsh10a_ja",
+    "release_date": "2022/05/13",
+    "scraped_at": "2026-07-15T11:51:06.017873",
+    "elapsed_seconds": 18.98,
+    "total_cards_scraped": 96
+  },
+  "cards": [
+    {
+      "name": "Paras #1",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Parasect #2",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hisuian Electrode V #3",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Wurmple #4",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Silcoon #5",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Beautifly #6",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Cascoon #7",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Dustox #8",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Snover #9",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Abomasnow #10",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Phione #11",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hisuian Basculin #12",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Hisuian Basculegion #13",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Pikachu #14",
+      "current_value": "$5.19",
+      "price_numeric": 5.19
+    },
+    {
+      "name": "Raichu #15",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Magnezone V #16",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Magnezone VSTAR #17",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Rotom #18",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Clefairy #19",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Clefable #20",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Gastly #21",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Haunter #22",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Gengar #23",
+      "current_value": "$3.74",
+      "price_numeric": 3.74
+    },
+    {
+      "name": "Mr. Mime #24",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Misdreavus #25",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Mismagius #26",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Radiant Gardevoir #27",
+      "current_value": "$1.82",
+      "price_numeric": 1.82
+    },
+    {
+      "name": "Chimecho #28",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hisuian Zorua #29",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Hisuian Zoroark #30",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Enamorus V #31",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Hisuian Growlithe #32",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Hisuian Arcanine #33",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Machop #34",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Machoke #35",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Machamp #36",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Sudowoodo #37",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Gligar #38",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Gliscor #39",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Gallade V #40",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Zubat #41",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Golbat #42",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Crobat #43",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Murkrow #44",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Honchkrow #45",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Radiant Hisuian Sneasler #46",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Spiritomb #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Croagunk #48",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Toxicroak #49",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Radiant Steelix #50",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Bronzor #51",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Bronzong #52",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Goomy #53",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Hisuian Sliggoo #54",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Hisuian Goodra #55",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Hisuian Goodra V #56",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Hisuian Goodra VSTAR #57",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Snorlax #58",
+      "current_value": "$2.60",
+      "price_numeric": 2.6
+    },
+    {
+      "name": "Aipom #59",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Ambipom #60",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Hisuian Zoroark V #61",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Hisuian Zoroark VSTAR #62",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Arc Phone #63",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Volo #67",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Iscan #68",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Arezu #69",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Miss Fortune Sisters #70",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Lake Acuity #71",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Parasect #72",
+      "current_value": "$2.70",
+      "price_numeric": 2.7
+    },
+    {
+      "name": "Pikachu #73",
+      "current_value": "$57.10",
+      "price_numeric": 57.1
+    },
+    {
+      "name": "Gengar #74",
+      "current_value": "$40.12",
+      "price_numeric": 40.12
+    },
+    {
+      "name": "Hisuian Arcanine #75",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Spiritomb #76",
+      "current_value": "$2.68",
+      "price_numeric": 2.68
+    },
+    {
+      "name": "Snorlax #77",
+      "current_value": "$14.60",
+      "price_numeric": 14.6
+    },
+    {
+      "name": "Hisuian Electrode V #78",
+      "current_value": "$2.10",
+      "price_numeric": 2.1
+    },
+    {
+      "name": "Magnezone V #79",
+      "current_value": "$2.46",
+      "price_numeric": 2.46
+    },
+    {
+      "name": "Enamorus V #80",
+      "current_value": "$4.54",
+      "price_numeric": 4.54
+    },
+    {
+      "name": "Gallade V #81",
+      "current_value": "$2.81",
+      "price_numeric": 2.81
+    },
+    {
+      "name": "Hisuian Goodra V #82",
+      "current_value": "$4.64",
+      "price_numeric": 4.64
+    },
+    {
+      "name": "Hisuian Zoroark V #83",
+      "current_value": "$4.94",
+      "price_numeric": 4.94
+    },
+    {
+      "name": "Volo #84",
+      "current_value": "$3.59",
+      "price_numeric": 3.59
+    },
+    {
+      "name": "Iscan #85",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Arezu #86",
+      "current_value": "$6.95",
+      "price_numeric": 6.95
+    },
+    {
+      "name": "Miss Fortune Sisters #87",
+      "current_value": "$5.39",
+      "price_numeric": 5.39
+    },
+    {
+      "name": "Enamorus V #88",
+      "current_value": "$17.56",
+      "price_numeric": 17.56
+    },
+    {
+      "name": "Gallade V #89",
+      "current_value": "$13.05",
+      "price_numeric": 13.05
+    },
+    {
+      "name": "Magnezone VSTAR #90",
+      "current_value": "$5.28",
+      "price_numeric": 5.28
+    },
+    {
+      "name": "Hisuian Goodra VSTAR #91",
+      "current_value": "$10.70",
+      "price_numeric": 10.7
+    },
+    {
+      "name": "Hisuian Zoroark VSTAR #92",
+      "current_value": "$8.29",
+      "price_numeric": 8.29
+    },
+    {
+      "name": "Volo #93",
+      "current_value": "$5.77",
+      "price_numeric": 5.77
+    },
+    {
+      "name": "Iscan #94",
+      "current_value": "$3.54",
+      "price_numeric": 3.54
+    },
+    {
+      "name": "Arezu #95",
+      "current_value": "$6.02",
+      "price_numeric": 6.02
+    },
+    {
+      "name": "Miss Fortune Sisters #96",
+      "current_value": "$11.19",
+      "price_numeric": 11.19
+    },
+    {
+      "name": "Hisuian Zoroark VSTAR #97",
+      "current_value": "$10.46",
+      "price_numeric": 10.46
+    },
+    {
+      "name": "Dark Patch #98",
+      "current_value": "$7.98",
+      "price_numeric": 7.98
+    },
+    {
+      "name": "Box of Disaster #99",
+      "current_value": "$5.36",
+      "price_numeric": 5.36
+    }
+  ]
+}

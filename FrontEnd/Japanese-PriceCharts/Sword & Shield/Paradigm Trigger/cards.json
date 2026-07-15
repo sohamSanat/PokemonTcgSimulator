@@ -1,0 +1,627 @@
+{
+  "metadata": {
+    "set_name": "Paradigm Trigger",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/paradigm-trigger/swsh12_ja",
+    "release_date": "2022/10/21",
+    "scraped_at": "2026-07-15T11:49:18.002497",
+    "elapsed_seconds": 14.33,
+    "total_cards_scraped": 123
+  },
+  "cards": [
+    {
+      "name": "Oddish #1",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Gloom #2",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Bellossom #3",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Tangela #4",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Tangrowth #5",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Spinarak #6",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Ariados #7",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Virizion #8",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Chesnaught V #9",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Ponyta #10",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Rapidash #11",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Victini #12",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Larvesta #13",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Volcarona #14",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Litten #15",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Torracat #16",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Incineroar #17",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Omastar V #18",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Snorunt #19",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Glalie #20",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Froslass #21",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Relicanth #22",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Keldeo #23",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Pikachu #24",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Raichu #25",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Shinx #26",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Luxio #27",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Luxray #28",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Stunfisk #29",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Helioptile #30",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Heliolisk #31",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Zeraora #32",
+      "current_value": "$2.44",
+      "price_numeric": 2.44
+    },
+    {
+      "name": "Regieleki V #33",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Regieleki VMAX #34",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Unown V #35",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Unown VSTAR #36",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Meditite #37",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Medicham #38",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Sigilyph #39",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Solosis #40",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Duosion #41",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Reuniclus #42",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Elgyem #43",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Beheeyem #44",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Dedenne #45",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Hisuian Arcanine V #46",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Baltoy #47",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Claydol #48",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Anorith #49",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Armaldo #50",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Terrakion #51",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Pancham #52",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Rockruff #53",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Lycanroc #54",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Stonjourner #55",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Skuntank V #56",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Purrloin #57",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Liepard #58",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Pangoro #59",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Skrelp #60",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Dragalge #61",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Morpeko #62",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Galarian Meowth #63",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Galarian Perrserker #64",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Aron #65",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Lairon #66",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Aggron #67",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Cobalion #68",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Togedemaru #69",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Dratini #70",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Dragonair #71",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Dragonite #72",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Noibat #73",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Noivern #74",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Zygarde #75",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Regidrago V #76",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Regidrago VSTAR #77",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Tauros #78",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Lugia V #79",
+      "current_value": "$8.01",
+      "price_numeric": 8.01
+    },
+    {
+      "name": "Lugia VSTAR #80",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Shaymin #81",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Archen #82",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Archeops #83",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Rufflet #84",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hisuian Braviary #85",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Yungoos #86",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Gumshoos #87",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Oranguru #88",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Unidentified Fossil #90",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Earthen Seal Stone #91",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Forest Seal Stone #92",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Worker #93",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Candice #95",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Lance #96",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Primordial Altar #97",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Regenerative Energy #98",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Chesnaught V #99",
+      "current_value": "$1.54",
+      "price_numeric": 1.54
+    },
+    {
+      "name": "Omastar V #100",
+      "current_value": "$1.85",
+      "price_numeric": 1.85
+    },
+    {
+      "name": "Regieleki V #101",
+      "current_value": "$2.42",
+      "price_numeric": 2.42
+    },
+    {
+      "name": "Unown V #102",
+      "current_value": "$1.91",
+      "price_numeric": 1.91
+    },
+    {
+      "name": "Unown V #103",
+      "current_value": "$23.56",
+      "price_numeric": 23.56
+    },
+    {
+      "name": "Hisuian Arcanine V #104",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Skuntank V #105",
+      "current_value": "$2.23",
+      "price_numeric": 2.23
+    },
+    {
+      "name": "Skuntank V #106",
+      "current_value": "$9.38",
+      "price_numeric": 9.38
+    },
+    {
+      "name": "Regidrago V #107",
+      "current_value": "$2.70",
+      "price_numeric": 2.7
+    },
+    {
+      "name": "Regidrago V #108",
+      "current_value": "$25.89",
+      "price_numeric": 25.89
+    },
+    {
+      "name": "Lugia V #109",
+      "current_value": "$12.71",
+      "price_numeric": 12.71
+    },
+    {
+      "name": "Lugia V #110",
+      "current_value": "$474.99",
+      "price_numeric": 474.99
+    },
+    {
+      "name": "Worker #111",
+      "current_value": "$3.69",
+      "price_numeric": 3.69
+    },
+    {
+      "name": "Brandon #112",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Candice #113",
+      "current_value": "$9.06",
+      "price_numeric": 9.06
+    },
+    {
+      "name": "Lance #114",
+      "current_value": "$4.69",
+      "price_numeric": 4.69
+    },
+    {
+      "name": "Regieleki VMAX #115",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Unown VSTAR #116",
+      "current_value": "$8.28",
+      "price_numeric": 8.28
+    },
+    {
+      "name": "Regidrago VSTAR #117",
+      "current_value": "$9.21",
+      "price_numeric": 9.21
+    },
+    {
+      "name": "Lugia VSTAR #118",
+      "current_value": "$21.39",
+      "price_numeric": 21.39
+    },
+    {
+      "name": "Worker #119",
+      "current_value": "$3.96",
+      "price_numeric": 3.96
+    },
+    {
+      "name": "Brandon #120",
+      "current_value": "$4.14",
+      "price_numeric": 4.14
+    },
+    {
+      "name": "Candice #121",
+      "current_value": "$4.80",
+      "price_numeric": 4.8
+    },
+    {
+      "name": "Lance #122",
+      "current_value": "$4.03",
+      "price_numeric": 4.03
+    },
+    {
+      "name": "Lugia VSTAR #123",
+      "current_value": "$22.41",
+      "price_numeric": 22.41
+    },
+    {
+      "name": "Leafy Camo Poncho #124",
+      "current_value": "$3.76",
+      "price_numeric": 3.76
+    },
+    {
+      "name": "Gapejaw Bog #125",
+      "current_value": "$5.13",
+      "price_numeric": 5.13
+    }
+  ]
+}

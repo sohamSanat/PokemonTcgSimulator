@@ -1,0 +1,467 @@
+{
+  "metadata": {
+    "set_name": "Battle Region",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/battle-region/swsh9a_ja",
+    "release_date": "2022/02/25",
+    "scraped_at": "2026-07-15T11:52:53.124535",
+    "elapsed_seconds": 18.37,
+    "total_cards_scraped": 91
+  },
+  "cards": [
+    {
+      "name": "Oddish #1",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Gloom #2",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Vileplume #3",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Scyther #4",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Heracross #5",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Roselia #6",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Roserade #7",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Combee #8",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Vespiquen #9",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Virizion V #10",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Radiant Heatran #11",
+      "current_value": "$1.24",
+      "price_numeric": 1.24
+    },
+    {
+      "name": "Litwick #12",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Lampent #13",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Chandelure #14",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Litleo #15",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Pyroar #16",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Starmie V #17",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Swinub #18",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Piloswine #19",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Mamoswine #20",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Barboach #21",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Whiscash #22",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Hisuian Basculin #23",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hisuian Basculegion #24",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Keldeo #25",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Radiant Greninja #26",
+      "current_value": "$2.26",
+      "price_numeric": 2.26
+    },
+    {
+      "name": "Jynx #27",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Hisuian Typhlosion V #28",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Hisuian Typhlosion VSTAR #29",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Misdreavus #30",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Mismagius #31",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Ralts #32",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Kirlia #33",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Gallade #34",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Diancie #35",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Wyrdeer #36",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Rhyhorn #37",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Rhydon #38",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Rhyperior #39",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Relicanth #40",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Hippopotas #41",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Hippowdon #42",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Radiant Hawlucha #43",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Hisuian Decidueye V #44",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Hisuian Decidueye VSTAR #45",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Kleavor #46",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Hisuian Qwilfish #47",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Hisuian Overqwil #48",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Poochyena #49",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Mightyena #50",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Absol #51",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Hisuian Samurott V #52",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Hisuian Samurott VSTAR #53",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Garchomp V #54",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Hoothoot #55",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Noctowl #56",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Stantler #57",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Miltank #58",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Glameow #59",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Purugly #60",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Sweet Honey #62",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Canceling Cologne #63",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Cyllene #64",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Roxanne #65",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Jubilife Village #67",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Roserade #68",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Chandelure #69",
+      "current_value": "$2.64",
+      "price_numeric": 2.64
+    },
+    {
+      "name": "Wyrdeer #70",
+      "current_value": "$1.77",
+      "price_numeric": 1.77
+    },
+    {
+      "name": "Kleavor #71",
+      "current_value": "$1.76",
+      "price_numeric": 1.76
+    },
+    {
+      "name": "Mightyena #72",
+      "current_value": "$2.92",
+      "price_numeric": 2.92
+    },
+    {
+      "name": "Hoothoot #73",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Virizion V #74",
+      "current_value": "$3.38",
+      "price_numeric": 3.38
+    },
+    {
+      "name": "Starmie V #75",
+      "current_value": "$5.37",
+      "price_numeric": 5.37
+    },
+    {
+      "name": "Hisuian Typhlosion V #76",
+      "current_value": "$3.47",
+      "price_numeric": 3.47
+    },
+    {
+      "name": "Hisuian Decidueye V #77",
+      "current_value": "$3.54",
+      "price_numeric": 3.54
+    },
+    {
+      "name": "Hisuian Samurott V #78",
+      "current_value": "$2.01",
+      "price_numeric": 2.01
+    },
+    {
+      "name": "Garchomp V #79",
+      "current_value": "$7.75",
+      "price_numeric": 7.75
+    },
+    {
+      "name": "Cyllene #80",
+      "current_value": "$2.45",
+      "price_numeric": 2.45
+    },
+    {
+      "name": "Roxanne #81",
+      "current_value": "$5.06",
+      "price_numeric": 5.06
+    },
+    {
+      "name": "Kamado #82",
+      "current_value": "$1.64",
+      "price_numeric": 1.64
+    },
+    {
+      "name": "Starmie V #83",
+      "current_value": "$100.72",
+      "price_numeric": 100.72
+    },
+    {
+      "name": "Garchomp V #84",
+      "current_value": "$57.05",
+      "price_numeric": 57.05
+    },
+    {
+      "name": "Hisuian Typhlosion VSTAR #85",
+      "current_value": "$10.43",
+      "price_numeric": 10.43
+    },
+    {
+      "name": "Hisuian Decidueye VSTAR #86",
+      "current_value": "$3.84",
+      "price_numeric": 3.84
+    },
+    {
+      "name": "Hisuian Samurott VSTAR #87",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Cyllene #88",
+      "current_value": "$3.02",
+      "price_numeric": 3.02
+    },
+    {
+      "name": "Roxanne #89",
+      "current_value": "$12.25",
+      "price_numeric": 12.25
+    },
+    {
+      "name": "Kamado #90",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Hisuian Samurott VSTAR #91",
+      "current_value": "$7.61",
+      "price_numeric": 7.61
+    },
+    {
+      "name": "Choice Belt #92",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Jubilife Village #93",
+      "current_value": "$4.68",
+      "price_numeric": 4.68
+    }
+  ]
+}

@@ -1,0 +1,507 @@
+{
+  "metadata": {
+    "set_name": "Wild Force",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/wild-force/sv5k_ja",
+    "release_date": "2024/01/26",
+    "scraped_at": "2026-07-15T11:41:41.898206",
+    "elapsed_seconds": 16.6,
+    "total_cards_scraped": 99
+  },
+  "cards": [
+    {
+      "name": "Roselia #1",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Roserade #2",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Turtwig #3",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Grotle #4",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Torterra ex #5",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Shaymin #6",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Cottonee #7",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Whimsicott #8",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Heatmor #9",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Sizzlipede #10",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Centiskorch #11",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Gouging Fire ex #12",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Totodile #13",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Croconaw #14",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Feraligatr #15",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Carvanha #16",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Sharpedo #17",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Keldeo #18",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Snom #19",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Frosmoth #20",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Wiglett #21",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Finizen #22",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Palafin #23",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Walking Wake ex #24",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Wugtrio ex #25",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Marill #26",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Azumarill #27",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Bronzor #28",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Bronzong #29",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Solosis #30",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Duosion #31",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Reuniclus #32",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Flutter Mane #33",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Relicanth #34",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Golett #35",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Golurk #36",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Mudbray #37",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Mudsdale #38",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Rolycoly #39",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Carkol #40",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Coalossal #41",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Great Tusk #42",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Ekans #43",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Arbok #44",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Gastly #45",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Haunter #46",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Gengar ex #47",
+      "current_value": "$4.96",
+      "price_numeric": 4.96
+    },
+    {
+      "name": "Poochyena #48",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Mightyena #49",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Sableye #50",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Roaring Moon #51",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Koraidon #52",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Raging Bolt ex #53",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Hoothoot #54",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Noctowl #55",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Dunsparce #56",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Dudunsparce #57",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Chatot #58",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Minccino #59",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Cinccino #60",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Boxed Order #61",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Awakening Drum #62",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Buddy-Buddy Poffin #63",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Rescue Board #64",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Ancient Booster Energy Capsule #65",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Maximum Belt #66",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Explorer's Guidance #67",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Eri #68",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Morty's Conviction #69",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Perilous Jungle #70",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Neo Upper Energy #71",
+      "current_value": "$3.10",
+      "price_numeric": 3.1
+    },
+    {
+      "name": "Grotle #72",
+      "current_value": "$6.23",
+      "price_numeric": 6.23
+    },
+    {
+      "name": "Snom #73",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Bronzor #74",
+      "current_value": "$2.64",
+      "price_numeric": 2.64
+    },
+    {
+      "name": "Reuniclus #75",
+      "current_value": "$5.28",
+      "price_numeric": 5.28
+    },
+    {
+      "name": "Flutter Mane #76",
+      "current_value": "$2.21",
+      "price_numeric": 2.21
+    },
+    {
+      "name": "Relicanth #77",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Mudsdale #78",
+      "current_value": "$2.48",
+      "price_numeric": 2.48
+    },
+    {
+      "name": "Arbok #79",
+      "current_value": "$6.30",
+      "price_numeric": 6.3
+    },
+    {
+      "name": "Gastly #80",
+      "current_value": "$39.65",
+      "price_numeric": 39.65
+    },
+    {
+      "name": "Chatot #81",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Minccino #82",
+      "current_value": "$12.92",
+      "price_numeric": 12.92
+    },
+    {
+      "name": "Cinccino #83",
+      "current_value": "$17.01",
+      "price_numeric": 17.01
+    },
+    {
+      "name": "Torterra ex #84",
+      "current_value": "$2.16",
+      "price_numeric": 2.16
+    },
+    {
+      "name": "Gouging Fire ex #85",
+      "current_value": "$1.73",
+      "price_numeric": 1.73
+    },
+    {
+      "name": "Walking Wake ex #86",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Wugtrio ex #87",
+      "current_value": "$1.52",
+      "price_numeric": 1.52
+    },
+    {
+      "name": "Gengar ex #88",
+      "current_value": "$35.10",
+      "price_numeric": 35.1
+    },
+    {
+      "name": "Raging Bolt ex #89",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Explorer's Guidance #90",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Eri #91",
+      "current_value": "$1.63",
+      "price_numeric": 1.63
+    },
+    {
+      "name": "Morty's Conviction #92",
+      "current_value": "$1.72",
+      "price_numeric": 1.72
+    },
+    {
+      "name": "Gouging Fire ex #93",
+      "current_value": "$31.41",
+      "price_numeric": 31.41
+    },
+    {
+      "name": "Walking Wake ex #94",
+      "current_value": "$34.56",
+      "price_numeric": 34.56
+    },
+    {
+      "name": "Raging Bolt ex #95",
+      "current_value": "$48.02",
+      "price_numeric": 48.02
+    },
+    {
+      "name": "Eri #96",
+      "current_value": "$13.84",
+      "price_numeric": 13.84
+    },
+    {
+      "name": "Gouging Fire ex #98",
+      "current_value": "$6.71",
+      "price_numeric": 6.71
+    },
+    {
+      "name": "Walking Wake ex #99",
+      "current_value": "$6.29",
+      "price_numeric": 6.29
+    },
+    {
+      "name": "Raging Bolt ex #100",
+      "current_value": "$9.26",
+      "price_numeric": 9.26
+    }
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "metadata": {
+    "set_name": "GG End",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/gg-end/sm10a_ja",
+    "release_date": "2019/04/05",
+    "scraped_at": "2026-07-15T12:11:47.370118",
+    "elapsed_seconds": 20.28,
+    "total_cards_scraped": 66
+  },
+  "cards": [
+    {
+      "name": "Karrablast #1",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Magmar #2",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Magmortar #3",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Heatran-GX #4",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Litwick #5",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Lampent #6",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Chandelure #7",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Raichu & Alolan Raichu-GX #8",
+      "current_value": "$18.85",
+      "price_numeric": 18.85
+    },
+    {
+      "name": "Pikachu #9",
+      "current_value": "$12.72",
+      "price_numeric": 12.72
+    },
+    {
+      "name": "Alolan Raichu #10",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Stunfisk #11",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Thundurus #12",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Alolan Marowak #13",
+      "current_value": "$1.02",
+      "price_numeric": 1.02
+    },
+    {
+      "name": "Drifloon #14",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Drifblim #15",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Giratina #16",
+      "current_value": "$2.76",
+      "price_numeric": 2.76
+    },
+    {
+      "name": "Munna #17",
+      "current_value": "$3.46",
+      "price_numeric": 3.46
+    },
+    {
+      "name": "Musharna #18",
+      "current_value": "$0.71",
+      "price_numeric": 0.71
+    },
+    {
+      "name": "Cubone #19",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Meditite #20",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Medicham #21",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Gible #22",
+      "current_value": "$4.09",
+      "price_numeric": 4.09
+    },
+    {
+      "name": "Gabite #23",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Garchomp #24",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Riolu #25",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Lucario #26",
+      "current_value": "$1.37",
+      "price_numeric": 1.37
+    },
+    {
+      "name": "Meloetta #27",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Zygarde #28",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Hoopa #29",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Mawile-GX #30",
+      "current_value": "$1.35",
+      "price_numeric": 1.35
+    },
+    {
+      "name": "Escavalier #31",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Garchomp & Giratina-GX #32",
+      "current_value": "$15.03",
+      "price_numeric": 15.03
+    },
+    {
+      "name": "Latias #33",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Axew #34",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Fraxure #35",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Haxorus #36",
+      "current_value": "$1.62",
+      "price_numeric": 1.62
+    },
+    {
+      "name": "Kangaskhan #37",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Bidoof #38",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Bibarel #39",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Munchlax #40",
+      "current_value": "$5.52",
+      "price_numeric": 5.52
+    },
+    {
+      "name": "Pidove #41",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Tranquill #42",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Unfezant #43",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Tornadus #44",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Reset Stamp #46",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Karate Belt #47",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Grimsley #48",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Coach Trainer #49",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Escape Rope #51",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Nest Ball #52",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Rotom Dex #53",
+      "current_value": "$2.92",
+      "price_numeric": 2.92
+    },
+    {
+      "name": "Tate & Liza #54",
+      "current_value": "$6.73",
+      "price_numeric": 6.73
+    },
+    {
+      "name": "Heatran-GX #55",
+      "current_value": "$3.30",
+      "price_numeric": 3.3
+    },
+    {
+      "name": "Raichu & Alolan Raichu-GX #56",
+      "current_value": "$40.43",
+      "price_numeric": 40.43
+    },
+    {
+      "name": "Raichu & Alolan Raichu-GX #57",
+      "current_value": "$224.99",
+      "price_numeric": 224.99
+    },
+    {
+      "name": "Mawile-GX #58",
+      "current_value": "$10.41",
+      "price_numeric": 10.41
+    },
+    {
+      "name": "Garchomp & Giratina-GX #59",
+      "current_value": "$41.25",
+      "price_numeric": 41.25
+    },
+    {
+      "name": "Garchomp & Giratina-GX #60",
+      "current_value": "$164.00",
+      "price_numeric": 164
+    },
+    {
+      "name": "Grimsley #61",
+      "current_value": "$12.55",
+      "price_numeric": 12.55
+    },
+    {
+      "name": "Coach Trainer #62",
+      "current_value": "$9.76",
+      "price_numeric": 9.76
+    },
+    {
+      "name": "Heatran-GX #63",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Raichu & Alolan Raichu-GX #64",
+      "current_value": "$62.27",
+      "price_numeric": 62.27
+    },
+    {
+      "name": "Mawile-GX #65",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Tag Switch #67",
+      "current_value": "$5.20",
+      "price_numeric": 5.2
+    },
+    {
+      "name": "Reset Stamp #68",
+      "current_value": "$5.25",
+      "price_numeric": 5.25
+    },
+    {
+      "name": "Karate Belt #69",
+      "current_value": "$2.87",
+      "price_numeric": 2.87
+    }
+  ]
+}

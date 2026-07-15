@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { Card } from './types';
 import { getTCGDexValidAssetPath, getCardImageUrl, handleCardImageError, type PokemonCard } from '../../services/tcgdex';
 import { extractMajorityColor, getFallbackColor, type ExtractedColor } from '../../services/colorExtractor';
+import CodedSlab from './CodedSlab';
 
 interface CardInput {
   id?: string | number;
@@ -190,12 +191,25 @@ export const InteractiveCard3D: React.FC<Props> = ({
         <div className="pkmn-card__translater w-full h-full" data-type={cardType}>
           <div className="pkmn-card__rotator w-full h-full relative cursor-pointer">
             {/* Card Back */}
-            <img
-              className="pkmn-card__back w-full h-full object-contain absolute inset-0 rounded-[var(--card-radius)]"
-              src={isSlabbed ? '/slab.svg?v=clean3' : 'https://images.pokemontcg.io/cardback.png'}
-              alt="Card Back"
-              loading="lazy"
-            />
+            {isSlabbed ? (
+              <div className="pkmn-card__back w-full h-full absolute inset-0 rounded-[10px] sm:rounded-[12px] bg-[#06080e] overflow-hidden select-none">
+                <CodedSlab variant="back">
+                  <img
+                    className="w-full h-full object-contain block"
+                    src="https://images.pokemontcg.io/cardback.png"
+                    alt="Card Back"
+                    loading="lazy"
+                  />
+                </CodedSlab>
+              </div>
+            ) : (
+              <img
+                className="pkmn-card__back w-full h-full object-contain absolute inset-0 rounded-[var(--card-radius)]"
+                src="https://images.pokemontcg.io/cardback.png"
+                alt="Card Back"
+                loading="lazy"
+              />
+            )}
 
             {/* Card Front - Clean artwork or Graded Slab Encasement */}
             <div
@@ -210,12 +224,8 @@ export const InteractiveCard3D: React.FC<Props> = ({
                    🛡️ RAW PROTECTIVE SLAB ENCASEMENT (GRADE: N/A) 🛡️
                    ========================================================= */
                 <div className="w-full h-full relative flex items-center justify-center bg-[#06080e] rounded-[10px] overflow-hidden select-none">
-                  {/* 1. Crystal Acrylic Slab Frame */}
-                  <img
-                    src="/slab.svg?v=clean3"
-                    alt="Protective Slab Case"
-                    className="w-full h-full object-contain absolute inset-0 z-10 block pointer-events-none"
-                  />
+                  {/* 1. Crystal Acrylic Slab Frame (Coded Asset - zero blur) */}
+                  <CodedSlab variant="front" />
 
                   {/* Protective Slab Top Label Bar (Exactly fitted to acrylic recess slot: x=18, y=16, w=364, h=56) */}
                   <div

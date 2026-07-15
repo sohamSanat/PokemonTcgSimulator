@@ -1,0 +1,407 @@
+{
+  "metadata": {
+    "set_name": "Remix Bout",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/remix-bout/sm11a_ja",
+    "release_date": "2019/07/05",
+    "scraped_at": "2026-07-15T12:09:28.810486",
+    "elapsed_seconds": 18.84,
+    "total_cards_scraped": 79
+  },
+  "cards": [
+    {
+      "name": "Venusaur & Snivy-GX #1",
+      "current_value": "$10.07",
+      "price_numeric": 10.07
+    },
+    {
+      "name": "Tangela #2",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Tangrowth #3",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Heracross #4",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Tropius #5",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Deerling #6",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Sawsbuck #7",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Charizard & Braixen-GX #8",
+      "current_value": "$17.92",
+      "price_numeric": 17.92
+    },
+    {
+      "name": "Ponyta #9",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Rapidash #10",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Entei #11",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Victini #12",
+      "current_value": "$0.96",
+      "price_numeric": 0.96
+    },
+    {
+      "name": "Tepig #13",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Pignite #14",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Emboar #15",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Blastoise & Piplup-GX #16",
+      "current_value": "$29.10",
+      "price_numeric": 29.1
+    },
+    {
+      "name": "Psyduck #17",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Golduck #18",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Wailmer #19",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Wailord #20",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Kyogre #21",
+      "current_value": "$0.54",
+      "price_numeric": 0.54
+    },
+    {
+      "name": "Phione #22",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Duskull #23",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Dusclops #24",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Dusknoir #25",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Rotom #26",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Phantump #27",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Trevenant #28",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Dhelmise #29",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Marshadow #30",
+      "current_value": "$6.75",
+      "price_numeric": 6.75
+    },
+    {
+      "name": "Blacephalon #31",
+      "current_value": "$1.31",
+      "price_numeric": 1.31
+    },
+    {
+      "name": "Groudon #32",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Throh #33",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Pancham #34",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Pangoro #35",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Crabrawler #36",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Crabominable #37",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Passimian #38",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Alolan Meowth #39",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Alolan Persian-GX #40",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Alolan Grimer #41",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Alolan Muk #42",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Absol #43",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Pawniard #44",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Bisharp #45",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Guzzlord #46",
+      "current_value": "$0.81",
+      "price_numeric": 0.81
+    },
+    {
+      "name": "Zangoose #47",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Stufful #48",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Bewear #49",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Energy Retrieval #50",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Energy Switch #51",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Great Catcher #52",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Switch #53",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Pokémon Communication #54",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Janine #55",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Professor Oak's Setup #56",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Judge #57",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Roller Skater #58",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Weakness Guard Energy #59",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Draw Energy #60",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Acro Bike #61",
+      "current_value": "$1.39",
+      "price_numeric": 1.39
+    },
+    {
+      "name": "Escape Board #62",
+      "current_value": "$4.20",
+      "price_numeric": 4.2
+    },
+    {
+      "name": "Lady #63",
+      "current_value": "$3.52",
+      "price_numeric": 3.52
+    },
+    {
+      "name": "Welder #64",
+      "current_value": "$4.22",
+      "price_numeric": 4.22
+    },
+    {
+      "name": "Venusaur & Snivy-GX #65",
+      "current_value": "$28.09",
+      "price_numeric": 28.09
+    },
+    {
+      "name": "Venusaur & Snivy-GX #66",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Charizard & Braixen-GX #67",
+      "current_value": "$48.74",
+      "price_numeric": 48.74
+    },
+    {
+      "name": "Charizard & Braixen-GX #68",
+      "current_value": "$85.27",
+      "price_numeric": 85.27
+    },
+    {
+      "name": "Blastoise & Piplup-GX #69",
+      "current_value": "$32.95",
+      "price_numeric": 32.95
+    },
+    {
+      "name": "Alolan Persian-GX #71",
+      "current_value": "$3.21",
+      "price_numeric": 3.21
+    },
+    {
+      "name": "Professor Oak's Setup #72",
+      "current_value": "$29.82",
+      "price_numeric": 29.82
+    },
+    {
+      "name": "Roller Skater #73",
+      "current_value": "$13.50",
+      "price_numeric": 13.5
+    },
+    {
+      "name": "Venusaur & Snivy-GX #74",
+      "current_value": "$33.32",
+      "price_numeric": 33.32
+    },
+    {
+      "name": "Charizard & Braixen-GX #75",
+      "current_value": "$61.65",
+      "price_numeric": 61.65
+    },
+    {
+      "name": "Blastoise & Piplup-GX #76",
+      "current_value": "$74.50",
+      "price_numeric": 74.5
+    },
+    {
+      "name": "Alolan Persian-GX #77",
+      "current_value": "$10.67",
+      "price_numeric": 10.67
+    },
+    {
+      "name": "Great Catcher #78",
+      "current_value": "$5.91",
+      "price_numeric": 5.91
+    },
+    {
+      "name": "Martial Arts Dojo #79",
+      "current_value": "$10.58",
+      "price_numeric": 10.58
+    },
+    {
+      "name": "Draw Energy #80",
+      "current_value": "$6.36",
+      "price_numeric": 6.36
+    }
+  ]
+}

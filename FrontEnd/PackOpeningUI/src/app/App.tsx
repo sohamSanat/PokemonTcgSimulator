@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet } from './services/scrydex';
+import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -18,6 +18,7 @@ import PSAGradingLab from './components/psa/PSAGradingLab';
 import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
+import CardShowView from './components/cardShow/CardShowView';
 import { updateMatchPack } from './services/matchmaking';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
@@ -321,6 +322,15 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
 };
 
 const getRealCardPrice = (poke: PokemonCard): number => {
+  if (poke.id) {
+    const rawSet = poke.id.split('-')[0] || '';
+    const localNum = poke.localId || poke.id.split('-')[1] || '';
+    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
+    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+      return Number(jaRealPrice.toFixed(2));
+    }
+  }
+
   // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
   // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
   // and the error fallback would overwrite the correct Scrydex CDN image URL.
@@ -1296,7 +1306,7 @@ export default function App() {
   }, [currentSet]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
-  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena'>('pack');
+  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow'>('pack');
   const [matchId, setMatchId] = useState<string>('');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<string | number>>(new Set());
   const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
@@ -1329,9 +1339,8 @@ export default function App() {
   const [tearProgress, setTearProgress] = useState<number>(0);
 
   useEffect(() => {
-    // Instant asset preloading right on website load for zero-latency sleeving & slabbing
+    // Instant asset preloading right on website load for zero-latency sleeving
     const pSleeve = new Image(); pSleeve.src = '/sleeve.png';
-    const pSlab = new Image(); pSlab.src = '/slab.svg?v=clean3';
 
     fetch('/packArts/manifest.json?v=3')
       .then(res => res.ok ? res.json() : {})
@@ -1914,6 +1923,18 @@ export default function App() {
               <span>Versus</span>
             </button>
 
+            {/* Card Show Tab */}
+            <button
+              onClick={() => { sound.playTabSwitch(); setActiveTab('cardShow'); setIsMobileMenuOpen(false); }}
+              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(45,212,191,0.2)] ${activeTab === 'cardShow'
+                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
+                : 'text-gray-400 hover:text-teal-100 hover:bg-white/5'
+              }`}
+            >
+              <Package className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-teal-400 ${activeTab === 'cardShow' ? 'text-teal-400' : ''}`} />
+              <span>Card Show</span>
+            </button>
+
             {/* Vault Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setIsBulkModalOpen(true); setIsMobileMenuOpen(false); }}
@@ -2074,6 +2095,44 @@ export default function App() {
                   })}
                 </AnimatePresence>
               );
+            }}
+          />
+        </div>
+      ) : activeTab === 'cardShow' ? (
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
+          <CardShowView
+            onBackToPacks={() => setActiveTab('pack')}
+            onInspectCard={(binderCard) => {
+              sound.playModalOpen();
+              setInspectedViewMode('art');
+              const cardData: any = {
+                id: binderCard.id,
+                originalIndex: 0,
+                flipped: false,
+                collected: true,
+                value: binderCard.currentPrice || 0,
+                isSlabbed: binderCard.isSlabbed || false,
+                slabGrade: binderCard.slabGrade || 'N/A',
+                binderId: 'my-collection',
+                pokemon: {
+                  id: binderCard.id,
+                  name: binderCard.name || 'Pokemon Card',
+                  rarity: 'Special',
+                  isReverseHolo: false,
+                  illustrator: 'Expo Circuit',
+                  isSlabbed: binderCard.isSlabbed || false,
+                  slabGrade: binderCard.slabGrade || 'N/A',
+                  images: {
+                    small: binderCard.imageUrl || '',
+                    large: binderCard.imageUrl || '',
+                  },
+                  pricing: {
+                    tcgplayer: {},
+                    cardmarket: {}
+                  }
+                }
+              };
+              setInspectedCard(cardData);
             }}
           />
         </div>

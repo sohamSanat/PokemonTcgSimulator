@@ -1,0 +1,422 @@
+{
+  "metadata": {
+    "set_name": "VMAX Rising",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/vmax-rising/swsh1a_ja",
+    "release_date": "2020/02/07",
+    "scraped_at": "2026-07-15T12:03:08.542027",
+    "elapsed_seconds": 18.29,
+    "total_cards_scraped": 82
+  },
+  "cards": [
+    {
+      "name": "Caterpie #1",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Metapod #2",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Butterfree #3",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Shuckle #4",
+      "current_value": "$9.39",
+      "price_numeric": 9.39
+    },
+    {
+      "name": "Snover #5",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Abomasnow #6",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Grubbin #7",
+      "current_value": "$0.89",
+      "price_numeric": 0.89
+    },
+    {
+      "name": "Rillaboom V #8",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Rillaboom VMAX #9",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Applin #10",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Appletun #11",
+      "current_value": "$1.42",
+      "price_numeric": 1.42
+    },
+    {
+      "name": "Vulpix #12",
+      "current_value": "$2.47",
+      "price_numeric": 2.47
+    },
+    {
+      "name": "Ninetales #13",
+      "current_value": "$8.37",
+      "price_numeric": 8.37
+    },
+    {
+      "name": "Growlithe #14",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Arcanine #15",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Cinderace V #16",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Cinderace VMAX #17",
+      "current_value": "$2.63",
+      "price_numeric": 2.63
+    },
+    {
+      "name": "Galarian Mr. Mime #18",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Galarian Mr. Rime #19",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Magikarp #20",
+      "current_value": "$10.59",
+      "price_numeric": 10.59
+    },
+    {
+      "name": "Gyarados #21",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Inteleon V #22",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Inteleon VMAX #23",
+      "current_value": "$2.09",
+      "price_numeric": 2.09
+    },
+    {
+      "name": "Cramorant #24",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Arrokuda #25",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Barraskewda #26",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Helioptile #27",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Heliolisk #28",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Charjabug #29",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Vikavolt #30",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Boltund V #31",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Toxel #32",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Toxtricity #33",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Natu #34",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Xatu #35",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Galarian Corsola #36",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Galarian Cursola #37",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Indeedee #38",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Dreepy #39",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Drakloak #40",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Dragapult #41",
+      "current_value": "$2.03",
+      "price_numeric": 2.03
+    },
+    {
+      "name": "Galarian Farfetch'd #42",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Galarian Sirfetch'd #43",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Binacle #44",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Barbaracle #45",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Sandaconda V #46",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Falinks #47",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Stunky #48",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Skuntank #49",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Impidimp #50",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Morgrem #51",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Grimmsnarl #52",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Bronzor #53",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Bronzong #54",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Honedge #55",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Doublade #56",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Aegislash #57",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Duraludon #58",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Bunnelby #59",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Diggersby #60",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Hawlucha #61",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Dubwool V #62",
+      "current_value": "$1.67",
+      "price_numeric": 1.67
+    },
+    {
+      "name": "Capacious Bucket #63",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Burning Scarf #64",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Sonia #65",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Milo #67",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Turffield Stadium #68",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Training Court #69",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Twin Energy #70",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Rillaboom V #71",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Cinderace V #72",
+      "current_value": "$4.38",
+      "price_numeric": 4.38
+    },
+    {
+      "name": "Inteleon V #73",
+      "current_value": "$6.98",
+      "price_numeric": 6.98
+    },
+    {
+      "name": "Boltund V #74",
+      "current_value": "$4.36",
+      "price_numeric": 4.36
+    },
+    {
+      "name": "Sandaconda V #75",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Dubwool V #76",
+      "current_value": "$5.75",
+      "price_numeric": 5.75
+    },
+    {
+      "name": "Milo #78",
+      "current_value": "$4.97",
+      "price_numeric": 4.97
+    },
+    {
+      "name": "Rillaboom VMAX #79",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Cinderace VMAX #80",
+      "current_value": "$12.87",
+      "price_numeric": 12.87
+    },
+    {
+      "name": "Inteleon VMAX #81",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Milo #83",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Frosmoth #84",
+      "current_value": "$11.66",
+      "price_numeric": 11.66
+    },
+    {
+      "name": "Big Charm #85",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    }
+  ]
+}

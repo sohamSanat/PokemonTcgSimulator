@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "set_name": "Ultra Moon",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/ultra-moon/sm5m_ja",
+    "release_date": "2017/12/08",
+    "scraped_at": "2026-07-15T12:20:02.232260",
+    "elapsed_seconds": 24.19,
+    "total_cards_scraped": 46
+  },
+  "cards": [
+    {
+      "name": "Alolan Sandslash #2",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Piplup #3",
+      "current_value": "$5.44",
+      "price_numeric": 5.44
+    },
+    {
+      "name": "Piplup #4",
+      "current_value": "$4.08",
+      "price_numeric": 4.08
+    },
+    {
+      "name": "Prinplup #5",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Empoleon #6",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Buizel #7",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Floatzel #8",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Glaceon-GX #11",
+      "current_value": "$8.12",
+      "price_numeric": 8.12
+    },
+    {
+      "name": "Wash Rotom #12",
+      "current_value": "$3.59",
+      "price_numeric": 3.59
+    },
+    {
+      "name": "Frost Rotom #13",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Manaphy #14",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Electabuzz #15",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Shinx #17",
+      "current_value": "$4.49",
+      "price_numeric": 4.49
+    },
+    {
+      "name": "Shinx #18",
+      "current_value": "$3.84",
+      "price_numeric": 3.84
+    },
+    {
+      "name": "Luxray #20",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Pachirisu #21",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Rotom #22",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Drifloon #23",
+      "current_value": "$9.28",
+      "price_numeric": 9.28
+    },
+    {
+      "name": "Spiritomb #25",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Giratina ◇ #30",
+      "current_value": "$8.37",
+      "price_numeric": 8.37
+    },
+    {
+      "name": "Cresselia #31",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Lunala ◇ #32",
+      "current_value": "$4.98",
+      "price_numeric": 4.98
+    },
+    {
+      "name": "Dawn Wings Necrozma-GX #33",
+      "current_value": "$3.29",
+      "price_numeric": 3.29
+    },
+    {
+      "name": "Cranidos #34",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Rampardos #35",
+      "current_value": "$2.94",
+      "price_numeric": 2.94
+    },
+    {
+      "name": "Riolu #36",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Lucario #37",
+      "current_value": "$2.25",
+      "price_numeric": 2.25
+    },
+    {
+      "name": "Hippopotas #38",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Passimian #40",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Gible #41",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Gible #42",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Gabite #43",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Garchomp #44",
+      "current_value": "$2.44",
+      "price_numeric": 2.44
+    },
+    {
+      "name": "Palkia-GX #45",
+      "current_value": "$4.19",
+      "price_numeric": 4.19
+    },
+    {
+      "name": "Eevee #46",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Buneary #47",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Lopunny #48",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Shaymin #49",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Drampa #52",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Cynthia #61",
+      "current_value": "$8.08",
+      "price_numeric": 8.08
+    },
+    {
+      "name": "Super Boost Energy ◇ #65",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Glaceon-GX #67",
+      "current_value": "$31.99",
+      "price_numeric": 31.99
+    },
+    {
+      "name": "Dawn Wings Necrozma-GX #68",
+      "current_value": "$11.03",
+      "price_numeric": 11.03
+    },
+    {
+      "name": "Palkia-GX #69",
+      "current_value": "$22.40",
+      "price_numeric": 22.4
+    },
+    {
+      "name": "Looker #72",
+      "current_value": "$15.99",
+      "price_numeric": 15.99
+    },
+    {
+      "name": "Escape Board #77",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    }
+  ]
+}

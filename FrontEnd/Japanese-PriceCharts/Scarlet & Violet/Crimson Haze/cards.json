@@ -1,0 +1,492 @@
+{
+  "metadata": {
+    "set_name": "Crimson Haze",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/crimson-haze/sv5a_ja",
+    "release_date": "2024/03/22",
+    "scraped_at": "2026-07-15T11:40:41.540674",
+    "elapsed_seconds": 17.86,
+    "total_cards_scraped": 96
+  },
+  "cards": [
+    {
+      "name": "Tangela #1",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Tangrowth #2",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Pinsir #3",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Spinarak #4",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Ariados #5",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Leafeon #6",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Iron Leaves #7",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Poltchageist #8",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Sinistcha ex #9",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Vulpix #10",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Ninetales #11",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Slugma #12",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Magcargo ex #13",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Torkoal #14",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Chimchar #15",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Monferno #16",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Infernape #17",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Chi-Yu #18",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Corphish #19",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Crawdaunt #20",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Glaceon #21",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Phione #22",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Froakie #23",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Frogadier #24",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Cramorant #25",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Walking Wake #26",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Zapdos #27",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Helioptile #28",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Heliolisk #29",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Morpeko #30",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Tadbulb #31",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Bellibolt #32",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Iron Thorns ex #33",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Girafarig #34",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Farigiraf #35",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Flabébé #36",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Floette #37",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Florges #38",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Enamorus #39",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Scream Tail ex #40",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Hisuian Growlithe #41",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Hisuian Arcanine #42",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Nosepass #43",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Probopass #44",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Greninja ex #45",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Hawlucha #46",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Ting-Lu #47",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Applin #48",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Dipplin #49",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Eevee #50",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Snorlax #51",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Bloodmoon Ursaluna ex #52",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Unfair Stamp #53",
+      "current_value": "$5.03",
+      "price_numeric": 5.03
+    },
+    {
+      "name": "Enhanced Hammer #54",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hyper Aroma #55",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Switch #56",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Pokémon Catcher #57",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Love Ball #58",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Survival Brace #59",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Lucky Helmet #60",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Caretaker #61",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Lucian #62",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Perrin #63",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Lana's Aid #64",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Community Center #65",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Boomerang Energy #66",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Pinsir #67",
+      "current_value": "$5.14",
+      "price_numeric": 5.14
+    },
+    {
+      "name": "Poltchageist #68",
+      "current_value": "$2.23",
+      "price_numeric": 2.23
+    },
+    {
+      "name": "Torkoal #69",
+      "current_value": "$2.48",
+      "price_numeric": 2.48
+    },
+    {
+      "name": "Infernape #70",
+      "current_value": "$4.62",
+      "price_numeric": 4.62
+    },
+    {
+      "name": "Phione #71",
+      "current_value": "$5.77",
+      "price_numeric": 5.77
+    },
+    {
+      "name": "Cramorant #72",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Heliolisk #73",
+      "current_value": "$1.93",
+      "price_numeric": 1.93
+    },
+    {
+      "name": "Enamorus #74",
+      "current_value": "$2.28",
+      "price_numeric": 2.28
+    },
+    {
+      "name": "Hisuian Growlithe #75",
+      "current_value": "$12.91",
+      "price_numeric": 12.91
+    },
+    {
+      "name": "Probopass #76",
+      "current_value": "$1.87",
+      "price_numeric": 1.87
+    },
+    {
+      "name": "Applin #77",
+      "current_value": "$4.89",
+      "price_numeric": 4.89
+    },
+    {
+      "name": "Eevee #78",
+      "current_value": "$44.74",
+      "price_numeric": 44.74
+    },
+    {
+      "name": "Sinistcha ex #79",
+      "current_value": "$1.22",
+      "price_numeric": 1.22
+    },
+    {
+      "name": "Magcargo ex #80",
+      "current_value": "$1.24",
+      "price_numeric": 1.24
+    },
+    {
+      "name": "Iron Thorns ex #81",
+      "current_value": "$1.96",
+      "price_numeric": 1.96
+    },
+    {
+      "name": "Scream Tail ex #82",
+      "current_value": "$1.58",
+      "price_numeric": 1.58
+    },
+    {
+      "name": "Greninja ex #83",
+      "current_value": "$7.79",
+      "price_numeric": 7.79
+    },
+    {
+      "name": "Bloodmoon Ursaluna ex #84",
+      "current_value": "$1.27",
+      "price_numeric": 1.27
+    },
+    {
+      "name": "Caretaker #85",
+      "current_value": "$0.97",
+      "price_numeric": 0.97
+    },
+    {
+      "name": "Lucian #86",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Perrin #87",
+      "current_value": "$5.44",
+      "price_numeric": 5.44
+    },
+    {
+      "name": "Lana's Aid #88",
+      "current_value": "$3.90",
+      "price_numeric": 3.9
+    },
+    {
+      "name": "Sinistcha ex #89",
+      "current_value": "$19.91",
+      "price_numeric": 19.91
+    },
+    {
+      "name": "Greninja ex #90",
+      "current_value": "$213.61",
+      "price_numeric": 213.61
+    },
+    {
+      "name": "Bloodmoon Ursaluna ex #91",
+      "current_value": "$34.52",
+      "price_numeric": 34.52
+    },
+    {
+      "name": "Perrin #92",
+      "current_value": "$110.06",
+      "price_numeric": 110.06
+    },
+    {
+      "name": "Lana's Aid #93",
+      "current_value": "$23.87",
+      "price_numeric": 23.87
+    },
+    {
+      "name": "Bloodmoon Ursaluna ex #94",
+      "current_value": "$5.98",
+      "price_numeric": 5.98
+    },
+    {
+      "name": "Rescue Board #95",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Luminous Energy #96",
+      "current_value": "$5.59",
+      "price_numeric": 5.59
+    }
+  ]
+}

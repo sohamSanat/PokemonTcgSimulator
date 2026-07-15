@@ -1,0 +1,467 @@
+{
+  "metadata": {
+    "set_name": "Rapid Strike Master",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/rapid-strike-master/swsh5r_ja",
+    "release_date": "2021/01/22",
+    "scraped_at": "2026-07-15T11:59:07.863059",
+    "elapsed_seconds": 18.1,
+    "total_cards_scraped": 91
+  },
+  "cards": [
+    {
+      "name": "Bellsprout #1",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Weepinbell #2",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Victreebell #3",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Kricketune V #4",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Cherubi #5",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Cherrim #6",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Carnivine #7",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Fomantis #8",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Lurantis #9",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Tapu Bulu #10",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Blipbug #11",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Victini V #12",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Victini VMAX #13",
+      "current_value": "$2.38",
+      "price_numeric": 2.38
+    },
+    {
+      "name": "Heatmor #14",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Sizzlipede #15",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Centiskorch #16",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Horsea #17",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Seadra #18",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Kingdra #19",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Galarian Mr. Mime #20",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Galarian Mr. Rime #21",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Remoraid #22",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Octillery #23",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Corphish #24",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Crawdaunt #25",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Empoleon V #26",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Frillish #27",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Jellicent #28",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Bruxish #29",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Shinx #30",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Luxio #31",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Luxray #32",
+      "current_value": "$0.43",
+      "price_numeric": 0.43
+    },
+    {
+      "name": "Pachirisu #33",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Baltoy #34",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Claydol #35",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Necrozma V #36",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Dottler #37",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Orbeetle #38",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Onix #39",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Cubone #40",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Marowak #41",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Timburr #42",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Gurdurr #43",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Conkeldurr #44",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Mienfoo #45",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Mienshao #46",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Silicobra #47",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Sandaconda #48",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Falinks #49",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Rapid Strike Urshifu V #50",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Rapid Strike Urshifu VMAX #51",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Steelix #52",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Pawniard #53",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Bisharp #54",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Corviknight V #55",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Corviknight VMAX #56",
+      "current_value": "$1.30",
+      "price_numeric": 1.3
+    },
+    {
+      "name": "Glameow #57",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Purugly #58",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Bouffalant #59",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Indeedee #60",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Fan of Waves #61",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Energy Recycler #62",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Level Ball #63",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Tool Jammer #64",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Rapid Strike Scroll of Swirls #65",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Korrina's Focus #66",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Rapid Strike Style Mustard #67",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Cheryl #68",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Tower of Waters #69",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Rapid Strike Energy #70",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Kricketune V #71",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Victini V #72",
+      "current_value": "$10.83",
+      "price_numeric": 10.83
+    },
+    {
+      "name": "Empoleon V #73",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Empoleon V #74",
+      "current_value": "$75.90",
+      "price_numeric": 75.9
+    },
+    {
+      "name": "Necrozma V #75",
+      "current_value": "$4.70",
+      "price_numeric": 4.7
+    },
+    {
+      "name": "Rapid Strike Urshifu V #76",
+      "current_value": "$7.69",
+      "price_numeric": 7.69
+    },
+    {
+      "name": "Rapid Strike Urshifu V #77",
+      "current_value": "$26.21",
+      "price_numeric": 26.21
+    },
+    {
+      "name": "Corviknight V #78",
+      "current_value": "$6.28",
+      "price_numeric": 6.28
+    },
+    {
+      "name": "Korrina's Focus #79",
+      "current_value": "$12.50",
+      "price_numeric": 12.5
+    },
+    {
+      "name": "Rapid Strike Style Mustard #80",
+      "current_value": "$3.37",
+      "price_numeric": 3.37
+    },
+    {
+      "name": "Cheryl #81",
+      "current_value": "$46.21",
+      "price_numeric": 46.21
+    },
+    {
+      "name": "Victini VMAX #82",
+      "current_value": "$16.00",
+      "price_numeric": 16
+    },
+    {
+      "name": "Rapid Strike Urshifu VMAX #83",
+      "current_value": "$16.85",
+      "price_numeric": 16.85
+    },
+    {
+      "name": "Corviknight VMAX #85",
+      "current_value": "$20.48",
+      "price_numeric": 20.48
+    },
+    {
+      "name": "Rapid Strike Style Mustard #87",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Cheryl #88",
+      "current_value": "$21.95",
+      "price_numeric": 21.95
+    },
+    {
+      "name": "Octillery #89",
+      "current_value": "$7.42",
+      "price_numeric": 7.42
+    },
+    {
+      "name": "Level Ball #90",
+      "current_value": "$15.04",
+      "price_numeric": 15.04
+    },
+    {
+      "name": "Rapid Strike Energy #91",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Rapid Strike Style Mustard#87RarityハイパーレアYou can play this card only when it is the last card in your hand.",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Rapid Strike Energy#91RarityウルトラレアThis card can only be attached to a Rapid Strike Pokémon. If this card is attached to anything other than a Rapid Strike Pokémon, discard this card.",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    }
+  ]
+}

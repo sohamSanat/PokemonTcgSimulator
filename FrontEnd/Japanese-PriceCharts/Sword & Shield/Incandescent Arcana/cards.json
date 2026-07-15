@@ -1,0 +1,477 @@
+{
+  "metadata": {
+    "set_name": "Incandescent Arcana",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/incandescent-arcana/swsh11a_ja",
+    "release_date": "2022/09/02",
+    "scraped_at": "2026-07-15T11:49:44.319065",
+    "elapsed_seconds": 17.47,
+    "total_cards_scraped": 93
+  },
+  "cards": [
+    {
+      "name": "Scyther #1",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Yanma #2",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Yanmega #3",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Carnivine #4",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Serperior V #5",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Serperior VSTAR #6",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Petilil #7",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Hisuian Lilligant #8",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Radiant Tsareena #9",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Zarude #10",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Calyrex #11",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Growlithe #12",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Arcanine #13",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Entei #14",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Reshiram V #15",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    },
+    {
+      "name": "Fennekin #16",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Braixen #17",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Delphox #18",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Volcanion #19",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Salandit #20",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Salazzle #21",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Alolan Vulpix V #22",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Alolan Vulpix VSTAR #23",
+      "current_value": "$1.56",
+      "price_numeric": 1.56
+    },
+    {
+      "name": "Articuno #24",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Wailmer #25",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Wailord #26",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Feebas #27",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Milotic #28",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Luvdisc #29",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Kyogre #30",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Radiant Alakazam #31",
+      "current_value": "$2.93",
+      "price_numeric": 2.93
+    },
+    {
+      "name": "Exeggcute #32",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Exeggutor #33",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Jynx #34",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Mewtwo #35",
+      "current_value": "$0.92",
+      "price_numeric": 0.92
+    },
+    {
+      "name": "Ralts #36",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Kirlia #37",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Gardevoir #38",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Mawile V #39",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Mawile VSTAR #40",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Espurr #41",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Meowstic #42",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Tapu Lele #43",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Scizor #44",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Radiant Jirachi #45",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Klink #46",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Klang #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Klinklang #48",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Pawniard #49",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Bisharp #50",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Magearna V #51",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Zacian #52",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Zamazenta #53",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Smeargle #54",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Ho-Oh V #55",
+      "current_value": "$2.40",
+      "price_numeric": 2.4
+    },
+    {
+      "name": "Swablu #56",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Altaria #57",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Chatot #58",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Energy Switch #59",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Switch #61",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Emergency Jelly #62",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Judge #63",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Serena #64",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Furisode Girl #65",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Wallace #66",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Double Turbo Energy #67",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "V Guard Energy #68",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Braixen #69",
+      "current_value": "$6.14",
+      "price_numeric": 6.14
+    },
+    {
+      "name": "Milotic #70",
+      "current_value": "$7.79",
+      "price_numeric": 7.79
+    },
+    {
+      "name": "Jynx #71",
+      "current_value": "$2.44",
+      "price_numeric": 2.44
+    },
+    {
+      "name": "Gardevoir #72",
+      "current_value": "$9.08",
+      "price_numeric": 9.08
+    },
+    {
+      "name": "Smeargle #73",
+      "current_value": "$2.90",
+      "price_numeric": 2.9
+    },
+    {
+      "name": "Altaria #74",
+      "current_value": "$10.55",
+      "price_numeric": 10.55
+    },
+    {
+      "name": "Serperior V #75",
+      "current_value": "$4.29",
+      "price_numeric": 4.29
+    },
+    {
+      "name": "Reshiram V #76",
+      "current_value": "$6.63",
+      "price_numeric": 6.63
+    },
+    {
+      "name": "Alolan Vulpix V #77",
+      "current_value": "$7.18",
+      "price_numeric": 7.18
+    },
+    {
+      "name": "Mawile V #78",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Magearna V #79",
+      "current_value": "$2.46",
+      "price_numeric": 2.46
+    },
+    {
+      "name": "Ho-Oh V #80",
+      "current_value": "$6.16",
+      "price_numeric": 6.16
+    },
+    {
+      "name": "Serena #81",
+      "current_value": "$41.85",
+      "price_numeric": 41.85
+    },
+    {
+      "name": "Furisode Girl #82",
+      "current_value": "$18.02",
+      "price_numeric": 18.02
+    },
+    {
+      "name": "Wallace #83",
+      "current_value": "$2.74",
+      "price_numeric": 2.74
+    },
+    {
+      "name": "Serperior V #84",
+      "current_value": "$44.47",
+      "price_numeric": 44.47
+    },
+    {
+      "name": "Mawile V #85",
+      "current_value": "$13.10",
+      "price_numeric": 13.1
+    },
+    {
+      "name": "Serperior VSTAR #86",
+      "current_value": "$8.02",
+      "price_numeric": 8.02
+    },
+    {
+      "name": "Alolan Vulpix VSTAR #87",
+      "current_value": "$20.24",
+      "price_numeric": 20.24
+    },
+    {
+      "name": "Mawile VSTAR #88",
+      "current_value": "$7.06",
+      "price_numeric": 7.06
+    },
+    {
+      "name": "Serena #89",
+      "current_value": "$21.16",
+      "price_numeric": 21.16
+    },
+    {
+      "name": "Furisode Girl #90",
+      "current_value": "$10.74",
+      "price_numeric": 10.74
+    },
+    {
+      "name": "Wallace #91",
+      "current_value": "$3.29",
+      "price_numeric": 3.29
+    },
+    {
+      "name": "Serperior VSTAR #92",
+      "current_value": "$7.84",
+      "price_numeric": 7.84
+    },
+    {
+      "name": "Energy Switch #93",
+      "current_value": "$7.67",
+      "price_numeric": 7.67
+    },
+    {
+      "name": "V Guard Energy #94",
+      "current_value": "$4.73",
+      "price_numeric": 4.73
+    }
+  ]
+}

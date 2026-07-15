@@ -1,0 +1,472 @@
+{
+  "metadata": {
+    "set_name": "Raging Surf",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/raging-surf/sv3a_ja",
+    "release_date": "2023/09/22",
+    "scraped_at": "2026-07-15T11:43:34.950495",
+    "elapsed_seconds": 19.94,
+    "total_cards_scraped": 92
+  },
+  "cards": [
+    {
+      "name": "Froslass ex #1",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Lapras #2",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Remoraid #3",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Octillery #4",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Snorunt #5",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Garchomp ex #6",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Mantyke #7",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Palkia #8",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Wimpod #9",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Golisopod #10",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Dondozo #11",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Chinchou #12",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Lanturn #13",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Plusle #14",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Minun #15",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Joltik #16",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Galvantula #17",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Zekrom #18",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Tapu Koko ex #19",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Gimmighoul #20",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Gimmighoul #21",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Gligar #22",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Gliscor #23",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Phanpy #24",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Donphan #25",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Groudon #26",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Gible #27",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Gabite #28",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Hoopa ex #29",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Minior #30",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Klawf #31",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Flamigo #32",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Gastly #33",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Haunter #34",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Gengar #35",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Absol #36",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Scraggy #37",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Scrafty #38",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Yveltal #39",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Nickit #40",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Thievul #41",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Jirachi #42",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Ferroseed #43",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Ferrothorn #44",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Honedge #45",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Doublade #46",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Aegislash #47",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Zacian #48",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Orthworm #49",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Gholdengo ex #50",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Bombirdier ex #51",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Cyclizar #52",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Rare Candy #53",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Switch #54",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Luxurious Cape #55",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Technical Machine Turbo Energize #56",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Technical Machine Blindside #57",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Larry #58",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Shauntal #59",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Rika #60",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Parasol Lady #61",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Medical Energy #62",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Snorunt #63",
+      "current_value": "$4.48",
+      "price_numeric": 4.48
+    },
+    {
+      "name": "Mantyke #64",
+      "current_value": "$13.66",
+      "price_numeric": 13.66
+    },
+    {
+      "name": "Plusle #65",
+      "current_value": "$21.10",
+      "price_numeric": 21.1
+    },
+    {
+      "name": "Minun #66",
+      "current_value": "$21.13",
+      "price_numeric": 21.13
+    },
+    {
+      "name": "Joltik #67",
+      "current_value": "$9.12",
+      "price_numeric": 9.12
+    },
+    {
+      "name": "Gimmighoul #68",
+      "current_value": "$3.81",
+      "price_numeric": 3.81
+    },
+    {
+      "name": "Groudon #69",
+      "current_value": "$34.84",
+      "price_numeric": 34.84
+    },
+    {
+      "name": "Minior #70",
+      "current_value": "$10.98",
+      "price_numeric": 10.98
+    },
+    {
+      "name": "Yveltal #71",
+      "current_value": "$9.93",
+      "price_numeric": 9.93
+    },
+    {
+      "name": "Ferrothorn #72",
+      "current_value": "$2.41",
+      "price_numeric": 2.41
+    },
+    {
+      "name": "Aegislash #73",
+      "current_value": "$4.58",
+      "price_numeric": 4.58
+    },
+    {
+      "name": "Cyclizar #74",
+      "current_value": "$2.52",
+      "price_numeric": 2.52
+    },
+    {
+      "name": "Froslass ex #75",
+      "current_value": "$2.41",
+      "price_numeric": 2.41
+    },
+    {
+      "name": "Garchomp ex #76",
+      "current_value": "$5.79",
+      "price_numeric": 5.79
+    },
+    {
+      "name": "Tapu Koko ex #77",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Hoopa ex #78",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Gholdengo ex #79",
+      "current_value": "$2.79",
+      "price_numeric": 2.79
+    },
+    {
+      "name": "Bombirdier ex #80",
+      "current_value": "$1.24",
+      "price_numeric": 1.24
+    },
+    {
+      "name": "Larry #81",
+      "current_value": "$1.64",
+      "price_numeric": 1.64
+    },
+    {
+      "name": "Shauntal #82",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Rika #83",
+      "current_value": "$4.21",
+      "price_numeric": 4.21
+    },
+    {
+      "name": "Parasol Lady #84",
+      "current_value": "$5.75",
+      "price_numeric": 5.75
+    },
+    {
+      "name": "Garchomp ex #85",
+      "current_value": "$31.53",
+      "price_numeric": 31.53
+    },
+    {
+      "name": "Tapu Koko ex #86",
+      "current_value": "$17.43",
+      "price_numeric": 17.43
+    },
+    {
+      "name": "Gholdengo ex #87",
+      "current_value": "$33.45",
+      "price_numeric": 33.45
+    },
+    {
+      "name": "Rika #88",
+      "current_value": "$20.17",
+      "price_numeric": 20.17
+    },
+    {
+      "name": "Parasol Lady #89",
+      "current_value": "$34.09",
+      "price_numeric": 34.09
+    },
+    {
+      "name": "Garchomp ex #90",
+      "current_value": "$18.49",
+      "price_numeric": 18.49
+    },
+    {
+      "name": "Beach Court #91",
+      "current_value": "$4.54",
+      "price_numeric": 4.54
+    },
+    {
+      "name": "Reversal Energy #92",
+      "current_value": "$6.85",
+      "price_numeric": 6.85
+    }
+  ]
+}

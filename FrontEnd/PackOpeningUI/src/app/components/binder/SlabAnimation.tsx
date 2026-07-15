@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import CodedSlab from "./CodedSlab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Phase = "idle" | "guiding" | "inserting" | "complete";
@@ -310,9 +311,7 @@ function SlabAnimation({
         {/* ── SLAB BACK & RECESS (idle / guiding / inserting) ──────────────── */}
         {phase !== "complete" && (
           <div style={{ position: "absolute", left: vx(SL_CX), top: vy(SL_CY), transform: "translate(-50%,-50%)", width: `${(SL_W / VW) * 100}%`, height: `${(SL_H / VH) * 100}%`, zIndex: 10, pointerEvents: "none" }}>
-            <img src="/slab.svg?v=clean3" alt="acrylic slab case"
-              style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
-            />
+            <CodedSlab variant="empty" showDefaultLabel={true} gradeText="N/A" cardTitle="PROTECTIVE SLAB WELL" />
           </div>
         )}
 
@@ -362,20 +361,10 @@ function SlabAnimation({
               pointerEvents: "none",
             }}
           >
-            {/* 1. Acrylic Slab Case */}
-            <img
-              src="/slab.svg?v=clean3"
-              alt="acrylic slab case"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                zIndex: 1,
-                display: "block"
-              }}
-            />
+            {/* 1. Acrylic Slab Case (Coded Asset - zero blur) */}
+            <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1, pointerEvents: "none" }}>
+              <CodedSlab variant="front" showDefaultLabel={true} gradeText="N/A" cardTitle={cardName} />
+            </div>
             {/* 2. Card art exactly centered in slab recess */}
             <img
               src={cardImageUrl}

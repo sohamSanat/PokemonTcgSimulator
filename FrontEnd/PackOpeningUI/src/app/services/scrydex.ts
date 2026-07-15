@@ -12,6 +12,7 @@ let jaSetsCache: Array<{ id: string; name: string; cardCount: { total: number; o
 let jaEnNamesCache: Record<string, string> | null = null;
 let jaCardNamesCache: Record<string, string> | null = null;
 let pokeSpeciesDictCache: Record<string, string> | null = null;
+export let jaCardPricesCache: Record<string, number> | null = null;
 
 async function loadJapaneseMetadata() {
   if (!jaSetsCache) {
@@ -56,10 +57,42 @@ async function loadJapaneseMetadata() {
       console.error('Failed to load /pokemon-ja-en-dict.json:', e);
     }
   }
+  if (!jaCardPricesCache || Object.keys(jaCardPricesCache).length === 0) {
+    try {
+      const res = await fetch('/ja-card-prices.json');
+      if (res.ok) {
+        const data = await res.json();
+        if (Object.keys(data).length > 0) {
+          jaCardPricesCache = data;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load /ja-card-prices.json:', e);
+    }
+  }
   if (!jaSetsCache) jaSetsCache = [];
   if (!jaEnNamesCache) jaEnNamesCache = {};
   if (!jaCardNamesCache) jaCardNamesCache = {};
   if (!pokeSpeciesDictCache) pokeSpeciesDictCache = {};
+  if (!jaCardPricesCache) jaCardPricesCache = {};
+}
+
+export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: string | number): number | undefined {
+  if (!jaCardPricesCache) return undefined;
+  if (!localIdOrNum) {
+    if (jaCardPricesCache[setIdOrKey] !== undefined) return jaCardPricesCache[setIdOrKey];
+    const raw = setIdOrKey.replace(/_ja$/i, '').toLowerCase();
+    if (jaCardPricesCache[raw] !== undefined) return jaCardPricesCache[raw];
+    return undefined;
+  }
+  const num = localIdOrNum.toString().trim();
+  const rawId = setIdOrKey.replace(/_ja$/i, '').toLowerCase();
+  
+  if (jaCardPricesCache[`${rawId}-${num}`] !== undefined) return jaCardPricesCache[`${rawId}-${num}`];
+  if (jaCardPricesCache[`${rawId}_ja-${num}`] !== undefined) return jaCardPricesCache[`${rawId}_ja-${num}`];
+  if (jaCardPricesCache[`${setIdOrKey.toLowerCase()}-${num}`] !== undefined) return jaCardPricesCache[`${setIdOrKey.toLowerCase()}-${num}`];
+  
+  return undefined;
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
@@ -318,6 +351,15 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
         if (c.localId && (parseInt(c.localId, 10) > officialCount || !c.rarity || c.rarity === 'C' || c.rarity === 'U')) {
           c.rarity = getJapaneseCardRarity(c.localId, officialCount, totalCards, c.name);
         }
+        const realPrice = getJapaneseCardRealPrice(rawId, c.localId);
+        if (realPrice !== undefined) {
+          (c as any).pricing = {
+            tcgplayer: { unit: 'USD', updated: new Date().toISOString(), normal: { marketPrice: realPrice, midPrice: realPrice, lowPrice: realPrice, highPrice: realPrice } },
+            cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: realPrice }
+          };
+          (c as any).tcgplayer = { unit: 'USD', prices: (c as any).pricing.tcgplayer };
+          (c as any).prices = [{ market: realPrice }];
+        }
       }
     }
     return cached;
@@ -402,13 +444,25 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     if (jaRegex.test(resolvedName) || resolvedName.includes('Card #') || resolvedName.includes('Card ')) {
       resolvedName = translateJapaneseName(resolvedName);
     }
+    const realPrice = getJapaneseCardRealPrice(prefixLow, cardNum) ?? getJapaneseCardRealPrice(`${prefixLow}_ja-${cardNum}`) ?? 0.15;
+    const initialPricing = {
+      unit: 'USD',
+      updated: new Date().toISOString(),
+      normal: { marketPrice: realPrice, midPrice: Number((realPrice * 1.05).toFixed(2)), lowPrice: Number((realPrice * 0.85).toFixed(2)), highPrice: Number((realPrice * 1.4).toFixed(2)) }
+    };
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
       name: resolvedName,
       image: `https://images.scrydex.com/pokemon/${prefixLow}_ja-${cardNum}/large`,
-      rarity: getJapaneseCardRarity(cardNum, officialCount, totalCards, resolvedName)
-    });
+      rarity: getJapaneseCardRarity(cardNum, officialCount, totalCards, resolvedName),
+      pricing: {
+        tcgplayer: initialPricing,
+        cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: Number((realPrice * 0.85).toFixed(2)) }
+      },
+      tcgplayer: { unit: 'USD', prices: initialPricing },
+      prices: [{ market: realPrice }]
+    } as any);
   }
 
   const tcgDexSet: TCGDexSet = {
@@ -428,16 +482,29 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
 }
 
 export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean = false): Promise<TCGDexCardFull> {
+  await loadJapaneseMetadata();
+  const localNum = cardId.split('-')[1] || '1';
+  const setId = cardId.split('-')[0] || '';
+  const realPrice = getJapaneseCardRealPrice(setId, localNum) ?? getJapaneseCardRealPrice(cardId) ?? 0.15;
+
   if (scrydexCardFullCache.has(cardId)) {
-    return scrydexCardFullCache.get(cardId)!;
+    const cached = scrydexCardFullCache.get(cardId)!;
+    cached.prices = [{ market: realPrice }];
+    cached.tcgplayer = { unit: 'USD', updated: new Date().toISOString(), normal: { marketPrice: realPrice, midPrice: realPrice, lowPrice: realPrice, highPrice: realPrice } };
+    cached.pricing = { tcgplayer: cached.tcgplayer, cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: realPrice } };
+    return cached;
   }
   
+  const initialPricing = { unit: 'USD', updated: new Date().toISOString(), normal: { marketPrice: realPrice, midPrice: realPrice, lowPrice: realPrice, highPrice: realPrice } };
   const mappedCard: TCGDexCardFull = {
     id: cardId,
-    localId: cardId.split('-')[1] || '1',
-    name: `Pokémon 151 Card ${cardId.split('-')[1]}`,
+    localId: localNum,
+    name: `Pokémon Card ${localNum}`,
     image: `https://images.scrydex.com/pokemon/${cardId}/large`,
     rarity: 'Common',
+    prices: [{ market: realPrice }],
+    tcgplayer: { unit: 'USD', prices: initialPricing },
+    pricing: { tcgplayer: initialPricing, cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: realPrice } }
   };
   
   scrydexCardFullCache.set(cardId, mappedCard);
@@ -879,6 +946,13 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       jaCardNamesCache[`${rawSetId}-${p.summary.localId}`]
     )) || translateJapaneseName(p.summary.name);
 
+    const realPrice = getJapaneseCardRealPrice(rawSetId, p.summary.localId) ?? getJapaneseCardRealPrice(p.summary.id) ?? (p.summary as any)?.pricing?.tcgplayer?.normal?.marketPrice ?? 0.15;
+    const initialPricing = {
+      unit: 'USD',
+      updated: new Date().toISOString(),
+      normal: { marketPrice: realPrice, midPrice: Number((realPrice * 1.05).toFixed(2)), lowPrice: Number((realPrice * 0.85).toFixed(2)), highPrice: Number((realPrice * 1.4).toFixed(2)) }
+    };
+
     return {
       id: `${p.summary.id}-${idx}-${Date.now()}`,
       localId: p.summary.localId,
@@ -889,7 +963,13 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       images: {
         small: p.summary.image,
         large: p.summary.image
-      }
+      },
+      pricing: {
+        tcgplayer: initialPricing,
+        cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: Number((realPrice * 0.85).toFixed(2)) }
+      },
+      tcgplayer: { unit: 'USD', prices: initialPricing },
+      prices: [{ market: realPrice }]
     };
   });
 }

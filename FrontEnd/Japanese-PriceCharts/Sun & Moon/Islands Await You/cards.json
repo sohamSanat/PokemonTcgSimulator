@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "set_name": "Islands Await You",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/islands-await-you/sm2k_ja",
+    "release_date": "2017/03/17",
+    "scraped_at": "2026-07-15T12:24:38.501024",
+    "elapsed_seconds": 18.53,
+    "total_cards_scraped": 27
+  },
+  "cards": [
+    {
+      "name": "Wimpod #6",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Golisopod #7",
+      "current_value": "$1.35",
+      "price_numeric": 1.35
+    },
+    {
+      "name": "Victini #8",
+      "current_value": "$2.87",
+      "price_numeric": 2.87
+    },
+    {
+      "name": "Turtonator-GX #9",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Alolan Sandshrew #10",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Alolan Vulpix #12",
+      "current_value": "$4.46",
+      "price_numeric": 4.46
+    },
+    {
+      "name": "Alolan Ninetales-GX #13",
+      "current_value": "$16.66",
+      "price_numeric": 16.66
+    },
+    {
+      "name": "Delibird #14",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Snorunt #15",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Vanillish #18",
+      "current_value": "$0.74",
+      "price_numeric": 0.74
+    },
+    {
+      "name": "Slowpoke #23",
+      "current_value": "$5.75",
+      "price_numeric": 5.75
+    },
+    {
+      "name": "Slowbro #24",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Gothita #25",
+      "current_value": "$5.66",
+      "price_numeric": 5.66
+    },
+    {
+      "name": "Gothorita #26",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Machop #28",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Machamp #30",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Nosepass #31",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Barboach #32",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Probopass #34",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Clefairy #35",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Comfey #37",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Drampa #38",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Kommo-o-GX #41",
+      "current_value": "$3.70",
+      "price_numeric": 3.7
+    },
+    {
+      "name": "Chansey #42",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Blissey #43",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Turtonator-GX #51",
+      "current_value": "$6.75",
+      "price_numeric": 6.75
+    },
+    {
+      "name": "Kommo-o-GX #54",
+      "current_value": "$19.25",
+      "price_numeric": 19.25
+    }
+  ]
+}

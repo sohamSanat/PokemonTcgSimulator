@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "set_name": "25th Anniversary Collection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/25th-anniversary-collection/swsh8a_ja",
+    "release_date": "2021/10/22",
+    "scraped_at": "2026-07-15T11:54:22.091514",
+    "elapsed_seconds": 15.42,
+    "total_cards_scraped": 38
+  },
+  "cards": [
+    {
+      "name": "Pikachu #1",
+      "current_value": "$9.90",
+      "price_numeric": 9.9
+    },
+    {
+      "name": "Mew #2",
+      "current_value": "$6.04",
+      "price_numeric": 6.04
+    },
+    {
+      "name": "Professor's Research #3",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Ho-Oh #4",
+      "current_value": "$0.69",
+      "price_numeric": 0.69
+    },
+    {
+      "name": "Lugia #5",
+      "current_value": "$1.56",
+      "price_numeric": 1.56
+    },
+    {
+      "name": "Groudon #6",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Kyogre #7",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Dialga #8",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Palkia #9",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Reshiram #10",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Zekrom #11",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Xerneas #12",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Yveltal #13",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Cosmog #14",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Cosmoem #15",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Solgaleo #16",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Lunala #17",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Zacian V #18",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Zamazenta V #19",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Pikachu V #20",
+      "current_value": "$6.60",
+      "price_numeric": 6.6
+    },
+    {
+      "name": "Surfing Pikachu V #21",
+      "current_value": "$9.15",
+      "price_numeric": 9.15
+    },
+    {
+      "name": "Surfing Pikachu VMAX #22",
+      "current_value": "$13.38",
+      "price_numeric": 13.38
+    },
+    {
+      "name": "Flying Pikachu V #23",
+      "current_value": "$11.27",
+      "price_numeric": 11.27
+    },
+    {
+      "name": "Flying Pikachu VMAX #24",
+      "current_value": "$14.37",
+      "price_numeric": 14.37
+    },
+    {
+      "name": "Pikachu V-UNION #25",
+      "current_value": "$8.76",
+      "price_numeric": 8.76
+    },
+    {
+      "name": "Pikachu V-UNION #26",
+      "current_value": "$8.73",
+      "price_numeric": 8.73
+    },
+    {
+      "name": "Pikachu V-UNION #27",
+      "current_value": "$11.10",
+      "price_numeric": 11.1
+    },
+    {
+      "name": "Pikachu V-UNION #28",
+      "current_value": "$93.24",
+      "price_numeric": 93.24
+    },
+    {
+      "name": "Professor's Research #29",
+      "current_value": "$1.19",
+      "price_numeric": 1.19
+    },
+    {
+      "name": "Mew #30",
+      "current_value": "$119.29",
+      "price_numeric": 119.29
+    },
+    {
+      "name": "Grass Energy #31",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Fire Energy #32",
+      "current_value": "$0.53",
+      "price_numeric": 0.53
+    },
+    {
+      "name": "Water Energy #33",
+      "current_value": "$0.51",
+      "price_numeric": 0.51
+    },
+    {
+      "name": "Lightning Energy #34",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Psychic Energy #35",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Fighting Energy #36",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Darkness Energy #37",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Metal Energy #38",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    }
+  ]
+}

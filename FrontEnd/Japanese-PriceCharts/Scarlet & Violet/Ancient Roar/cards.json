@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "set_name": "Ancient Roar",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/ancient-roar/sv4k_ja",
+    "release_date": "2023/10/27",
+    "scraped_at": "2026-07-15T11:43:06.854924",
+    "elapsed_seconds": 16.33,
+    "total_cards_scraped": 95
+  },
+  "cards": [
+    {
+      "name": "Pansage #1",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Simisage #2",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Maractus #3",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Dwebble #4",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Crustle #5",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Bounsweet #6",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Steenee #7",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Nymble #8",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Nymble #9",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Magby #10",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Numel #11",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Camerupt #12",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Charcadet #13",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Charcadet #14",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Armarouge ex #15",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Chi-Yu #16",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Horsea #17",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Seadra #18",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Kingdra #19",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Tsareena ex #20",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Wimpod #21",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Golisopod ex #22",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Wiglett #23",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Wiglett #24",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Wugtrio #25",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Veluza #26",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Latios #27",
+      "current_value": "$0.80",
+      "price_numeric": 0.8
+    },
+    {
+      "name": "Woobat #28",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Swoobat #29",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Yamask #30",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Cofagrigus ex #31",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Scream Tail #32",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Mienfoo #33",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Mienshao #34",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Clobbopus #35",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Grapploct #36",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Nacli #37",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Nacli #38",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Naclstack #39",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Garganacl #40",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Slither Wing #41",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Sandy Shocks ex #42",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Ting-Lu #43",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Zubat #44",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Golbat #45",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Crobat #46",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Purrloin #47",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Liepard #48",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Trubbish #49",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Garbodor #50",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Morpeko #51",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Lokix #52",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Brute Bonnet #53",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Roaring Moon ex #54",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Whismur #55",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Loudred #56",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Exploud #57",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Spinda #58",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Snorlax Doll #59",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Earthen Vessel #60",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Ancient Booster Energy Capsule #61",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Defiance Vest #62",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Technical Machine: Devolution #63",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Professor Sada's Vitality #64",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Norman #65",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Mela #66",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Crustle #67",
+      "current_value": "$2.18",
+      "price_numeric": 2.18
+    },
+    {
+      "name": "Magby #68",
+      "current_value": "$6.94",
+      "price_numeric": 6.94
+    },
+    {
+      "name": "Wimpod #69",
+      "current_value": "$2.48",
+      "price_numeric": 2.48
+    },
+    {
+      "name": "Veluza #70",
+      "current_value": "$3.40",
+      "price_numeric": 3.4
+    },
+    {
+      "name": "Scream Tail #71",
+      "current_value": "$4.98",
+      "price_numeric": 4.98
+    },
+    {
+      "name": "Mienshao #72",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Garganacl #73",
+      "current_value": "$2.26",
+      "price_numeric": 2.26
+    },
+    {
+      "name": "Slither Wing #74",
+      "current_value": "$2.31",
+      "price_numeric": 2.31
+    },
+    {
+      "name": "Garbodor #75",
+      "current_value": "$4.01",
+      "price_numeric": 4.01
+    },
+    {
+      "name": "Morpeko #76",
+      "current_value": "$14.44",
+      "price_numeric": 14.44
+    },
+    {
+      "name": "Brute Bonnet #77",
+      "current_value": "$4.97",
+      "price_numeric": 4.97
+    },
+    {
+      "name": "Loudred #78",
+      "current_value": "$4.53",
+      "price_numeric": 4.53
+    },
+    {
+      "name": "Armarouge ex #79",
+      "current_value": "$1.84",
+      "price_numeric": 1.84
+    },
+    {
+      "name": "Tsareena ex #80",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Golisopod ex #81",
+      "current_value": "$1.32",
+      "price_numeric": 1.32
+    },
+    {
+      "name": "Cofagrigus ex #82",
+      "current_value": "$1.72",
+      "price_numeric": 1.72
+    },
+    {
+      "name": "Sandy Shocks ex #83",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Roaring Moon ex #84",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Professor Sada's Vitality #85",
+      "current_value": "$3.80",
+      "price_numeric": 3.8
+    },
+    {
+      "name": "Norman #86",
+      "current_value": "$1.12",
+      "price_numeric": 1.12
+    },
+    {
+      "name": "Mela #87",
+      "current_value": "$3.35",
+      "price_numeric": 3.35
+    },
+    {
+      "name": "Golisopod ex #88",
+      "current_value": "$26.66",
+      "price_numeric": 26.66
+    },
+    {
+      "name": "Sandy Shocks ex #89",
+      "current_value": "$9.11",
+      "price_numeric": 9.11
+    },
+    {
+      "name": "Roaring Moon ex #90",
+      "current_value": "$40.91",
+      "price_numeric": 40.91
+    },
+    {
+      "name": "Professor Sada's Vitality #91",
+      "current_value": "$11.91",
+      "price_numeric": 11.91
+    },
+    {
+      "name": "Mela #92",
+      "current_value": "$18.46",
+      "price_numeric": 18.46
+    },
+    {
+      "name": "Roaring Moon ex #93",
+      "current_value": "$7.84",
+      "price_numeric": 7.84
+    },
+    {
+      "name": "Luxurious Cape #94",
+      "current_value": "$7.73",
+      "price_numeric": 7.73
+    },
+    {
+      "name": "Basic Darkness Energy #95",
+      "current_value": "$14.64",
+      "price_numeric": 14.64
+    }
+  ]
+}

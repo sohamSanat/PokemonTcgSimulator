@@ -1,0 +1,517 @@
+{
+  "metadata": {
+    "set_name": "Super-Burst Impact",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/super-burst-impact/sm8_ja",
+    "release_date": "2018/09/07",
+    "scraped_at": "2026-07-15T12:15:31.954356",
+    "elapsed_seconds": 20.73,
+    "total_cards_scraped": 101
+  },
+  "cards": [
+    {
+      "name": "Scyther #1",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Chikorita #2",
+      "current_value": "$2.57",
+      "price_numeric": 2.57
+    },
+    {
+      "name": "Chikorita #3",
+      "current_value": "$2.25",
+      "price_numeric": 2.25
+    },
+    {
+      "name": "Bayleef #4",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Meganium #5",
+      "current_value": "$5.24",
+      "price_numeric": 5.24
+    },
+    {
+      "name": "Spinarak #6",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Ariados #7",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hoppip #8",
+      "current_value": "$0.88",
+      "price_numeric": 0.88
+    },
+    {
+      "name": "Hoppip #9",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Skiploom #10",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Jumpluff #11",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Pineco #12",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Shuckle-GX #13",
+      "current_value": "$4.22",
+      "price_numeric": 4.22
+    },
+    {
+      "name": "Heracross #14",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Celebi ◇ #15",
+      "current_value": "$5.05",
+      "price_numeric": 5.05
+    },
+    {
+      "name": "Cyndaquil #16",
+      "current_value": "$0.78",
+      "price_numeric": 0.78
+    },
+    {
+      "name": "Cyndaquil #17",
+      "current_value": "$1.26",
+      "price_numeric": 1.26
+    },
+    {
+      "name": "Quilava #18",
+      "current_value": "$1.16",
+      "price_numeric": 1.16
+    },
+    {
+      "name": "Typhlosion #19",
+      "current_value": "$5.29",
+      "price_numeric": 5.29
+    },
+    {
+      "name": "Houndour #20",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Houndoom #21",
+      "current_value": "$2.24",
+      "price_numeric": 2.24
+    },
+    {
+      "name": "Entei #22",
+      "current_value": "$2.24",
+      "price_numeric": 2.24
+    },
+    {
+      "name": "Blacephalon-GX #23",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Slowpoke #24",
+      "current_value": "$13.93",
+      "price_numeric": 13.93
+    },
+    {
+      "name": "Slowking #25",
+      "current_value": "$1.56",
+      "price_numeric": 1.56
+    },
+    {
+      "name": "Delibird #26",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Mantine #27",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Suicune-GX #28",
+      "current_value": "$3.38",
+      "price_numeric": 3.38
+    },
+    {
+      "name": "Mareanie #29",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Chinchou #31",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lanturn #32",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Mareep #33",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Mareep #34",
+      "current_value": "$1.26",
+      "price_numeric": 1.26
+    },
+    {
+      "name": "Flaaffy #35",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Ampharos #36",
+      "current_value": "$2.90",
+      "price_numeric": 2.9
+    },
+    {
+      "name": "Raikou #37",
+      "current_value": "$1.18",
+      "price_numeric": 1.18
+    },
+    {
+      "name": "Espeon #40",
+      "current_value": "$4.04",
+      "price_numeric": 4.04
+    },
+    {
+      "name": "Unown #41",
+      "current_value": "$1.17",
+      "price_numeric": 1.17
+    },
+    {
+      "name": "Unown #42",
+      "current_value": "$1.07",
+      "price_numeric": 1.07
+    },
+    {
+      "name": "Unown #43",
+      "current_value": "$1.31",
+      "price_numeric": 1.31
+    },
+    {
+      "name": "Wobbuffet #44",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Girafarig #45",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Nihilego #46",
+      "current_value": "$2.74",
+      "price_numeric": 2.74
+    },
+    {
+      "name": "Poipole #47",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Naganadel #48",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Sudowoodo #49",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Phanpy #50",
+      "current_value": "$10.83",
+      "price_numeric": 10.83
+    },
+    {
+      "name": "Donphan #51",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Hitmontop #52",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Larvitar #53",
+      "current_value": "$0.87",
+      "price_numeric": 0.87
+    },
+    {
+      "name": "Larvitar #54",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Pupitar #55",
+      "current_value": "$3.46",
+      "price_numeric": 3.46
+    },
+    {
+      "name": "Alolan Meowth #56",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Alolan Persian #57",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Umbreon #58",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Tyranitar-GX #59",
+      "current_value": "$5.85",
+      "price_numeric": 5.85
+    },
+    {
+      "name": "Scizor #61",
+      "current_value": "$2.37",
+      "price_numeric": 2.37
+    },
+    {
+      "name": "Marill #62",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Azumarill #63",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Snubbull #64",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Granbull #65",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Chansey #66",
+      "current_value": "$6.83",
+      "price_numeric": 6.83
+    },
+    {
+      "name": "Blissey #67",
+      "current_value": "$2.62",
+      "price_numeric": 2.62
+    },
+    {
+      "name": "Eevee #68",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Stantler #69",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Smeargle #70",
+      "current_value": "$21.67",
+      "price_numeric": 21.67
+    },
+    {
+      "name": "Miltank #71",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lugia-GX #72",
+      "current_value": "$14.12",
+      "price_numeric": 14.12
+    },
+    {
+      "name": "Pikipek #73",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Pikipek #74",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Trumbeak #75",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Toucannon #76",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Ultra Ball #78",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Pokémon Catcher #81",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Moomoo Milk #82",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lost Blender #83",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Choice Band #84",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Fairy Charm Grass #86",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Whitney #87",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Professor Elm's Lecture #88",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Faba #89",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Hau #90",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Lillie #91",
+      "current_value": "$1.87",
+      "price_numeric": 1.87
+    },
+    {
+      "name": "Lusamine ◇ #92",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Heat Factory ◇ #93",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Double Colorless Energy #94",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Memory Energy #95",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Shuckle-GX #96",
+      "current_value": "$16.36",
+      "price_numeric": 16.36
+    },
+    {
+      "name": "Blacephalon-GX #97",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Suicune-GX #98",
+      "current_value": "$19.98",
+      "price_numeric": 19.98
+    },
+    {
+      "name": "Tyranitar-GX #99",
+      "current_value": "$14.39",
+      "price_numeric": 14.39
+    },
+    {
+      "name": "Lugia-GX #100",
+      "current_value": "$74.97",
+      "price_numeric": 74.97
+    },
+    {
+      "name": "Professor Elm's Lecture #102",
+      "current_value": "$77.50",
+      "price_numeric": 77.5
+    },
+    {
+      "name": "Faba #103",
+      "current_value": "$18.11",
+      "price_numeric": 18.11
+    },
+    {
+      "name": "Shuckle-GX #104",
+      "current_value": "$48.99",
+      "price_numeric": 48.99
+    },
+    {
+      "name": "Blacephalon-GX #105",
+      "current_value": "$17.99",
+      "price_numeric": 17.99
+    },
+    {
+      "name": "Suicune-GX #106",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Tyranitar-GX #107",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Wait and See Hammer #109",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Lost Blender #110",
+      "current_value": "$6.25",
+      "price_numeric": 6.25
+    },
+    {
+      "name": "Choice Helmet #111",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    }
+  ]
+}

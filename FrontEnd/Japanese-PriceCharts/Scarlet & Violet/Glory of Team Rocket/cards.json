@@ -1,0 +1,682 @@
+{
+  "metadata": {
+    "set_name": "Glory of Team Rocket",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/glory-of-team-rocket/sv10_ja",
+    "release_date": "2025/04/18",
+    "scraped_at": "2026-07-15T11:35:22.398100",
+    "elapsed_seconds": 19.44,
+    "total_cards_scraped": 134
+  },
+  "cards": [
+    {
+      "name": "Pineco #1",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Shroomish #2",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Breloom #3",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Mow Rotom #4",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Fomantis #5",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Lurantis #6",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Blipbug #7",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Team Rocket's Tarountula #8",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Spidops #9",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Smoliv #10",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Dolliv #11",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Arboliva ex #12",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Growlithe #13",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Arcanine #14",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Moltres ex #15",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Team Rocket's Houndour #16",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Houndoom #17",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Torchic #18",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Combusken #19",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Blaziken #20",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Heat Rotom #21",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Articuno #22",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Clamperl #23",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Huntail #24",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Gorebyss #25",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Snover #26",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Abomasnow #27",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Wash Rotom #28",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Arrokuda #29",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Barraskewda #30",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Cetoddle #31",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Cetitan ex #32",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Team Rocket's Zapdos #33",
+      "current_value": "$0.57",
+      "price_numeric": 0.57
+    },
+    {
+      "name": "Team Rocket's Mareep #34",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Team Rocket's Flaaffy #35",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Team Rocket's Ampharos #36",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Drowzee #37",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Team Rocket's Hypno #38",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Team Rocket's Mewtwo ex #39",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Team Rocket's Wobbuffet #40",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Team Rocket's Chingling #41",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Mimikyu #42",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Team Rocket's Dottler #43",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Orbeetle #44",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Mankey #45",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Primeape #46",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Annihilape #47",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Team Rocket's Larvitar #48",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Team Rocket's Pupitar #49",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Tyranitar #50",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Nosepass #51",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Probopass #52",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Meditite #53",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Medicham #54",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Regirock ex #55",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Team Rocket's Ekans #56",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Team Rocket's Arbok #57",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Team Rocket's Nidoran ♀ #58",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Team Rocket's Nidorina #59",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Nidoqueen #60",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Nidoran ♂ #61",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Team Rocket's Nidorino #62",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Team Rocket's Nidoking ex #63",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Team Rocket's Zubat #64",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Team Rocket's Golbat #65",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Team Rocket's Crobat ex #66",
+      "current_value": "$0.39",
+      "price_numeric": 0.39
+    },
+    {
+      "name": "Team Rocket's Grimer #67",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Muk #68",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Team Rocket's Koffing #69",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Weezing #70",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Team Rocket's Murkrow #71",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Team Rocket's Sneasel #72",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Forretress #73",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Skarmory #74",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Zamazenta #75",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Rattata #76",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Team Rocket's Raticate #77",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Meowth #78",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Team Rocket's Persian ex #79",
+      "current_value": "$0.32",
+      "price_numeric": 0.32
+    },
+    {
+      "name": "Kangaskhan #80",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Porygon #81",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Porygon2 #82",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Porygon-Z #83",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Taillow #84",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Swellow #85",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Squawkabilly #86",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Team Rocket's Hindering Robo #87",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Great Ball #88",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Surprise Bomb #89",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket's Receiver #90",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Team Rocket's Ariana #91",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Archer #92",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Team Rocket's Giovanni #93",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Team Rocket's Petrel #94",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Team Rocket's Proton #95",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Team Rocket's Watchtower #96",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Team Rocket's Factory #97",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Team Rocket Energy #98",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Team Rocket's Spidops #99",
+      "current_value": "$2.61",
+      "price_numeric": 2.61
+    },
+    {
+      "name": "Team Rocket's Houndoom #100",
+      "current_value": "$6.18",
+      "price_numeric": 6.18
+    },
+    {
+      "name": "Blaziken #101",
+      "current_value": "$5.05",
+      "price_numeric": 5.05
+    },
+    {
+      "name": "Clamperl #102",
+      "current_value": "$2.12",
+      "price_numeric": 2.12
+    },
+    {
+      "name": "Team Rocket's Wobbuffet #103",
+      "current_value": "$4.73",
+      "price_numeric": 4.73
+    },
+    {
+      "name": "Team Rocket's Orbeetle #104",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Team Rocket's Weezing #105",
+      "current_value": "$3.98",
+      "price_numeric": 3.98
+    },
+    {
+      "name": "Team Rocket's Murkrow #106",
+      "current_value": "$4.51",
+      "price_numeric": 4.51
+    },
+    {
+      "name": "Zamazenta #107",
+      "current_value": "$2.42",
+      "price_numeric": 2.42
+    },
+    {
+      "name": "Team Rocket's Raticate #108",
+      "current_value": "$3.05",
+      "price_numeric": 3.05
+    },
+    {
+      "name": "Team Rocket's Meowth #109",
+      "current_value": "$16.14",
+      "price_numeric": 16.14
+    },
+    {
+      "name": "Kangaskhan #110",
+      "current_value": "$6.28",
+      "price_numeric": 6.28
+    },
+    {
+      "name": "Arboliva ex #111",
+      "current_value": "$2.71",
+      "price_numeric": 2.71
+    },
+    {
+      "name": "Team Rocket's Moltres ex #112",
+      "current_value": "$7.41",
+      "price_numeric": 7.41
+    },
+    {
+      "name": "Cetitan ex #113",
+      "current_value": "$2.34",
+      "price_numeric": 2.34
+    },
+    {
+      "name": "Team Rocket's Mewtwo ex #114",
+      "current_value": "$18.94",
+      "price_numeric": 18.94
+    },
+    {
+      "name": "Regirock ex #115",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Team Rocket's Nidoking ex #116",
+      "current_value": "$5.07",
+      "price_numeric": 5.07
+    },
+    {
+      "name": "Team Rocket's Crobat ex #117",
+      "current_value": "$3.87",
+      "price_numeric": 3.87
+    },
+    {
+      "name": "Team Rocket's Persian ex #118",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Team Rocket's Ariana #119",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Team Rocket's Archer #120",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Team Rocket's Giovanni #121",
+      "current_value": "$5.45",
+      "price_numeric": 5.45
+    },
+    {
+      "name": "Team Rocket's Petrel #122",
+      "current_value": "$9.09",
+      "price_numeric": 9.09
+    },
+    {
+      "name": "Team Rocket's Proton #123",
+      "current_value": "$3.78",
+      "price_numeric": 3.78
+    },
+    {
+      "name": "Team Rocket's Moltres ex #124",
+      "current_value": "$89.56",
+      "price_numeric": 89.56
+    },
+    {
+      "name": "Team Rocket's Mewtwo ex #125",
+      "current_value": "$330.97",
+      "price_numeric": 330.97
+    },
+    {
+      "name": "Team Rocket's Nidoking ex #126",
+      "current_value": "$83.76",
+      "price_numeric": 83.76
+    },
+    {
+      "name": "Team Rocket's Crobat ex #127",
+      "current_value": "$53.97",
+      "price_numeric": 53.97
+    },
+    {
+      "name": "Team Rocket's Ariana #128",
+      "current_value": "$20.66",
+      "price_numeric": 20.66
+    },
+    {
+      "name": "Team Rocket's Giovanni #129",
+      "current_value": "$21.59",
+      "price_numeric": 21.59
+    },
+    {
+      "name": "Team Rocket's Mewtwo ex #130",
+      "current_value": "$42.37",
+      "price_numeric": 42.37
+    },
+    {
+      "name": "Team Rocket's Crobat ex #131",
+      "current_value": "$12.25",
+      "price_numeric": 12.25
+    },
+    {
+      "name": "Jamming Tower #132",
+      "current_value": "$9.88",
+      "price_numeric": 9.88
+    },
+    {
+      "name": "Team Rocket's Archer#120RarityスーパーレアYou can use this card only if any of your Team Rocket's Pokémon were Knocked Out during your opponent's last turn.",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Team Rocket's Proton#123RarityスーパーレアIf you go first, you may use this card during your first turn.",
+      "current_value": "$3.78",
+      "price_numeric": 3.78
+    }
+  ]
+}

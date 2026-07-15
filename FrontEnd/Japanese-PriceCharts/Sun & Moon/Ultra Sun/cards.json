@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "set_name": "Ultra Sun",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/ultra-sun/sm5s_ja",
+    "release_date": "2017/12/08",
+    "scraped_at": "2026-07-15T12:20:33.860042",
+    "elapsed_seconds": 18.91,
+    "total_cards_scraped": 72
+  },
+  "cards": [
+    {
+      "name": "Yanma #1",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Yanmega #2",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Roselia #3",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Roserade #4",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Turtwig #5",
+      "current_value": "$0.91",
+      "price_numeric": 0.91
+    },
+    {
+      "name": "Turtwig #6",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Grotle #7",
+      "current_value": "$0.64",
+      "price_numeric": 0.64
+    },
+    {
+      "name": "Torterra #8",
+      "current_value": "$2.09",
+      "price_numeric": 2.09
+    },
+    {
+      "name": "Cherubi #9",
+      "current_value": "$12.25",
+      "price_numeric": 12.25
+    },
+    {
+      "name": "Cherrim #10",
+      "current_value": "$1.96",
+      "price_numeric": 1.96
+    },
+    {
+      "name": "Carnivine #11",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Leafeon-GX #12",
+      "current_value": "$4.64",
+      "price_numeric": 4.64
+    },
+    {
+      "name": "Mow Rotom #13",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Shaymin #14",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Magmar #15",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Magmortar #16",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Chimchar #17",
+      "current_value": "$0.93",
+      "price_numeric": 0.93
+    },
+    {
+      "name": "Chimchar #18",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Monferno #19",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Infernape #20",
+      "current_value": "$0.96",
+      "price_numeric": 0.96
+    },
+    {
+      "name": "Heat Rotom #21",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Salandit #22",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Salazzle #23",
+      "current_value": "$0.48",
+      "price_numeric": 0.48
+    },
+    {
+      "name": "Turtonator #24",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Murkrow #25",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Honchkrow #26",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Sneasel #27",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Weavile #28",
+      "current_value": "$0.94",
+      "price_numeric": 0.94
+    },
+    {
+      "name": "Stunky #29",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Skuntank #30",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Darkrai ◇ #31",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Alolan Diglett #32",
+      "current_value": "$0.86",
+      "price_numeric": 0.86
+    },
+    {
+      "name": "Alolan Dugtrio #33",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Magnemite #34",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Magnemite #35",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Magneton #36",
+      "current_value": "$0.46",
+      "price_numeric": 0.46
+    },
+    {
+      "name": "Magnezone #37",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Shieldon #38",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Bastiodon #39",
+      "current_value": "$1.33",
+      "price_numeric": 1.33
+    },
+    {
+      "name": "Bronzong #41",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Heatran #42",
+      "current_value": "$0.65",
+      "price_numeric": 0.65
+    },
+    {
+      "name": "Solgaleo ◇ #43",
+      "current_value": "$3.38",
+      "price_numeric": 3.38
+    },
+    {
+      "name": "Dusk Mane Necrozma-GX #44",
+      "current_value": "$2.48",
+      "price_numeric": 2.48
+    },
+    {
+      "name": "Dialga-GX #45",
+      "current_value": "$4.47",
+      "price_numeric": 4.47
+    },
+    {
+      "name": "Lickitung #46",
+      "current_value": "$1.39",
+      "price_numeric": 1.39
+    },
+    {
+      "name": "Lickilicky #47",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Eevee #48",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Glameow #49",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Purugly #50",
+      "current_value": "$4.24",
+      "price_numeric": 4.24
+    },
+    {
+      "name": "Fan Rotom #51",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Oranguru #52",
+      "current_value": "$1.16",
+      "price_numeric": 1.16
+    },
+    {
+      "name": "Potion #53",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Missing Clover #58",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Cyrus ◇ #59",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Gardenia #60",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Pokémon Fan Club #61",
+      "current_value": "$0.37",
+      "price_numeric": 0.37
+    },
+    {
+      "name": "Mars #62",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Lillie #63",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Double Colorless Energy #65",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Unit Energy GFW #66",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Leafeon-GX #67",
+      "current_value": "$26.75",
+      "price_numeric": 26.75
+    },
+    {
+      "name": "Dusk Mane Necrozma-GX #68",
+      "current_value": "$16.97",
+      "price_numeric": 16.97
+    },
+    {
+      "name": "Dialga-GX #69",
+      "current_value": "$19.95",
+      "price_numeric": 19.95
+    },
+    {
+      "name": "Gardenia #70",
+      "current_value": "$75.24",
+      "price_numeric": 75.24
+    },
+    {
+      "name": "Pokémon Fan Club #71",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Mars #72",
+      "current_value": "$77.00",
+      "price_numeric": 77
+    },
+    {
+      "name": "Leafeon-GX #73",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Dialga-GX #75",
+      "current_value": "$36.00",
+      "price_numeric": 36
+    },
+    {
+      "name": "Peeking Red Card #76",
+      "current_value": "$24.00",
+      "price_numeric": 24
+    },
+    {
+      "name": "Missing Clover #77",
+      "current_value": "$13.99",
+      "price_numeric": 13.99
+    },
+    {
+      "name": "Unit Energy Grass Fire Water #78",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Missing Clover#77RarityウルトラレアYou may play 4 Missing Clover cards at once. • If you played 1 card, look at the top card of your deck.",
+      "current_value": "$13.99",
+      "price_numeric": 13.99
+    }
+  ]
+}

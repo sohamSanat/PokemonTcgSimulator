@@ -1,0 +1,497 @@
+{
+  "metadata": {
+    "set_name": "Night Wanderer",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/night-wanderer/sv6a_ja",
+    "release_date": "2024/06/07",
+    "scraped_at": "2026-07-15T11:39:48.761236",
+    "elapsed_seconds": 16.41,
+    "total_cards_scraped": 97
+  },
+  "cards": [
+    {
+      "name": "Joltik #1",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Galvantula #2",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Rowlet #3",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Dartrix #4",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Decidueye #5",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Tapu Bulu #6",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Houndour #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Houndoom #8",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Iron Moth #9",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Horsea #10",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Seadra #11",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Kingdra ex #12",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Sneasel #13",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Weavile #14",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Revavroom ex #15",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Drowzee #16",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Hypno #17",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Duskull #18",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Dusclops #19",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Dusknoir #20",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Cresselia #21",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Sylveon #22",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Croagunk #23",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Toxicroak #24",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Bloodmoon Ursaluna #25",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Slither Wing #26",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Zubat #27",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Golbat #28",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Crobat #29",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Absol #30",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Zorua #31",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Zoroark #32",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Inkay #33",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Malamar #34",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Yveltal #35",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Okidogi ex #36",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Munkidori ex #37",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Fezandipiti ex #38",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Pecharunt ex #39",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Genesect #40",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Cufant #41",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Copperajah #42",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Varoom #43",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Axew #44",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Fraxure #45",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Haxorus #46",
+      "current_value": "$0.26",
+      "price_numeric": 0.26
+    },
+    {
+      "name": "Kyurem #47",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Meowth #48",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Persian #49",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Eevee #50",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Furfrou #51",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Stufful #52",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Bewear #53",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Dangerous Laser #54",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Poké-Vital A #55",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Night Stretcher #56",
+      "current_value": "$0.33",
+      "price_numeric": 0.33
+    },
+    {
+      "name": "Binding Mochi #57",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Power Hourglass #58",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Colress's Tenacity #59",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Janine's Secret Technique #60",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Cassiopeia #61",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Xerosic's Scheme #62",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Neutral Center #63",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Night Academy #64",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Tapu Bulu #65",
+      "current_value": "$2.12",
+      "price_numeric": 2.12
+    },
+    {
+      "name": "Houndoom #66",
+      "current_value": "$10.71",
+      "price_numeric": 10.71
+    },
+    {
+      "name": "Horsea #67",
+      "current_value": "$14.06",
+      "price_numeric": 14.06
+    },
+    {
+      "name": "Duskull #68",
+      "current_value": "$13.17",
+      "price_numeric": 13.17
+    },
+    {
+      "name": "Dusclops #69",
+      "current_value": "$9.01",
+      "price_numeric": 9.01
+    },
+    {
+      "name": "Dusknoir #70",
+      "current_value": "$7.91",
+      "price_numeric": 7.91
+    },
+    {
+      "name": "Cresselia #71",
+      "current_value": "$7.40",
+      "price_numeric": 7.4
+    },
+    {
+      "name": "Zorua #72",
+      "current_value": "$7.10",
+      "price_numeric": 7.1
+    },
+    {
+      "name": "Cufant #73",
+      "current_value": "$2.80",
+      "price_numeric": 2.8
+    },
+    {
+      "name": "Fraxure #74",
+      "current_value": "$3.54",
+      "price_numeric": 3.54
+    },
+    {
+      "name": "Persian #75",
+      "current_value": "$18.24",
+      "price_numeric": 18.24
+    },
+    {
+      "name": "Bewear #76",
+      "current_value": "$4.74",
+      "price_numeric": 4.74
+    },
+    {
+      "name": "Kingdra ex #77",
+      "current_value": "$1.88",
+      "price_numeric": 1.88
+    },
+    {
+      "name": "Revavroom ex #78",
+      "current_value": "$1.21",
+      "price_numeric": 1.21
+    },
+    {
+      "name": "Okidogi ex #79",
+      "current_value": "$1.12",
+      "price_numeric": 1.12
+    },
+    {
+      "name": "Munkidori ex #80",
+      "current_value": "$1.48",
+      "price_numeric": 1.48
+    },
+    {
+      "name": "Fezandipiti ex #81",
+      "current_value": "$2.81",
+      "price_numeric": 2.81
+    },
+    {
+      "name": "Pecharunt ex #82",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Colress's Tenacity #83",
+      "current_value": "$2.39",
+      "price_numeric": 2.39
+    },
+    {
+      "name": "Janine's Secret Technique #84",
+      "current_value": "$1.82",
+      "price_numeric": 1.82
+    },
+    {
+      "name": "Cassiopeia #85",
+      "current_value": "$2.57",
+      "price_numeric": 2.57
+    },
+    {
+      "name": "Xerosic's Scheme #86",
+      "current_value": "$1.23",
+      "price_numeric": 1.23
+    },
+    {
+      "name": "Okidogi ex #87",
+      "current_value": "$10.83",
+      "price_numeric": 10.83
+    },
+    {
+      "name": "Munkidori ex #88",
+      "current_value": "$7.63",
+      "price_numeric": 7.63
+    },
+    {
+      "name": "Fezandipiti ex #89",
+      "current_value": "$17.67",
+      "price_numeric": 17.67
+    },
+    {
+      "name": "Pecharunt ex #90",
+      "current_value": "$10.98",
+      "price_numeric": 10.98
+    },
+    {
+      "name": "Cassiopeia #91",
+      "current_value": "$22.00",
+      "price_numeric": 22
+    },
+    {
+      "name": "Pecharunt ex #92",
+      "current_value": "$6.48",
+      "price_numeric": 6.48
+    },
+    {
+      "name": "Earthen Vessel #93",
+      "current_value": "$10.63",
+      "price_numeric": 10.63
+    },
+    {
+      "name": "Power Hourglass #94",
+      "current_value": "$5.84",
+      "price_numeric": 5.84
+    },
+    {
+      "name": "Cassiopeia#85RarityスーパーレアYou can use this card only when it is the last card in your hand.",
+      "current_value": "$2.57",
+      "price_numeric": 2.57
+    },
+    {
+      "name": "Cassiopeia#91RarityスペシャルアートレアYou can use this card only when it is the last card in your hand.",
+      "current_value": "$22.00",
+      "price_numeric": 22
+    },
+    {
+      "name": "Earthen Vessel#93RarityウルトラレアYou can use this card only if you discard another card from your hand.",
+      "current_value": "$10.63",
+      "price_numeric": 10.63
+    }
+  ]
+}

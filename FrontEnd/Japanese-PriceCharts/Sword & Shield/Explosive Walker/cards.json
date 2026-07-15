@@ -1,0 +1,407 @@
+{
+  "metadata": {
+    "set_name": "Explosive Walker",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/explosive-walker/swsh2a_ja",
+    "release_date": "2020/04/24",
+    "scraped_at": "2026-07-15T12:02:12.220825",
+    "elapsed_seconds": 20.14,
+    "total_cards_scraped": 79
+  },
+  "cards": [
+    {
+      "name": "Butterfree V #1",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Butterfree VMAX #2",
+      "current_value": "$4.78",
+      "price_numeric": 4.78
+    },
+    {
+      "name": "Karrablast #3",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Shelmet #4",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Accelgor #5",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Bounsweet #6",
+      "current_value": "$1.70",
+      "price_numeric": 1.7
+    },
+    {
+      "name": "Steenee #7",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Tsareena #8",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Wimpod #9",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Golisopod #10",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Heatran #11",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Larvesta #12",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Fletchinder #14",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Talonflame #15",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Centiskorch V #16",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Centiskorch VMAX #17",
+      "current_value": "$0.76",
+      "price_numeric": 0.76
+    },
+    {
+      "name": "Galarian Mr. Mime #18",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Galarian Mr. Rime #19",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Feebas #20",
+      "current_value": "$0.22",
+      "price_numeric": 0.22
+    },
+    {
+      "name": "Milotic #21",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Cubchoo #22",
+      "current_value": "$0.56",
+      "price_numeric": 0.56
+    },
+    {
+      "name": "Beartic #23",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Wishiwashi #24",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Vikavolt V #25",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Toxel #26",
+      "current_value": "$0.73",
+      "price_numeric": 0.73
+    },
+    {
+      "name": "Toxtricity #27",
+      "current_value": "$1.05",
+      "price_numeric": 1.05
+    },
+    {
+      "name": "Gardevoir V #30",
+      "current_value": "$3.20",
+      "price_numeric": 3.2
+    },
+    {
+      "name": "Gardevoir VMAX #31",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Lunatone #32",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Dedenne #33",
+      "current_value": "$1.56",
+      "price_numeric": 1.56
+    },
+    {
+      "name": "Morelull #34",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Shiinotic #35",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Sinistea #36",
+      "current_value": "$0.19",
+      "price_numeric": 0.19
+    },
+    {
+      "name": "Polteageist #37",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Diglett #38",
+      "current_value": "$0.59",
+      "price_numeric": 0.59
+    },
+    {
+      "name": "Dugtrio #39",
+      "current_value": "$0.58",
+      "price_numeric": 0.58
+    },
+    {
+      "name": "Larvitar #40",
+      "current_value": "$0.66",
+      "price_numeric": 0.66
+    },
+    {
+      "name": "Pupitar #41",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Tyranitar #42",
+      "current_value": "$0.45",
+      "price_numeric": 0.45
+    },
+    {
+      "name": "Solrock #43",
+      "current_value": "$0.38",
+      "price_numeric": 0.38
+    },
+    {
+      "name": "Diggersby #44",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Grapploct V #45",
+      "current_value": "$1.13",
+      "price_numeric": 1.13
+    },
+    {
+      "name": "Grimer #46",
+      "current_value": "$0.77",
+      "price_numeric": 0.77
+    },
+    {
+      "name": "Muk #47",
+      "current_value": "$0.85",
+      "price_numeric": 0.85
+    },
+    {
+      "name": "Darkrai #48",
+      "current_value": "$3.08",
+      "price_numeric": 3.08
+    },
+    {
+      "name": "Purrloin #49",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Liepard #50",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Aron #51",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Lairon #52",
+      "current_value": "$0.62",
+      "price_numeric": 0.62
+    },
+    {
+      "name": "Aggron #53",
+      "current_value": "$1.09",
+      "price_numeric": 1.09
+    },
+    {
+      "name": "Escavalier #54",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Galarian Stunfisk V #55",
+      "current_value": "$0.70",
+      "price_numeric": 0.7
+    },
+    {
+      "name": "Sentret #56",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Furret #57",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Bunnelby #58",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Fletchling #59",
+      "current_value": "$0.68",
+      "price_numeric": 0.68
+    },
+    {
+      "name": "Rookidee #60",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Corvisquire #61",
+      "current_value": "$1.04",
+      "price_numeric": 1.04
+    },
+    {
+      "name": "Corviknight #62",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Suspicious Food Tin #63",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Familiar Bell #64",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Big Parasol #66",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Pokémon Breeder's Nurturing #68",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Glimwood Tangle #69",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Heat Fire Energy #70",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Butterfree V #71",
+      "current_value": "$5.25",
+      "price_numeric": 5.25
+    },
+    {
+      "name": "Centiskorch V #72",
+      "current_value": "$4.97",
+      "price_numeric": 4.97
+    },
+    {
+      "name": "Vikavolt V #73",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Gardevoir V #74",
+      "current_value": "$9.16",
+      "price_numeric": 9.16
+    },
+    {
+      "name": "Grapploct V #75",
+      "current_value": "$6.20",
+      "price_numeric": 6.2
+    },
+    {
+      "name": "Galarian Stunfisk V #76",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Kabu #77",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Pokémon Breeder's Nurturing #78",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Butterfree VMAX #79",
+      "current_value": "$24.00",
+      "price_numeric": 24
+    },
+    {
+      "name": "Centiskorch VMAX #80",
+      "current_value": "$9.57",
+      "price_numeric": 9.57
+    },
+    {
+      "name": "Kabu #82",
+      "current_value": "$6.27",
+      "price_numeric": 6.27
+    },
+    {
+      "name": "Pokémon Breeder's Nurturing #83",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Suspicious Food Tin #85",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Big Parasol #86",
+      "current_value": "$6.59",
+      "price_numeric": 6.59
+    }
+  ]
+}
