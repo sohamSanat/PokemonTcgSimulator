@@ -672,6 +672,59 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     }));
   }, [selectedVendor?.name, selectedVendor?.booth, metadataLoaded]);
 
+  // ── SCRYDEX CARD-BACK RUNTIME FILTER ────────────────────────────────────────
+  // scrydex.com returns HTTP 200 for ALL URLs — even non-existent cards — serving
+  // a generic card back placeholder of EXACTLY 186,316 bytes.
+  // This effect validates the current vendor's scrydex image URLs and immediately
+  // hides any card that resolves to that known placeholder size.
+  // Note: fetch() may fail with CORS in some environments; cards are kept on error
+  // so real images are never incorrectly hidden.
+  const SCRYDEX_CARDBACK_BYTES = 186316;
+
+  useEffect(() => {
+    if (activeVendorCards.length === 0) return;
+    let cancelled = false;
+    const BATCH = 8;
+
+    const validatePool = async () => {
+      const scrydexCards = activeVendorCards.filter(c => c.img?.includes('scrydex.com'));
+      for (let i = 0; i < scrydexCards.length; i += BATCH) {
+        if (cancelled) break;
+        const batch = scrydexCards.slice(i, i + BATCH);
+        await Promise.allSettled(
+          batch.map(async (card) => {
+            if (cancelled) return;
+            try {
+              const resp = await fetch(card.img, {
+                signal: AbortSignal.timeout(6000),
+                headers: { 'User-Agent': 'Mozilla/5.0' }
+              });
+              if (!resp.ok) {
+                // True 404 — hide card
+                const id = card.originalId || card.id;
+                if (!cancelled) setBrokenOriginalIds(prev => prev.includes(id) ? prev : [...prev, id]);
+                return;
+              }
+              const buf = await resp.arrayBuffer();
+              if (buf.byteLength === SCRYDEX_CARDBACK_BYTES) {
+                // Card-back placeholder detected — hide card immediately
+                const cardContainer = document.querySelector(`[data-img-id="${card.id}"]`);
+                if (cardContainer) (cardContainer as HTMLElement).style.display = 'none';
+                const id = card.originalId || card.id;
+                if (!cancelled) setBrokenOriginalIds(prev => prev.includes(id) ? prev : [...prev, id]);
+              }
+            } catch {
+              // CORS blocked or timeout — keep card; onError fallback chain handles it
+            }
+          })
+        );
+      }
+    };
+
+    validatePool();
+    return () => { cancelled = true; };
+  }, [activeVendorCards]);
+
   const filteredCards = activeVendorCards.filter((c) => {
     if (brokenOriginalIds.includes(c.originalId || c.id)) return false;
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -886,6 +939,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 }}
                 className="bg-[#111418] border border-[#1e293b] rounded-xl group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] transform hover:-translate-y-0.5"
                 data-card-container="true"
+                data-img-id={card.id}
               >
                 {/* Full card image — w-full h-auto guarantees no cropping */}
                 <div className="w-full relative p-2 bg-black/40 rounded-t-xl">
