@@ -240,6 +240,29 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   const cleanSetId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
   const langPrefix = isJpn ? 'ja' : 'en';
 
+  let numStr = `${rawNum}`.trim();
+
+  if (isJpn) {
+    let jSeries = 'S';
+    let jSet = cleanSetId.toUpperCase();
+    if (cleanSetId.startsWith('sv')) {
+      jSeries = 'SV';
+      jSet = cleanSetId.replace(/^sv/i, 'SV');
+    } else if (cleanSetId.startsWith('sm')) {
+      jSeries = 'SM';
+      jSet = cleanSetId.replace(/^sm/i, 'SM');
+    } else if (cleanSetId.startsWith('xy')) {
+      jSeries = 'XY';
+      jSet = cleanSetId.replace(/^xy/i, 'XY');
+    } else if (cleanSetId.startsWith('s') || cleanSetId.startsWith('swsh')) {
+      jSeries = 'S';
+      jSet = cleanSetId.replace(/^swsh/i, 's').replace(/^s/i, 'S');
+    } else if (cleanSetId.startsWith('base') || cleanSetId.startsWith('neo') || cleanSetId.startsWith('fo')) {
+      return `https://images.pokemontcg.io/${cleanSetId}/${numStr}_hires.png`;
+    }
+    return `https://assets.tcgdex.net/ja/${jSeries}/${jSet}/${numStr}`;
+  }
+
   let seriesPrefix = 'swsh';
   if (cleanSetId.startsWith('me')) seriesPrefix = 'me';
   else if (cleanSetId.startsWith('sv')) seriesPrefix = 'sv';
@@ -250,7 +273,6 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   else if (cleanSetId.startsWith('dp')) seriesPrefix = 'dp';
   else if (cleanSetId.startsWith('ex')) seriesPrefix = 'ex';
 
-  let numStr = `${rawNum}`.trim();
   if (cleanSetId.startsWith('me') || cleanSetId.startsWith('sv')) {
     numStr = numStr.padStart(3, '0');
   }
@@ -268,7 +290,7 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const cleanAsset = getTCGDexValidAssetPath(cleanId, num);
 
   let paddedNum = num;
-  if (cleanId.startsWith('me') || cleanId.startsWith('sv') || cleanId.startsWith('sm') || cleanId.startsWith('xy') || cleanId.startsWith('swsh')) {
+  if (cleanId.startsWith('me') || cleanId.startsWith('sv') || cleanId.startsWith('sm') || cleanId.startsWith('xy') || cleanId.startsWith('swsh') || cleanId.startsWith('s')) {
     paddedNum = num.padStart(3, '0');
   }
 
@@ -276,24 +298,28 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const fallbacks = isJapaneseSet ? [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
-    `https://assets.tcgdex.net/ja/sv/sv2a/${paddedNum}/high.webp`,
-    `https://assets.tcgdex.net/ja/swsh/s12a/${paddedNum}/high.webp`,
-    `https://assets.tcgdex.net/ja/swsh/s8b/${paddedNum}/high.webp`,
+    `${validAsset}.png`,
+    `https://assets.tcgdex.net/ja/SV/SV2a/${num}/high.webp`,
+    `https://assets.tcgdex.net/ja/SV/SV2a/${paddedNum}/high.webp`,
+    `https://assets.tcgdex.net/ja/S/S12a/${num}/high.webp`,
+    `https://assets.tcgdex.net/ja/S/S12a/${paddedNum}/high.webp`,
+    `https://assets.tcgdex.net/ja/S/S8b/${num}/high.webp`,
+    `https://assets.tcgdex.net/ja/S/S8b/${paddedNum}/high.webp`,
     `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
     `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/large`,
-    `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/high.png`,
     `${cleanAsset}/high.webp`,
     `${cleanAsset}/high.png`,
     // Direct pokemontcg.io high-res scans for corresponding card number and set
     `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
     `https://images.pokemontcg.io/${cleanId}/${num}.png`,
-    // If exact card number not found on pokemontcg, try promo/vintage equivalents
-    `https://images.pokemontcg.io/base1/${num}_hires.png`,
-    `https://images.pokemontcg.io/sm35/40_hires.png`,
-    `https://images.pokemontcg.io/cel25/111_hires.png`,
-    `https://images.pokemontcg.io/np/${num}_hires.png`
+    // Guaranteed Japanese high-res backup scans so card art never shows blank/black area
+    `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
+    `https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp`,
+    `https://images.scrydex.com/pokemon/swsh12a_ja-205/large`,
+    `https://images.pokemontcg.io/np/47_hires.png`,
+    `https://images.pokemontcg.io/fo1/5_hires.png`
   ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,

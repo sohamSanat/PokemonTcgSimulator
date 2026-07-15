@@ -369,18 +369,18 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Mew ex SIR 151", grade: "PSA 10", price: 140.0, change: "+3.2%", id: "meo-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" }
       ],
       jpnModern: [
-        { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, change: "+12.4%", id: "jp-iono-1", img: "https://images.scrydex.com/pokemon/sv2d_ja-96/large" },
-        { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, change: "+8.1%", id: "jp-miriam-1", img: "https://images.scrydex.com/pokemon/sv1v_ja-105/large" },
-        { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, change: "+9.6%", id: "jp-mb-pika", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-25/large" },
-        { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, change: "+7.2%", id: "jp-mb-gen", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-94/large" },
-        { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, change: "+5.4%", id: "jp-erika-1", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-206/large" },
-        { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, change: "+6.8%", id: "jp-zard-sar", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
-        { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, change: "+4.5%", id: "jp-mew-sar", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
-        { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, change: "+3.8%", id: "jp-vstar-pika", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
-        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, change: "+9.4%", id: "xy-p-203", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
-        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, change: "+5.1%", id: "jp-shibuya", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
-        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, change: "+8.9%", id: "jp-stamp-pika", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
-        { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, change: "+4.2%", id: "jp-climax-zard", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
+        { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, rawPrice: 240.0, change: "+12.4%", id: "sv2d_ja-96", img: "https://images.scrydex.com/pokemon/sv2d_ja-96/large" },
+        { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, rawPrice: 110.0, change: "+8.1%", id: "sv1v_ja-105", img: "https://images.scrydex.com/pokemon/sv1v_ja-105/large" },
+        { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, rawPrice: 135.0, change: "+9.6%", id: "sv3pt5_ja-25", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-25/large" },
+        { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, rawPrice: 85.0, change: "+7.2%", id: "sv3pt5_ja-94", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-94/large" },
+        { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+5.4%", id: "sv3pt5_ja-206", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-206/large" },
+        { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, rawPrice: 90.0, change: "+6.8%", id: "sv3_ja-223", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
+        { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, rawPrice: 65.0, change: "+4.5%", id: "sv3pt5_ja-205", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
+        { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, rawPrice: 24.0, change: "+3.8%", id: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, rawPrice: 1600.0, change: "+9.4%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, rawPrice: 75.0, change: "+5.1%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, rawPrice: 155.0, change: "+8.9%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+4.2%", id: "swsh8b_ja-260", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
       ],
       tagTeams: [
         { name: "Latios & Latias GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-170", img: "https://images.scrydex.com/pokemon/sm9-170/large" },
@@ -412,16 +412,16 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
       { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
       { name: "Snorlax IR 151 Promo", grade: "Raw NM", price: 24.0, change: "+0.8%", id: "bgt-5", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
-      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://assets.tcgdex.net/ja/sv/sv2a/133/high.webp" },
-      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://assets.tcgdex.net/ja/sv/sv2a/149/high.webp" },
-      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://assets.tcgdex.net/ja/swsh/s12a/205/high.webp" },
+      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", img: "https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp" },
+      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", img: "https://assets.tcgdex.net/ja/SV/SV2a/149/high.webp" },
+      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", img: "https://assets.tcgdex.net/ja/S/S12a/205/high.webp" },
       { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
       { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", img: "https://images.pokemontcg.io/base1/58_hires.png" },
       { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
       { name: "Magikarp IR Paldea Evolved", grade: "Raw NM", price: 110.0, change: "+7.8%", id: "bgt-12", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
       { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
       { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
-      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://assets.tcgdex.net/ja/swsh/s12a/183/high.webp" },
+      { name: "Japanese VSTAR Universe God Pack Mew", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", img: "https://assets.tcgdex.net/ja/S/S12a/183/high.webp" },
       { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", img: "https://images.pokemontcg.io/base1/63_hires.png" },
       { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", img: "https://images.pokemontcg.io/base1/46_hires.png" },
       { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", img: "https://images.pokemontcg.io/ju1/10_hires.png" },
@@ -441,7 +441,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
     const dynamicJpnPool = getCardShowDynamicJapaneseCards(120);
 
-    // Differentiate Vendor Archetypes so 70% of floor tables sell realistic RAW Ungraded inventory ($5 - $95)
+    // Differentiate Vendor Archetypes so tables either sell realistic RAW Ungraded regular set cards OR apply PSA value multipliers
     const isHighEndSlabGrailVendor = vName.includes("ALPHA GRAILS") || vName.includes("GOLD STAR") || vName.includes("SLAB CITY") || vName.includes("VINTAGEVAULT") || vName.includes("SPECS GRADED");
     const isJapaneseSpecialty = vName.includes("JAPANESE HIGH CLASS") || vName.includes("RETRO POKÉMON") || vName.includes("DOVAKINJI");
     const isModernAltVendor = vName.includes("MODERN ALT") || vName.includes("DIGIMON") || vName.includes("UDS");
@@ -450,91 +450,109 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
     if (isHighEndSlabGrailVendor) {
       // 1. High-End Glass Case Vendors (15-20% of floor): Sell graded grails & slabs ($250 - $18,000)
-      const topGrails = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn.slice(0, 8)];
-      const midSlabs = [...pools.modernAlt, ...pools.tagTeams, ...pools.jpnModern];
-      const rawHighlights = [...rawBinderSingles.slice(0, 10), ...dynamicJpnPool.slice(0, 10)];
+      // Ensure Japanese regular set expensive chase cards & slabs (`dynamicJpnPool` + `jpnModern` + `vintageJpn`) are featured prominently!
+      const topGrails = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn.slice(0, 8), ...dynamicJpnPool.slice(0, 10)];
+      const midSlabs = [...pools.modernAlt, ...pools.tagTeams, ...pools.jpnModern, ...dynamicJpnPool.slice(10, 24)];
+      const rawHighlights = [...rawBinderSingles.slice(0, 8), ...dynamicJpnPool.slice(24, 34)];
       const combined = [...topGrails, ...midSlabs, ...rawHighlights];
-      finalVendorPool = combined.map((c, idx) => ({
-        ...c,
-        id: `${selectedVendor?.booth || 'booth'}-grail-${idx}`,
-        grade: c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5"),
-        price: c.price || 350,
-      })).slice(0, 56);
+      finalVendorPool = combined.map((c, idx) => {
+        const assignedGrade = c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5");
+        // Apply PSA value multiplier if we have rawPrice, otherwise use existing price
+        const baseRaw = (c as any).rawPrice || (c.price ? (assignedGrade === "PSA 10" ? c.price / 2.8 : c.price) : 150);
+        const finalPrice = assignedGrade === "PSA 10" ? Math.max(c.price || 350, Number((baseRaw * 2.8).toFixed(2))) : assignedGrade === "PSA 9" ? Math.max(c.price || 180, Number((baseRaw * 1.6).toFixed(2))) : (c.price || 200);
+        return {
+          ...c,
+          id: `${selectedVendor?.booth || 'booth'}-grail-${idx}`,
+          grade: assignedGrade,
+          price: finalPrice,
+        };
+      }).slice(0, 60);
     } else if (isJapaneseSpecialty) {
-      // 2. Japanese Hub / Import Tables: Sell 80% Raw Japanese binder hits ($8 - $140) & 20% Japanese slabs
-      const jpnRawList = [...dynamicJpnPool, ...pools.jpnModern, ...rawBinderSingles.filter(c => c.name.includes("Japanese"))];
-      const jpnSlabs = [...pools.vintageJpn];
+      // 2. Japanese Hub / Import Tables: Sell expensive regular set Japanese cards (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
+      // For specialty raw tables like Retro Pokémon HQ, sell raw regular set cards right at rawPrice ($15 - $380).
+      // For glass case tables (Japanese High Class Hub / Dovakinji), apply PSA value multiplier on top regular set chase hits!
+      const jpnMasterList = [...dynamicJpnPool, ...pools.jpnModern, ...pools.vintageJpn, ...rawBinderSingles.filter(c => c.name?.includes("Japanese"))];
+      const isRawSpecialty = vName.includes("RETRO POKÉMON");
       let idx = 0;
-      while (finalVendorPool.length < 56) {
+      while (finalVendorPool.length < 60) {
         idx++;
-        if (idx <= 12 && idx < jpnSlabs.length) {
-          const s = jpnSlabs[idx];
+        const item = jpnMasterList[idx % jpnMasterList.length];
+        const baseRaw = (item as any).rawPrice || (item.price ? Math.min(item.price, item.price / ((item as any).grade?.includes("PSA") ? 2.5 : 1)) : 45);
+        if (isRawSpecialty || idx % 3 !== 0) {
+          // Sell Raw Ungraded regular set expensive card at realistic raw market value
+          const rawSellPrice = Math.max(10, Number((baseRaw * (0.95 + (idx % 5) * 0.05)).toFixed(2)));
           finalVendorPool.push({
-            ...s,
-            id: `${selectedVendor?.booth || 'booth'}-jpslab-${idx}`,
-            grade: s.grade || (idx % 2 === 0 ? "PSA 10" : "PSA 9"),
-            price: s.price || 180
+            ...item,
+            id: `${selectedVendor?.booth || 'booth'}-jpnraw-${idx}`,
+            grade: idx % 6 === 0 ? "Raw LP/NM" : "Raw NM",
+            price: rawSellPrice
           });
         } else {
-          const r = jpnRawList[idx % jpnRawList.length] || rawBinderSingles[idx % rawBinderSingles.length];
-          const rawPrice = Math.max(6, Number(((r.price || 35) * (0.6 + (idx % 8) * 0.1)).toFixed(2)));
+          // Sell Graded Japanese Regular Set Slab with PSA value multiplier applied to raw price
+          const slabGrade = idx % 2 === 0 ? "PSA 10" : "PSA 9";
+          const slabPrice = slabGrade === "PSA 10" ? Math.max(item.price || 240, Number((baseRaw * 3.2).toFixed(2))) : Math.max((item.price || 140) * 0.6, Number((baseRaw * 1.7).toFixed(2)));
           finalVendorPool.push({
-            ...r,
-            id: `${selectedVendor?.booth || 'booth'}-jpraw-${idx}`,
-            grade: idx % 5 === 0 ? "Raw LP/NM" : "Raw NM",
-            price: rawPrice > 250 ? 110 : rawPrice
+            ...item,
+            id: `${selectedVendor?.booth || 'booth'}-jpnslab-${idx}`,
+            grade: slabGrade,
+            price: slabPrice
           });
         }
       }
     } else if (isModernAltVendor) {
-      // 3. Modern Alt Art & Hit Tables: Sell 80% Raw Ungraded Modern singles ($10 - $160) & some modern slabs
-      const modRaw = [...rawBinderSingles, ...pools.modernAlt, ...pools.tagTeams];
+      // 3. Modern Alt Art & Hit Tables: Sell regular set Modern hits across English & Japanese ($15 - $280 raw, + slabs with PSA multiplier)
+      const modRaw = [...rawBinderSingles, ...pools.modernAlt, ...pools.tagTeams, ...dynamicJpnPool.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))];
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
-        if (idx <= 12 && idx < pools.modernAlt.length) {
+        if (idx <= 14 && idx < pools.modernAlt.length) {
           const s = pools.modernAlt[idx];
+          const baseRaw = (s as any).rawPrice || (s.price ? s.price / 2.6 : 80);
           finalVendorPool.push({
             ...s,
             id: `${selectedVendor?.booth || 'booth'}-modslab-${idx}`,
             grade: idx % 2 === 0 ? "PSA 10" : "PSA 9",
-            price: s.price || 240
+            price: idx % 2 === 0 ? Math.max(s.price || 240, Number((baseRaw * 2.8).toFixed(2))) : Number((baseRaw * 1.6).toFixed(2))
           });
         } else {
           const r = modRaw[idx % modRaw.length];
-          const rawPrice = Math.max(8, Number(((r.price || 40) * (0.5 + (idx % 6) * 0.15)).toFixed(2)));
+          const baseRaw = (r as any).rawPrice || (r.price ? ((r as any).grade?.includes("PSA") ? r.price / 2.5 : r.price) : 35);
+          const rawPrice = Math.max(10, Number((baseRaw * (0.9 + (idx % 6) * 0.05)).toFixed(2)));
           finalVendorPool.push({
             ...r,
             id: `${selectedVendor?.booth || 'booth'}-modraw-${idx}`,
             grade: "Raw NM",
-            price: rawPrice > 300 ? 140 : rawPrice
+            price: rawPrice
           });
         }
       }
     } else {
       // 4. Standard Floor Vendors, Trade Tables & General Sellers (70% OF THE SHOW! Zone 8, A-M, N-Z, Carbanda, Brodes, etc.)
-      // Almost all inventory is RAW UNGRADED ($5 to $85) with only 3 to 4 centerpiece display items ($120 - $320)!
+      // Featuring raw regular set cards across English & Japanese ($10 to $180) + centerpieces!
       const allRaw = [...rawBinderSingles, ...dynamicJpnPool, ...pools.tagTeams.slice(0, 4)];
-      const showcaseItems = [...pools.vintageJpn.slice(6, 12), ...pools.modernAlt.slice(4, 8)];
+      const showcaseItems = [...pools.vintageJpn.slice(6, 12), ...pools.modernAlt.slice(4, 8), ...dynamicJpnPool.slice(0, 6)];
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
-        if (idx <= 4 && idx < showcaseItems.length) {
+        if (idx <= 6 && idx < showcaseItems.length) {
           const sc = showcaseItems[idx];
+          const baseRaw = (sc as any).rawPrice || (sc.price ? ((sc as any).grade?.includes("PSA") ? sc.price / 2.6 : sc.price) : 60);
+          const grade = idx % 2 === 0 ? "PSA 10" : "PSA 9";
           finalVendorPool.push({
             ...sc,
             id: `${selectedVendor?.booth || 'booth'}-showcase-${idx}`,
-            grade: idx % 2 === 0 ? "Raw NM" : "PSA 9",
-            price: Math.min(340, sc.price || 180)
+            grade: grade,
+            price: grade === "PSA 10" ? Number((baseRaw * 2.8).toFixed(2)) : Number((baseRaw * 1.6).toFixed(2))
           });
         } else {
           const r = allRaw[idx % allRaw.length];
-          const rawPrice = Math.max(5, Number(((r.price || 28) * (0.6 + (idx % 7) * 0.12)).toFixed(2)));
+          const baseRaw = (r as any).rawPrice || (r.price ? ((r as any).grade?.includes("PSA") ? r.price / 2.5 : r.price) : 28);
+          const rawPrice = Math.max(8, Number((baseRaw * (0.85 + (idx % 7) * 0.05)).toFixed(2)));
           finalVendorPool.push({
             ...r,
             id: `${selectedVendor?.booth || 'booth'}-floor-${idx}`,
             grade: idx % 6 === 0 ? "Raw LP" : idx % 6 === 1 ? "Raw MP/LP" : "Raw NM",
-            price: rawPrice > 160 ? 75 : rawPrice
+            price: rawPrice
           });
         }
       }

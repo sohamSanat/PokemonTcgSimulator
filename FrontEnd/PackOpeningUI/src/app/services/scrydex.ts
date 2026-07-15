@@ -975,54 +975,143 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
 }
 
 export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
-  if (!jaCardPricesCache || Object.keys(jaCardPricesCache).length === 0) {
-    return [];
-  }
-  const results: any[] = [];
-  const keys = Object.keys(jaCardPricesCache);
-  
-  // Filter for authentic Japanese card keys with real prices (e.g. sv2d_ja-96, sv3pt5_ja-25, swsh12a_ja-205, sv4a_ja-348, sm12a_ja-192, base1_ja-4, fo1_ja-5, neo1_ja-9, etc.)
-  const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && jaCardPricesCache![k] > 0.5 && !k.includes('logo'));
-  
-  // Sort or pick a diverse sample across Generations 1, 2, and 3 (and modern SARs / UR / SR)
-  const step = Math.max(1, Math.floor(validKeys.length / count));
-  for (let i = 0; i < Math.min(validKeys.length, count * step); i += step) {
-    const key = validKeys[i];
-    const price = jaCardPricesCache[key];
-    if (price && price > 0.5) {
-      const rawName = jaCardNamesCache?.[key] || jaCardNamesCache?.[key.replace(/_ja_ja-/i, '_ja-')] || `Japanese Card #${key.split('-')[1] || key}`;
-      const [prefix, numStr] = key.split('-');
-      const cleanSet = prefix.replace(/_ja_ja$/i, '_ja').replace(/_ja$/i, '');
-      const num = numStr || '1';
-      
-      let eraPrefix = 'swsh';
-      if (cleanSet.toLowerCase().startsWith('sv')) eraPrefix = 'sv';
-      else if (cleanSet.toLowerCase().startsWith('sm')) eraPrefix = 'sm';
-      else if (cleanSet.toLowerCase().startsWith('xy')) eraPrefix = 'xy';
-      else if (cleanSet.toLowerCase().startsWith('base')) eraPrefix = 'base';
-      else if (cleanSet.toLowerCase().startsWith('bw')) eraPrefix = 'bw';
-      else if (cleanSet.toLowerCase().startsWith('dp')) eraPrefix = 'dp';
-      else if (cleanSet.toLowerCase().startsWith('ex')) eraPrefix = 'ex';
-      
-      const paddedNumStr = (eraPrefix === 'sv' || eraPrefix === 'me') ? num.toString().padStart(3, '0') : num;
-      const tcgdexAssetUrl = `https://assets.tcgdex.net/ja/${eraPrefix}/${cleanSet.toLowerCase()}/${paddedNumStr}/high.webp`;
-      const scrydexUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${num}/large`;
-      const imgUrl = (cleanSet.toLowerCase().startsWith('base') || cleanSet.toLowerCase().startsWith('neo') || cleanSet.toLowerCase().startsWith('fo'))
-        ? `https://images.pokemontcg.io/${cleanSet.toLowerCase()}/${num}_hires.png`
-        : tcgdexAssetUrl;
+  // Master pool of regular set expensive cards across every generation (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
+  // Each item stores rawPrice (`rawPrice`) so vendors can either sell Raw Expensive Set Cards (`Raw NM`) or apply PSA Value Multipliers (`PSA 10 / PSA 9`)!
+  const masterRegularSetPool = [
+    // Scarlet & Violet Regular Sets & 151
+    { cleanSet: "sv3pt5", num: "205", name: "Japanese Mew ex SAR (151 JPN)", rawPrice: 185.0 },
+    { cleanSet: "sv3pt5", num: "206", name: "Japanese Erika's Invitation SAR (151 JPN)", rawPrice: 210.0 },
+    { cleanSet: "sv3pt5", num: "25", name: "Japanese Pikachu Master Ball Reverse Holo (151 JPN)", rawPrice: 380.0 },
+    { cleanSet: "sv3pt5", num: "94", name: "Japanese Gengar Master Ball Reverse Holo (151 JPN)", rawPrice: 220.0 },
+    { cleanSet: "sv3pt5", num: "133", name: "Japanese Eevee Master Ball Reverse Holo (151 JPN)", rawPrice: 110.0 },
+    { cleanSet: "sv3pt5", num: "149", name: "Japanese Dragonite Master Ball Reverse Holo (151 JPN)", rawPrice: 125.0 },
+    { cleanSet: "sv2d", num: "96", name: "Japanese Iono SAR (Clay Burst JPN)", rawPrice: 850.0 },
+    { cleanSet: "sv1v", num: "105", name: "Japanese Miriam SAR (Violet ex JPN)", rawPrice: 340.0 },
+    { cleanSet: "sv3", num: "223", name: "Japanese Charizard ex SAR (Ruler of the Black Flame JPN)", rawPrice: 240.0 },
+    { cleanSet: "sv2", num: "203", name: "Japanese Magikarp IR (Triple Beat JPN)", rawPrice: 110.0 },
+    { cleanSet: "sv4", num: "254", name: "Japanese Iron Valiant ex SAR (Ancient Roar JPN)", rawPrice: 135.0 },
+    { cleanSet: "sv4", num: "248", name: "Japanese Roaring Moon ex SAR (Ancient Roar JPN)", rawPrice: 150.0 },
+    { cleanSet: "sv6", num: "222", name: "Japanese Greninja ex SAR (Crimson Haze JPN)", rawPrice: 195.0 },
+    { cleanSet: "sv6", num: "221", name: "Japanese Carmine SAR (Mask of Change JPN)", rawPrice: 160.0 },
+    { cleanSet: "sv7", num: "170", name: "Japanese Terapagos ex SAR (Stellar Miracle JPN)", rawPrice: 145.0 },
+    { cleanSet: "sv8", num: "241", name: "Japanese Pikachu ex SAR (Super Electric Breaker JPN)", rawPrice: 320.0 },
+    { cleanSet: "sv8", num: "244", name: "Japanese Jasmine's Gaze SAR (Super Electric Breaker JPN)", rawPrice: 125.0 },
 
-      results.push({
-        id: `${cleanSet}_ja-${num}`,
-        setId: `${cleanSet}_ja`,
-        num: num,
-        name: translateJapaneseName(rawName),
-        grade: price > 60 ? "PSA 10" : price > 25 ? "PSA 9" : "Raw NM",
-        price: Number((price * (price > 60 ? 1.4 : 1.15)).toFixed(2)),
-        change: `+${(Math.random() * 14 + 1.2).toFixed(1)}%`,
-        img: imgUrl
-      });
+    // Sword & Shield Regular Sets & High Class
+    { cleanSet: "swsh7", num: "215", name: "Japanese Umbreon VMAX HR SA Moonbreon (Eevee Heroes JPN)", rawPrice: 1850.0 },
+    { cleanSet: "swsh7", num: "218", name: "Japanese Rayquaza VMAX HR SA (Blue Sky Stream JPN)", rawPrice: 720.0 },
+    { cleanSet: "swsh7", num: "212", name: "Japanese Sylveon VMAX HR SA (Eevee Heroes JPN)", rawPrice: 420.0 },
+    { cleanSet: "swsh7", num: "205", name: "Japanese Leafeon VMAX HR SA (Eevee Heroes JPN)", rawPrice: 340.0 },
+    { cleanSet: "swsh7", num: "192", name: "Japanese Dragonite V SR SA (Blue Sky Stream JPN)", rawPrice: 210.0 },
+    { cleanSet: "swsh11", num: "186", name: "Japanese Giratina V SR SA (Lost Abyss JPN)", rawPrice: 780.0 },
+    { cleanSet: "swsh11", num: "180", name: "Japanese Aerodactyl V SR SA (Lost Abyss JPN)", rawPrice: 190.0 },
+    { cleanSet: "swsh12", num: "186", name: "Japanese Lugia V SR SA (Paradigm Trigger JPN)", rawPrice: 390.0 },
+    { cleanSet: "swsh8", num: "271", name: "Japanese Gengar VMAX HR SA (High Class Deck JPN)", rawPrice: 480.0 },
+    { cleanSet: "swsh8", num: "270", name: "Japanese Espeon VMAX HR SA (Eevee Heroes JPN)", rawPrice: 360.0 },
+    { cleanSet: "swsh9", num: "154", name: "Japanese Charizard V SR SA (Star Birth JPN)", rawPrice: 290.0 },
+    { cleanSet: "swsh12a", num: "205", name: "Japanese Pikachu AR (VSTAR Universe JPN)", rawPrice: 65.0 },
+    { cleanSet: "swsh8b", num: "260", name: "Japanese Charizard VMAX SSR (VMAX Climax JPN)", rawPrice: 210.0 },
+    { cleanSet: "swsh4", num: "188", name: "Japanese Pikachu VMAX HR (Amazing Volt Tackle JPN)", rawPrice: 260.0 },
+    { cleanSet: "swsh6", num: "201", name: "Japanese Blaziken VMAX HR SA (Peerless Fighters JPN)", rawPrice: 310.0 },
+    { cleanSet: "swsh6", num: "198", name: "Japanese Galarian Moltres V SR SA (Peerless Fighters JPN)", rawPrice: 175.0 },
+    { cleanSet: "swsh5", num: "155", name: "Japanese Tyranitar V SR SA (Single Strike Master JPN)", rawPrice: 140.0 },
+
+    // Sun & Moon Regular Sets & Tag Teams
+    { cleanSet: "sm9", num: "170", name: "Japanese Latios & Latias GX SR SA (Tag Bolt JPN)", rawPrice: 1120.0 },
+    { cleanSet: "sm9", num: "165", name: "Japanese Gengar & Mimikyu GX SR SA (Tag Bolt JPN)", rawPrice: 520.0 },
+    { cleanSet: "sm9", num: "161", name: "Japanese Magikarp & Wailord GX SR SA (Tag Bolt JPN)", rawPrice: 440.0 },
+    { cleanSet: "sm10", num: "214", name: "Japanese Charizard & Reshiram GX SR SA (Double Blaze JPN)", rawPrice: 380.0 },
+    { cleanSet: "sm11", num: "222", name: "Japanese Mewtwo & Mew GX SR SA (Miracle Twin JPN)", rawPrice: 340.0 },
+    { cleanSet: "sm12", num: "221", name: "Japanese Arceus & Dialga & Palkia GX SR SA (Alter Genesis JPN)", rawPrice: 290.0 },
+    { cleanSet: "sm12", num: "216", name: "Japanese Solgaleo & Lunala GX SR SA (Alter Genesis JPN)", rawPrice: 210.0 },
+    { cleanSet: "sm12", num: "215", name: "Japanese Blastoise & Piplup GX SR SA (Alter Genesis JPN)", rawPrice: 230.0 },
+    { cleanSet: "sm3", num: "150", name: "Japanese Charizard GX HR (Burning Shadows JPN)", rawPrice: 890.0 },
+    { cleanSet: "sm115", num: "68", name: "Japanese Shiny Charizard GX SSR (Ultra Shiny GX JPN)", rawPrice: 640.0 },
+
+    // Vintage & Classic Japanese
+    { cleanSet: "base1", num: "4", name: "Japanese Base Charizard Holo (No Rarity / Standard JPN)", rawPrice: 1850.0 },
+    { cleanSet: "neo2", num: "30", name: "Japanese Neo 2 Charizard Holo (JPN)", rawPrice: 620.0 },
+    { cleanSet: "fo1", num: "5", name: "Japanese Web Series Gengar Holo (JPN)", rawPrice: 580.0 },
+    { cleanSet: "neo1", num: "9", name: "Japanese Neo Genesis Lugia Holo (JPN)", rawPrice: 310.0 },
+    { cleanSet: "gc1", num: "16", name: "Japanese Gym Leader Erika Holo (JPN)", rawPrice: 110.0 },
+    { cleanSet: "base1", num: "10", name: "Japanese Vending Series Mewtwo (JPN)", rawPrice: 195.0 }
+  ];
+
+  const results: any[] = [];
+  const addedIds = new Set<string>();
+
+  // Helper to resolve clean Scrydex/PokemonTCG images for regular set cards without fragile TCGDex URLs
+  const getRegularSetImgUrl = (cleanSet: string, num: string) => {
+    const low = cleanSet.toLowerCase();
+    if (low.startsWith('base') || low.startsWith('neo') || low.startsWith('fo') || low.startsWith('ju') || low.startsWith('gc') || low.startsWith('gh')) {
+      return `https://images.pokemontcg.io/${low.replace(/1$|2$|3$|4$/, '')}/${num}_hires.png`;
+    }
+    return `https://images.scrydex.com/pokemon/${low}-${num}/large`;
+  };
+
+  // 1. Add all our pristine master regular set expensive cards with raw prices
+  for (const item of masterRegularSetPool) {
+    const cardId = `${item.cleanSet}_ja-${item.num}`;
+    // Check if we have an updated real-time price in jaCardPricesCache or raw price
+    const cachedPrice = (jaCardPricesCache && (jaCardPricesCache[cardId] || jaCardPricesCache[`${item.cleanSet}-${item.num}`])) || item.rawPrice;
+    const rawPrice = Number(cachedPrice.toFixed(2));
+    
+    // Assign a balanced mix of Raw vs Graded so catalogs can either sell raw or apply PSA multiplier
+    const grade = rawPrice > 500 ? "PSA 10" : rawPrice > 180 ? "PSA 9" : "Raw NM";
+    const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.8).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.6).toFixed(2)) : rawPrice;
+
+    addedIds.add(cardId);
+    results.push({
+      id: cardId,
+      setId: `${item.cleanSet}_ja`,
+      num: item.num,
+      name: item.name,
+      rawPrice: rawPrice,
+      grade: grade,
+      price: displayPrice,
+      change: `+${(Math.random() * 14 + 1.2).toFixed(1)}%`,
+      img: getRegularSetImgUrl(item.cleanSet, item.num)
+    });
+  }
+
+  // 2. Also dynamically enrich with additional regular set hits from jaCardPricesCache when loaded
+  if (jaCardPricesCache && Object.keys(jaCardPricesCache).length > 0) {
+    const keys = Object.keys(jaCardPricesCache);
+    const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && jaCardPricesCache![k] > 10.0 && !k.includes('logo'));
+    const step = Math.max(1, Math.floor(validKeys.length / Math.max(1, count - results.length)));
+    
+    for (let i = 0; i < validKeys.length && results.length < count * 1.5; i += step) {
+      const key = validKeys[i];
+      const [prefix, numStr] = key.split('-');
+      const cleanSet = prefix.replace(/_ja_ja$/i, '').replace(/_ja$/i, '').toLowerCase();
+      const num = numStr || '1';
+      const cardId = `${cleanSet}_ja-${num}`;
+      
+      if (!addedIds.has(cardId)) {
+        addedIds.add(cardId);
+        const price = jaCardPricesCache[key];
+        const rawName = jaCardNamesCache?.[key] || jaCardNamesCache?.[key.replace(/_ja_ja-/i, '_ja-')] || `Japanese Card #${num}`;
+        const translated = translateJapaneseName(rawName);
+        const exactName = translated.toLowerCase().includes('japanese') ? translated : `Japanese ${translated} (${cleanSet.toUpperCase()})`;
+        const rawPrice = Number(price.toFixed(2));
+        const grade = rawPrice > 120 ? "PSA 10" : rawPrice > 40 ? "PSA 9" : "Raw NM";
+        const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.5).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.5).toFixed(2)) : rawPrice;
+
+        results.push({
+          id: cardId,
+          setId: `${cleanSet}_ja`,
+          num: num,
+          name: exactName,
+          rawPrice: rawPrice,
+          grade: grade,
+          price: displayPrice,
+          change: `+${(Math.random() * 12 + 1.5).toFixed(1)}%`,
+          img: getRegularSetImgUrl(cleanSet, num)
+        });
+      }
     }
   }
-  return results;
+
+  return results.slice(0, count);
 }
 
