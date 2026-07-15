@@ -124,8 +124,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       { id: "tcg_am", name: "TCG VENDORS (A-M)", zone: "Zone 5", x: 180, y: 162, color: "#38bdf8", isHotEligible: true },
       { id: "alpha_grails", name: "ALPHA GRAILS", zone: "5A", x: 268, y: 147, color: "#38bdf8", isHotEligible: true },
       { id: "vintage_vault", name: "VINTAGEVAULT TCG", zone: "5B", x: 352, y: 147, color: "#2dd4bf", isHotEligible: true },
-      { id: "digimon", name: "DIGIMONCRAFT COLLECTIBLES", zone: "5C", x: 268, y: 177, color: "#c084fc", isHotEligible: false },
-      { id: "his_name", name: "HIS NAME TCG BOOTH", zone: "5D", x: 352, y: 177, color: "#f472b6", isHotEligible: false },
+      { id: "paldea", name: "PALDEA ALT ART DEPOT", zone: "5C", x: 268, y: 177, color: "#c084fc", isHotEligible: false },
+      { id: "promos", name: "PALDEAN PROMOS TCG BOOTH", zone: "5D", x: 352, y: 177, color: "#f472b6", isHotEligible: false },
       { id: "slab_city", name: "SLAB CITY PSA ON-SITE", zone: "Zone 5E", x: 490, y: 162, color: "#38bdf8", isHotEligible: true },
       { id: "retro_hq", name: "RETRO POKÉMON HQ", zone: "Zone X", x: 565, y: 162, color: "#38bdf8", isHotEligible: true },
       { id: "tcg_nz", name: "TCG VENDORS (N-Z)", zone: "Zone 6", x: 180, y: 232, color: "#fb923c", isHotEligible: true },
@@ -451,7 +451,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // Differentiate Vendor Archetypes so tables either sell realistic RAW Ungraded regular set cards OR apply PSA value multipliers
     const isHighEndSlabGrailVendor = vName.includes("ALPHA GRAILS") || vName.includes("GOLD STAR") || vName.includes("SLAB CITY") || vName.includes("VINTAGEVAULT") || vName.includes("SPECS GRADED");
     const isJapaneseSpecialty = vName.includes("JAPANESE HIGH CLASS") || vName.includes("RETRO POKÉMON") || vName.includes("DOVAKINJI");
-    const isModernAltVendor = vName.includes("MODERN ALT") || vName.includes("DIGIMON") || vName.includes("UDS");
+    const isModernAltVendor = vName.includes("MODERN ALT") || vName.includes("PALDEA") || vName.includes("UDS") || vName.includes("PROMOS");
 
     // Stable seeded random number generator based on the selected vendor name & booth ID
     // This resolves the glitch where different vendors show the exact same VIP showcase cards!
@@ -1196,24 +1196,24 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 onMouseLeave={handleBoothLeave}
                 onClick={() => handleBoothSelect({ name: "VINTAGEVAULT TCG", rating: "4.8 / 5", activeListings: "3,450+", completedTrans: "12,800+", booth: "5B", specialties: ["Japanese WOTC", "e-Series", "Neo Destiny"], discountScore: 75 })}
               />
-              <text x="352" y="152" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Autograph Pit</text>
-
+              <text x="352" y="152" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">VintageVault</text>
+ 
               {/* Row of named vendor booths */}
               <rect x="230" y="165" width="75" height="25" rx="2" fill="#0a1420" stroke="#1e3a5f" strokeWidth="0.8"
                 className="cursor-pointer hover:stroke-[#c084fc] hover:fill-[#c084fc]/[0.15] transition-all"
-                onMouseEnter={() => handleBoothHover({ name: "DIGIMONCRAFT COLLECTIBLES", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Digimon TCG", "Ghost Rares", "Alt Art Promos"], discountScore: 68 })}
+                onMouseEnter={() => handleBoothHover({ name: "PALDEA ALT ART DEPOT", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Paldean Fates SIRs", "Illustration Rares", "Gold Hyper Rares"], discountScore: 68 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => handleBoothSelect({ name: "DIGIMONCRAFT COLLECTIBLES", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Digimon TCG", "Ghost Rares", "Alt Art Promos"], discountScore: 68 })}
+                onClick={() => handleBoothSelect({ name: "PALDEA ALT ART DEPOT", rating: "4.7 / 5", activeListings: "1,450+ Items", completedTrans: "7,100+", booth: "5C", specialties: ["Paldean Fates SIRs", "Illustration Rares", "Gold Hyper Rares"], discountScore: 68 })}
               />
-              <text x="268" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">DigimonCraft</text>
-
+              <text x="268" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Paldea Depot</text>
+ 
               <rect x="315" y="165" width="75" height="25" rx="2" fill="#0a1420" stroke="#1e3a5f" strokeWidth="0.8"
                 className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
-                onMouseEnter={() => handleBoothHover({ name: "HIS NAME TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["One Piece Manga Rares", "Lorcana Enchanteds", "Modern Grails"], discountScore: 74 })}
+                onMouseEnter={() => handleBoothHover({ name: "PALDEAN PROMOS TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["Crown Zenith GGs", "Scarlet & Violet Promos", "Modern Alt Arts"], discountScore: 74 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => handleBoothSelect({ name: "HIS NAME TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["One Piece Manga Rares", "Lorcana Enchanteds", "Modern Grails"], discountScore: 74 })}
+                onClick={() => handleBoothSelect({ name: "PALDEAN PROMOS TCG BOOTH", rating: "4.8 / 5", activeListings: "2,100+ Items", completedTrans: "9,800+", booth: "5D", specialties: ["Crown Zenith GGs", "Scarlet & Violet Promos", "Modern Alt Arts"], discountScore: 74 })}
               />
-              <text x="352" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">His Name</text>
+              <text x="352" y="182" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Paldean Promos</text>
 
               {/* Zone 4 markers inside vendor area */}
               <circle cx="420" cy="155" r="10" fill="#fbbf24" fillOpacity="0.15" stroke="#fbbf24" strokeWidth="1" />
