@@ -476,14 +476,48 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       return copy;
     };
 
+    // Deterministic disjoint subsets based on a vendor hash
+    const getVendorIndex = (name: string) => {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = (hash + name.charCodeAt(i)) % 29;
+      }
+      return hash;
+    };
+    const vendorIdx = getVendorIndex(vName);
+
+    // Get a subset of an array that shifts index based on vendorIdx, minimizing card overlap
+    const getDisjointSlice = <T,>(arr: T[], count: number, offsetMultiplier: number): T[] => {
+      const result: T[] = [];
+      for (let i = 0; i < count; i++) {
+        const idx = (vendorIdx * offsetMultiplier + i) % arr.length;
+        result.push(arr[idx]);
+      }
+      return result;
+    };
+
+    // Calculate vendor-specific pool subsets
+    // Step size (offsetMultiplier) is set close to the count size to ensure adjacent vendors have very little card overlap (at most 1-2 cards)
+    const engSlice = getDisjointSlice(pools.vintageEng, 6, 5);
+    const gsSlice = getDisjointSlice(pools.goldStarsEx, 3, 2);
+    const jpnVintSlice = getDisjointSlice(pools.vintageJpn, 4, 3);
+    const modAltSlice = getDisjointSlice(pools.modernAlt, 4, 3);
+    const ttSlice = getDisjointSlice(pools.tagTeams, 3, 2);
+    const jpnModSlice = getDisjointSlice(pools.jpnModern, 4, 3);
+    const rawSlice = getDisjointSlice(rawBinderSingles, 8, 7);
+
+    // Japanese regular sets have 870 cards, slice with step size 36 to ensure disjoint Japanese catalogs per vendor
+    const startJpn = (vendorIdx * 36) % (dynamicJpnPool.length - 40);
+    const jpnSlice = dynamicJpnPool.slice(startJpn, startJpn + 40);
+
     let finalVendorPool: any[] = [];
 
     if (isHighEndSlabGrailVendor) {
       // 1. High-End Glass Case Vendors (15-20% of floor): Sell graded grails & slabs ($250 - $18,000)
-      // Ensure Japanese regular set expensive chase cards & slabs (`dynamicJpnPool` + `jpnModern` + `vintageJpn`) are featured prominently!
-      const topGrails = seededShuffle([...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn.slice(0, 8), ...dynamicJpnPool.slice(0, 10)]);
-      const midSlabs = seededShuffle([...pools.modernAlt, ...pools.tagTeams, ...pools.jpnModern, ...dynamicJpnPool.slice(10, 24)]);
-      const rawHighlights = seededShuffle([...rawBinderSingles.slice(0, 8), ...dynamicJpnPool.slice(24, 34)]);
+      // Ensure Japanese regular set expensive chase cards & slabs are featured prominently!
+      const topGrails = seededShuffle([...engSlice, ...gsSlice, ...jpnVintSlice, ...jpnSlice.slice(0, 10)]);
+      const midSlabs = seededShuffle([...modAltSlice, ...ttSlice, ...jpnModSlice, ...jpnSlice.slice(10, 24)]);
+      const rawHighlights = seededShuffle([...rawSlice, ...jpnSlice.slice(24, 34)]);
       const combined = [...topGrails, ...midSlabs, ...rawHighlights];
       finalVendorPool = combined.map((c, idx) => {
         const assignedGrade = c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5");
@@ -501,7 +535,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // 2. Japanese Hub / Import Tables: Sell expensive regular set Japanese cards (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
       // For specialty raw tables like Retro Pokémon HQ, sell raw regular set cards right at rawPrice ($15 - $380).
       // For glass case tables (Japanese High Class Hub / Dovakinji), apply PSA value multiplier on top regular set chase hits!
-      const jpnMasterList = seededShuffle([...dynamicJpnPool, ...pools.jpnModern, ...pools.vintageJpn, ...rawBinderSingles.filter(c => c.name?.includes("Japanese"))]);
+      const jpnMasterList = seededShuffle([...jpnSlice, ...jpnModSlice, ...jpnVintSlice, ...rawSlice.filter(c => c.name?.includes("Japanese"))]);
       const isRawSpecialty = vName.includes("RETRO POKÉMON");
       let idx = 0;
       while (finalVendorPool.length < 60) {
@@ -531,8 +565,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       }
     } else if (isModernAltVendor) {
       // 3. Modern Alt Art & Hit Tables: Sell regular set Modern hits across English & Japanese ($15 - $280 raw, + slabs with PSA multiplier)
-      const modRaw = seededShuffle([...rawBinderSingles, ...pools.modernAlt, ...pools.tagTeams, ...dynamicJpnPool.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))]);
-      const modSlabs = seededShuffle([...pools.modernAlt]);
+      const modRaw = seededShuffle([...rawSlice, ...modAltSlice, ...ttSlice, ...jpnSlice.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))]);
+      const modSlabs = seededShuffle([...modAltSlice]);
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
@@ -560,8 +594,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     } else {
       // 4. Standard Floor Vendors, Trade Tables & General Sellers (70% OF THE SHOW! Zone 8, A-M, N-Z, Carbanda, Brodes, etc.)
       // Featuring raw regular set cards across English & Japanese ($10 to $180) + centerpieces!
-      const allRaw = seededShuffle([...rawBinderSingles, ...dynamicJpnPool, ...pools.tagTeams.slice(0, 4)]);
-      const showcaseItems = seededShuffle([...pools.vintageJpn.slice(6, 12), ...pools.modernAlt.slice(4, 8), ...dynamicJpnPool.slice(0, 6)]);
+      const allRaw = seededShuffle([...rawSlice, ...jpnSlice, ...ttSlice]);
+      const showcaseItems = seededShuffle([...jpnVintSlice, ...modAltSlice, ...jpnSlice.slice(0, 6)]);
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
