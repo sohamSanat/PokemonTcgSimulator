@@ -301,45 +301,56 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     paddedNum = num.padStart(3, '0');
   }
 
+  // CRITICAL: pokemontcg.io returns the card BACK image (HTTP 200, not 404) for cards
+  // not in their DB. This fools the browser into thinking the image loaded.
+  // Only include pokemontcg.io for genuine vintage WOTC sets that have real coverage there.
+  const isVintageSet = cleanId.startsWith('base') || cleanId.startsWith('neo') ||
+    cleanId.startsWith('fo') || cleanId.startsWith('ju') || cleanId.startsWith('gc') ||
+    cleanId.startsWith('gh') || cleanId.startsWith('tr') || cleanId.startsWith('np') ||
+    cleanId.startsWith('gym') || cleanId.startsWith('si') || cleanId.startsWith('ecard') ||
+    cleanId === 'col1' || cleanId === 'ex1' || cleanId === 'ex2' || cleanId === 'ex3' ||
+    cleanId === 'ex4' || cleanId === 'ex5' || cleanId === 'ex6' || cleanId === 'ex7' ||
+    cleanId === 'ex8' || cleanId === 'ex9' || cleanId === 'ex10' || cleanId === 'ex11' ||
+    cleanId === 'ex12' || cleanId === 'ex13' || cleanId === 'ex14' || cleanId === 'ex15' ||
+    cleanId === 'ex16';
+
   // Define reliable fallback chain of specific card scans (no generic placeholders)
   const specificFallbacks = isJapaneseSet ? [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}.png`,
-    `https://assets.tcgdex.net/ja/SV/SV2a/${num}/high.webp`,
-    `https://assets.tcgdex.net/ja/SV/SV2a/${paddedNum}/high.webp`,
-    `https://assets.tcgdex.net/ja/S/S12a/${num}/high.webp`,
-    `https://assets.tcgdex.net/ja/S/S12a/${paddedNum}/high.webp`,
-    `https://assets.tcgdex.net/ja/S/S8b/${num}/high.webp`,
-    `https://assets.tcgdex.net/ja/S/S8b/${paddedNum}/high.webp`,
     `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
+    `https://images.scrydex.com/pokemon/${cleanId}_ja-${paddedNum}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
-    `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/large`,
-    `https://images.scrydex.com/pokemon/${cleanId}-${num}/large`,
     `${cleanAsset}/high.webp`,
     `${cleanAsset}/high.png`,
-    // Direct pokemontcg.io high-res scans for corresponding card number and set
-    `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
-    `https://images.pokemontcg.io/${cleanId}/${num}.png`
+    // Only fall to pokemontcg.io for vintage sets — modern sets return card back (fake 200)
+    ...(isVintageSet ? [
+      `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
+      `https://images.pokemontcg.io/${cleanId}/${num}.png`
+    ] : [])
   ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}/low.webp`,
     `${validAsset}/low.png`,
+    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/large`,
+    `https://images.scrydex.com/pokemon/${setId}-${num}/large`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`,
-    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/low.png`,
-    `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
-    `https://images.pokemontcg.io/${setId}/${num}.png`
+    // Only fall to pokemontcg.io for vintage sets — modern sets return card back (fake 200)
+    ...(isVintageSet ? [
+      `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
+      `https://images.pokemontcg.io/${setId}/${num}.png`
+    ] : [])
   ];
 
   // Generic fallback cards for Pack Opening view to avoid blank frames
   const genericBackups = isJapaneseSet ? [
-    `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
-    `https://assets.tcgdex.net/ja/SV/SV2a/133/high.webp`,
     `https://images.scrydex.com/pokemon/swsh12a_ja-205/large`,
-    `https://images.pokemontcg.io/np/47_hires.png`,
-    `https://images.pokemontcg.io/fo1/5_hires.png`
+    `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
+    `https://images.scrydex.com/pokemon/sv2a_ja-201/large`,
+    `https://images.pokemontcg.io/np/47_hires.png`
   ] : [
     'https://images.pokemontcg.io/swsh3/19_hires.png'
   ];

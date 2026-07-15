@@ -104,6 +104,37 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     });
   };
 
+  // Detect pokemontcg.io card-back "false success": when pokemontcg.io can't find a card it
+  // serves the generic card BACK image (HTTP 200, blue swirl Pokeball). We catch this onLoad by
+  // sampling a corner pixel via canvas — the card back has a very dark navy-blue corner (~r<50, g<80, b>100).
+  const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
+    const img = e.currentTarget;
+    // Only check pokemontcg.io images — other CDNs return proper 404s
+    if (!img.src.includes('pokemontcg.io')) return;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 8;
+      canvas.height = 8;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, 8, 8);
+      // Sample top-left corner pixel (card back corner is very dark blue)
+      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
+      // Card back corner: r < 50, g < 75, b > 90 (dark indigo/navy)
+      const isCardBack = r < 50 && g < 75 && b > 90;
+      if (isCardBack) {
+        // Fake an error event so the fallback chain kicks in and either finds real art or hides the card
+        handleCardShowImageError(
+          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+          cardId,
+          isJpn
+        );
+      }
+    } catch {
+      // canvas tainted by CORS — can't sample, skip detection
+    }
+  };
+
 
   const [selectedVendor, setSelectedVendor] = useState<any>({
     name: "VINTAGEVAULT TCG",
@@ -862,6 +893,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                     src={card.img}
                     alt={card.name}
                     className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
+                    onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                     onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                   />
                   {/* Grade badge — top left, outside card art area */}
@@ -1639,6 +1671,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                                 src={item.img}
                                 alt={item.name}
                                 className="w-full h-full object-cover"
+                                onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
                                 onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
                               />
                             ) : (
