@@ -1299,11 +1299,13 @@ export default function App() {
 
   useEffect(() => {
     setIsChaseCardsRevealed(false);
+    const isJaSet = selectedLanguage === 'ja' || Boolean(currentSet?.id?.endsWith('_ja')) || Boolean(currentSet?.name?.toLowerCase().includes('japanese'));
+    const waitTime = isJaSet ? 3000 : 10000;
     const timer = setTimeout(() => {
       setIsChaseCardsRevealed(true);
-    }, 10000);
+    }, waitTime);
     return () => clearTimeout(timer);
-  }, [currentSet]);
+  }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow'>('pack');

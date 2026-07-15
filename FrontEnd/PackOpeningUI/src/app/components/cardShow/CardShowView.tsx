@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Menu,
   Search,
@@ -55,6 +55,172 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   });
 
   const [hoveredBooth, setHoveredBooth] = useState<any>(null);
+
+  // --- AUDIENCE FOOTPATH & RANDOMIZED CROWD POPULARITY ENGINE ---
+  // Generates randomized crowd traffic and animated audience footpaths every time a person loads up the website.
+  const { stallPopularity, hotBoothNames, footpathNetwork, animatedAudienceDots, staticClusterDots } = useMemo(() => {
+    // 1. Define all booths/stalls and their primary corridor entrance coordinates on the 600x415 map
+    const stalls = [
+      { id: "stage", name: "MAIN STAGE & AUCTION ARENA", zone: "Zone 1", x: 110, y: 120, color: "#38bdf8", isHotEligible: true },
+      { id: "artist", name: "ARTIST ALLEY & SIGNINGS", zone: "Zone 2", x: 82, y: 162, color: "#c084fc", isHotEligible: true },
+      { id: "sketch", name: "ARTIST ALLEY B — SKETCH CARDS", zone: "Zone 2B", x: 82, y: 232, color: "#c084fc", isHotEligible: false },
+      { id: "autograph", name: "AUTOGRAPH PIT", zone: "Zone 3", x: 250, y: 120, color: "#2dd4bf", isHotEligible: true },
+      { id: "tournament", name: "TOURNAMENT AREA A", zone: "Zone 4", x: 385, y: 120, color: "#fbbf24", isHotEligible: true },
+      { id: "tcg_am", name: "TCG VENDORS (A-M)", zone: "Zone 5", x: 180, y: 162, color: "#38bdf8", isHotEligible: true },
+      { id: "alpha_grails", name: "ALPHA GRAILS", zone: "5A", x: 268, y: 147, color: "#38bdf8", isHotEligible: true },
+      { id: "vintage_vault", name: "VINTAGEVAULT TCG", zone: "5B", x: 352, y: 147, color: "#2dd4bf", isHotEligible: true },
+      { id: "digimon", name: "DIGIMONCRAFT COLLECTIBLES", zone: "5C", x: 268, y: 177, color: "#c084fc", isHotEligible: false },
+      { id: "his_name", name: "HIS NAME TCG BOOTH", zone: "5D", x: 352, y: 177, color: "#f472b6", isHotEligible: false },
+      { id: "slab_city", name: "SLAB CITY PSA ON-SITE", zone: "Zone 5E", x: 490, y: 162, color: "#38bdf8", isHotEligible: true },
+      { id: "retro_hq", name: "RETRO POKÉMON HQ", zone: "Zone X", x: 565, y: 162, color: "#38bdf8", isHotEligible: true },
+      { id: "tcg_nz", name: "TCG VENDORS (N-Z)", zone: "Zone 6", x: 180, y: 232, color: "#fb923c", isHotEligible: true },
+      { id: "specials_zone", name: "SPECIALS ZONE TRADING", zone: "6A", x: 268, y: 217, color: "#34d399", isHotEligible: true },
+      { id: "gold_star", name: "GOLD STAR COLLECTORS", zone: "6B", x: 352, y: 217, color: "#f472b6", isHotEligible: true },
+      { id: "sealed_kingdom", name: "SEALED PRODUCT KINGDOM", zone: "6C", x: 268, y: 247, color: "#22d3ee", isHotEligible: true },
+      { id: "modern_alt", name: "MODERN ALT ART VAULT", zone: "Booth 16", x: 490, y: 232, color: "#38bdf8", isHotEligible: true },
+      { id: "japanese_hub", name: "JAPANESE HIGH CLASS HUB", zone: "Booth 46", x: 565, y: 232, color: "#38bdf8", isHotEligible: true },
+      { id: "display_gallery", name: "DISPLAY & CASES GALLERY", zone: "Zone 7 Display", x: 82, y: 302, color: "#c084fc", isHotEligible: false },
+      { id: "sealed_zone7", name: "SEALED PRODUCT ZONE 7", zone: "Zone 7", x: 180, y: 302, color: "#38bdf8", isHotEligible: false },
+      { id: "filmera", name: "FILMERA GRADED CARDS", zone: "7A Filmera", x: 268, y: 287, color: "#fbbf24", isHotEligible: false },
+      { id: "carbanda", name: "CARBANDA VINTAGE TCG", zone: "7B Carbanda", x: 352, y: 287, color: "#f472b6", isHotEligible: true },
+      { id: "trading_zone8", name: "TRADING TABLES ZONE 8", zone: "Zone 8", x: 310, y: 320, color: "#f472b6", isHotEligible: true },
+      { id: "brodes", name: "BRODES TCG SYNDICATE", zone: "Booth 15", x: 430, y: 302, color: "#38bdf8", isHotEligible: true },
+      { id: "trading_east", name: "TRADING TABLES ZONE 8 (EAST)", zone: "Zone 8 East", x: 180, y: 377, color: "#38bdf8", isHotEligible: true },
+      { id: "wikrats", name: "WIKRATS POKÉMON EMPORIUM", zone: "Booth 8A", x: 257, y: 377, color: "#38bdf8", isHotEligible: false },
+      { id: "uds", name: "UDS COLLECTIBLES & SLABS", zone: "Booth 8B", x: 322, y: 377, color: "#38bdf8", isHotEligible: false },
+      { id: "specs", name: "SPECS GRADED GRAILS", zone: "Booth 8C", x: 387, y: 377, color: "#38bdf8", isHotEligible: true },
+      { id: "dovakinji", name: "DOVAKINJI COLLECTIBLES", zone: "VIP 10", x: 467, y: 377, color: "#f472b6", isHotEligible: true }
+    ];
+
+    // 2. Randomly shuffle and select 4 "HOTTEST / MOST POPULAR" booths and 6 "HIGH TRAFFIC" booths
+    const eligibleStalls = [...stalls.filter(s => s.isHotEligible)].sort(() => Math.random() - 0.5);
+    const hotBooths = eligibleStalls.slice(0, 4);
+    const hotNamesSet = new Set(hotBooths.map(s => s.name));
+    
+    const remainingEligible = eligibleStalls.slice(4);
+    const highTrafficBooths = remainingEligible.slice(0, 6);
+    const highTrafficNamesSet = new Set(highTrafficBooths.map(s => s.name));
+
+    const popMap: Record<string, { level: 'HOT 🔥🔥' | 'HIGH TRAFFIC ⚡' | 'MODERATE 👥' | 'STEADY 🟢', score: number, color: string }> = {};
+    stalls.forEach(s => {
+      if (hotNamesSet.has(s.name)) {
+        popMap[s.name] = { level: 'HOT 🔥🔥', score: 95 + Math.floor(Math.random() * 5), color: s.color };
+      } else if (highTrafficNamesSet.has(s.name)) {
+        popMap[s.name] = { level: 'HIGH TRAFFIC ⚡', score: 75 + Math.floor(Math.random() * 15), color: s.color };
+      } else {
+        popMap[s.name] = { level: Math.random() > 0.4 ? 'MODERATE 👥' : 'STEADY 🟢', score: 45 + Math.floor(Math.random() * 25), color: s.color };
+      }
+    });
+
+    // 3. Define Cyberpunk Corridor Intersection Waypoints (Nodes) inspired by user image
+    const hubs = [
+      { id: "hub_nw", x: 130, y: 125, color: "#38bdf8" },
+      { id: "hub_n", x: 310, y: 125, color: "#f472b6" },
+      { id: "hub_ne", x: 450, y: 125, color: "#38bdf8" },
+      { id: "hub_cw", x: 130, y: 195, color: "#c084fc" },
+      { id: "hub_c", x: 310, y: 195, color: "#ffffff" },
+      { id: "hub_ce", x: 450, y: 195, color: "#fbbf24" },
+      { id: "hub_sw", x: 130, y: 268, color: "#2dd4bf" },
+      { id: "hub_s", x: 310, y: 268, color: "#34d399" },
+      { id: "hub_se", x: 450, y: 268, color: "#f472b6" },
+      { id: "hub_bot", x: 310, y: 340, color: "#38bdf8" }
+    ];
+
+    // 4. Build Footpath Highway Network (connecting corridors + branches to popular booths)
+    const corridors = [
+      { x1: 130, y1: 125, x2: 310, y2: 125, color: "#38bdf8", isHot: false },
+      { x1: 310, y1: 125, x2: 450, y2: 125, color: "#f472b6", isHot: false },
+      { x1: 130, y1: 125, x2: 130, y2: 195, color: "#c084fc", isHot: false },
+      { x1: 310, y1: 125, x2: 310, y2: 195, color: "#ffffff", isHot: false },
+      { x1: 450, y1: 125, x2: 450, y2: 195, color: "#38bdf8", isHot: false },
+      { x1: 130, y1: 195, x2: 310, y2: 195, color: "#fbbf24", isHot: false },
+      { x1: 310, y1: 195, x2: 450, y2: 195, color: "#2dd4bf", isHot: false },
+      { x1: 130, y1: 195, x2: 130, y2: 268, color: "#34d399", isHot: false },
+      { x1: 310, y1: 195, x2: 310, y2: 268, color: "#f472b6", isHot: false },
+      { x1: 450, y1: 195, x2: 450, y2: 268, color: "#38bdf8", isHot: false },
+      { x1: 130, y1: 268, x2: 310, y2: 268, color: "#c084fc", isHot: false },
+      { x1: 310, y1: 268, x2: 450, y2: 268, color: "#fbbf24", isHot: false },
+      { x1: 310, y1: 268, x2: 310, y2: 340, color: "#38bdf8", isHot: false },
+      { x1: 130, y1: 340, x2: 450, y2: 340, color: "#2dd4bf", isHot: false },
+    ];
+
+    // Add highlighted glowing branches straight to the randomly chosen HOT stalls
+    hotBooths.forEach(hb => {
+      let closestHub = hubs[0];
+      let minDist = 999999;
+      hubs.forEach(h => {
+        const d = Math.hypot(h.x - hb.x, h.y - hb.y);
+        if (d < minDist) { minDist = d; closestHub = h; }
+      });
+      corridors.push({
+        x1: closestHub.x, y1: closestHub.y,
+        x2: hb.x, y2: hb.y,
+        color: hb.color,
+        isHot: true
+      });
+    });
+
+    // 5. Generate Audience Footpath Moving Dots & Swarming Clusters
+    const movingDots: Array<{ id: string, x1: number, y1: number, x2: number, y2: number, r: number, color: string, dur: number, delay: number }> = [];
+    const staticDots: Array<{ id: string, cx: number, cy: number, r: number, color: string, opacity: number, dur: number }> = [];
+
+    // Generate walking audience dots across all corridors (denser on hot footpaths)
+    let dotId = 0;
+    corridors.forEach(c => {
+      const numDots = c.isHot ? 14 : 6;
+      for (let i = 0; i < numDots; i++) {
+        dotId++;
+        const isForward = Math.random() > 0.5;
+        const xStart = isForward ? c.x1 : c.x2;
+        const yStart = isForward ? c.y1 : c.y2;
+        const xEnd = isForward ? c.x2 : c.x1;
+        const yEnd = isForward ? c.y2 : c.y1;
+        const dur = (c.isHot ? 2.2 : 3.5) + Math.random() * 2;
+        const delay = Math.random() * 3;
+        movingDots.push({
+          id: `move_${dotId}`,
+          x1: xStart, y1: yStart,
+          x2: xEnd, y2: yEnd,
+          r: c.isHot ? 2.5 : 1.8,
+          color: c.color,
+          dur,
+          delay
+        });
+      }
+    });
+
+    // Generate swarming cluster dots outside stalls (huge clusters outside HOT stalls)
+    stalls.forEach(stall => {
+      const status = popMap[stall.name]?.level || 'STEADY 🟢';
+      let clusterCount = 3;
+      if (status.includes('HOT')) clusterCount = 20;
+      else if (status.includes('HIGH TRAFFIC')) clusterCount = 9;
+
+      for (let i = 0; i < clusterCount; i++) {
+        dotId++;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 6 + Math.random() * (status.includes('HOT') ? 30 : 15);
+        const cx = stall.x + Math.cos(angle) * dist;
+        const cy = stall.y + Math.sin(angle) * dist;
+        staticDots.push({
+          id: `static_${dotId}`,
+          cx, cy,
+          r: status.includes('HOT') && Math.random() > 0.6 ? 2.8 : 1.8,
+          color: stall.color,
+          opacity: 0.5 + Math.random() * 0.5,
+          dur: 1.5 + Math.random() * 2
+        });
+      }
+    });
+
+    return {
+      stallPopularity: popMap,
+      hotBoothNames: Array.from(hotNamesSet),
+      footpathNetwork: { hubs, corridors },
+      animatedAudienceDots: movingDots,
+      staticClusterDots: staticDots
+    };
+  }, []);
 
   const handleBoothHover = (vendorObj: any) => {
     setSelectedVendor(vendorObj);
@@ -375,23 +541,50 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
           {/* Cyberpunk HUD Floor Map */}
           <div className="relative flex-1 bg-[#060a10] border border-[#0f2840] rounded-2xl overflow-hidden min-h-[460px] lg:min-h-[520px] shadow-2xl flex flex-col">
+            {/* Live Audience Footpath HUD Ticker */}
+            <div className="bg-[#0c1626] border-b border-[#1e3a5f]/80 px-3.5 py-1.5 flex flex-wrap items-center justify-between gap-2 z-20 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#f472b6] animate-ping" />
+                <span className="text-[11px] font-mono font-black text-white tracking-wide uppercase flex items-center gap-1">
+                  👥 LIVE AUDIENCE FOOTPATH TARGETS 🔥:
+                </span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {hotBoothNames.map((name, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded bg-[#f472b6]/15 border border-[#f472b6]/40 text-[10px] font-mono font-bold text-[#f472b6] shadow-[0_0_8px_rgba(244,114,182,0.3)]">
+                      {name.split('(')[0].split('—')[0].trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <span className="text-[10px] font-mono text-[#64748b] hidden sm:inline">
+                ⚡ Footpaths & crowd heatmaps randomize per session
+              </span>
+            </div>
+
             {/* Floating Cyberpunk HUD Tooltip when hovering over any booth */}
             {hoveredBooth && (
-              <div className="absolute top-3 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] backdrop-blur-md flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
-                <div className="flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-xs font-mono font-black text-[#38bdf8]">
+              <div className="absolute top-12 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] backdrop-blur-md flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
+                <div className="flex items-center gap-3 min-w-0 pr-2">
+                  <span className="px-2 py-0.5 rounded bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-xs font-mono font-black text-[#38bdf8] shrink-0">
                     {hoveredBooth.booth}
                   </span>
-                  <div>
-                    <h4 className="text-sm font-black text-white font-mono tracking-wide uppercase">
-                      {hoveredBooth.name}
-                    </h4>
-                    <p className="text-[11px] text-[#94a3b8] font-mono">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="text-sm font-black text-white font-mono tracking-wide uppercase truncate">
+                        {hoveredBooth.name}
+                      </h4>
+                      {stallPopularity[hoveredBooth.name] && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold bg-[#0f2840] border border-[#38bdf8]/50 text-white shadow-[0_0_8px_rgba(56,189,248,0.4)] shrink-0">
+                          👥 Crowd: {stallPopularity[hoveredBooth.name].level} ({stallPopularity[hoveredBooth.name].score}% Heat)
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-[#94a3b8] font-mono truncate">
                       {hoveredBooth.specialties?.join(' • ')}
                     </p>
                   </div>
                 </div>
-                <div className="text-right hidden sm:block">
+                <div className="text-right hidden md:block shrink-0">
                   <span className="text-xs font-mono font-bold text-[#2dd4bf]">
                     {hoveredBooth.activeListings}
                   </span>
@@ -460,29 +653,36 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               <line x1="450" y1="30" x2="450" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
               <line x1="560" y1="30" x2="560" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
 
-              {/* ===== GLOWING DATA TRAILS (Pink/Magenta path) ===== */}
-              <path d="M 135 60 L 135 200 L 320 200 L 320 340 L 505 340" stroke="#f472b6" strokeWidth="1.5" fill="none" opacity="0.4" strokeDasharray="6,4" />
-              <path d="M 505 60 L 505 200 L 320 200" stroke="#f472b6" strokeWidth="1.5" fill="none" opacity="0.3" strokeDasharray="6,4" />
-              {/* Cyan data trail */}
-              <path d="M 320 30 L 320 430" stroke="#38bdf8" strokeWidth="1" fill="none" opacity="0.25" strokeDasharray="8,6" />
-              <path d="M 30 200 L 610 200" stroke="#38bdf8" strokeWidth="1" fill="none" opacity="0.2" strokeDasharray="8,6" />
+              {/* ===== RANDOMIZED AUDIENCE FOOTPATH CORRIDORS ===== */}
+              {footpathNetwork.corridors.map((c, idx) => (
+                <g key={`corr_${idx}`}>
+                  {c.isHot && (
+                    <line
+                      x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+                      stroke={c.color} strokeWidth="5" opacity="0.25"
+                      filter="url(#glowWhite)"
+                    />
+                  )}
+                  <line
+                    x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+                    stroke={c.color}
+                    strokeWidth={c.isHot ? "2.2" : "1"}
+                    opacity={c.isHot ? "0.85" : "0.3"}
+                    strokeDasharray={c.isHot ? "none" : "6,4"}
+                  />
+                </g>
+              ))}
 
-              {/* ===== GLOWING INTERSECTION NODES ===== */}
-              {/* Large white glow node (Main Stage intersection) */}
-              <circle cx="135" cy="200" r="12" fill="white" opacity="0.15" filter="url(#glowWhite)" />
-              <circle cx="135" cy="200" r="5" fill="white" opacity="0.9" filter="url(#glowWhite)">
-                <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
-              </circle>
-              {/* Large cyan glow node (right side) */}
-              <circle cx="505" cy="130" r="10" fill="#38bdf8" opacity="0.2" filter="url(#glowCyan)" />
-              <circle cx="505" cy="130" r="4" fill="#38bdf8" opacity="0.9" filter="url(#glowCyan)">
-                <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite" />
-              </circle>
-              {/* Center glow node */}
-              <circle cx="320" cy="200" r="10" fill="white" opacity="0.12" filter="url(#glowWhite)" />
-              <circle cx="320" cy="200" r="4" fill="white" opacity="0.8">
-                <animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite" />
-              </circle>
+              {/* ===== GLOWING INTERSECTION HUBS (FOOTPATH WAYPOINTS) ===== */}
+              {footpathNetwork.hubs.map((h, idx) => (
+                <g key={`hub_${idx}`}>
+                  <circle cx={h.x} cy={h.y} r="11" fill={h.color} opacity="0.18" filter="url(#glowWhite)" />
+                  <circle cx={h.x} cy={h.y} r="4.5" fill={h.color} opacity="0.95">
+                    <animate attributeName="opacity" values="0.4;1;0.4" dur={`${2 + (idx % 2)}s`} repeatCount="indefinite" />
+                  </circle>
+                  <circle cx={h.x} cy={h.y} r="2" fill="#ffffff" opacity="0.8" />
+                </g>
+              ))}
 
               {/* ===== OUTER BOUNDARY ===== */}
               <rect x="30" y="30" width="580" height="400" rx="6" fill="none" stroke="#1e3a5f" strokeWidth="1.5" style={{ pointerEvents: 'none' }} />
@@ -801,12 +1001,29 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               <circle cx="320" cy="418" r="10" fill="#38bdf8" fillOpacity="0.15" stroke="#38bdf8" strokeWidth="1" />
               <text x="320" y="422" textAnchor="middle" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">10</text>
 
-              {/* ===== SMALL LIVE BUYER DOTS ===== */}
-              <circle cx="100" cy="95" r="2" fill="#38bdf8" opacity="0.7"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" /></circle>
-              <circle cx="250" cy="165" r="2" fill="#f472b6" opacity="0.6"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite" /></circle>
-              <circle cx="400" cy="295" r="2" fill="#2dd4bf" opacity="0.7"><animate attributeName="opacity" values="0.5;1;0.5" dur="2.2s" repeatCount="indefinite" /></circle>
-              <circle cx="480" cy="375" r="2" fill="#f472b6" opacity="0.8"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" /></circle>
-              <circle cx="350" cy="85" r="2" fill="#fbbf24" opacity="0.6"><animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite" /></circle>
+              {/* ===== RANDOMIZED AUDIENCE FOOTPATH TRAFFIC & STALL SWARMS ===== */}
+              {/* 1. Static Cluster Dots outside booths (huge glowing swarms around hot stalls) */}
+              {staticClusterDots.map(d => (
+                <circle
+                  key={d.id}
+                  cx={d.cx} cy={d.cy} r={d.r}
+                  fill={d.color} opacity={d.opacity}
+                  filter={d.r > 2.2 ? "url(#glowWhite)" : undefined}
+                >
+                  <animate attributeName="opacity" values={`${d.opacity * 0.4};${Math.min(1, d.opacity * 1.5)};${d.opacity * 0.4}`} dur={`${d.dur}s`} repeatCount="indefinite" />
+                </circle>
+              ))}
+
+              {/* 2. Animated Audience Walking Dots traveling back and forth along the corridors */}
+              {animatedAudienceDots.map(d => (
+                <g key={d.id}>
+                  <circle r={d.r} fill={d.color} opacity="0.85" filter={d.r > 2 ? "url(#glowWhite)" : undefined}>
+                    <animate attributeName="cx" values={`${d.x1};${d.x2};${d.x1}`} dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
+                    <animate attributeName="cy" values={`${d.y1};${d.y2};${d.y1}`} dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.3;1;0.3" dur={`${d.dur * 0.5}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
+                  </circle>
+                </g>
+              ))}
             </svg>
             </div>
             </div>

@@ -221,10 +221,10 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
         <div
           style={card.isSlabbed ? {
             position: "absolute",
-            top: "5%",
-            left: "6%",
-            width: "88%",
-            height: "90%",
+            top: "3%",
+            left: "4%",
+            width: "92%",
+            height: "94%",
             borderRadius: 8,
             overflow: "visible",
             zIndex: 2,
@@ -246,23 +246,25 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
             style={{ width: "100%", height: "100%", borderRadius: 6 }}
           >
 
-            {/* Card name bar */}
-            <div style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: "20px 8px 6px",
-              background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)",
-              zIndex: 30,
-            }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#f0f0f2", letterSpacing: "0.02em", textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}>
-                {card.isSlabbed ? card.name.split('—')[0].trim() : card.name}
+            {/* Card name bar — Only render on regular cards; slabbed cards already show full title and grade in the top acrylic label well */}
+            {!card.isSlabbed && (
+              <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "20px 8px 6px",
+                background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)",
+                zIndex: 30,
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#f0f0f2", letterSpacing: "0.02em", textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}>
+                  {card.name}
+                </div>
+                <div style={{ fontSize: 8, color: "rgba(255,255,255,0.55)" }}>
+                  {card.setNumber}
+                </div>
               </div>
-              <div style={{ fontSize: 8, color: "rgba(255,255,255,0.55)" }}>
-                {card.setNumber}
-              </div>
-            </div>
+            )}
 
             {/* Favorite Button */}
             <button

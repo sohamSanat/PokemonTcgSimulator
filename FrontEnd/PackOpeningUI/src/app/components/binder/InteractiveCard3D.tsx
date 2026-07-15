@@ -237,7 +237,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
                       height: '10%',
                       zIndex: 20,
                     }}
-                    className={`rounded-[7px] px-2.5 py-1 flex items-center justify-between overflow-hidden pointer-events-none select-none ${
+                    className={`rounded-[4px] sm:rounded-[7px] px-1.5 py-0.5 sm:px-2.5 sm:py-1 flex items-center justify-between overflow-hidden pointer-events-none select-none ${
                       c?.slabGrade && c.slabGrade !== 'N/A'
                         ? 'bg-gradient-to-r from-[#b91c1c] via-[#dc2626] to-[#b91c1c] border border-white/35 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
                         : 'bg-[#0a0e18]/95 border border-white/15 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
@@ -246,8 +246,8 @@ export const InteractiveCard3D: React.FC<Props> = ({
                     {c?.slabGrade && c.slabGrade !== 'N/A' ? (
                       /* PSA Graded Header */
                       <>
-                        <div className="flex flex-col leading-tight min-w-0 pr-1">
-                          <span className="text-[8px] font-black tracking-tight text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                        <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
+                          <span className="text-[6px] sm:text-[8px] font-black tracking-tight text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
                             {(c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
                               ? 'PSA GEM MT 10'
                               : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
@@ -256,13 +256,13 @@ export const InteractiveCard3D: React.FC<Props> = ({
                               ? 'PSA NM-MT 8'
                               : `PSA ${c.psaDetails?.gradeNum || c.slabGrade.replace(/[^0-9]/g, '') || '7'} AUTHENTIC`}
                           </span>
-                          <span className="text-[7px] font-mono font-black text-amber-300 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                          <span className="text-[5px] sm:text-[7px] font-mono font-black text-amber-300 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
                             {name?.split('—')[0]?.trim()} {c.setName ? `• ${c.setName.split('(')[0].trim()}` : ''}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                           {/* Simulated Barcode */}
-                          <div className="hidden xs:flex items-center gap-[1px] opacity-75 bg-white/10 px-1 py-0.5 rounded">
+                          <div className="hidden sm:flex items-center gap-[1px] opacity-75 bg-white/10 px-1 py-0.5 rounded">
                             <div className="w-[1px] h-3 bg-white" />
                             <div className="w-[2px] h-3 bg-white" />
                             <div className="w-[1px] h-3 bg-white" />
@@ -271,7 +271,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
                             <div className="w-[2px] h-3 bg-white" />
                           </div>
                           {/* Grade Pill */}
-                          <div className={`w-5 h-5 rounded-[3px] font-black text-[10px] flex items-center justify-center shrink-0 border ${
+                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-[2px] sm:rounded-[3px] font-black text-[7.5px] sm:text-[10px] flex items-center justify-center shrink-0 border ${
                             (c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
                               ? 'bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 border-white text-black shadow-[0_0_8px_rgba(245,158,11,0.9)]'
                               : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
@@ -287,18 +287,18 @@ export const InteractiveCard3D: React.FC<Props> = ({
                     ) : (
                       /* Ungraded Raw Header */
                       <>
-                        <div className="flex flex-col leading-tight min-w-0 pr-1">
-                          <span className="text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
+                        <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
+                          <span className="text-[5px] sm:text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
                             ANTIGRAVITY ENCASEMENT CO.
                           </span>
-                          <span className="text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                          <span className="text-[6.5px] sm:text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
                             UNGRADED AUTHENTIC
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <div className="w-6 h-4 rounded-[2px] bg-slate-200/90 border border-slate-400 flex flex-col items-center justify-center leading-none">
-                            <span className="text-[5px] font-black text-slate-800 uppercase">Grade</span>
-                            <span className="text-[8px] font-black text-slate-900 uppercase">N/A</span>
+                        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                          <div className="w-4 h-3 sm:w-6 sm:h-4 rounded-[2px] bg-slate-200/90 border border-slate-400 flex flex-col items-center justify-center leading-none">
+                            <span className="text-[4px] sm:text-[5px] font-black text-slate-800 uppercase">Grade</span>
+                            <span className="text-[6.5px] sm:text-[8px] font-black text-slate-900 uppercase">N/A</span>
                           </div>
                         </div>
                       </>
@@ -339,15 +339,12 @@ export const InteractiveCard3D: React.FC<Props> = ({
                     )}
                   </div>
 
-                  {/* 3. Custom Children Overlay positioned inside the slab recess */}
+                  {/* 3. Custom Children Overlay positioned across full outer slab case */}
                   {children && (
                     <div
                       style={{
                         position: 'absolute',
-                        top: '14.3%',
-                        left: '4.5%',
-                        width: '91%',
-                        height: '82.8%',
+                        inset: 0,
                         pointerEvents: 'auto',
                         zIndex: 20,
                       }}
