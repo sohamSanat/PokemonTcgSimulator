@@ -46,6 +46,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
   const [metadataLoaded, setMetadataLoaded] = useState(false);
+  const [brokenCardIds, setBrokenCardIds] = useState<string[]>([]);
 
   useEffect(() => {
     loadJapaneseMetadata().then(() => {
@@ -87,7 +88,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       setId = `${setId}_ja`;
     }
     
-    handleCardImageError(img, setId, num);
+    handleCardImageError(img, setId, num, () => {
+      if (cardId) {
+        setBrokenCardIds(prev => prev.includes(cardId) ? prev : [...prev, cardId]);
+      }
+    });
   };
 
 
@@ -446,14 +451,39 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     const isJapaneseSpecialty = vName.includes("JAPANESE HIGH CLASS") || vName.includes("RETRO POKÉMON") || vName.includes("DOVAKINJI");
     const isModernAltVendor = vName.includes("MODERN ALT") || vName.includes("DIGIMON") || vName.includes("UDS");
 
+    // Stable seeded random number generator based on the selected vendor name & booth ID
+    // This resolves the glitch where different vendors show the exact same VIP showcase cards!
+    const getSeededRandom = (seed: string) => {
+      let h = 0;
+      for (let i = 0; i < seed.length; i++) {
+        h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+      }
+      return () => {
+        h = Math.imul(h ^ h >>> 16, 2246822507) | 0;
+        h = Math.imul(h ^ h >>> 13, 3266489909) | 0;
+        return ((h ^= h >>> 16) >>> 0) / 4294967296;
+      };
+    };
+
+    const rand = getSeededRandom((selectedVendor?.name || 'vendor') + (selectedVendor?.booth || 'booth'));
+
+    const seededShuffle = <T,>(array: T[]): T[] => {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
     let finalVendorPool: any[] = [];
 
     if (isHighEndSlabGrailVendor) {
       // 1. High-End Glass Case Vendors (15-20% of floor): Sell graded grails & slabs ($250 - $18,000)
       // Ensure Japanese regular set expensive chase cards & slabs (`dynamicJpnPool` + `jpnModern` + `vintageJpn`) are featured prominently!
-      const topGrails = [...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn.slice(0, 8), ...dynamicJpnPool.slice(0, 10)];
-      const midSlabs = [...pools.modernAlt, ...pools.tagTeams, ...pools.jpnModern, ...dynamicJpnPool.slice(10, 24)];
-      const rawHighlights = [...rawBinderSingles.slice(0, 8), ...dynamicJpnPool.slice(24, 34)];
+      const topGrails = seededShuffle([...pools.vintageEng, ...pools.goldStarsEx, ...pools.vintageJpn.slice(0, 8), ...dynamicJpnPool.slice(0, 10)]);
+      const midSlabs = seededShuffle([...pools.modernAlt, ...pools.tagTeams, ...pools.jpnModern, ...dynamicJpnPool.slice(10, 24)]);
+      const rawHighlights = seededShuffle([...rawBinderSingles.slice(0, 8), ...dynamicJpnPool.slice(24, 34)]);
       const combined = [...topGrails, ...midSlabs, ...rawHighlights];
       finalVendorPool = combined.map((c, idx) => {
         const assignedGrade = c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5");
@@ -471,7 +501,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // 2. Japanese Hub / Import Tables: Sell expensive regular set Japanese cards (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
       // For specialty raw tables like Retro Pokémon HQ, sell raw regular set cards right at rawPrice ($15 - $380).
       // For glass case tables (Japanese High Class Hub / Dovakinji), apply PSA value multiplier on top regular set chase hits!
-      const jpnMasterList = [...dynamicJpnPool, ...pools.jpnModern, ...pools.vintageJpn, ...rawBinderSingles.filter(c => c.name?.includes("Japanese"))];
+      const jpnMasterList = seededShuffle([...dynamicJpnPool, ...pools.jpnModern, ...pools.vintageJpn, ...rawBinderSingles.filter(c => c.name?.includes("Japanese"))]);
       const isRawSpecialty = vName.includes("RETRO POKÉMON");
       let idx = 0;
       while (finalVendorPool.length < 60) {
@@ -501,12 +531,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       }
     } else if (isModernAltVendor) {
       // 3. Modern Alt Art & Hit Tables: Sell regular set Modern hits across English & Japanese ($15 - $280 raw, + slabs with PSA multiplier)
-      const modRaw = [...rawBinderSingles, ...pools.modernAlt, ...pools.tagTeams, ...dynamicJpnPool.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))];
+      const modRaw = seededShuffle([...rawBinderSingles, ...pools.modernAlt, ...pools.tagTeams, ...dynamicJpnPool.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))]);
+      const modSlabs = seededShuffle([...pools.modernAlt]);
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
-        if (idx <= 14 && idx < pools.modernAlt.length) {
-          const s = pools.modernAlt[idx];
+        if (idx <= 14 && idx < modSlabs.length) {
+          const s = modSlabs[idx];
           const baseRaw = (s as any).rawPrice || (s.price ? s.price / 2.6 : 80);
           finalVendorPool.push({
             ...s,
@@ -529,8 +560,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     } else {
       // 4. Standard Floor Vendors, Trade Tables & General Sellers (70% OF THE SHOW! Zone 8, A-M, N-Z, Carbanda, Brodes, etc.)
       // Featuring raw regular set cards across English & Japanese ($10 to $180) + centerpieces!
-      const allRaw = [...rawBinderSingles, ...dynamicJpnPool, ...pools.tagTeams.slice(0, 4)];
-      const showcaseItems = [...pools.vintageJpn.slice(6, 12), ...pools.modernAlt.slice(4, 8), ...dynamicJpnPool.slice(0, 6)];
+      const allRaw = seededShuffle([...rawBinderSingles, ...dynamicJpnPool, ...pools.tagTeams.slice(0, 4)]);
+      const showcaseItems = seededShuffle([...pools.vintageJpn.slice(6, 12), ...pools.modernAlt.slice(4, 8), ...dynamicJpnPool.slice(0, 6)]);
       let idx = 0;
       while (finalVendorPool.length < 56) {
         idx++;
@@ -568,6 +599,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   }, [selectedVendor?.name, selectedVendor?.booth, metadataLoaded]);
 
   const filteredCards = activeVendorCards.filter((c) => {
+    if (brokenCardIds.includes(c.id)) return false;
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
     if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
@@ -1519,7 +1551,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       Featured Inventory Grails
                     </h4>
                     <div className="grid grid-cols-3 gap-1.5">
-                      {activeVendorCards.slice(0, 3).map((item, i) => (
+                      {activeVendorCards.filter(item => !brokenCardIds.includes(item.id)).slice(0, 3).map((item, i) => (
                         <div
                           key={i}
                           onClick={() => {

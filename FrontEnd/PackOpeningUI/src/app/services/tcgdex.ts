@@ -286,7 +286,7 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   return `https://assets.tcgdex.net/${langPrefix}/${seriesPrefix}/${cleanSetId}/${numStr}`;
 }
 
-export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1') {
+export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1', onFailed?: () => void) {
   if (!img) return;
   const num = `${rawNum}`.trim();
   const validAsset = getTCGDexValidAssetPath(setId, num);
@@ -352,6 +352,8 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   if (nextAttempt < fallbacks.length) {
      img.dataset.errorAttempt = nextAttempt.toString();
      img.src = fallbacks[nextAttempt];
+  } else {
+     if (onFailed) onFailed();
   }
 }
 
