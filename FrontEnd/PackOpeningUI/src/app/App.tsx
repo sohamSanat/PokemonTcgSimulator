@@ -770,7 +770,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   }, [liveCardPrice, card.value, onUpdatePrice, activePoke]);
 
   const [viewMode, setViewMode] = useState<'market' | 'art'>(initialViewMode);
-  const [zoom, setZoom] = useState<number>(0.9);
+  const [zoom, setZoom] = useState<number>(1.1);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const card3dRef = useRef<HTMLDivElement>(null);
