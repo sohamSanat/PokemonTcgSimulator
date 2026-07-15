@@ -316,6 +316,7 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
     `https://images.scrydex.com/pokemon/${cleanId}-${paddedNum}/large`,
+    `https://images.scrydex.com/pokemon/${cleanId}-${num}/large`,
     `${cleanAsset}/high.webp`,
     `${cleanAsset}/high.png`,
     // Direct pokemontcg.io high-res scans for corresponding card number and set

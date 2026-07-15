@@ -129,8 +129,8 @@ for (const gen of generations) {
         const cardId = `${setId}_ja-${card.cardNum}`;
         const cleanSet = setId.toLowerCase();
         
-        // Image URL mapping
-        let imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}-${card.cardNum}/large`;
+        // Image URL mapping: try Japanese card scan first
+        let imgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${card.cardNum}/large`;
         if (cleanSet.startsWith('base') || cleanSet.startsWith('neo') || cleanSet.startsWith('fo') || cleanSet.startsWith('ju') || cleanSet.startsWith('gc') || cleanSet.startsWith('gh')) {
           imgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
         }
