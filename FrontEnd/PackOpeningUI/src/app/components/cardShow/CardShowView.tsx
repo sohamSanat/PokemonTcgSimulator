@@ -46,7 +46,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
   const [metadataLoaded, setMetadataLoaded] = useState(false);
-  const [brokenCardIds, setBrokenCardIds] = useState<string[]>([]);
+  const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
 
   useEffect(() => {
     loadJapaneseMetadata().then(() => {
@@ -89,8 +89,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     }
     
     handleCardImageError(img, setId, num, () => {
-      if (cardId) {
-        setBrokenCardIds(prev => prev.includes(cardId) ? prev : [...prev, cardId]);
+      const card = activeVendorCards.find(c => c.id === cardId);
+      const origId = card?.originalId || cardId || `${setId}-${num}`;
+      if (origId) {
+        setBrokenOriginalIds(prev => prev.includes(origId) ? prev : [...prev, origId]);
       }
     });
   };
@@ -382,9 +384,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, rawPrice: 90.0, change: "+6.8%", id: "sv3_ja-223", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
         { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, rawPrice: 65.0, change: "+4.5%", id: "sv3pt5_ja-205", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
         { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, rawPrice: 24.0, change: "+3.8%", id: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
-        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, rawPrice: 1600.0, change: "+9.4%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
-        { name: "Shibuya Pikachu Promo (JPN)", grade: "PSA 10", price: 195.0, rawPrice: 75.0, change: "+5.1%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
-        { name: "Stamp Box Pikachu Promo (JPN)", grade: "PSA 10", price: 420.0, rawPrice: 155.0, change: "+8.9%", id: "xy12_ja-35", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, rawPrice: 1600.0, change: "+9.4%", id: "swsh12a_ja-262", img: "https://images.scrydex.com/pokemon/swsh12a_ja-262/large" },
+        { name: "Japanese Erika's Hospitality SR", grade: "PSA 10", price: 650.0, rawPrice: 220.0, change: "+5.1%", id: "sm12a_ja-190", img: "https://images.scrydex.com/pokemon/sm12a_ja-190/large" },
+        { name: "Japanese Mewtwo VSTAR SAR (Universe)", grade: "PSA 10", price: 120.0, rawPrice: 45.0, change: "+8.9%", id: "swsh12a_ja-221", img: "https://images.scrydex.com/pokemon/swsh12a_ja-221/large" },
         { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+4.2%", id: "swsh8b_ja-260", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
       ],
       tagTeams: [
@@ -405,7 +407,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         { name: "Torchic Gold Star Holo Team Rocket Returns", grade: "PSA 9", price: 1100.0, change: "+3.8%", id: "ex7-108", img: "https://images.scrydex.com/pokemon/ex7-108/large" },
         { name: "Lugia ex Unseen Forces Holo", grade: "PSA 9", price: 890.0, change: "+5.0%", id: "ex10-105", img: "https://images.scrydex.com/pokemon/ex10-105/large" },
         { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
-        { name: "Pikachu Illustrator Promo", grade: "BGS 9.5", price: 85000.0, change: "+12.1%", id: "promo-1", img: "https://images.scrydex.com/pokemon/xy12_ja-35/large" },
+        { name: "Latias Gold Star Holo Deoxys", grade: "PSA 9", price: 3200.0, change: "+4.5%", id: "ex8-105", img: "https://images.scrydex.com/pokemon/ex8-105/large" },
         { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" }
       ]
     };
@@ -633,7 +635,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   }, [selectedVendor?.name, selectedVendor?.booth, metadataLoaded]);
 
   const filteredCards = activeVendorCards.filter((c) => {
-    if (brokenCardIds.includes(c.id)) return false;
+    if (brokenOriginalIds.includes(c.originalId || c.id)) return false;
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
     if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
@@ -1585,7 +1587,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       Featured Inventory Grails
                     </h4>
                     <div className="grid grid-cols-3 gap-1.5">
-                      {activeVendorCards.filter(item => !brokenCardIds.includes(item.id)).slice(0, 3).map((item, i) => (
+                      {activeVendorCards.filter(item => !brokenOriginalIds.includes(item.originalId || item.id)).slice(0, 3).map((item, i) => (
                         <div
                           key={i}
                           onClick={() => {
