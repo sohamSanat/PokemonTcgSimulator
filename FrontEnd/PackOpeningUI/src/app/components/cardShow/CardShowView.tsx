@@ -983,6 +983,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       isSlabbed: true,
                       slabGrade: card.grade,
                       imageUrl: card.img,
+                      isVendorCatalog: true,
+                      vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
+                      vendorBooth: selectedVendor?.booth || "5B",
+                      vendorRating: selectedVendor?.rating || "4.8 / 5"
                     });
                   }
                 }}
@@ -1767,7 +1771,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                                 currentPrice: typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('k', '')) * 1000,
                                 isSlabbed: true,
                                 slabGrade: item.grade,
-                                imageUrl: item.img
+                                imageUrl: item.img,
+                                isVendorCatalog: true,
+                                vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
+                                vendorBooth: selectedVendor?.booth || "5B",
+                                vendorRating: selectedVendor?.rating || "4.8 / 5"
                               });
                             }
                           }}

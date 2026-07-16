@@ -98,6 +98,10 @@ export interface PokemonCard {
   tcgplayer?: any;
   cardmarket?: any;
   pricing?: TCGDexCardFull['pricing'];
+  isVendorCatalog?: boolean;
+  vendorName?: string;
+  vendorBooth?: string;
+  vendorRating?: string;
 }
 
 export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'high'): string => {

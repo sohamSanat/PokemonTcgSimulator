@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -32,6 +32,10 @@ interface CardData {
   collected: boolean;
   value: number;
   pokemon: PokemonCard;
+  isVendorCatalog?: boolean;
+  vendorName?: string;
+  vendorBooth?: string;
+  vendorRating?: string;
 }
 
 const DARKNESS_ABLAZE_PACK_ARTS = [
@@ -773,6 +777,53 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   const [zoom, setZoom] = useState<number>(1.1);
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const isFromVendor = Boolean(card.isVendorCatalog || poke.isVendorCatalog);
+  const vendorName = card.vendorName || poke.vendorName || "VINTAGEVAULT TCG";
+  const vendorBooth = card.vendorBooth || poke.vendorBooth || "5B";
+  const vendorRating = card.vendorRating || poke.vendorRating || "4.8 / 5";
+  const vendorPrice = typeof card.value === 'number' ? card.value : parseFloat(String(card.value || '0').replace(/[^0-9.]/g, '')) || liveCardPrice;
+
+  const [showSellerChat, setShowSellerChat] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'vendor' | 'user'; text: string; time: string }>>([
+    {
+      sender: 'vendor',
+      text: `Hey! Welcome to booth ${vendorBooth} (${vendorName}). Interested in this ${poke.name} listed at $${vendorPrice.toLocaleString()}? Feel free to ask for a condition video or make an instant offer right here!`,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (showSellerChat && chatBottomRef.current) {
+      chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [showSellerChat, chatMessages]);
+
+  const handleSendChatMessage = () => {
+    if (!chatInput.trim()) return;
+    const newMsg = {
+      sender: 'user' as const,
+      text: chatInput.trim(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChatMessages(prev => [...prev, newMsg]);
+    setChatInput('');
+    sound.playButtonClick();
+
+    setTimeout(() => {
+      setChatMessages(prev => [
+        ...prev,
+        {
+          sender: 'vendor' as const,
+          text: `Got your inquiry! Our booth rep at ${vendorBooth} is reviewing the condition details right now. We will follow up with you momentarily!`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+      sound.playCardCollect();
+    }, 1000);
+  };
+
   const card3dRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -855,7 +906,21 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
             </div>
 
             {/* Studio Controls Bar */}
-            <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-end gap-4 z-10 bg-black/40 p-4 rounded-2xl border border-white/5">
+            <div className={`pt-4 border-t border-white/10 flex flex-wrap items-center ${isFromVendor ? 'justify-between' : 'justify-end'} gap-4 z-10 bg-black/40 p-4 rounded-2xl border border-white/5`}>
+              {isFromVendor && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 flex flex-col justify-center shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+                    <span className="text-[9px] text-emerald-300/80 font-mono font-bold uppercase tracking-wider">Booth {vendorBooth} Price</span>
+                    <span className="text-base font-mono font-black text-emerald-300">💰 ${vendorPrice.toLocaleString()}</span>
+                  </div>
+                  <button
+                    onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-[#0369a1] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.4)] transform hover:-translate-y-0.5 border border-[#38bdf8]/40"
+                  >
+                    <MessageSquare className="w-4 h-4 text-white animate-pulse" /> 💬 Chat With Seller ({vendorName})
+                  </button>
+                </div>
+              )}
               <div className="flex items-center gap-3">
                 <div className="flex items-center bg-white/5 rounded-lg p-1 border border-white/10">
                   <button
@@ -923,11 +988,21 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
               >
                 <Eye className="w-3.5 h-3.5 text-amber-400" /> Admire Card Art Studio
               </button>
-              <div className="mt-4 text-center">
-                <span className="text-2xl font-black text-emerald-400 tracking-tight block">${liveCardPrice.toFixed(2)}</span>
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-0.5 block">
-                  {(tcgVariants.length === 0 && !cm) ? 'Fixed Valuation (No Live Data)' : 'Live Market Value'}
+              <div className="mt-4 text-center w-full px-2">
+                <span className="text-3xl font-mono font-black text-emerald-400 tracking-tight block drop-shadow-[0_0_15px_rgba(52,211,153,0.4)]">
+                  ${isFromVendor ? vendorPrice.toLocaleString() : liveCardPrice.toFixed(2)}
                 </span>
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-0.5 block">
+                  {isFromVendor ? `🏪 Booth ${vendorBooth} Catalogue Price` : (tcgVariants.length === 0 && !cm) ? 'Fixed Valuation (No Live Data)' : 'Live Market Value'}
+                </span>
+                {isFromVendor && (
+                  <button
+                    onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
+                    className="mt-3.5 w-full py-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-[#0369a1] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-[#38bdf8]/50 transform hover:-translate-y-0.5"
+                  >
+                    <MessageSquare className="w-4 h-4 text-white animate-pulse" /> 💬 Chat With Seller ({vendorName})
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1096,6 +1171,101 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
             </div>
           </>
         )}
+
+        {/* ========================================================
+           💬 LIVE CONVENTION SELLER CHAT DIALOG 💬
+           ======================================================== */}
+        <AnimatePresence>
+          {showSellerChat && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={(e) => { e.stopPropagation(); sound.playModalClose(); setShowSellerChat(false); }}
+              className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#0f172a] border border-[#38bdf8]/50 rounded-2xl w-full max-w-lg overflow-hidden shadow-[0_0_50px_rgba(56,189,248,0.3)] flex flex-col max-h-[80vh]"
+              >
+                {/* Chat Header */}
+                <div className="bg-gradient-to-r from-[#0b1329] via-[#0f1d3a] to-[#0b1329] px-4 py-3.5 border-b border-[#38bdf8]/30 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[#38bdf8]/20 border border-[#38bdf8]/50 flex items-center justify-center text-[#38bdf8] font-bold shadow-[0_0_10px_rgba(56,189,248,0.4)]">
+                      🏪
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-mono font-black text-white flex items-center gap-2">
+                        {vendorName}
+                        <span className="text-[10px] font-mono font-bold bg-[#38bdf8]/20 text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#38bdf8]/40">Booth {vendorBooth}</span>
+                      </h4>
+                      <p className="text-[11px] font-mono text-[#94a3b8]">Rating: {vendorRating} • Live Convention Connection</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { sound.playModalClose(); setShowSellerChat(false); }}
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Chat Card Preview Pill */}
+                <div className="bg-[#111827] px-4 py-2 border-b border-white/5 flex items-center justify-between text-xs font-mono">
+                  <span className="text-gray-300 truncate font-bold">Trading Item: <span className="text-[#38bdf8]">{poke.name}</span></span>
+                  <span className="text-emerald-400 font-black shrink-0">Asking: ${vendorPrice.toLocaleString()}</span>
+                </div>
+
+                {/* Chat Messages */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#0b0f19] min-h-[220px] max-h-[360px]">
+                  <div className="text-center my-1">
+                    <span className="px-3 py-1 rounded-full bg-[#1e293b]/60 border border-white/10 text-[10px] font-mono text-[#94a3b8]">
+                      🔒 Secure P2P Convention Floor Chat Established
+                    </span>
+                  </div>
+                  {chatMessages.map((msg, i) => (
+                    <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                      <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono text-[#64748b]">
+                        <span>{msg.sender === 'user' ? 'You' : `${vendorName} Rep`}</span>
+                        <span>•</span>
+                        <span>{msg.time}</span>
+                      </div>
+                      <div className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl font-mono text-xs leading-relaxed ${
+                        msg.sender === 'user'
+                          ? 'bg-gradient-to-r from-[#38bdf8] to-[#0284c7] text-white rounded-br-none shadow-[0_4px_12px_rgba(56,189,248,0.25)]'
+                          : 'bg-[#1e293b] text-[#f1f5f9] border border-white/10 rounded-bl-none shadow-md'
+                      }`}>
+                        {msg.text}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={chatBottomRef} />
+                </div>
+
+                {/* Input Bar */}
+                <div className="p-3 bg-[#0f172a] border-t border-white/10 flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendChatMessage()}
+                    placeholder={`Message ${vendorName} right now...`}
+                    className="flex-1 bg-[#1e293b] border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-white placeholder-gray-500 focus:outline-none focus:border-[#38bdf8] transition-colors"
+                  />
+                  <button
+                    onClick={handleSendChatMessage}
+                    className="p-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#0284c7] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono transition-all cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );
@@ -2116,6 +2286,10 @@ export default function App() {
                 isSlabbed: binderCard.isSlabbed || false,
                 slabGrade: binderCard.slabGrade || 'N/A',
                 binderId: 'my-collection',
+                isVendorCatalog: binderCard.isVendorCatalog || true,
+                vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
+                vendorBooth: binderCard.vendorBooth || '5B',
+                vendorRating: binderCard.vendorRating || '4.8 / 5',
                 pokemon: {
                   id: binderCard.id,
                   name: binderCard.name || 'Pokemon Card',
@@ -2124,6 +2298,10 @@ export default function App() {
                   illustrator: 'Expo Circuit',
                   isSlabbed: binderCard.isSlabbed || false,
                   slabGrade: binderCard.slabGrade || 'N/A',
+                  isVendorCatalog: binderCard.isVendorCatalog || true,
+                  vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
+                  vendorBooth: binderCard.vendorBooth || '5B',
+                  vendorRating: binderCard.vendorRating || '4.8 / 5',
                   images: {
                     small: binderCard.imageUrl || '',
                     large: binderCard.imageUrl || '',
