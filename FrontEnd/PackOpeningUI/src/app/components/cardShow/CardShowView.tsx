@@ -32,11 +32,13 @@ import {
 import { AuctionDashboard } from '../auction/AuctionDashboard';
 
 interface CardShowViewProps {
+  initialShowAuction?: boolean;
   onBackToPacks?: () => void;
   onInspectCard?: (card: any) => void;
 }
 
 export const CardShowView: React.FC<CardShowViewProps> = ({
+  initialShowAuction = false,
   onBackToPacks,
   onInspectCard,
 }) => {
@@ -46,7 +48,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
-  const [showAuctionDashboard, setShowAuctionDashboard] = useState(false);
+  const [showAuctionDashboard, setShowAuctionDashboard] = useState(initialShowAuction);
+  
+  useEffect(() => {
+    setShowAuctionDashboard(initialShowAuction);
+  }, [initialShowAuction]);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
   const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(12);
@@ -1253,17 +1259,17 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               <rect x="30" y="30" width="580" height="400" rx="6" fill="none" stroke="#1e3a5f" strokeWidth="1.5" style={{ pointerEvents: 'none' }} />
 
               {/* ===== ZONE 1: MAIN STAGE (top-left) ===== */}
-              <rect x="40" y="40" width="140" height="80" rx="4" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
-                className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.12] transition-all"
+              <rect x="40" y="40" width="140" height="80" rx="4" fill="#ef4444" fillOpacity="0.1" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 4"
+                className="cursor-pointer hover:stroke-[#f87171] hover:fill-[#ef4444]/[0.25] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "MAIN STAGE & AUCTION ARENA", rating: "5.0 / 5", activeListings: "125 Grails Live", completedTrans: "50,000+", booth: "Zone 1", specialties: ["Live Auctions", "Celebrity Signings", "Trophy Card Reveals"], discountScore: 95 })}
                 onMouseLeave={handleBoothLeave}
-                onClick={() => handleBoothSelect({ name: "MAIN STAGE & AUCTION ARENA", rating: "5.0 / 5", activeListings: "125 Grails Live", completedTrans: "50,000+", booth: "Zone 1", specialties: ["Live Auctions", "Celebrity Signings", "Trophy Card Reveals"], discountScore: 95 })}
+                onClick={() => setShowAuctionDashboard(true)}
               />
-              <circle cx="55" cy="55" r="10" fill="#38bdf8" fillOpacity="0.2" stroke="#38bdf8" strokeWidth="1.5" />
-              <text x="55" y="59" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="monospace" fontWeight="900">1</text>
-              <text x="115" y="75" textAnchor="middle" fill="#64748b" fontSize="7" fontFamily="monospace">Main Stage</text>
-              <text x="115" y="88" textAnchor="middle" fill="#475569" fontSize="6" fontFamily="monospace">LIVE AUCTION</text>
-              <text x="115" y="110" textAnchor="middle" fill="#fbbf24" fontSize="5.5" fontFamily="monospace" fontWeight="bold">🔴 Trophy Charizard</text>
+              <circle cx="55" cy="55" r="10" fill="#ef4444" fillOpacity="0.3" stroke="#ef4444" strokeWidth="1.5" className="animate-pulse" />
+              <text x="55" y="59" textAnchor="middle" fill="#ef4444" fontSize="10" fontFamily="monospace" fontWeight="900">A</text>
+              <text x="115" y="75" textAnchor="middle" fill="#fca5a5" fontSize="7" fontFamily="monospace" fontWeight="bold">MAIN STAGE</text>
+              <text x="115" y="88" textAnchor="middle" fill="#ef4444" fontSize="6" fontFamily="monospace" fontWeight="900" className="animate-pulse">🔴 LIVE AUCTION ARENA</text>
+              <text x="115" y="110" textAnchor="middle" fill="#fbbf24" fontSize="5.5" fontFamily="monospace" fontWeight="bold">CLICK TO ENTER</text>
 
               {/* ===== ZONE 2: ARTIST ALLEY (left column, multiple) ===== */}
               <rect x="40" y="135" width="85" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"

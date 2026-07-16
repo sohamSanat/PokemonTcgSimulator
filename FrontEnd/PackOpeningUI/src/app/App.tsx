@@ -1664,7 +1664,7 @@ export default function App() {
   }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
-  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions'>('pack');
+  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions'>('pack');
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
@@ -2426,6 +2426,18 @@ export default function App() {
               <span>Card Show</span>
             </button>
 
+            {/* Auctions Tab */}
+            <button
+              onClick={() => { sound.playTabSwitch(); setActiveTab('auctions'); setIsMobileMenuOpen(false); }}
+              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] ${activeTab === 'auctions'
+                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
+                : 'text-gray-400 hover:text-red-100 hover:bg-white/5'
+              }`}
+            >
+              <div className={`w-2 h-2 rounded-full ${activeTab === 'auctions' ? 'bg-red-500 animate-pulse' : 'bg-red-500/50 group-hover:bg-red-400'}`} />
+              <span className={activeTab === 'auctions' ? 'text-red-400' : ''}>Live Auctions</span>
+            </button>
+
             {/* Vault Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setIsBulkModalOpen(true); setIsMobileMenuOpen(false); }}
@@ -2589,9 +2601,10 @@ export default function App() {
             }}
           />
         </div>
-      ) : activeTab === 'cardShow' ? (
+      ) : (activeTab === 'cardShow' || activeTab === 'auctions') ? (
         <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
           <CardShowView
+            initialShowAuction={activeTab === 'auctions'}
             onBackToPacks={() => setActiveTab('pack')}
             onInspectCard={(binderCard) => {
               sound.playModalOpen();
