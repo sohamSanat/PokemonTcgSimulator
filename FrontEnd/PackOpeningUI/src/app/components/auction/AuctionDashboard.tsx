@@ -4,6 +4,7 @@ import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
+import { saveCollectedCard, updateCardSlabStatus } from '../binder/types';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,7 +36,7 @@ const MOCK_USERS = [
   "EeveeEvolution", "MewtwoStrikes", "RocketGrunt", "Red", "Blue"
 ];
 
-const DUMMY_CARDS = {
+const DUMMY_CARDS: Record<'expensive' | 'normal', AuctionPoolCard[]> = {
   expensive: [
     { name: "Charizard V (Alt Art)", price: 220, color: "amber", title: "Special Art Rare • PSA 10 GEM MINT", img: "https://images.pokemontcg.io/swsh9/154_hires.png" },
     { name: "Giratina V (Alt Art)", price: 450, color: "yellow", title: "Special Art Rare • PSA 10", img: "https://images.pokemontcg.io/swsh11/186_hires.png" },
@@ -773,6 +774,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           };
         }
 
+        const currentCard = pools.expensive[prev.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
+
         // status === 'active'
         if (prev.timeLeftMs <= 1000) {
           const lastBid = prev.bids[prev.bids.length - 1];
@@ -780,6 +783,18 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           const finalPrice = prev.currentBid;
           if (winner === 'YOU') {
             setWalletBalance(b => Math.max(0, b - finalPrice));
+            const newCard = saveCollectedCard({
+              value: finalPrice,
+              pokemon: {
+                id: currentCard.id,
+                name: currentCard.name,
+                images: { large: currentCard.img },
+                rarity: currentCard.title || 'Rare'
+              }
+            }, 'Auction Win');
+            if (currentCard.grade && newCard) {
+              updateCardSlabStatus(newCard.id, currentCard.grade);
+            }
           }
           return {
             ...prev,
@@ -790,8 +805,6 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             finalPrice
           };
         }
-
-        const currentCard = pools.expensive[prev.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
         const marketPrice = currentCard.price;
         const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.75);
 
@@ -873,12 +886,26 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           };
         }
 
+        const currentCard = pools.normal[prev.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
+
         if (prev.timeLeftMs <= 1000) {
           const lastBid = prev.bids[prev.bids.length - 1];
           const winner = lastBid ? lastBid.user : (MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)]);
           const finalPrice = prev.currentBid;
           if (winner === 'YOU') {
             setWalletBalance(b => Math.max(0, b - finalPrice));
+            const newCard = saveCollectedCard({
+              value: finalPrice,
+              pokemon: {
+                id: currentCard.id,
+                name: currentCard.name,
+                images: { large: currentCard.img },
+                rarity: currentCard.title || 'Rare'
+              }
+            }, 'Auction Win');
+            if (currentCard.grade && newCard) {
+              updateCardSlabStatus(newCard.id, currentCard.grade);
+            }
           }
           return {
             ...prev,
@@ -889,8 +916,6 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             finalPrice
           };
         }
-
-        const currentCard = pools.normal[prev.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
         const marketPrice = currentCard.price;
         const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.65);
 

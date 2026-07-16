@@ -6,6 +6,8 @@ export interface AuctionPoolCard {
   color: string;
   title: string;
   img: string;
+  id?: string;
+  grade?: string;
 }
 
 export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] } {

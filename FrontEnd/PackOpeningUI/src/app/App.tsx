@@ -930,33 +930,28 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
              ✨ INTERACTIVE 3D HOLOGRAPHIC ART ADMIRATION STUDIO ✨
              ======================================================== */
           <div className="flex flex-col h-full bg-gradient-to-b from-[#1c1c24] via-[#121218] to-[#0d0d0f] p-6 sm:p-8 relative overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10 z-10">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-purple-500/20 border border-amber-400/30 text-amber-300">
-                  <Eye className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-white flex items-center gap-2">
-                    {poke.name}
-                    <span className="text-xs text-amber-300 font-bold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-md">{poke.rarity || 'Common'}</span>
-                  </h3>
-                  <span className="text-xs text-gray-400">High Resolution Art Studio • Zoom & inspect card artwork</span>
+            <div className="flex items-center justify-between z-10 w-full px-2 mb-4">
+              <div className="flex flex-col items-start gap-1">
+                <h3 className="text-2xl font-black bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(251,191,36,0.3)] flex items-center gap-3">
+                  <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+                  {poke.name}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-widest text-amber-300/80 font-bold bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                    {poke.rarity || 'Common'}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-widest text-white/40 font-mono">
+                    {poke.id}
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { sound.playModalOpen(); setViewMode('market'); }}
-                  className="px-4 py-2 rounded-xl bg-[#1f1f2e] hover:bg-[#28283c] border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Back to Market Data
-                </button>
-                <button
-                  onClick={() => { sound.playModalClose(); onClose(); }}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-gray-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+              
+              <button
+                onClick={() => { sound.playModalClose(); onClose(); }}
+                className="p-2.5 rounded-full bg-black/40 hover:bg-black border border-white/10 hover:border-amber-500/50 text-white/60 hover:text-amber-400 transition-all cursor-pointer backdrop-blur-md shadow-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
             {/* Showcase Area */}
