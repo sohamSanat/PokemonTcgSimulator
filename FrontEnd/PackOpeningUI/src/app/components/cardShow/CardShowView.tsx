@@ -47,6 +47,19 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
+  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(12);
+  const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
+  const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
+
+  const onCardRenderComplete = (cardId?: string) => {
+    if (!cardId) return;
+    setCompletedCardIds(prev => {
+      if (prev.has(cardId)) return prev;
+      const next = new Set(prev);
+      next.add(cardId);
+      return next;
+    });
+  };
 
   useEffect(() => {
     loadJapaneseMetadata().then(() => {
@@ -59,7 +72,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     let setId = 'swsh3';
     let num = '1';
     
-    // First: look up the card in our vendor catalog directly by cardId or img.dataset.imgId
     const targetId = cardId || img.dataset.imgId;
     const cardItem = activeVendorCards.find(c => c.id === targetId || c.originalId === targetId || (c as any).id === targetId);
     if (cardItem) {
@@ -84,7 +96,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       }
     }
 
-    // Second: try to extract actual set ID and card number from the current image src
     const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
                   img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
                   img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i);
@@ -92,8 +103,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     if (match && (!cardItem || setId === 'swsh3')) {
       setId = match[1];
       num = match[2];
-    } else if (!cardItem && cardId && cardId.includes('-')) {
-      const parts = cardId.split('-');
+    } else if (!cardItem && targetId && targetId.includes('-')) {
+      const parts = targetId.split('-');
       const lowerPrefix = parts[0].toLowerCase();
       const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
         lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
@@ -109,47 +120,54 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       }
     }
     
-    if (isJpn && !setId.toLowerCase().includes('_ja')) {
-      setId = `${setId}_ja`;
+    const origStr = cardItem?.originalId || cardItem?.id || targetId || '';
+    const isKnownJpPrefix = /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(origStr) || /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(setId);
+
+    const isJpnCard = Boolean(isJpn || isKnownJpPrefix || setId.toLowerCase().includes('_ja') || cardItem?.name?.includes('Japanese') || origStr.includes('_ja') || img.src.includes('_ja') || img.src.includes('/ja/'));
+    if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
+      setId = `${setId.replace(/_ja$/i, '')}_ja`;
     }
     
     handleCardImageError(img, setId, num, () => {
-      // If every specific fallback URL exhausted, do NOT hide the card or strip it from vendor catalogs.
-      // Instead, ensure container is visible and assign a guaranteed high-res fallback art directly.
       const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
       if (cardContainer) {
         cardContainer.style.display = '';
       }
-      img.src = isJpn ? 'https://images.pokemontcg.io/np/47_hires.png' : 'https://images.pokemontcg.io/swsh3/19_hires.png';
+      img.src = isJpnCard ? 'https://images.pokemontcg.io/np/47_hires.png' : 'https://images.pokemontcg.io/swsh3/19_hires.png';
+      onCardRenderComplete(targetId);
     });
   };
 
-  // Detect card-back "false success": when pokemontcg.io or scrydex.com can't find a card they
-  // serve the generic card BACK image (HTTP 200, blue swirl Pokeball). We catch this onLoad by
-  // sampling a corner pixel via canvas — the card back has a very dark navy-blue corner (~r<50, g<80, b>100).
   const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
     const img = e.currentTarget;
-    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return;
+    const targetId = cardId || img.dataset.imgId;
+    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) {
+      onCardRenderComplete(targetId);
+      return;
+    }
     try {
       const canvas = document.createElement('canvas');
       canvas.width = 8;
       canvas.height = 8;
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        onCardRenderComplete(targetId);
+        return;
+      }
       ctx.drawImage(img, 0, 0, 8, 8);
-      // Sample top-left corner pixel (card back corner is very dark blue)
       const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
-      // Card back corner: r < 50, g < 75, b > 90 (dark indigo/navy)
       const isCardBack = r < 50 && g < 75 && b > 90;
       if (isCardBack) {
         handleCardShowImageError(
           { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-          cardId,
+          targetId,
           isJpn
         );
+      } else {
+        onCardRenderComplete(targetId);
       }
     } catch {
-      // canvas tainted by CORS — can't sample, skip detection
+      onCardRenderComplete(targetId);
     }
   };
 
@@ -579,20 +597,17 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       const combined = [...topGrails, ...midSlabs, ...rawHighlights];
       finalVendorPool = combined.map((c, idx) => {
         const assignedGrade = c.grade || (idx % 3 === 0 ? "PSA 10" : idx % 3 === 1 ? "PSA 9" : "BGS 9.5");
-        // Apply PSA value multiplier if we have rawPrice, otherwise use existing price
         const baseRaw = (c as any).rawPrice || (c.price ? (assignedGrade === "PSA 10" ? c.price / 2.8 : c.price) : 150);
         const finalPrice = assignedGrade === "PSA 10" ? Math.max(c.price || 350, Number((baseRaw * 2.8).toFixed(2))) : assignedGrade === "PSA 9" ? Math.max(c.price || 180, Number((baseRaw * 1.6).toFixed(2))) : (c.price || 200);
         return {
           ...c,
+          originalId: (c as any).originalId || c.id,
           id: `${selectedVendor?.booth || 'booth'}-grail-${idx}`,
           grade: assignedGrade,
           price: finalPrice,
         };
       }).slice(0, 110);
     } else if (isJapaneseSpecialty) {
-      // 2. Japanese Hub / Import Tables: Sell expensive regular set Japanese cards (Scarlet & Violet, Sword & Shield, Sun & Moon, Vintage)
-      // For specialty raw tables like Retro Pokémon HQ, sell raw regular set cards right at rawPrice ($15 - $380).
-      // For glass case tables (Japanese High Class Hub / Dovakinji), apply PSA value multiplier on top regular set chase hits!
       const jpnMasterList = seededShuffle([...jpnSlice, ...jpnModSlice, ...jpnVintSlice, ...rawSlice.filter(c => c.name?.includes("Japanese"))]);
       const isRawSpecialty = vName.includes("RETRO POKÉMON");
       let idx = 0;
@@ -601,20 +616,20 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         const item = jpnMasterList[idx % jpnMasterList.length];
         const baseRaw = (item as any).rawPrice || (item.price ? Math.min(item.price, item.price / ((item as any).grade?.includes("PSA") ? 2.5 : 1)) : 45);
         if (isRawSpecialty || idx % 3 !== 0) {
-          // Sell Raw Ungraded regular set expensive card at realistic raw market value
           const rawSellPrice = Math.max(10, Number((baseRaw * (0.95 + (idx % 5) * 0.05)).toFixed(2)));
           finalVendorPool.push({
             ...item,
+            originalId: (item as any).originalId || item.id,
             id: `${selectedVendor?.booth || 'booth'}-jpnraw-${idx}`,
             grade: idx % 6 === 0 ? "Raw LP/NM" : "Raw NM",
             price: rawSellPrice
           });
         } else {
-          // Sell Graded Japanese Regular Set Slab with PSA value multiplier applied to raw price
           const slabGrade = idx % 2 === 0 ? "PSA 10" : "PSA 9";
           const slabPrice = slabGrade === "PSA 10" ? Math.max(item.price || 240, Number((baseRaw * 3.2).toFixed(2))) : Math.max((item.price || 140) * 0.6, Number((baseRaw * 1.7).toFixed(2)));
           finalVendorPool.push({
             ...item,
+            originalId: (item as any).originalId || item.id,
             id: `${selectedVendor?.booth || 'booth'}-jpnslab-${idx}`,
             grade: slabGrade,
             price: slabPrice
@@ -622,7 +637,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         }
       }
     } else if (isModernAltVendor) {
-      // 3. Modern Alt Art & Hit Tables: Sell regular set Modern hits across English & Japanese ($15 - $280 raw, + slabs with PSA multiplier)
       const modRaw = seededShuffle([...rawSlice, ...modAltSlice, ...ttSlice, ...jpnSlice.filter(c => !c.id.includes('base') && !c.id.includes('neo') && !c.id.includes('fo'))]);
       const modSlabs = seededShuffle([...modAltSlice]);
       let idx = 0;
@@ -633,6 +647,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           const baseRaw = (s as any).rawPrice || (s.price ? s.price / 2.6 : 80);
           finalVendorPool.push({
             ...s,
+            originalId: (s as any).originalId || s.id,
             id: `${selectedVendor?.booth || 'booth'}-modslab-${idx}`,
             grade: idx % 2 === 0 ? "PSA 10" : "PSA 9",
             price: idx % 2 === 0 ? Math.max(s.price || 240, Number((baseRaw * 2.8).toFixed(2))) : Number((baseRaw * 1.6).toFixed(2))
@@ -643,6 +658,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           const rawPrice = Math.max(10, Number((baseRaw * (0.9 + (idx % 6) * 0.05)).toFixed(2)));
           finalVendorPool.push({
             ...r,
+            originalId: (r as any).originalId || r.id,
             id: `${selectedVendor?.booth || 'booth'}-modraw-${idx}`,
             grade: "Raw NM",
             price: rawPrice
@@ -650,8 +666,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         }
       }
     } else {
-      // 4. Standard Floor Vendors, Trade Tables & General Sellers (70% OF THE SHOW! Zone 8, A-M, N-Z, Carbanda, Brodes, etc.)
-      // Featuring raw regular set cards across English & Japanese ($10 to $180) + centerpieces!
       const allRaw = seededShuffle([...rawSlice, ...jpnSlice, ...ttSlice]);
       const showcaseItems = seededShuffle([...jpnVintSlice, ...modAltSlice, ...jpnSlice.slice(0, 12)]);
       let idx = 0;
@@ -663,6 +677,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           const grade = idx % 2 === 0 ? "PSA 10" : "PSA 9";
           finalVendorPool.push({
             ...sc,
+            originalId: (sc as any).originalId || sc.id,
             id: `${selectedVendor?.booth || 'booth'}-showcase-${idx}`,
             grade: grade,
             price: grade === "PSA 10" ? Number((baseRaw * 2.8).toFixed(2)) : Number((baseRaw * 1.6).toFixed(2))
@@ -673,6 +688,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           const rawPrice = Math.max(8, Number((baseRaw * (0.85 + (idx % 7) * 0.05)).toFixed(2)));
           finalVendorPool.push({
             ...r,
+            originalId: (r as any).originalId || r.id,
             id: `${selectedVendor?.booth || 'booth'}-floor-${idx}`,
             grade: idx % 6 === 0 ? "Raw LP" : idx % 6 === 1 ? "Raw MP/LP" : "Raw NM",
             price: rawPrice
@@ -681,13 +697,16 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       }
     }
 
-    return finalVendorPool.map((c: any, i: number) => ({
-      ...c,
-      id: c.id || `${selectedVendor?.booth || 'booth'}-${i}`,
-      originalId: c.originalId || c.id,
-      setId: (c as any).setId || (c.id ? c.id.split('-')[0] : 'swsh3'),
-      num: (c as any).num || (c.id && c.id.includes('-') ? c.id.split('-')[1] : '1')
-    }));
+    return finalVendorPool.map((c: any, i: number) => {
+      const orig = c.originalId || c.id || `${selectedVendor?.booth || 'booth'}-${i}`;
+      return {
+        ...c,
+        id: c.id || `${selectedVendor?.booth || 'booth'}-${i}`,
+        originalId: orig,
+        setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') && !orig.toLowerCase().includes('floor') ? orig.split('-')[0] : 'swsh3'),
+        num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1')
+      };
+    });
   }, [selectedVendor?.name, selectedVendor?.booth, metadataLoaded]);
 
   // ── SCRYDEX CARD-BACK RUNTIME FILTER ────────────────────────────────────────
@@ -699,51 +718,63 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   // so real images are never incorrectly hidden.
   const SCRYDEX_CARDBACK_BYTES = 186316;
 
+  // Reset sequential visible batch limit when active vendor pool or search filters change
   useEffect(() => {
-    if (activeVendorCards.length === 0) return;
-    let cancelled = false;
-    const BATCH = 8;
+    setVisibleBatchLimit(12);
+    setCompletedCardIds(new Set());
+  }, [activeVendorCards, searchQuery, selectedFilter]);
 
-    const validatePool = async () => {
-      const scrydexCards = activeVendorCards.filter(c => c.img?.includes('scrydex.com'));
-      for (let i = 0; i < scrydexCards.length; i += BATCH) {
-        if (cancelled) break;
-        const batch = scrydexCards.slice(i, i + BATCH);
-        await Promise.allSettled(
-          batch.map(async (card) => {
-            if (cancelled) return;
-            try {
-              const resp = await fetch(card.img, {
-                signal: AbortSignal.timeout(6000),
-                headers: { 'User-Agent': 'Mozilla/5.0' }
-              });
-              if (!resp.ok) {
-                // If initial scrydex URL is 404, find the img element in DOM and trigger fallback chain instead of hiding the card
-                const imgElem = document.querySelector(`[data-img-id="${card.id}"]`) as HTMLImageElement | null;
-                if (imgElem && imgElem.src === card.img) {
-                  handleCardShowImageError({ currentTarget: imgElem } as any, card.id, card.name.includes('Japanese') || card.id.includes('_ja'));
-                }
-                return;
-              }
-              const buf = await resp.arrayBuffer();
-              if (buf.byteLength === SCRYDEX_CARDBACK_BYTES) {
-                // Card-back placeholder detected — trigger fallback chain instead of hiding the card
-                const imgElem = document.querySelector(`[data-img-id="${card.id}"]`) as HTMLImageElement | null;
-                if (imgElem && imgElem.src === card.img) {
-                  handleCardShowImageError({ currentTarget: imgElem } as any, card.id, card.name.includes('Japanese') || card.id.includes('_ja'));
-                }
-              }
-            } catch {
-              // CORS blocked or timeout — keep card; onError fallback chain handles it
-            }
-          })
-        );
-      }
-    };
+  // Advance sequential batch as soon as all currently visible cards have rendered (or after safety timeout)
+  useEffect(() => {
+    const filtered = activeVendorCards.filter((c) => {
+      const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
+      if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
+      if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
+      if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
+      if (selectedFilter === "WOTC / Vintage") return matchesSearch && (c.name.includes("Base") || c.name.includes("Neo") || c.name.includes("1st"));
+      if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
+      return matchesSearch;
+    });
 
-    validatePool();
-    return () => { cancelled = true; };
-  }, [activeVendorCards]);
+    if (visibleBatchLimit >= filtered.length) return;
+
+    const currentBatch = filtered.slice(0, visibleBatchLimit);
+    const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => completedCardIds.has(c.id));
+
+    if (allBatchDone) {
+      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 12));
+    } else {
+      // Safety timeout: if any socket takes more than 1.2s, smoothly advance to next batch so loading never stalls
+      const timer = setTimeout(() => {
+        setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 12));
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter]);
+
+  // IntersectionObserver: immediately load any card container that scrolls into the user's viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const imgId = entry.target.getAttribute('data-img-id');
+          if (imgId) {
+            setIntersectingCardIds(prev => {
+              if (prev.has(imgId)) return prev;
+              const next = new Set(prev);
+              next.add(imgId);
+              return next;
+            });
+          }
+        }
+      });
+    }, { rootMargin: '120px' });
+
+    const elements = document.querySelectorAll('[data-card-container]');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeVendorCards, visibleBatchLimit, searchQuery, selectedFilter]);
 
   const filteredCards = activeVendorCards.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -961,14 +992,21 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 data-img-id={card.id}
               >
                 {/* Full card image — w-full h-auto guarantees no cropping */}
-                <div className="w-full relative p-2 bg-black/40 rounded-t-xl">
-                  <img
-                    src={card.img}
-                    alt={card.name}
-                    className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
-                    onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                    onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                  />
+                <div className="w-full relative p-2 bg-black/40 rounded-t-xl min-h-[160px] flex items-center justify-center">
+                  {(i < visibleBatchLimit || intersectingCardIds.has(card.id)) ? (
+                    <img
+                      src={card.img}
+                      alt={card.name}
+                      className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
+                      onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+                      onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+                    />
+                  ) : (
+                    <div className="w-full aspect-[3/4] bg-gradient-to-tr from-[#111418] to-[#1e293b] rounded-md animate-pulse flex flex-col items-center justify-center border border-white/5 gap-1.5 p-2">
+                      <Package className="w-5 h-5 text-[#38bdf8]/40 animate-bounce" />
+                      <span className="text-[9px] font-mono text-[#64748b] tracking-wider uppercase font-bold text-center">In Sequence...</span>
+                    </div>
+                  )}
                   {/* Grade badge — top left, outside card art area */}
                   <div className="absolute top-3 left-3 z-10">
                     <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/50 text-amber-300 font-bold shadow">

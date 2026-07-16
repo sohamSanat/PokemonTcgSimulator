@@ -194,15 +194,13 @@ for (const gen of generations) {
 
         candidates.push({ id: jpCardId, setId: `${setId}_ja`, num: card.cardNum, name: jpDisplayName, rawPrice: card.price_numeric, img: jpImgUrl, _isVintage: isVintage });
 
-        // English version
-        const engCardId = `${setId}-${card.cardNum}`;
-        const engDisplayName = `${cleanName} (${setFolder})`;
-        let engImgUrl = `https://images.scrydex.com/pokemon/${cleanSet}-${card.cardNum}/large`;
+        // English version (ONLY for vintage cards like Base/Neo where pokemontcg.io hosts English equivalents; never for modern Japanese sets where Scrydex returns card backs for non-_ja codes)
         if (isVintage) {
-          engImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
+          const engCardId = `${setId}-${card.cardNum}`;
+          const engDisplayName = `${cleanName} (${setFolder})`;
+          const engImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
+          candidates.push({ id: engCardId, setId: `${setId}`, num: card.cardNum, name: engDisplayName, rawPrice: card.price_numeric, img: engImgUrl, _isVintage: true });
         }
-
-        candidates.push({ id: engCardId, setId: `${setId}`, num: card.cardNum, name: engDisplayName, rawPrice: card.price_numeric, img: engImgUrl, _isVintage: isVintage });
       }
     } catch (e) {
       console.error(`Error compiling set ${setFolder}:`, e.message);

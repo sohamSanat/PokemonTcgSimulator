@@ -19,7 +19,41 @@ export async function loadJapaneseMetadata() {
   if (!jaTopCardsCache) {
     try {
       const res = await fetch('/ja-top-cards.json');
-      if (res.ok) jaTopCardsCache = await res.json();
+      if (res.ok) {
+        const rawCache = await res.json();
+        const seenJaIds = new Set<string>();
+        const cleaned: any[] = [];
+        if (Array.isArray(rawCache)) {
+          for (const c of rawCache) {
+            if (!c || !c.id) continue;
+            const isScrydex = c.img && c.img.includes('scrydex.com');
+            const hasJa = c.id.includes('_ja');
+            const isVint = c.id.startsWith('base') || c.id.startsWith('neo') || c.id.startsWith('fo') || c.id.startsWith('ju');
+            if (isScrydex && !hasJa && !isVint) {
+              const parts = c.id.split('-');
+              if (parts.length >= 2) {
+                const setCode = parts[0];
+                const numCode = parts.slice(1).join('-');
+                const jaId = `${setCode}_ja-${numCode}`;
+                if (seenJaIds.has(jaId)) continue;
+                seenJaIds.add(jaId);
+                cleaned.push({
+                  ...c,
+                  id: jaId,
+                  setId: `${setCode}_ja`,
+                  img: c.img.replace(`/pokemon/${setCode}-${numCode}`, `/pokemon/${setCode}_ja-${numCode}`)
+                });
+                continue;
+              }
+            }
+            if (!seenJaIds.has(c.id)) {
+              seenJaIds.add(c.id);
+              cleaned.push(c);
+            }
+          }
+        }
+        jaTopCardsCache = cleaned;
+      }
     } catch (e) {
       console.error('Failed to load /ja-top-cards.json:', e);
     }
@@ -992,24 +1026,40 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
   if (jaTopCardsCache && jaTopCardsCache.length > 0) {
     for (const card of jaTopCardsCache) {
       if (results.length >= count) break;
-      if (!addedIds.has(card.id)) {
-        addedIds.add(card.id);
+      let targetId = card.id;
+      let targetSetId = card.setId;
+      let targetImg = card.img;
+
+      if (targetImg && targetImg.includes('scrydex.com') && !targetImg.includes('_ja') && !targetId.includes('_ja')) {
+        const parts = targetId.split('-');
+        if (parts.length >= 2 && !parts[0].startsWith('base') && !parts[0].startsWith('neo') && !parts[0].startsWith('fo') && !parts[0].startsWith('ju')) {
+          const setCode = parts[0];
+          const numCode = parts.slice(1).join('-');
+          const jaId = `${setCode}_ja-${numCode}`;
+          if (addedIds.has(jaId)) continue;
+          targetId = jaId;
+          targetSetId = `${setCode}_ja`;
+          targetImg = targetImg.replace(`/pokemon/${setCode}-${numCode}`, `/pokemon/${setCode}_ja-${numCode}`);
+        }
+      }
+
+      if (!addedIds.has(targetId)) {
+        addedIds.add(targetId);
         const rawPrice = Number(card.rawPrice.toFixed(2));
         
-        // Assign a balanced mix of Raw vs Graded so catalogs can either sell raw or apply PSA multiplier
         const grade = rawPrice > 500 ? "PSA 10" : rawPrice > 180 ? "PSA 9" : "Raw NM";
         const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.8).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.6).toFixed(2)) : rawPrice;
 
         results.push({
-          id: card.id,
-          setId: card.setId,
+          id: targetId,
+          setId: targetSetId,
           num: card.num,
           name: card.name,
           rawPrice: rawPrice,
           grade: grade,
           price: displayPrice,
           change: `+${(Math.random() * 12 + 1.5).toFixed(1)}%`,
-          img: card.img
+          img: targetImg
         });
       }
     }

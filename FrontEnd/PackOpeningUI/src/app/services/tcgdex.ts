@@ -375,7 +375,18 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
 
   if (nextAttempt < fallbacks.length) {
      img.dataset.errorAttempt = nextAttempt.toString();
-     img.src = fallbacks[nextAttempt];
+     const targetUrl = fallbacks[nextAttempt];
+     img.src = targetUrl;
+     if (targetUrl.includes('scrydex.com')) {
+       fetch(targetUrl, { signal: AbortSignal.timeout(5000) })
+         .then(r => r.ok ? r.arrayBuffer() : Promise.reject('not_ok'))
+         .then(buf => {
+           if (buf.byteLength === 186316) {
+             handleCardImageError(img, setId, rawNum, onFailed);
+           }
+         })
+         .catch(() => {});
+     }
   } else {
      if (onFailed) onFailed();
   }
