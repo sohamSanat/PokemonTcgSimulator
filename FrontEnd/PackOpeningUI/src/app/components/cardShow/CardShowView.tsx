@@ -296,7 +296,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // Generate walking audience dots across all corridors (denser on hot footpaths)
     let dotId = 0;
     corridors.forEach(c => {
-      const numDots = c.isHot ? 14 : 6;
+      const numDots = c.isHot ? 3 : 1;
       for (let i = 0; i < numDots; i++) {
         dotId++;
         const isForward = Math.random() > 0.5;
@@ -321,9 +321,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // Generate swarming cluster dots outside stalls (huge clusters outside HOT stalls)
     stalls.forEach(stall => {
       const status = popMap[stall.name]?.level || 'STEADY 🟢';
-      let clusterCount = 3;
-      if (status.includes('HOT')) clusterCount = 20;
-      else if (status.includes('HIGH TRAFFIC')) clusterCount = 9;
+      let clusterCount = 1;
+      if (status.includes('HOT')) clusterCount = 4;
+      else if (status.includes('HIGH TRAFFIC')) clusterCount = 2;
 
       for (let i = 0; i < clusterCount; i++) {
         dotId++;
@@ -376,7 +376,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       ...vendorObj,
       type: getBoothType(vendorObj.name, vendorObj.type)
     };
-    setSelectedVendor(fullObj);
     setHoveredBooth(fullObj);
   };
 
@@ -1561,7 +1560,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                   key={d.id}
                   cx={d.cx} cy={d.cy} r={d.r}
                   fill={d.color} opacity={d.opacity}
-                  filter={d.r > 2.2 ? "url(#glowWhite)" : undefined}
                 >
                   <animate attributeName="opacity" values={`${d.opacity * 0.4};${Math.min(1, d.opacity * 1.5)};${d.opacity * 0.4}`} dur={`${d.dur}s`} repeatCount="indefinite" />
                 </circle>
@@ -1570,7 +1568,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               {/* 2. Animated Audience Walking Dots traveling back and forth along the corridors */}
               {animatedAudienceDots.map(d => (
                 <g key={d.id}>
-                  <circle r={d.r} fill={d.color} opacity="0.85" filter={d.r > 2 ? "url(#glowWhite)" : undefined}>
+                  <circle r={d.r} fill={d.color} opacity="0.85">
                     <animate attributeName="cx" values={`${d.x1};${d.x2};${d.x1}`} dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
                     <animate attributeName="cy" values={`${d.y1};${d.y2};${d.y1}`} dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.3;1;0.3" dur={`${d.dur * 0.5}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
