@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -738,7 +738,7 @@ const Card = React.memo(({
   );
 });
 
-const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice, onMoveToBinder }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void; onMoveToBinder?: (c: CardData) => void }) => {
+const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice, onMoveToBinder, onBuyFromVendor }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void; onMoveToBinder?: (c: CardData) => void; onBuyFromVendor?: (c: CardData, buyPrice: number) => void }) => {
   const poke = card.pokemon;
   const [liveCardFull, setLiveCardFull] = useState<TCGDexCardFull | null>(() => cardFullCache.get(poke.id) || null);
 
@@ -774,6 +774,13 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   const vendorRating = card.vendorRating || poke.vendorRating || "4.8 / 5";
   const vendorPrice = typeof card.value === 'number' ? card.value : parseFloat(String(card.value || '0').replace(/[^0-9.]/g, '')) || liveCardPrice;
 
+  const [negotiatedPrice, setNegotiatedPrice] = useState<number>(vendorPrice);
+  const [isPriceUpdated, setIsPriceUpdated] = useState<boolean>(false);
+
+  useEffect(() => {
+    setNegotiatedPrice(vendorPrice);
+  }, [vendorPrice]);
+
   useEffect(() => {
     if (!isFromVendor && liveCardPrice !== card.value && onUpdatePrice) {
       onUpdatePrice(liveCardPrice, activePoke);
@@ -802,6 +809,16 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   }, [showSellerChat, chatMessages]);
 
   const [isVendorTyping, setIsVendorTyping] = useState(false);
+
+  const handleBuyFromVendorAction = () => {
+    sound.playButtonClick();
+    sound.playLegendaryFanfare();
+    if (onBuyFromVendor) {
+      onBuyFromVendor(card, negotiatedPrice);
+    }
+    setShowSellerChat(false);
+    onClose();
+  };
 
   const handleSendChatMessage = async () => {
     if (!chatInput.trim() || isVendorTyping) return;
@@ -840,6 +857,18 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
         userMessage: userMsgText
       });
 
+      // Check if vendor offered a lower price in the reply
+      const dollarMatches = Array.from(reply.matchAll(/\$(\d+(?:\.\d{1,2})?)/g)).map(m => parseFloat(m[1]));
+      if (dollarMatches.length > 0) {
+        const minOffered = Math.min(...dollarMatches.filter(n => n > 0.05 && n < negotiatedPrice));
+        if (minOffered && minOffered < negotiatedPrice) {
+          setNegotiatedPrice(minOffered);
+          setIsPriceUpdated(true);
+          sound.playCoinClink();
+          setTimeout(() => setIsPriceUpdated(false), 3000);
+        }
+      }
+
       setChatMessages(prev => [
         ...prev,
         {
@@ -850,11 +879,16 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
       ]);
       sound.playCardCollect();
     } catch (err) {
+      const fallbackPrice = Number((negotiatedPrice * 0.92).toFixed(2));
+      setNegotiatedPrice(fallbackPrice);
+      setIsPriceUpdated(true);
+      setTimeout(() => setIsPriceUpdated(false), 3000);
+
       setChatMessages(prev => [
         ...prev,
         {
           sender: 'vendor' as const,
-          text: `Since you're right here at booth ${vendorBooth}, I can do 8% off cash out the door right now! Do we have a deal? 🤝🔥`,
+          text: `Since you're right here at booth ${vendorBooth}, I can do $${fallbackPrice.toLocaleString()} cash out the door right now! Do we have a deal? 🤝🔥`,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -949,15 +983,40 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
             <div className={`pt-4 border-t border-white/10 flex flex-wrap items-center ${isFromVendor ? 'justify-between' : 'justify-end'} gap-4 z-10 bg-black/40 p-4 rounded-2xl border border-white/5`}>
               {isFromVendor && (
                 <div className="flex items-center gap-3 flex-wrap">
-                  <div className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/50 flex flex-col justify-center shadow-[0_0_15px_rgba(16,185,129,0.25)]">
-                    <span className="text-[9px] text-emerald-300/80 font-mono font-bold uppercase tracking-wider">Booth {vendorBooth} Price</span>
-                    <span className="text-base font-mono font-black text-emerald-300">💰 ${vendorPrice.toLocaleString()}</span>
+                  <div className={`px-3.5 py-1.5 rounded-xl border flex flex-col justify-center transition-all duration-300 ${
+                    isPriceUpdated
+                      ? 'bg-emerald-500 border-white shadow-[0_0_25px_rgba(16,185,129,1)] scale-110 animate-bounce'
+                      : negotiatedPrice < vendorPrice
+                        ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 border-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.4)]'
+                        : 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                  }`}>
+                    <span className={`text-[9px] font-mono font-bold uppercase tracking-wider ${isPriceUpdated ? 'text-black' : 'text-emerald-300/80'}`}>
+                      Booth {vendorBooth} Price {isPriceUpdated && '🔥 DROP!'}
+                    </span>
+                    <div className="flex items-center gap-1.5 font-mono">
+                      {negotiatedPrice < vendorPrice && !isPriceUpdated && (
+                        <span className="text-xs text-gray-500 line-through font-normal">${vendorPrice.toLocaleString()}</span>
+                      )}
+                      <span className={`text-base font-black ${isPriceUpdated ? 'text-black' : 'text-emerald-300'}`}>
+                        💰 ${negotiatedPrice.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                   <button
                     onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
                     className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-[#0369a1] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.4)] transform hover:-translate-y-0.5 border border-[#38bdf8]/40"
                   >
                     <MessageSquare className="w-4 h-4 text-white animate-pulse" /> 💬 Chat With Seller ({vendorName})
+                  </button>
+                  <button
+                    onClick={handleBuyFromVendorAction}
+                    className={`px-4 py-2 rounded-xl font-mono font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 ${
+                      isPriceUpdated
+                        ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_20px_rgba(250,204,21,0.8)] border-2 border-white'
+                        : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/50'
+                    }`}
+                  >
+                    <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
                   </button>
                 </div>
               )}
@@ -1029,19 +1088,40 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                 <Eye className="w-3.5 h-3.5 text-amber-400" /> Admire Card Art Studio
               </button>
               <div className="mt-4 text-center w-full px-2">
-                <span className="text-3xl font-mono font-black text-emerald-400 tracking-tight block drop-shadow-[0_0_15px_rgba(52,211,153,0.4)]">
-                  ${isFromVendor ? vendorPrice.toLocaleString() : liveCardPrice.toFixed(2)}
-                </span>
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-0.5 block">
-                  {isFromVendor ? `🏪 Booth ${vendorBooth} Catalogue Price` : (tcgVariants.length === 0 && !cm) ? 'Fixed Valuation (No Live Data)' : 'Live Market Value'}
-                </span>
+                <div className={`transition-all duration-300 rounded-2xl py-1 px-2 ${
+                  isPriceUpdated ? 'bg-emerald-500/20 border-2 border-emerald-400 scale-105 animate-bounce shadow-[0_0_25px_rgba(16,185,129,0.5)]' : ''
+                }`}>
+                  <div className="flex items-center justify-center gap-2">
+                    {isFromVendor && negotiatedPrice < vendorPrice && (
+                      <span className="text-lg font-mono text-gray-500 line-through font-normal">${vendorPrice.toLocaleString()}</span>
+                    )}
+                    <span className={`text-3xl font-mono font-black tracking-tight block drop-shadow-[0_0_15px_rgba(52,211,153,0.4)] ${isPriceUpdated ? 'text-yellow-300' : 'text-emerald-400'}`}>
+                      ${isFromVendor ? negotiatedPrice.toLocaleString() : liveCardPrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-0.5 block">
+                    {isFromVendor ? `🏪 Booth ${vendorBooth} Catalogue Price ${isPriceUpdated ? '🔥 PRICE DROPPED!' : ''}` : (tcgVariants.length === 0 && !cm) ? 'Fixed Valuation (No Live Data)' : 'Live Market Value'}
+                  </span>
+                </div>
                 {isFromVendor && (
-                  <button
-                    onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
-                    className="mt-3.5 w-full py-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-[#0369a1] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-[#38bdf8]/50 transform hover:-translate-y-0.5"
-                  >
-                    <MessageSquare className="w-4 h-4 text-white animate-pulse" /> 💬 Chat With Seller ({vendorName})
-                  </button>
+                  <div className="mt-3.5 space-y-2.5 w-full">
+                    <button
+                      onClick={handleBuyFromVendorAction}
+                      className={`w-full py-2.5 rounded-xl font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 ${
+                        isPriceUpdated
+                          ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_20px_rgba(250,204,21,0.8)] border-2 border-white'
+                          : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
+                      }`}
+                    >
+                      <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
+                    </button>
+                    <button
+                      onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
+                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-[#0369a1] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-[#38bdf8]/50 transform hover:-translate-y-0.5"
+                    >
+                      <MessageSquare className="w-4 h-4 text-white animate-pulse" /> 💬 Chat With Seller ({vendorName})
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -1254,13 +1334,29 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                 </div>
 
                 {/* Chat Card Preview Pill */}
-                <div className="bg-[#111827] px-4 py-2 border-b border-white/5 flex items-center justify-between text-xs font-mono">
-                  <span className="text-gray-300 truncate font-bold">Trading Item: <span className="text-[#38bdf8]">{poke.name}</span></span>
-                  <span className="text-emerald-400 font-black shrink-0">Asking: ${vendorPrice.toLocaleString()}</span>
+                <div className="bg-[#111827] px-4 py-2 border-b border-white/5 flex items-center justify-between text-xs font-mono relative overflow-hidden">
+                  <span className="text-gray-300 truncate font-bold flex items-center gap-1.5">
+                    Trading Item: <span className="text-[#38bdf8]">{poke.name}</span>
+                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`px-2.5 py-1 rounded-lg font-black transition-all duration-300 flex items-center gap-1.5 ${
+                      isPriceUpdated 
+                        ? 'bg-emerald-500 text-black shadow-[0_0_25px_rgba(16,185,129,1)] scale-110 animate-bounce border-2 border-white' 
+                        : negotiatedPrice < vendorPrice
+                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                          : 'text-emerald-400'
+                    }`}>
+                      {negotiatedPrice < vendorPrice && (
+                        <span className="line-through text-gray-500 text-[10px] mr-1 font-normal">${vendorPrice.toLocaleString()}</span>
+                      )}
+                      <span>Asking: ${negotiatedPrice.toLocaleString()}</span>
+                      {isPriceUpdated && <span className="text-black font-extrabold text-[10px]">🔥 PRICE DROPPED!</span>}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#0b0f19] min-h-[220px] max-h-[360px]">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#0b0f19] min-h-[200px] max-h-[320px]">
                   <div className="text-center my-1">
                     <span className="px-3 py-1 rounded-full bg-[#1e293b]/60 border border-white/10 text-[10px] font-mono text-[#94a3b8]">
                       🔒 Secure P2P Convention Floor Chat Established
@@ -1296,6 +1392,37 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                     </div>
                   )}
                   <div ref={chatBottomRef} />
+                </div>
+
+                {/* Always-visible Buy Now Bar inside Chat */}
+                <div className="px-4 py-2.5 bg-gradient-to-r from-[#0d162a] via-[#122143] to-[#0d162a] border-t border-b border-[#38bdf8]/40 flex items-center justify-between gap-3 shrink-0 shadow-lg">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-mono text-[#94a3b8] uppercase font-bold tracking-wider">Floor Deal Price</span>
+                    <div className="flex items-center gap-1.5 font-mono">
+                      {negotiatedPrice < vendorPrice && (
+                        <span className="text-xs text-gray-500 line-through font-normal">${vendorPrice.toLocaleString()}</span>
+                      )}
+                      <span className={`text-sm sm:text-base font-black ${isPriceUpdated ? 'text-yellow-300 animate-pulse' : 'text-emerald-400'}`}>
+                        ${negotiatedPrice.toLocaleString()}
+                      </span>
+                      {negotiatedPrice < vendorPrice && (
+                        <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/40 font-bold">
+                          {(100 - (negotiatedPrice / vendorPrice) * 100).toFixed(0)}% OFF
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleBuyFromVendorAction}
+                    className={`px-4 sm:px-5 py-2 rounded-xl font-mono font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 shrink-0 ${
+                      isPriceUpdated
+                        ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_25px_rgba(250,204,21,0.8)] border-2 border-white'
+                        : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
+                    }`}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span>Buy now at ${negotiatedPrice.toLocaleString()}</span>
+                  </button>
                 </div>
 
                 {/* Input Bar */}
@@ -1566,9 +1693,6 @@ export default function App() {
   const [tearProgress, setTearProgress] = useState<number>(0);
 
   useEffect(() => {
-    // Instant asset preloading right on website load for zero-latency sleeving
-    const pSleeve = new Image(); pSleeve.src = '/sleeve.png';
-
     fetch('/packArts/manifest.json?v=3')
       .then(res => res.ok ? res.json() : {})
       .then(data => setPackArtsManifest(data))
@@ -3185,6 +3309,28 @@ export default function App() {
             onUpdatePrice={(newPrice, newPoke) => {
               if (inspectedCard?.isVendorCatalog || inspectedCard?.pokemon?.isVendorCatalog) return;
               setInspectedCard(prev => prev ? { ...prev, value: newPrice, pokemon: newPoke } : null);
+            }}
+            onBuyFromVendor={(cardToBuy, buyPrice) => {
+              // 1. Subtract that from their net income section on main page by increasing total spent
+              // (Net Return / Net Profit pod = sessionTotal - sessionSpent)
+              setSessionSpent(prev => Number((prev + buyPrice).toFixed(2)));
+              
+              // 2. Transfer that card to the user's binder
+              const setName = (cardToBuy.pokemon as any)?.set?.name || cardToBuy.pokemon?.name?.split('(')[1]?.replace(')', '').trim() || 'Vendor Acquisition';
+              saveCollectedCard({
+                ...cardToBuy,
+                value: buyPrice,
+                currentPrice: buyPrice,
+                isVendorCatalog: false,
+                pokemon: {
+                  ...cardToBuy.pokemon,
+                  isVendorCatalog: false
+                }
+              }, setName, 'my-collection');
+              
+              setAvailableBinders(getBinders());
+              window.dispatchEvent(new Event('storage'));
+              setInspectedCard(null);
             }}
             onAddToBinder={activeTab === 'pack' ? (c) => {
               if (binderAddedIds.has(c.id as number)) return;

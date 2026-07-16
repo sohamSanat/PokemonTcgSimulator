@@ -314,6 +314,20 @@ class SoundEngine {
   }
 
   /**
+   * Coin Clink sound (when vendor drops price)
+   */
+  public playCoinClink() {
+    this.playCardCollect(5);
+  }
+
+  /**
+   * Legendary Fanfare sound (when buying directly from vendor)
+   */
+  public playLegendaryFanfare() {
+    this.playRareFanfare();
+  }
+
+  /**
    * Pack Opening / Foil Tear sound
    */
   public playPackOpen() {
