@@ -540,7 +540,21 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 };
 export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [viewMode, setViewMode] = useState<'both' | 'expensive_only' | 'normal_only'>('both');
-  const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => getVendorAuctionPools());
+  const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => {
+    const raw = getVendorAuctionPools();
+    const shuffle = <T,>(array: T[]): T[] => {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+    return {
+      expensive: shuffle(raw.expensive),
+      normal: shuffle(raw.normal)
+    };
+  });
   const [walletBalance, setWalletBalance] = useState<number>(128450.00);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
@@ -610,8 +624,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     return {
       cardIndex: 0,
       currentBid: startPrice,
-      timeLeftMs: 45000,
-      maxTimeMs: 45000,
+      timeLeftMs: 15000,
+      maxTimeMs: 15000,
       bids: Array.from({ length: 2 }).map((_, i) => ({
         id: Date.now() - (2 - i) * 1000,
         user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
@@ -744,8 +758,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             return {
               cardIndex: nextIdx,
               currentBid: startPrice,
-              timeLeftMs: 45000,
-              maxTimeMs: 45000,
+              timeLeftMs: 15000,
+              maxTimeMs: 15000,
               bids: initBids,
               status: 'active',
               soldTimeLeftMs: 5000,
@@ -886,8 +900,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           ...prev,
           cardIndex: nextIdx,
           currentBid: startPrice,
-          timeLeftMs: 45000,
-          maxTimeMs: 45000,
+          timeLeftMs: 15000,
+          maxTimeMs: 15000,
           bids: initBids,
           status: 'active',
           soldTimeLeftMs: 5000,
@@ -966,7 +980,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-cyan-300">Standard &amp; Blitz Arena ($5 - $400 Cards)</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Slabs &amp; raw binder hits starting at 35% of market value with a 45-second timer and realistic NPC pacing anchored to market price.</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Slabs &amp; raw binder hits starting at 35% of market value with a 15-second timer and realistic NPC pacing anchored to market price.</p>
                   </div>
                 </div>
 
