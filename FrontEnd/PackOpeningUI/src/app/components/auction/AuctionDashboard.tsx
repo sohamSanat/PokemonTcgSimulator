@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, Clock, Trophy, ChevronRight, Zap, Coins, Flame, ArrowLeft, Star } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -13,6 +14,14 @@ interface Bid {
   user: string;
   amount: number;
   time: number;
+}
+
+interface AuctionLotState {
+  cardIndex: number;
+  currentBid: number;
+  timeLeftMs: number;
+  maxTimeMs: number;
+  bids: Bid[];
 }
 
 const MOCK_USERS = ["PokeFan99", "TCG_Master", "AshKetchum", "GaryOak", "MistyWater", "BrockRock", "PikaPal", "CharizardLover", "SnorlaxSleeps", "GengarGhost", "EeveeEvolution", "MewtwoStrikes", "RocketGrunt", "Red", "Blue"];
@@ -34,94 +43,153 @@ const DUMMY_CARDS = {
 
 export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [auctionMode, setAuctionMode] = useState<'expensive' | 'normal'>('expensive');
-  const [bids, setBids] = useState<Bid[]>([]);
-  const [currentBid, setCurrentBid] = useState(45000);
-  const [timeLeft, setTimeLeft] = useState(120);
-  const [maxTime, setMaxTime] = useState(120);
+  const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => getVendorAuctionPools());
+
+  const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() => {
+    const initCard = pools.expensive[0] || DUMMY_CARDS.expensive[0];
+    const startPrice = Math.max(1, Math.floor(initCard.price * 0.5));
+    return {
+      cardIndex: 0,
+      currentBid: startPrice,
+      timeLeftMs: 120000,
+      maxTimeMs: 120000,
+      bids: Array.from({ length: 4 }).map((_, i) => ({
+        id: Date.now() - (4 - i) * 1000,
+        user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+        amount: startPrice - (4 - i) * 10,
+        time: Date.now() - (4 - i) * 1000,
+      }))
+    };
+  });
+
+  const [normalLot, setNormalLot] = useState<AuctionLotState>({
+    cardIndex: 0,
+    currentBid: 1,
+    timeLeftMs: 10000,
+    maxTimeMs: 10000,
+    bids: []
+  });
+
   const [rotationX, setRotationX] = useState(0);
   const [rotationY, setRotationY] = useState(0);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  // Load new card based on mode
-  useEffect(() => {
-    const isNormal = auctionMode === 'normal';
-    const initialTime = isNormal ? 10 : 120;
-    const cards = DUMMY_CARDS[auctionMode];
-    const card = cards[currentCardIndex % cards.length];
-    
-    setTimeLeft(initialTime);
-    setMaxTime(initialTime);
-    const startPrice = isNormal ? 1 : Math.floor(card.price * 0.5);
-    setCurrentBid(startPrice);
-    
-    // Generate initial bids only for expensive
-    if (isNormal) {
-      setBids([]);
-    } else {
-      setBids(
-        Array.from({ length: 5 }).map((_, i) => ({
-          id: Date.now() - (5 - i) * 1000,
-          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-          amount: startPrice - (5 - i) * 10,
-          time: Date.now() - (5 - i) * 1000,
-        }))
-      );
-    }
-  }, [auctionMode, currentCardIndex]);
-
-  // Countdown timer & Card switch logic
+  // --- BACKGROUND TAB 1: GRAIL LOTS (Expensive >= $100, 50% start price, 120s timer) ---
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          // Time is up, move to next card immediately
-          setCurrentCardIndex(idx => idx + 1);
-          return 0; // will be reset by the other useEffect
+      setExpensiveLot((prev) => {
+        if (prev.timeLeftMs <= 1000) {
+          // Time up! Advance to next expensive grail lot from vendor pool
+          const nextIdx = prev.cardIndex + 1;
+          const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
+          const startPrice = Math.max(1, Math.floor(nextCard.price * 0.5));
+          const initBids = Array.from({ length: 4 }).map((_, i) => ({
+            id: Date.now() - (4 - i) * 1000,
+            user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+            amount: startPrice - (4 - i) * 10,
+            time: Date.now() - (4 - i) * 1000,
+          }));
+          return {
+            cardIndex: nextIdx,
+            currentBid: startPrice,
+            timeLeftMs: 120000,
+            maxTimeMs: 120000,
+            bids: initBids
+          };
         }
-        return prev - 1;
+
+        // Simulate incoming bid (~30% chance every second)
+        if (Math.random() < 0.35) {
+          const increment = Math.floor(Math.random() * 4 + 1) * 10; // +$10 to +$40
+          const newAmount = prev.currentBid + increment;
+          const newBid = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+            amount: newAmount,
+            time: Date.now(),
+          };
+          return {
+            ...prev,
+            timeLeftMs: prev.timeLeftMs - 1000,
+            currentBid: newAmount,
+            bids: [...prev.bids, newBid].slice(-30)
+          };
+        }
+
+        return {
+          ...prev,
+          timeLeftMs: prev.timeLeftMs - 1000
+        };
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [auctionMode]);
+  }, [pools.expensive]);
 
-  // Simulate incoming bids
+  // --- BACKGROUND TAB 2: BLITZ $1 STARTS (< $100 cards, $1 start, 10s duration, CRAZY high frequency bidding!) ---
   useEffect(() => {
-    const bidInterval = setInterval(() => {
-      const isNormal = auctionMode === 'normal';
-      // In normal mode, bids are small (+1 to +5). In expensive, (+100 to +600)
-      const bidChance = isNormal ? 0.95 : 0.6; 
-      
-      if (Math.random() < bidChance && timeLeft > 0) {
-        const increment = isNormal 
-          ? Math.floor(Math.random() * 4 + 1)
-          : Math.floor(Math.random() * 3 + 1) * 10;
-          
-        const newBidAmount = currentBid + increment;
-        const newBid = {
-          id: Date.now(),
-          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-          amount: newBidAmount,
-          time: Date.now(),
+    const timer = setInterval(() => {
+      setNormalLot((prev) => {
+        if (prev.timeLeftMs <= 200) {
+          // 10 seconds up! Advance immediately to next <$100 card from vendor pool
+          const nextIdx = prev.cardIndex + 1;
+          return {
+            cardIndex: nextIdx,
+            currentBid: 1,
+            timeLeftMs: 10000,
+            maxTimeMs: 10000,
+            bids: []
+          };
+        }
+
+        // Rapid fire bidding engine (~4 bids every second!)
+        if (Math.random() < 0.85) {
+          const increment = Math.floor(Math.random() * 4 + 1); // +$1 to +$4
+          const newAmount = prev.currentBid + increment;
+          const newBid = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+            amount: newAmount,
+            time: Date.now(),
+          };
+          return {
+            ...prev,
+            timeLeftMs: prev.timeLeftMs - 200,
+            currentBid: newAmount,
+            bids: [...prev.bids, newBid].slice(-30)
+          };
+        }
+
+        return {
+          ...prev,
+          timeLeftMs: prev.timeLeftMs - 200
         };
-        setBids((prev) => [...prev, newBid].slice(-30));
-        setCurrentBid(newBidAmount);
-      }
-    }, auctionMode === 'normal' ? 200 : 2500);
-    
-    return () => clearInterval(bidInterval);
-  }, [currentBid, auctionMode, timeLeft]);
+      });
+    }, 200);
+    return () => clearInterval(timer);
+  }, [pools.normal]);
+
+  const isNormal = auctionMode === 'normal';
+  const activeLot = isNormal ? normalLot : expensiveLot;
+  const activeCards = isNormal ? pools.normal : pools.expensive;
+  const currentCard = activeCards[activeLot.cardIndex % activeCards.length] || DUMMY_CARDS[auctionMode][0];
+  const timeLeft = Math.max(0, Math.ceil(activeLot.timeLeftMs / 1000));
+  const maxTime = Math.max(1, Math.ceil(activeLot.maxTimeMs / 1000));
+  const currentBid = activeLot.currentBid;
+  const bids = activeLot.bids;
 
   const handlePlayerBid = (increment: number) => {
-    if (timeLeft <= 0) return;
+    if (activeLot.timeLeftMs <= 0) return;
     const newBidAmount = currentBid + increment;
     const newBid = {
-      id: Date.now(),
+      id: Date.now() + Math.floor(Math.random() * 1000),
       user: 'YOU',
       amount: newBidAmount,
       time: Date.now(),
     };
-    setBids((prev) => [...prev, newBid].slice(-30));
-    setCurrentBid(newBidAmount);
+    if (isNormal) {
+      setNormalLot((prev) => ({ ...prev, currentBid: newBidAmount, bids: [...prev.bids, newBid].slice(-30) }));
+    } else {
+      setExpensiveLot((prev) => ({ ...prev, currentBid: newBidAmount, bids: [...prev.bids, newBid].slice(-30) }));
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -145,8 +213,6 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
   const circumference = 2 * Math.PI * 140; // r=140
   const strokeDashoffset = maxTime > 0 ? circumference - (timeLeft / maxTime) * circumference : 0;
-
-  const currentCard = DUMMY_CARDS[auctionMode][currentCardIndex % DUMMY_CARDS[auctionMode].length];
 
   return (
     <div className="absolute inset-0 z-50 bg-[#050914] text-slate-200 font-sans overflow-hidden selection:bg-cyan-500/30 flex flex-col items-center justify-center">
@@ -177,30 +243,32 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
               </h1>
               <div className="text-xs text-slate-400 font-mono flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                LIVE BIDDING NETWORK
+                2 SIMULTANEOUS LIVE AUCTION FEEDS ACTIVE
               </div>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {/* Mode Switcher */}
+            {/* Simultaneous Mode Switcher */}
             <div className="flex bg-slate-900/80 rounded-lg p-1 border border-slate-700/50">
               <button 
-                onClick={() => { setAuctionMode('expensive'); setCurrentCardIndex(0); }}
+                onClick={() => setAuctionMode('expensive')}
                 className={cn(
-                  "px-4 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all",
-                  auctionMode === 'expensive' ? "bg-amber-500/20 text-amber-400 border border-amber-500/50" : "text-slate-400 hover:text-slate-200"
+                  "px-4 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all flex items-center gap-2",
+                  auctionMode === 'expensive' ? "bg-amber-500/20 text-amber-400 border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "text-slate-400 hover:text-slate-200"
                 )}
               >
-                Grail Lots
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                Grail Lots ({pools.expensive.length})
               </button>
               <button 
-                onClick={() => { setAuctionMode('normal'); setCurrentCardIndex(0); }}
+                onClick={() => setAuctionMode('normal')}
                 className={cn(
-                  "px-4 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all",
-                  auctionMode === 'normal' ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/50" : "text-slate-400 hover:text-slate-200"
+                  "px-4 py-2 rounded-md text-xs font-bold tracking-wider uppercase transition-all flex items-center gap-2",
+                  auctionMode === 'normal' ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]" : "text-slate-400 hover:text-slate-200"
                 )}
               >
-                Blitz $1 Starts
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                Blitz $1 Starts ({pools.normal.length})
               </button>
             </div>
             <div className="h-10 w-px bg-slate-700/50" />
@@ -225,7 +293,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 <div className="px-3 py-1 bg-slate-800 rounded-full border border-slate-600 mb-4 inline-flex items-center gap-2">
                   <Star className={cn("w-4 h-4", auctionMode === 'expensive' ? "text-amber-400" : "text-cyan-400")} />
                   <span className="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                    LOT #{412 + currentCardIndex}
+                    LOT #{ (isNormal ? 824 : 412) + activeLot.cardIndex } • {isNormal ? 'BLITZ $1 START' : '50% GRAIL START'}
                   </span>
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-1">{currentCard.name}</h2>
@@ -246,7 +314,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                     strokeLinecap="round"
                     strokeDasharray={circumference}
                     strokeDashoffset={strokeDashoffset}
-                    className="transition-all duration-1000 ease-linear shadow-[0_0_20px_rgba(34,211,238,0.5)]"
+                    className="transition-all duration-300 ease-linear shadow-[0_0_20px_rgba(34,211,238,0.5)]"
                   />
                   <defs>
                     <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -268,9 +336,9 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   </div>
                 </div>
 
-                {/* Holographic Anime Card */}
+                {/* Holographic Card */}
                 <motion.div 
-                  className="relative w-[220px] h-[310px] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.3)] border border-slate-600/50 bg-slate-800 cursor-grab active:cursor-grabbing z-10"
+                  className="relative w-[220px] h-[310px] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.3)] border border-slate-600/50 bg-slate-800 cursor-grab active:cursor-grabbing z-10 flex items-center justify-center"
                   style={{ rotateX: rotationX, rotateY: rotationY, transformStyle: "preserve-3d" }}
                   animate={{ rotateX: rotationX, rotateY: rotationY, scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -287,9 +355,9 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 <span className="text-xs font-mono tracking-[0.3em] text-slate-400 mb-2 uppercase">Current Bid</span>
                 <motion.div 
                   key={currentBid}
-                  initial={{ scale: 1.4, color: "#4ade80", y: -10 }}
+                  initial={{ scale: 1.25, color: "#4ade80", y: -4 }}
                   animate={{ scale: 1, color: auctionMode === 'expensive' ? "#fbbf24" : "#22d3ee", y: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   className="text-6xl font-bold tracking-tight"
                   style={{ textShadow: `0 0 40px ${auctionMode === 'expensive' ? 'rgba(251, 191, 36, 0.4)' : 'rgba(34, 211, 238, 0.4)'}` }}
                 >
@@ -305,11 +373,13 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             <div className="p-4 border-b border-slate-700/50 bg-slate-950/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Terminal className="w-4 h-4 text-cyan-400" />
-                <h2 className="font-mono text-sm tracking-widest text-slate-200">LIVE FEED</h2>
+                <h2 className="font-mono text-sm tracking-widest text-slate-200">
+                  {isNormal ? 'BLITZ FEED ($1 START)' : 'GRAIL FEED (50% START)'}
+                </h2>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Receiving</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Live Slot</span>
               </div>
             </div>
 
@@ -324,7 +394,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   return (
                     <motion.div
                       key={bid.id}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       className={cn(
                         "flex items-center justify-between p-2.5 rounded border font-mono text-sm transition-colors",
@@ -370,8 +440,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
-}
+};
