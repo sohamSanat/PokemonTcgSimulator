@@ -26,6 +26,7 @@ interface AuctionLotState {
   soldTimeLeftMs: number;
   winner: string;
   finalPrice: number;
+  dealCeilingRatio?: number;
 }
 
 const MOCK_USERS = [
@@ -129,13 +130,6 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = maxTimeSeconds > 0 ? circumference - (timeLeftSeconds / maxTimeSeconds) * circumference : 0;
 
-  const diff = currentCard.price - finalPrice;
-  const diffPercent = currentCard.price > 0 ? Math.round(Math.abs(diff) / currentCard.price * 100) : 0;
-
-  // For active bidding diff calculation (shows if current bid is below/above market)
-  const activeDiff = currentCard.price - currentBid;
-  const activeDiffPercent = currentCard.price > 0 ? Math.round(Math.abs(activeDiff) / currentCard.price * 100) : 0;
-
   return (
     <div className={cn(
       "flex flex-col md:flex-row h-full rounded-2xl overflow-hidden bg-slate-900/50 backdrop-blur-xl border transition-all duration-300 shadow-2xl relative min-h-0",
@@ -144,7 +138,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
       {/* Subtle grid texture */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
 
-      {/* OVERLAY: SOLD & MARKET PRICE COMPARISON (Shown automatically when auction ends) */}
+      {/* OVERLAY: SOLD FINAL PRICE (Shown automatically when auction ends) */}
       <AnimatePresence>
         {status === 'sold' && (
           <motion.div 
@@ -176,37 +170,15 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             <h3 className="text-xl sm:text-2xl font-black text-white line-clamp-1">{currentCard.name}</h3>
             <p className="text-xs text-slate-400 font-mono mt-0.5 mb-4 uppercase">{currentCard.title} • LOT #{lotNumber}</p>
 
-            {/* Market Price v/s Auction Final Price Box */}
-            <div className="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-xl p-3.5 sm:p-4 mb-4 shadow-2xl grid grid-cols-2 gap-3">
-              <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-slate-950/60 border border-slate-800">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Market Price</span>
-                <span className="text-lg sm:text-xl font-bold text-slate-200 mt-0.5">${currentCard.price.toLocaleString()}</span>
-              </div>
-              <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-slate-950/60 border border-slate-800">
-                <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">Auction Final Price</span>
-                <span className={cn("text-lg sm:text-xl font-extrabold mt-0.5", winner === 'YOU' ? "text-green-400" : theme.badgeText)}>
-                  ${finalPrice.toLocaleString()}
-                </span>
-              </div>
-
-              {/* Comparison Banner */}
-              <div className="col-span-2 pt-2 border-t border-slate-800/80 flex items-center justify-center">
-                {diff > 0 ? (
-                  <div className="w-full py-1.5 px-3 rounded-lg bg-green-500/15 border border-green-500/40 text-green-300 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2">
-                    <TrendingDown className="w-4 h-4 text-green-400 shrink-0" />
-                    <span>🔥 AUCTION STEAL! Bought {diffPercent}% BELOW Market (${diff.toLocaleString()} Savings!)</span>
-                  </div>
-                ) : diff < 0 ? (
-                  <div className="w-full py-1.5 px-3 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>📈 BIDDING WAR! Went {diffPercent}% ABOVE Market (+${Math.abs(diff).toLocaleString()} Premium)</span>
-                  </div>
-                ) : (
-                  <div className="w-full py-1.5 px-3 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2">
-                    <span>⚖️ SOLD AT EXACT MARKET VALUE (${finalPrice.toLocaleString()})</span>
-                  </div>
-                )}
-              </div>
+            {/* Auction Final Sold Price Box */}
+            <div className="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 sm:p-5 mb-5 shadow-2xl flex flex-col items-center justify-center">
+              <span className="text-[11px] font-mono tracking-wider text-slate-400 uppercase">Auction Final Sold Price</span>
+              <span className={cn("text-3xl sm:text-4xl font-black mt-1", winner === 'YOU' ? "text-green-400" : theme.badgeText)}>
+                ${finalPrice.toLocaleString()}
+              </span>
+              <span className="text-xs text-slate-400 font-mono mt-2.5 uppercase tracking-wide">
+                {winner === 'YOU' ? "✨ Added to your personal collection ✨" : `Acquired by @${winner}`}
+              </span>
             </div>
 
             {/* Countdown bar to next card */}
@@ -287,29 +259,13 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               </motion.div>
             </div>
 
-            {/* Market Value Comparison Box */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-2 my-1">
-              <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>Market Value:</span>
-                <span className="font-bold text-slate-200">${currentCard.price.toLocaleString()}</span>
-              </div>
-              <div className="mt-1 flex items-center justify-between gap-1">
-                {activeDiff > 0 ? (
-                  <span className="text-[10px] font-extrabold text-green-400 bg-green-500/15 border border-green-500/30 px-1.5 py-0.5 rounded flex items-center gap-1 truncate">
-                    <TrendingDown className="w-2.5 h-2.5 shrink-0" />
-                    <span>-{activeDiffPercent}% Below Market</span>
-                  </span>
-                ) : activeDiff < 0 ? (
-                  <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 rounded flex items-center gap-1 truncate">
-                    <TrendingUp className="w-2.5 h-2.5 shrink-0" />
-                    <span>+{activeDiffPercent}% Premium</span>
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/15 px-1.5 py-0.5 rounded truncate">
-                    At Market Price
-                  </span>
-                )}
-              </div>
+            {/* Live Lot Activity Box */}
+            <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 my-1.5 flex items-center justify-between text-[10px] font-mono text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span>Active Lot #{lotNumber}</span>
+              </span>
+              <span className={cn("font-extrabold tracking-wider", theme.badgeText)}>{status.toUpperCase()}</span>
             </div>
 
             {/* Countdown Progress Bar */}
@@ -477,21 +433,10 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             ${currentBid.toLocaleString()}
           </motion.div>
 
-          {/* Market Price & Deal Tag */}
-          <div className="flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-800 text-xs font-mono">
-            <span className="text-slate-400">Market Value:</span>
-            <span className="font-bold text-slate-200">${currentCard.price.toLocaleString()}</span>
-            {activeDiff > 0 ? (
-              <span className="text-[10px] font-extrabold text-green-400 bg-green-500/15 px-1.5 py-0.5 rounded border border-green-500/30 flex items-center gap-1">
-                <TrendingDown className="w-2.5 h-2.5" />
-                -{activeDiffPercent}% Steal
-              </span>
-            ) : activeDiff < 0 ? (
-              <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30 flex items-center gap-1">
-                <TrendingUp className="w-2.5 h-2.5" />
-                +{activeDiffPercent}% Over
-              </span>
-            ) : null}
+          {/* Live Lot Activity Indicator */}
+          <div className="flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span>Competitive Live Bidding • Lot #{lotNumber}</span>
           </div>
         </div>
       </div>
@@ -575,12 +520,25 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
     </div>
   );
 };
-
 export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [viewMode, setViewMode] = useState<'both' | 'expensive_only' | 'normal_only'>('both');
   const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => getVendorAuctionPools());
   const [walletBalance, setWalletBalance] = useState<number>(128450.00);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
+
+  const getExpensiveCeiling = () => {
+    const roll = Math.random();
+    if (roll < 0.50) return 0.55 + Math.random() * 0.25; // 55% to 80% (Underpriced steals 50% of the time!)
+    if (roll < 0.80) return 0.81 + Math.random() * 0.13; // 81% to 94% (Fair deals)
+    return 0.95 + Math.random() * 0.07; // 95% to 102% (Competitive bidding)
+  };
+
+  const getNormalCeiling = () => {
+    const roll = Math.random();
+    if (roll < 0.60) return 0.45 + Math.random() * 0.30; // 45% to 75% (HUGE UNDERPRICED STEALS 60% of the time!)
+    if (roll < 0.85) return 0.76 + Math.random() * 0.16; // 76% to 92% (Fair deals)
+    return 0.93 + Math.random() * 0.09; // 93% to 102% (Competitive bidding)
+  };
 
   const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() => {
     const initCard = pools.expensive[0] || DUMMY_CARDS.expensive[0];
@@ -599,7 +557,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       status: 'active',
       soldTimeLeftMs: 6000,
       winner: '',
-      finalPrice: 0
+      finalPrice: 0,
+      dealCeilingRatio: getExpensiveCeiling()
     };
   });
 
@@ -620,7 +579,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       status: 'active',
       soldTimeLeftMs: 5000,
       winner: '',
-      finalPrice: 0
+      finalPrice: 0,
+      dealCeilingRatio: getNormalCeiling()
     };
   });
 
@@ -648,7 +608,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
               status: 'active',
               soldTimeLeftMs: 6000,
               winner: '',
-              finalPrice: 0
+              finalPrice: 0,
+              dealCeilingRatio: getExpensiveCeiling()
             };
           }
           return {
@@ -677,18 +638,26 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
         const currentCard = pools.expensive[prev.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
         const marketPrice = currentCard.price;
+        const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.75);
 
-        // Realistic pacing & market price ceiling (Never bid above 102% of market value)
-        let bidChance = 0.28;
-        if (prev.currentBid >= marketPrice * 0.85) bidChance = 0.12;
-        if (prev.currentBid >= marketPrice * 0.95) bidChance = 0.03;
-        if (prev.currentBid >= marketPrice * 1.02) bidChance = 0; // Ceiling: NPCs stop bidding above market price!
+        // If the current bid reaches or exceeds the secret target ceiling for this lot, NPCs STOP bidding!
+        if (prev.currentBid >= targetCeiling) {
+          return {
+            ...prev,
+            timeLeftMs: prev.timeLeftMs - 1000
+          };
+        }
+
+        const ratio = prev.currentBid / targetCeiling;
+        let bidChance = 0.26;
+        if (ratio >= 0.80) bidChance = 0.10;
+        if (ratio >= 0.92) bidChance = 0.03;
 
         if (Math.random() < bidChance) {
           let increment = Math.floor(Math.random() * 3 + 1) * 10; // $10 to $30
           if (marketPrice > 1500) increment = Math.floor(Math.random() * 4 + 2) * 25; // $50 to $125
-          if (prev.currentBid + increment > marketPrice * 1.02) {
-            increment = Math.max(5, Math.floor(marketPrice * 1.02 - prev.currentBid));
+          if (prev.currentBid + increment > targetCeiling) {
+            increment = Math.max(5, Math.floor(targetCeiling - prev.currentBid));
           }
 
           const newAmount = prev.currentBid + increment;
@@ -739,7 +708,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
               status: 'active',
               soldTimeLeftMs: 5000,
               winner: '',
-              finalPrice: 0
+              finalPrice: 0,
+              dealCeilingRatio: getNormalCeiling()
             };
           }
           return {
@@ -767,12 +737,20 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
         const currentCard = pools.normal[prev.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
         const marketPrice = currentCard.price;
+        const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.65);
 
-        // Realistic pacing: prevent $30 card from shooting past market value
-        let bidChance = 0.25;
-        if (prev.currentBid >= marketPrice * 0.85) bidChance = 0.10;
-        if (prev.currentBid >= marketPrice * 0.95) bidChance = 0.03;
-        if (prev.currentBid >= marketPrice * 1.01) bidChance = 0; // Absolute ceiling: NPCs stop bidding at market price!
+        // If the current bid reaches or exceeds the secret target ceiling for this lot, NPCs STOP bidding!
+        if (prev.currentBid >= targetCeiling) {
+          return {
+            ...prev,
+            timeLeftMs: prev.timeLeftMs - 1000
+          };
+        }
+
+        const ratio = prev.currentBid / targetCeiling;
+        let bidChance = 0.22;
+        if (ratio >= 0.80) bidChance = 0.08;
+        if (ratio >= 0.92) bidChance = 0.02;
 
         if (Math.random() < bidChance) {
           let increment = 1;
@@ -780,8 +758,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           else if (marketPrice > 50) increment = Math.floor(Math.random() * 3 + 2); // $2 to $4
           else increment = Math.floor(Math.random() * 2 + 1); // $1 to $2
 
-          if (prev.currentBid + increment > marketPrice * 1.01) {
-            increment = Math.max(1, Math.floor(marketPrice * 1.01 - prev.currentBid));
+          if (prev.currentBid + increment > targetCeiling) {
+            increment = Math.max(1, Math.floor(targetCeiling - prev.currentBid));
           }
 
           const newAmount = prev.currentBid + increment;
@@ -847,7 +825,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           status: 'active',
           soldTimeLeftMs: 6000,
           winner: '',
-          finalPrice: 0
+          finalPrice: 0,
+          dealCeilingRatio: getExpensiveCeiling()
         };
       });
     } else {
@@ -871,7 +850,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           status: 'active',
           soldTimeLeftMs: 5000,
           winner: '',
-          finalPrice: 0
+          finalPrice: 0,
+          dealCeilingRatio: getNormalCeiling()
         };
       });
     }
