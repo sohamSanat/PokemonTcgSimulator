@@ -767,21 +767,21 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   } : poke;
   const liveCardPrice = getRealCardPrice(activePoke);
 
-  useEffect(() => {
-    if (liveCardPrice !== card.value && onUpdatePrice) {
-      onUpdatePrice(liveCardPrice, activePoke);
-    }
-  }, [liveCardPrice, card.value, onUpdatePrice, activePoke]);
-
-  const [viewMode, setViewMode] = useState<'market' | 'art'>(initialViewMode);
-  const [zoom, setZoom] = useState<number>(1.1);
-  const [isFlipped, setIsFlipped] = useState(false);
-
   const isFromVendor = Boolean(card.isVendorCatalog || poke.isVendorCatalog);
   const vendorName = card.vendorName || poke.vendorName || "VINTAGEVAULT TCG";
   const vendorBooth = card.vendorBooth || poke.vendorBooth || "5B";
   const vendorRating = card.vendorRating || poke.vendorRating || "4.8 / 5";
   const vendorPrice = typeof card.value === 'number' ? card.value : parseFloat(String(card.value || '0').replace(/[^0-9.]/g, '')) || liveCardPrice;
+
+  useEffect(() => {
+    if (!isFromVendor && liveCardPrice !== card.value && onUpdatePrice) {
+      onUpdatePrice(liveCardPrice, activePoke);
+    }
+  }, [isFromVendor, liveCardPrice, card.value, onUpdatePrice, activePoke]);
+
+  const [viewMode, setViewMode] = useState<'market' | 'art'>(initialViewMode);
+  const [zoom, setZoom] = useState<number>(1.1);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const [showSellerChat, setShowSellerChat] = useState(false);
   const [chatInput, setChatInput] = useState('');
@@ -3128,6 +3128,7 @@ export default function App() {
             onClose={() => setInspectedCard(null)}
             initialViewMode={inspectedViewMode}
             onUpdatePrice={(newPrice, newPoke) => {
+              if (inspectedCard?.isVendorCatalog || inspectedCard?.pokemon?.isVendorCatalog) return;
               setInspectedCard(prev => prev ? { ...prev, value: newPrice, pokemon: newPoke } : null);
             }}
             onAddToBinder={activeTab === 'pack' ? (c) => {
