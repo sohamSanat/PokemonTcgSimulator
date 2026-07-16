@@ -59,15 +59,40 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     let setId = 'swsh3';
     let num = '1';
     
-    // First and foremost: try to extract actual set ID and card number from the current image src
+    // First: look up the card in our vendor catalog directly by cardId or img.dataset.imgId
+    const targetId = cardId || img.dataset.imgId;
+    const cardItem = activeVendorCards.find(c => c.id === targetId || c.originalId === targetId || (c as any).id === targetId);
+    if (cardItem) {
+      if ((cardItem as any).setId) setId = (cardItem as any).setId;
+      if ((cardItem as any).num) num = String((cardItem as any).num);
+      const orig = cardItem.originalId || cardItem.id || '';
+      if (orig.includes('-')) {
+        const parts = orig.split('-');
+        const lowerPrefix = parts[0].toLowerCase();
+        const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
+          lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
+          lowerPrefix.includes('retro') || lowerPrefix.includes('tcg') || lowerPrefix.includes('special') || lowerPrefix.includes('gold') ||
+          lowerPrefix.includes('sealed') || lowerPrefix.includes('modern') || lowerPrefix.includes('japanese') || lowerPrefix.includes('display') ||
+          lowerPrefix.includes('filmera') || lowerPrefix.includes('carbanda') || lowerPrefix.includes('trading') || lowerPrefix.includes('brodes') ||
+          lowerPrefix.includes('wikrats') || lowerPrefix.includes('uds') || lowerPrefix.includes('specs') || lowerPrefix.includes('dovakinji') ||
+          lowerPrefix === 'jp' || (parts[1] && parts[1] === 'core') || (parts[1] && parts[1].includes('jp'));
+
+        if (!isVendorOrBoothPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
+          setId = parts[0];
+          num = parts[1];
+        }
+      }
+    }
+
+    // Second: try to extract actual set ID and card number from the current image src
     const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
                   img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
                   img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i);
     
-    if (match) {
+    if (match && (!cardItem || setId === 'swsh3')) {
       setId = match[1];
       num = match[2];
-    } else if (cardId && cardId.includes('-')) {
+    } else if (!cardItem && cardId && cardId.includes('-')) {
       const parts = cardId.split('-');
       const lowerPrefix = parts[0].toLowerCase();
       const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
@@ -89,28 +114,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     }
     
     handleCardImageError(img, setId, num, () => {
-      // 1. IMMEDIATE: hide the card container in the DOM right now — zero placeholder flash
-      //    Walk up from the img to find the card container marked with data-card-container
+      // If every specific fallback URL exhausted, do NOT hide the card or strip it from vendor catalogs.
+      // Instead, ensure container is visible and assign a guaranteed high-res fallback art directly.
       const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
       if (cardContainer) {
-        cardContainer.style.display = 'none';
+        cardContainer.style.display = '';
       }
-      // 2. Also update React state so this card is excluded from filteredCards on every subsequent render
-      const card = activeVendorCards.find(c => c.id === cardId);
-      const origId = card?.originalId || cardId || `${setId}-${num}`;
-      if (origId) {
-        setBrokenOriginalIds(prev => prev.includes(origId) ? prev : [...prev, origId]);
-      }
+      img.src = isJpn ? 'https://images.pokemontcg.io/np/47_hires.png' : 'https://images.pokemontcg.io/swsh3/19_hires.png';
     });
   };
 
-  // Detect pokemontcg.io card-back "false success": when pokemontcg.io can't find a card it
-  // serves the generic card BACK image (HTTP 200, blue swirl Pokeball). We catch this onLoad by
+  // Detect card-back "false success": when pokemontcg.io or scrydex.com can't find a card they
+  // serve the generic card BACK image (HTTP 200, blue swirl Pokeball). We catch this onLoad by
   // sampling a corner pixel via canvas — the card back has a very dark navy-blue corner (~r<50, g<80, b>100).
   const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
     const img = e.currentTarget;
-    // Only check pokemontcg.io images — other CDNs return proper 404s
-    if (!img.src.includes('pokemontcg.io')) return;
+    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return;
     try {
       const canvas = document.createElement('canvas');
       canvas.width = 8;
@@ -123,7 +142,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // Card back corner: r < 50, g < 75, b > 90 (dark indigo/navy)
       const isCardBack = r < 50 && g < 75 && b > 90;
       if (isCardBack) {
-        // Fake an error event so the fallback chain kicks in and either finds real art or hides the card
         handleCardShowImageError(
           { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
           cardId,
@@ -700,18 +718,20 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 headers: { 'User-Agent': 'Mozilla/5.0' }
               });
               if (!resp.ok) {
-                // True 404 — hide card
-                const id = card.originalId || card.id;
-                if (!cancelled) setBrokenOriginalIds(prev => prev.includes(id) ? prev : [...prev, id]);
+                // If initial scrydex URL is 404, find the img element in DOM and trigger fallback chain instead of hiding the card
+                const imgElem = document.querySelector(`[data-img-id="${card.id}"]`) as HTMLImageElement | null;
+                if (imgElem && imgElem.src === card.img) {
+                  handleCardShowImageError({ currentTarget: imgElem } as any, card.id, card.name.includes('Japanese') || card.id.includes('_ja'));
+                }
                 return;
               }
               const buf = await resp.arrayBuffer();
               if (buf.byteLength === SCRYDEX_CARDBACK_BYTES) {
-                // Card-back placeholder detected — hide card immediately
-                const cardContainer = document.querySelector(`[data-img-id="${card.id}"]`);
-                if (cardContainer) (cardContainer as HTMLElement).style.display = 'none';
-                const id = card.originalId || card.id;
-                if (!cancelled) setBrokenOriginalIds(prev => prev.includes(id) ? prev : [...prev, id]);
+                // Card-back placeholder detected — trigger fallback chain instead of hiding the card
+                const imgElem = document.querySelector(`[data-img-id="${card.id}"]`) as HTMLImageElement | null;
+                if (imgElem && imgElem.src === card.img) {
+                  handleCardShowImageError({ currentTarget: imgElem } as any, card.id, card.name.includes('Japanese') || card.id.includes('_ja'));
+                }
               }
             } catch {
               // CORS blocked or timeout — keep card; onError fallback chain handles it
@@ -726,7 +746,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   }, [activeVendorCards]);
 
   const filteredCards = activeVendorCards.filter((c) => {
-    if (brokenOriginalIds.includes(c.originalId || c.id)) return false;
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
     if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";

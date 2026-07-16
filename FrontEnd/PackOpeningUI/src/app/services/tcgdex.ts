@@ -252,7 +252,11 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   if (isJpn) {
     let jSeries = 'S';
     let jSet = cleanSetId.toUpperCase();
-    if (cleanSetId.startsWith('sv')) {
+    const cleanLow = cleanSetId.toLowerCase();
+    if (cleanLow === 'sv3pt5' || cleanLow === 'sv2a') {
+      jSeries = 'SV';
+      jSet = 'SV2a';
+    } else if (cleanSetId.startsWith('sv')) {
       jSeries = 'SV';
       jSet = cleanSetId.replace(/^sv/i, 'SV');
     } else if (cleanSetId.startsWith('sm')) {
@@ -271,8 +275,25 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   }
 
   let seriesPrefix = 'swsh';
+  let targetSetId = cleanSetId;
+
   if (cleanSetId.startsWith('me')) seriesPrefix = 'me';
-  else if (cleanSetId.startsWith('sv')) seriesPrefix = 'sv';
+  else if (cleanSetId.startsWith('sv')) {
+    seriesPrefix = 'sv';
+    const svLow = cleanSetId.toLowerCase();
+    if (svLow === 'sv1') targetSetId = 'sv01';
+    else if (svLow === 'sv2') targetSetId = 'sv02';
+    else if (svLow === 'sv3') targetSetId = 'sv03';
+    else if (svLow === 'sv3pt5' || svLow === 'sv3.5' || svLow === 'sv3pt5en') targetSetId = 'sv03.5';
+    else if (svLow === 'sv4') targetSetId = 'sv04';
+    else if (svLow === 'sv4pt5' || svLow === 'sv4.5') targetSetId = 'sv04.5';
+    else if (svLow === 'sv5') targetSetId = 'sv05';
+    else if (svLow === 'sv6') targetSetId = 'sv06';
+    else if (svLow === 'sv6pt5' || svLow === 'sv6.5') targetSetId = 'sv06.5';
+    else if (svLow === 'sv7') targetSetId = 'sv07';
+    else if (svLow === 'sv8') targetSetId = 'sv08';
+    else if (svLow === 'sv8pt5' || svLow === 'sv8.5') targetSetId = 'sv08.5';
+  }
   else if (cleanSetId.startsWith('sm')) seriesPrefix = 'sm';
   else if (cleanSetId.startsWith('xy')) seriesPrefix = 'xy';
   else if (cleanSetId.startsWith('base')) seriesPrefix = 'base';
@@ -280,10 +301,10 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   else if (cleanSetId.startsWith('dp')) seriesPrefix = 'dp';
   else if (cleanSetId.startsWith('ex')) seriesPrefix = 'ex';
 
-  if (cleanSetId.startsWith('me') || cleanSetId.startsWith('sv')) {
+  if (targetSetId.startsWith('me') || targetSetId.startsWith('sv')) {
     numStr = numStr.padStart(3, '0');
   }
-  return `https://assets.tcgdex.net/${langPrefix}/${seriesPrefix}/${cleanSetId}/${numStr}`;
+  return `https://assets.tcgdex.net/${langPrefix}/${seriesPrefix}/${targetSetId}/${numStr}`;
 }
 
 export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1', onFailed?: () => void) {
@@ -301,20 +322,9 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     paddedNum = num.padStart(3, '0');
   }
 
-  // CRITICAL: pokemontcg.io returns the card BACK image (HTTP 200, not 404) for cards
-  // not in their DB. This fools the browser into thinking the image loaded.
-  // Only include pokemontcg.io for genuine vintage WOTC sets that have real coverage there.
-  const isVintageSet = cleanId.startsWith('base') || cleanId.startsWith('neo') ||
-    cleanId.startsWith('fo') || cleanId.startsWith('ju') || cleanId.startsWith('gc') ||
-    cleanId.startsWith('gh') || cleanId.startsWith('tr') || cleanId.startsWith('np') ||
-    cleanId.startsWith('gym') || cleanId.startsWith('si') || cleanId.startsWith('ecard') ||
-    cleanId === 'col1' || cleanId === 'ex1' || cleanId === 'ex2' || cleanId === 'ex3' ||
-    cleanId === 'ex4' || cleanId === 'ex5' || cleanId === 'ex6' || cleanId === 'ex7' ||
-    cleanId === 'ex8' || cleanId === 'ex9' || cleanId === 'ex10' || cleanId === 'ex11' ||
-    cleanId === 'ex12' || cleanId === 'ex13' || cleanId === 'ex14' || cleanId === 'ex15' ||
-    cleanId === 'ex16';
+  const pokeIoSet = cleanId.replace(/^sv0?/, 'sv');
 
-  // Define reliable fallback chain of specific card scans (no generic placeholders)
+  // Define comprehensive fallback chain of specific card scans for both modern and vintage sets
   const specificFallbacks = isJapaneseSet ? [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
@@ -325,24 +335,23 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
     `${cleanAsset}/high.webp`,
     `${cleanAsset}/high.png`,
-    // Only fall to pokemontcg.io for vintage sets — modern sets return card back (fake 200)
-    ...(isVintageSet ? [
-      `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
-      `https://images.pokemontcg.io/${cleanId}/${num}.png`
-    ] : [])
+    `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}.png`
   ] : [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}/low.webp`,
     `${validAsset}/low.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}.png`,
+    `https://images.pokemontcg.io/${pokeIoSet}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${pokeIoSet}/${num}.png`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/large`,
     `https://images.scrydex.com/pokemon/${setId}-${num}/large`,
-    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`,
-    // Only fall to pokemontcg.io for vintage sets — modern sets return card back (fake 200)
-    ...(isVintageSet ? [
-      `https://images.pokemontcg.io/${setId}/${num}_hires.png`,
-      `https://images.pokemontcg.io/${setId}/${num}.png`
-    ] : [])
+    `https://images.scrydex.com/pokemon/${cleanId}-${num}/large`,
+    `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`
   ];
 
   // Generic fallback cards for Pack Opening view to avoid blank frames
@@ -355,14 +364,11 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     'https://images.pokemontcg.io/swsh3/19_hires.png'
   ];
 
-  // If onFailed callback is registered (Card Show Mode), completely omit generic backups so we can trigger callback and hide the card
   const fallbacks = onFailed ? specificFallbacks : [...specificFallbacks, ...genericBackups];
 
-  // Robustly determine the next fallback without relying on React-volatile dataset
   const currentIndex = fallbacks.findIndex(url => img.src === url || img.src.includes(url));
   let nextAttempt = currentIndex === -1 ? 0 : currentIndex + 1;
   
-  // Skip over any fallback that is exactly what just failed
   while (nextAttempt < fallbacks.length && (img.src === fallbacks[nextAttempt] || img.src.includes(fallbacks[nextAttempt]))) {
       nextAttempt++;
   }
