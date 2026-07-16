@@ -141,7 +141,7 @@ export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal:
   // Dynamic Japanese vendor catalog (thousands of cards from scrydex cache)
   const dynamicJpn = getCardShowDynamicJapaneseCards(4000);
 
-  const allCombined = [
+  const rawCombinedPool = [
     ...vintageEng,
     ...vintageJpn,
     ...modernAlt,
@@ -150,19 +150,30 @@ export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal:
     ...goldStarsEx,
     ...rawBinderSingles,
     ...dynamicJpn
-  ].map((c: any, i: number) => {
-    const rawPriceNum = typeof c.price === 'number' ? c.price : (typeof c.rawPrice === 'number' ? c.rawPrice : 45);
-    return {
-      name: c.name || `Vendor Card #${i + 1}`,
-      price: rawPriceNum,
-      color: i % 3 === 0 ? "indigo" : i % 3 === 1 ? "emerald" : "amber",
-      title: `${c.grade || "Raw NM"} • Vendor Pool`,
-      img: c.img || c.images?.large || c.images?.small || "https://images.pokemontcg.io/swsh3/19_hires.png"
-    };
-  });
+  ];
 
-  const expensive = allCombined.filter(c => c.price >= 100);
-  const normal = allCombined.filter(c => c.price <= 400 && c.price >= 5);
+  const allCombined = rawCombinedPool
+    .filter((c: any) => {
+      if (!c) return false;
+      const imgUrl = c.img || c.images?.large || c.images?.small;
+      if (!imgUrl || typeof imgUrl !== 'string') return false;
+      if (imgUrl.includes('placeholder') || imgUrl === 'https://images.pokemontcg.io/swsh3/19_hires.png') return false;
+      return true;
+    })
+    .map((c: any, i: number) => {
+      const rawPriceNum = typeof c.price === 'number' ? c.price : (typeof c.rawPrice === 'number' ? c.rawPrice : 45);
+      const imgUrl = c.img || c.images?.large || c.images?.small;
+      return {
+        name: c.name || `Vendor Card #${i + 1}`,
+        price: rawPriceNum,
+        color: i % 3 === 0 ? "indigo" : i % 3 === 1 ? "emerald" : "amber",
+        title: `${c.grade || "Raw NM"} • Vendor Pool`,
+        img: imgUrl
+      };
+    });
+
+  const expensive = allCombined.filter(c => c.price >= 100 && c.img);
+  const normal = allCombined.filter(c => c.price <= 400 && c.price >= 5 && c.img);
 
   return {
     expensive: expensive.length > 0 ? expensive : allCombined,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -66,6 +66,7 @@ interface AuctionLotSectionProps {
   finalPrice: number;
   onPlaceBid: (increment: number) => void;
   onNextLot: () => void;
+  onImageError?: () => void;
   bidIncrements: number[];
   defaultBidIncrement: number;
   theme: {
@@ -100,6 +101,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   finalPrice,
   onPlaceBid,
   onNextLot,
+  onImageError,
   bidIncrements,
   defaultBidIncrement,
   theme
@@ -240,7 +242,15 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             onMouseLeave={handleMouseLeave}
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent opacity-60 pointer-events-none mix-blend-overlay" />
-            <img src={currentCard.img} alt={currentCard.name} className="w-full h-full object-cover" />
+            <img 
+              src={currentCard.img} 
+              alt={currentCard.name} 
+              className="w-full h-full object-cover" 
+              onError={() => {
+                if (onImageError) onImageError();
+                else onNextLot();
+              }}
+            />
           </motion.div>
 
           {/* Price & Market Value Breakdown */}
@@ -415,7 +425,15 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             onMouseLeave={handleMouseLeave}
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent opacity-60 z-20 pointer-events-none mix-blend-overlay" />
-            <img src={currentCard.img} alt={currentCard.name} className="w-full h-full object-cover" />
+            <img 
+              src={currentCard.img} 
+              alt={currentCard.name} 
+              className="w-full h-full object-cover" 
+              onError={() => {
+                if (onImageError) onImageError();
+                else onNextLot();
+              }}
+            />
           </motion.div>
         </div>
 
@@ -526,6 +544,30 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
   const [walletBalance, setWalletBalance] = useState<number>(128450.00);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
+  const brokenUrlsRef = useRef<Set<string>>(new Set());
+
+  const getNextValidCardIndex = (pool: AuctionPoolCard[], startIdx: number): number => {
+    if (!pool || pool.length === 0) return startIdx + 1;
+    let idx = startIdx + 1;
+    let attempts = 0;
+    while (attempts < pool.length) {
+      const card = pool[idx % pool.length];
+      if (card && card.img && typeof card.img === 'string' && !brokenUrlsRef.current.has(card.img) && !card.img.includes('placeholder') && card.img !== 'https://images.pokemontcg.io/swsh3/19_hires.png') {
+        return idx;
+      }
+      idx++;
+      attempts++;
+    }
+    return startIdx + 1;
+  };
+
+  const handleImageError = (type: 'expensive' | 'normal', imgUrl?: string) => {
+    if (imgUrl) {
+      brokenUrlsRef.current.add(imgUrl);
+    }
+    handleNextLot(type);
+  };
+
   const getExpensiveCeiling = () => {
     const roll = Math.random();
     if (roll < 0.50) return 0.55 + Math.random() * 0.25; // 55% to 80% (Underpriced steals 50% of the time!)
@@ -590,7 +632,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       setExpensiveLot((prev) => {
         if (prev.status === 'sold') {
           if (prev.soldTimeLeftMs <= 1000) {
-            const nextIdx = prev.cardIndex + 1;
+            const nextIdx = getNextValidCardIndex(pools.expensive, prev.cardIndex);
             const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
             const startPrice = Math.max(1, Math.floor(nextCard.price * 0.5));
             const initBids = Array.from({ length: 3 }).map((_, i) => ({
@@ -690,7 +732,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       setNormalLot((prev) => {
         if (prev.status === 'sold') {
           if (prev.soldTimeLeftMs <= 1000) {
-            const nextIdx = prev.cardIndex + 1;
+            const nextIdx = getNextValidCardIndex(pools.normal, prev.cardIndex);
             const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
             const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
             const initBids = Array.from({ length: 2 }).map((_, i) => ({
@@ -806,7 +848,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
   const handleNextLot = (type: 'expensive' | 'normal') => {
     if (type === 'expensive') {
       setExpensiveLot((prev) => {
-        const nextIdx = prev.cardIndex + 1;
+        const nextIdx = getNextValidCardIndex(pools.expensive, prev.cardIndex);
         const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
         const startPrice = Math.max(1, Math.floor(nextCard.price * 0.5));
         const initBids = Array.from({ length: 3 }).map((_, i) => ({
@@ -831,7 +873,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       });
     } else {
       setNormalLot((prev) => {
-        const nextIdx = prev.cardIndex + 1;
+        const nextIdx = getNextValidCardIndex(pools.normal, prev.cardIndex);
         const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
         const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
         const initBids = Array.from({ length: 2 }).map((_, i) => ({
@@ -859,6 +901,18 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
   const expensiveCard = pools.expensive[expensiveLot.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
   const normalCard = pools.normal[normalLot.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
+
+  useEffect(() => {
+    if (expensiveCard && (brokenUrlsRef.current.has(expensiveCard.img) || !expensiveCard.img || expensiveCard.img.includes('placeholder') || expensiveCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
+      handleNextLot('expensive');
+    }
+  }, [expensiveLot.cardIndex, expensiveCard]);
+
+  useEffect(() => {
+    if (normalCard && (brokenUrlsRef.current.has(normalCard.img) || !normalCard.img || normalCard.img.includes('placeholder') || normalCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
+      handleNextLot('normal');
+    }
+  }, [normalLot.cardIndex, normalCard]);
 
   return (
     <div className="absolute inset-0 z-50 bg-[#050914] text-slate-200 font-sans overflow-hidden flex flex-col items-center justify-start">
@@ -1044,6 +1098,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 finalPrice={expensiveLot.finalPrice}
                 onPlaceBid={(increment) => handlePlayerBid('expensive', increment)}
                 onNextLot={() => handleNextLot('expensive')}
+                onImageError={() => handleImageError('expensive', expensiveCard?.img)}
                 bidIncrements={expensiveCard.price > 1500 ? [50, 100, 250] : [10, 25, 50]}
                 defaultBidIncrement={expensiveCard.price > 1500 ? 100 : 50}
                 theme={{
@@ -1086,6 +1141,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 finalPrice={normalLot.finalPrice}
                 onPlaceBid={(increment) => handlePlayerBid('normal', increment)}
                 onNextLot={() => handleNextLot('normal')}
+                onImageError={() => handleImageError('normal', normalCard?.img)}
                 bidIncrements={normalCard.price > 150 ? [10, 25, 50] : normalCard.price > 50 ? [5, 10, 25] : [1, 2, 5]}
                 defaultBidIncrement={normalCard.price > 150 ? 25 : normalCard.price > 50 ? 10 : 2}
                 theme={{
