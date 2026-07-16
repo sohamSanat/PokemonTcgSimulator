@@ -7,6 +7,7 @@ import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase'
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
+import { generateVendorReply } from './services/geminiVendorChat';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
 import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, type CatalogueStore, type Binder, type Card } from './components/binder/types';
@@ -788,7 +789,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'vendor' | 'user'; text: string; time: string }>>([
     {
       sender: 'vendor',
-      text: `Hey! Welcome to booth ${vendorBooth} (${vendorName}). Interested in this ${poke.name} listed at $${vendorPrice.toLocaleString()}? Feel free to ask for a condition video or make an instant offer right here!`,
+      text: `Welcome to ${vendorBooth} (${vendorName})! I've got this ${poke.name} locked in at $${vendorPrice.toLocaleString()}. Any condition questions or looking to make a quick deal? 🔥`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -800,28 +801,55 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
     }
   }, [showSellerChat, chatMessages]);
 
-  const handleSendChatMessage = () => {
-    if (!chatInput.trim()) return;
+  const [isVendorTyping, setIsVendorTyping] = useState(false);
+
+  const handleSendChatMessage = async () => {
+    if (!chatInput.trim() || isVendorTyping) return;
+    const userMsgText = chatInput.trim();
     const newMsg = {
       sender: 'user' as const,
-      text: chatInput.trim(),
+      text: userMsgText,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setChatMessages(prev => [...prev, newMsg]);
     setChatInput('');
     sound.playButtonClick();
+    setIsVendorTyping(true);
 
-    setTimeout(() => {
+    try {
+      const reply = await generateVendorReply({
+        vendorName,
+        vendorBooth,
+        vendorRating,
+        cardName: poke.name,
+        cardPrice: vendorPrice,
+        cardGrade: poke.slabGrade !== 'N/A' && poke.slabGrade ? poke.slabGrade : 'Near Mint / Slab',
+        chatHistory: chatMessages,
+        userMessage: userMsgText
+      });
+
       setChatMessages(prev => [
         ...prev,
         {
           sender: 'vendor' as const,
-          text: `Got your inquiry! Our booth rep at ${vendorBooth} is reviewing the condition details right now. We will follow up with you momentarily!`,
+          text: reply,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
       sound.playCardCollect();
-    }, 1000);
+    } catch (err) {
+      setChatMessages(prev => [
+        ...prev,
+        {
+          sender: 'vendor' as const,
+          text: `Since you're right here at booth ${vendorBooth}, I can do 8% off cash out the door right now! Do we have a deal? 🤝🔥`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+      sound.playCardCollect();
+    } finally {
+      setIsVendorTyping(false);
+    }
   };
 
   const card3dRef = useRef<HTMLDivElement>(null);
@@ -1242,6 +1270,19 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                       </div>
                     </div>
                   ))}
+                  {isVendorTyping && (
+                    <div className="flex flex-col items-start animate-pulse">
+                      <div className="flex items-center gap-1.5 mb-1 text-[10px] font-mono text-[#38bdf8]">
+                        <span>✨ {vendorName} Rep</span>
+                        <span>•</span>
+                        <span>Live on floor...</span>
+                      </div>
+                      <div className="bg-[#1e293b]/90 text-[#38bdf8] border border-[#38bdf8]/40 rounded-2xl rounded-bl-none px-3.5 py-2.5 font-mono text-xs flex items-center gap-2 shadow-lg">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#38bdf8]" />
+                        <span>Checking floor pricing with booth manager...</span>
+                      </div>
+                    </div>
+                  )}
                   <div ref={chatBottomRef} />
                 </div>
 
@@ -1250,14 +1291,16 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   <input
                     type="text"
                     value={chatInput}
+                    disabled={isVendorTyping}
                     onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendChatMessage()}
-                    placeholder={`Message ${vendorName} right now...`}
-                    className="flex-1 bg-[#1e293b] border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-white placeholder-gray-500 focus:outline-none focus:border-[#38bdf8] transition-colors"
+                    onKeyDown={(e) => e.key === 'Enter' && !isVendorTyping && handleSendChatMessage()}
+                    placeholder={isVendorTyping ? `${vendorName} is replying right now...` : `Message ${vendorName} right now...`}
+                    className="flex-1 bg-[#1e293b] border border-white/10 rounded-xl px-3.5 py-2 text-xs font-mono text-white placeholder-gray-500 focus:outline-none focus:border-[#38bdf8] transition-colors disabled:opacity-50"
                   />
                   <button
                     onClick={handleSendChatMessage}
-                    className="p-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#0284c7] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono transition-all cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0"
+                    disabled={isVendorTyping}
+                    className="p-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] to-[#0284c7] hover:from-[#7dd3fc] hover:to-[#0284c7] text-white font-mono transition-all cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0 disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                   </button>

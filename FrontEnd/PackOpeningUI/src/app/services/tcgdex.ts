@@ -102,6 +102,8 @@ export interface PokemonCard {
   vendorName?: string;
   vendorBooth?: string;
   vendorRating?: string;
+  isSlabbed?: boolean;
+  slabGrade?: string;
 }
 
 export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'high'): string => {
