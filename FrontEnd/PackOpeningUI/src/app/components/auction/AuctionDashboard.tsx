@@ -684,16 +684,16 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
   const getExpensiveCeiling = () => {
     const roll = Math.random();
-    if (roll < 0.50) return 0.55 + Math.random() * 0.25; // 55% to 80% (Underpriced steals 50% of the time!)
-    if (roll < 0.80) return 0.81 + Math.random() * 0.13; // 81% to 94% (Fair deals)
-    return 0.95 + Math.random() * 0.07; // 95% to 102% (Competitive bidding)
+    if (roll < 0.35) return 0.55 + Math.random() * 0.25; // 35% of the time: 55% to 80% (Underpriced steals)
+    if (roll < 0.75) return 0.81 + Math.random() * 0.14; // 40% of the time: 81% to 95% (Fair deals)
+    return 0.96 + Math.random() * 0.09; // 25% of the time: 96% to 105% (Competitive bidding)
   };
 
   const getNormalCeiling = () => {
     const roll = Math.random();
-    if (roll < 0.60) return 0.45 + Math.random() * 0.30; // 45% to 75% (HUGE UNDERPRICED STEALS 60% of the time!)
-    if (roll < 0.85) return 0.76 + Math.random() * 0.16; // 76% to 92% (Fair deals)
-    return 0.93 + Math.random() * 0.09; // 93% to 102% (Competitive bidding)
+    if (roll < 0.35) return 0.45 + Math.random() * 0.30; // 35% of the time: 45% to 75% (Underpriced steals)
+    if (roll < 0.75) return 0.76 + Math.random() * 0.19; // 40% of the time: 76% to 95% (Fair deals)
+    return 0.96 + Math.random() * 0.09; // 25% of the time: 96% to 105% (Competitive bidding)
   };
 
   const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() => {
@@ -817,9 +817,9 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
         }
 
         const ratio = prev.currentBid / targetCeiling;
-        let bidChance = 0.26;
-        if (ratio >= 0.80) bidChance = 0.10;
-        if (ratio >= 0.92) bidChance = 0.03;
+        let bidChance = 0.45;
+        if (ratio >= 0.70) bidChance = 0.25;
+        if (ratio >= 0.90) bidChance = 0.12;
 
         if (Math.random() < bidChance) {
           let increment = Math.floor(Math.random() * 3 + 1) * 10; // $10 to $30
@@ -928,9 +928,9 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
         }
 
         const ratio = prev.currentBid / targetCeiling;
-        let bidChance = 0.22;
-        if (ratio >= 0.80) bidChance = 0.08;
-        if (ratio >= 0.92) bidChance = 0.02;
+        let bidChance = 0.40;
+        if (ratio >= 0.70) bidChance = 0.20;
+        if (ratio >= 0.90) bidChance = 0.10;
 
         if (Math.random() < bidChance) {
           let increment = 1;
