@@ -181,6 +181,30 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               <span className="text-xs text-slate-400 font-mono mt-2.5 uppercase tracking-wide">
                 {winner === 'YOU' ? "✨ Added to your personal collection ✨" : `Acquired by @${winner}`}
               </span>
+
+              {/* Reveal Market Value & Bargain percentage post-auction */}
+              <div className="w-full border-t border-slate-800/80 mt-4 pt-4 flex flex-col items-center gap-1.5">
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  <span className="text-slate-400 font-medium">Card Market Value:</span>
+                  <span className="text-slate-200 font-bold">${currentCard.price.toLocaleString()}</span>
+                </div>
+                {currentCard.price !== finalPrice ? (
+                  <div className={cn(
+                    "text-xs font-mono px-3 py-1 rounded-full border mt-1",
+                    currentCard.price > finalPrice
+                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                      : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                  )}>
+                    {currentCard.price > finalPrice
+                      ? `🎉 Bargain! Won at ${Math.round(((currentCard.price - finalPrice) / currentCard.price) * 100)}% below market`
+                      : `Premium: Sold at ${Math.round(((finalPrice - currentCard.price) / currentCard.price) * 100)}% above market`}
+                  </div>
+                ) : (
+                  <div className="text-xs font-mono px-3 py-1 rounded-full border bg-slate-800/50 border-slate-700/50 text-slate-300 mt-1">
+                    🤝 Sold exactly at market value
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Countdown bar to next card */}
@@ -582,6 +606,39 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     handleNextLot(type);
   };
 
+  const validateCardImage = async (imgUrl: string): Promise<boolean> => {
+    if (!imgUrl) return false;
+    if (imgUrl.includes('placeholder') || imgUrl === 'https://images.pokemontcg.io/swsh3/19_hires.png') return false;
+    try {
+      if (imgUrl.includes('scrydex.com')) {
+        try {
+          const res = await fetch(imgUrl, { signal: AbortSignal.timeout(3000) });
+          if (res.ok) {
+            const buf = await res.arrayBuffer();
+            if (buf.byteLength === 186316) {
+              return false; // It's the placeholder cardback!
+            }
+          } else {
+            return false; // Verified 404 or bad status
+          }
+        } catch (fetchErr) {
+          // If fetch fails (CORS or network down), don't immediately reject it as it might load fine in img
+          console.warn("Fetch failed for scrydex check, falling back to basic loader:", fetchErr);
+        }
+      }
+      
+      // Perform regular image loading test
+      return await new Promise<boolean>((resolve) => {
+        const img = new Image();
+        img.src = imgUrl;
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+      });
+    } catch (e) {
+      return false;
+    }
+  };
+
   const getExpensiveCeiling = () => {
     const roll = Math.random();
     if (roll < 0.50) return 0.55 + Math.random() * 0.25; // 55% to 80% (Underpriced steals 50% of the time!)
@@ -917,15 +974,43 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
   const normalCard = pools.normal[normalLot.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
 
   useEffect(() => {
-    if (expensiveCard && (brokenUrlsRef.current.has(expensiveCard.img) || !expensiveCard.img || expensiveCard.img.includes('placeholder') || expensiveCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
-      handleNextLot('expensive');
-    }
+    let active = true;
+    const validate = async () => {
+      if (expensiveCard && (brokenUrlsRef.current.has(expensiveCard.img) || !expensiveCard.img || expensiveCard.img.includes('placeholder') || expensiveCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
+        if (active) handleImageError('expensive', expensiveCard.img);
+        return;
+      }
+      if (expensiveCard?.img) {
+        const isValid = await validateCardImage(expensiveCard.img);
+        if (!isValid && active) {
+          handleImageError('expensive', expensiveCard.img);
+        }
+      }
+    };
+    validate();
+    return () => {
+      active = false;
+    };
   }, [expensiveLot.cardIndex, expensiveCard]);
 
   useEffect(() => {
-    if (normalCard && (brokenUrlsRef.current.has(normalCard.img) || !normalCard.img || normalCard.img.includes('placeholder') || normalCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
-      handleNextLot('normal');
-    }
+    let active = true;
+    const validate = async () => {
+      if (normalCard && (brokenUrlsRef.current.has(normalCard.img) || !normalCard.img || normalCard.img.includes('placeholder') || normalCard.img === 'https://images.pokemontcg.io/swsh3/19_hires.png')) {
+        if (active) handleImageError('normal', normalCard.img);
+        return;
+      }
+      if (normalCard?.img) {
+        const isValid = await validateCardImage(normalCard.img);
+        if (!isValid && active) {
+          handleImageError('normal', normalCard.img);
+        }
+      }
+    };
+    validate();
+    return () => {
+      active = false;
+    };
   }, [normalLot.cardIndex, normalCard]);
 
   return (
