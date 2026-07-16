@@ -784,7 +784,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           if (winner === 'YOU') {
             setWalletBalance(b => Math.max(0, b - finalPrice));
             const newCard = saveCollectedCard({
-              value: finalPrice,
+              value: currentCard.price,
               pokemon: {
                 id: currentCard.id,
                 name: currentCard.name,
@@ -895,7 +895,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           if (winner === 'YOU') {
             setWalletBalance(b => Math.max(0, b - finalPrice));
             const newCard = saveCollectedCard({
-              value: finalPrice,
+              value: currentCard.price,
               pokemon: {
                 id: currentCard.id,
                 name: currentCard.name,
