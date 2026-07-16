@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2 } from 'lucide-react';
+import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
@@ -132,6 +132,10 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   const diff = currentCard.price - finalPrice;
   const diffPercent = currentCard.price > 0 ? Math.round(Math.abs(diff) / currentCard.price * 100) : 0;
 
+  // For active bidding diff calculation (shows if current bid is below/above market)
+  const activeDiff = currentCard.price - currentBid;
+  const activeDiffPercent = currentCard.price > 0 ? Math.round(Math.abs(activeDiff) / currentCard.price * 100) : 0;
+
   return (
     <div className={cn(
       "flex flex-col md:flex-row h-full rounded-2xl overflow-hidden bg-slate-900/50 backdrop-blur-xl border transition-all duration-300 shadow-2xl relative min-h-0",
@@ -148,7 +152,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-2xl p-4 sm:p-6 flex flex-col items-center justify-center text-center overflow-y-auto"
+            className="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl p-4 sm:p-6 flex flex-col items-center justify-center text-center overflow-y-auto"
           >
             {/* Winner Stamp */}
             <div className={cn(
@@ -231,12 +235,180 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
         )}
       </AnimatePresence>
 
-      {/* LEFT PANEL: THE MAIN STAGE (Compact layout to guarantee 1-screen fit without scrollbars) */}
-      <div className="flex-1 min-w-0 flex flex-col items-center justify-between p-3 sm:p-4 relative z-10 overflow-hidden min-h-0">
+      {/* ========================================================================= */}
+      {/* 1. MOBILE-OPTIMIZED COMPACT STAGE (< md screens)                          */}
+      {/* ========================================================================= */}
+      <div className="md:hidden flex flex-col flex-1 min-h-0 p-3 z-10 gap-2.5 overflow-y-auto">
+        
+        {/* Section Header */}
+        <div className="flex items-center justify-between gap-2 shrink-0 border-b border-slate-800/80 pb-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className={cn("px-2.5 py-1 rounded-full border inline-flex items-center gap-1 text-[10px] shrink-0", theme.badgeBg, theme.badgeBorder)}>
+              {theme.icon}
+              <span className={cn("font-extrabold tracking-wider uppercase", theme.badgeText)}>
+                LOT #{lotNumber}
+              </span>
+            </div>
+            <h3 className="text-sm sm:text-base font-black text-white tracking-tight truncate">{currentCard.name}</h3>
+          </div>
+          <div className="flex items-center gap-1 bg-slate-950/80 px-2.5 py-1 rounded-full border border-slate-700/60 shrink-0">
+            <Clock className={cn("w-3 h-3 animate-pulse", theme.badgeText)} />
+            <span className="font-mono text-xs font-bold text-slate-100">{formatTime(timeLeftSeconds)}</span>
+          </div>
+        </div>
+
+        {/* Side-by-Side Card & Live Price Stage */}
+        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/90 shadow-lg shrink-0">
+          
+          {/* Card Image Thumbnail */}
+          <motion.div 
+            className="w-[110px] h-[154px] sm:w-[130px] sm:h-[182px] shrink-0 rounded-lg overflow-hidden shadow-2xl border border-slate-600/70 bg-slate-800 relative cursor-grab active:cursor-grabbing"
+            style={{ rotateX: rotationX, rotateY: rotationY, transformStyle: "preserve-3d" }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent opacity-60 pointer-events-none mix-blend-overlay" />
+            <img src={currentCard.img} alt={currentCard.name} className="w-full h-full object-cover" />
+          </motion.div>
+
+          {/* Price & Market Value Breakdown */}
+          <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div>
+              <span className="text-[10px] font-mono tracking-wider text-slate-400 uppercase block">Current Highest Bid</span>
+              <motion.div 
+                key={currentBid}
+                initial={{ scale: 1.12, color: "#4ade80" }}
+                animate={{ scale: 1, color: theme.glowText }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                className="text-2xl sm:text-3xl font-black tracking-tight leading-tight mt-0.5"
+                style={{ textShadow: `0 0 15px ${theme.cardGlow}` }}
+              >
+                ${currentBid.toLocaleString()}
+              </motion.div>
+            </div>
+
+            {/* Market Value Comparison Box */}
+            <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-2 my-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>Market Value:</span>
+                <span className="font-bold text-slate-200">${currentCard.price.toLocaleString()}</span>
+              </div>
+              <div className="mt-1 flex items-center justify-between gap-1">
+                {activeDiff > 0 ? (
+                  <span className="text-[10px] font-extrabold text-green-400 bg-green-500/15 border border-green-500/30 px-1.5 py-0.5 rounded flex items-center gap-1 truncate">
+                    <TrendingDown className="w-2.5 h-2.5 shrink-0" />
+                    <span>-{activeDiffPercent}% Below Market</span>
+                  </span>
+                ) : activeDiff < 0 ? (
+                  <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.5 rounded flex items-center gap-1 truncate">
+                    <TrendingUp className="w-2.5 h-2.5 shrink-0" />
+                    <span>+{activeDiffPercent}% Premium</span>
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/15 px-1.5 py-0.5 rounded truncate">
+                    At Market Price
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Countdown Progress Bar */}
+            <div className="w-full space-y-1">
+              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div 
+                  className={cn("h-full transition-all duration-200", theme.badgeBg)} 
+                  style={{ width: `${Math.min(100, Math.max(0, (timeLeftSeconds / maxTimeSeconds) * 100))}%` }} 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Feed & Bid Action Ticker (Mobile) */}
+        <div className="flex flex-col flex-1 min-h-[150px] bg-slate-950/70 rounded-xl border border-slate-800/90 overflow-hidden shrink-0">
+          <div className="px-2.5 py-1.5 border-b border-slate-800 bg-slate-950 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-1.5">
+              <Terminal className={cn("w-3.5 h-3.5", theme.badgeText)} />
+              <span className="font-mono text-[10px] font-bold tracking-widest text-slate-200 uppercase">
+                {type === 'expensive' ? 'Grail Live Feed' : 'Blitz Live Feed'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[9px] font-mono text-slate-400 uppercase">Live</span>
+            </div>
+          </div>
+
+          {/* Compact Feed List (Last 4 Bids) */}
+          <div className="flex-1 overflow-y-auto p-2 space-y-1 flex flex-col justify-end min-h-[85px]" style={{ scrollbarWidth: 'thin' }}>
+            <AnimatePresence initial={false}>
+              {bids.slice(-4).map((bid, i, arr) => {
+                const isLatest = i === arr.length - 1;
+                const isUser = bid.user === 'YOU';
+                return (
+                  <motion.div
+                    key={bid.id}
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={cn(
+                      "flex items-center justify-between px-2 py-1 rounded border font-mono text-[11px] transition-colors shrink-0",
+                      isLatest 
+                        ? isUser 
+                          ? cn("bg-purple-500/20 border-purple-500/50 text-purple-200")
+                          : cn(type === 'expensive' ? "bg-amber-500/15 border-amber-500/40 text-amber-300" : "bg-cyan-500/15 border-cyan-500/40 text-cyan-300")
+                        : "bg-slate-800/40 border-slate-700/50 text-slate-300"
+                    )}
+                  >
+                    <span className={cn("truncate max-w-[140px]", isLatest && "font-bold", isUser && "text-purple-300 font-extrabold")}>
+                      {bid.user}
+                    </span>
+                    <span className={cn("font-bold", isLatest ? (isUser ? "text-purple-200" : theme.badgeText) : "text-slate-400")}>
+                      ${bid.amount.toLocaleString()}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+
+          {/* Bid Buttons Footer */}
+          <div className="p-2 bg-slate-950 border-t border-slate-800 shrink-0">
+            <div className="flex gap-1.5 mb-1.5">
+              {bidIncrements.map((inc) => (
+                <button 
+                  key={inc}
+                  onClick={() => onPlaceBid(inc)}
+                  disabled={timeLeftSeconds <= 0 || status === 'sold'}
+                  className="flex-1 py-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:border-slate-400 text-[11px] font-mono font-bold text-slate-200 transition-all active:scale-95 disabled:opacity-40"
+                >
+                  +${inc}
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => onPlaceBid(defaultBidIncrement)}
+              disabled={timeLeftSeconds <= 0 || status === 'sold'}
+              className={cn(
+                "w-full py-2 rounded-lg font-bold tracking-wider uppercase text-xs transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 disabled:opacity-40",
+                theme.btnBg, theme.btnHover, theme.btnText
+              )}
+            >
+              <Coins className="w-3.5 h-3.5" />
+              Place Bid (+${defaultBidIncrement})
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 2. DESKTOP/TABLET FULL HOLO STAGE (>= md screens)                         */}
+      {/* ========================================================================= */}
+      <div className="hidden md:flex flex-1 min-w-0 flex-col items-center justify-between p-4 relative z-10 overflow-hidden min-h-0">
         
         {/* Section Header Badge */}
         <div className="w-full flex flex-col items-center text-center shrink-0">
-          <div className={cn("px-3 py-1 rounded-full border mb-1.5 inline-flex items-center gap-1.5 shadow-sm text-[11px]", theme.badgeBg, theme.badgeBorder)}>
+          <div className={cn("px-3 py-1 rounded-full border mb-1.5 inline-flex items-center gap-1.5 shadow-sm text-xs", theme.badgeBg, theme.badgeBorder)}>
             {theme.icon}
             <span className={cn("font-extrabold tracking-widest uppercase", theme.badgeText)}>
               {title} • LOT #{lotNumber}
@@ -291,8 +463,8 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
           </motion.div>
         </div>
 
-        {/* Current Bid Display */}
-        <div className="flex flex-col items-center shrink-0">
+        {/* Current Bid & Market Price Indicator */}
+        <div className="flex flex-col items-center shrink-0 w-full">
           <span className="text-[10px] font-mono tracking-[0.2em] text-slate-400 uppercase">Current Highest Bid</span>
           <motion.div 
             key={currentBid}
@@ -304,11 +476,28 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
           >
             ${currentBid.toLocaleString()}
           </motion.div>
+
+          {/* Market Price & Deal Tag */}
+          <div className="flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-800 text-xs font-mono">
+            <span className="text-slate-400">Market Value:</span>
+            <span className="font-bold text-slate-200">${currentCard.price.toLocaleString()}</span>
+            {activeDiff > 0 ? (
+              <span className="text-[10px] font-extrabold text-green-400 bg-green-500/15 px-1.5 py-0.5 rounded border border-green-500/30 flex items-center gap-1">
+                <TrendingDown className="w-2.5 h-2.5" />
+                -{activeDiffPercent}% Steal
+              </span>
+            ) : activeDiff < 0 ? (
+              <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30 flex items-center gap-1">
+                <TrendingUp className="w-2.5 h-2.5" />
+                +{activeDiffPercent}% Over
+              </span>
+            ) : null}
+          </div>
         </div>
       </div>
 
-      {/* RIGHT PANEL: LIVE BIDS FEED & CONTROLS */}
-      <div className="w-full md:w-[250px] lg:w-[270px] xl:w-[280px] shrink-0 flex flex-col bg-slate-950/60 border-t md:border-t-0 md:border-l border-slate-700/50 relative z-10 min-h-0 overflow-hidden">
+      {/* Desktop Right Panel: Live Bids Feed & Controls */}
+      <div className="hidden md:flex w-[250px] lg:w-[270px] xl:w-[280px] shrink-0 flex-col bg-slate-950/60 border-t md:border-t-0 md:border-l border-slate-700/50 relative z-10 min-h-0 overflow-hidden">
         <div className="p-2.5 border-b border-slate-700/50 bg-slate-950/60 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5">
             <Terminal className={cn("w-3.5 h-3.5", theme.badgeText)} />
@@ -391,6 +580,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
   const [viewMode, setViewMode] = useState<'both' | 'expensive_only' | 'normal_only'>('both');
   const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => getVendorAuctionPools());
   const [walletBalance, setWalletBalance] = useState<number>(128450.00);
+  const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() => {
     const initCard = pools.expensive[0] || DUMMY_CARDS.expensive[0];
@@ -650,87 +840,169 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       <div className="absolute bottom-[-15%] right-[-10%] w-[45vw] h-[45vw] bg-cyan-900/15 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-[30%] left-[50%] translate-x-[-50%] w-[35vw] h-[35vw] bg-purple-900/10 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Main Container (Strictly bounded to 100% viewport height, 0 scrollbars) */}
-      <div className="w-full max-w-[1920px] h-full p-3 sm:p-4 flex flex-col gap-3 relative z-10 overflow-hidden min-h-0">
+      {/* HOW AUCTIONS WORK GUIDE MODAL */}
+      <AnimatePresence>
+        {showGuideModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              className="bg-slate-900 border border-slate-700/80 rounded-2xl p-5 sm:p-6 max-w-lg w-full shadow-2xl relative text-left my-auto"
+            >
+              <button
+                onClick={() => setShowGuideModal(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/50 flex items-center justify-center text-purple-400 shrink-0">
+                  <HelpCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-white">How Nexus Dual Auctions Work</h3>
+                  <p className="text-xs text-slate-400 font-mono">Real-time competitive bidding handbook</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-xs sm:text-sm text-slate-300">
+                <div className="p-3 rounded-xl bg-slate-950/60 border border-amber-500/30 flex gap-3 items-start">
+                  <Trophy className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-amber-300">Grail Arena (≥ $100 Cards)</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">High-end graded slabs starting at 50% of market value with a 2-minute countdown timer. Best spot for massive market steals!</p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-950/60 border border-cyan-500/30 flex gap-3 items-start">
+                  <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-cyan-300">Blitz Arena (&lt; $100 Cards)</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Rapid-fire budget cards starting at only $1 with a 15-second timer. Fast clicks win here!</p>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-950/60 border border-purple-500/30 flex gap-3 items-start">
+                  <Coins className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-purple-300">Winning &amp; Market Value</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Click any bid button (`+$10`, `+$25`, etc.) to outbid NPC players. If you hold the highest bid when the clock hits 0:00, you win! The final price is deducted from your wallet balance.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowGuideModal(false)}
+                className="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all"
+              >
+                Got It, Let's Bid! ➔
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Container (Scrollable on mobile/tablet `< xl`, fixed on desktop `xl:`) */}
+      <div className="w-full max-w-[1920px] h-full p-2 sm:p-4 flex flex-col gap-2.5 relative z-10 min-h-0 overflow-y-auto xl:overflow-hidden">
         
-        {/* SLIM HEADER */}
-        <header className="flex-none flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-900/70 backdrop-blur-md border border-slate-700/60 rounded-xl shadow-lg shrink-0">
-          <div className="flex items-center gap-3">
+        {/* RESPONSIVE HEADER */}
+        <header className="flex-none flex flex-wrap items-center justify-between gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700/70 rounded-xl shadow-lg shrink-0">
+          
+          <div className="flex items-center gap-2">
             <button 
               onClick={onBack}
-              className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 transition-colors border border-slate-700 text-slate-300 hover:text-white shadow-sm"
+              className="p-1.5 sm:p-2 rounded-lg bg-slate-800/90 hover:bg-slate-700 transition-colors border border-slate-700 text-slate-300 hover:text-white shadow-sm shrink-0"
+              title="Return to Main Menu"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-purple-500 to-cyan-500 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.4)] shrink-0">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-amber-400 via-purple-500 to-cyan-500 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.4)] shrink-0">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 uppercase leading-tight">
-                Nexus Dual Auction Arena
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 uppercase leading-tight truncate">
+                Dual Auction Arena
               </h1>
-              <div className="text-[10px] text-slate-400 font-mono flex items-center gap-1.5 leading-none mt-0.5">
+              <div className="text-[9px] sm:text-[10px] text-slate-400 font-mono flex items-center gap-1 leading-none mt-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shrink-0" />
-                <span>2 LIVE SECTIONS • REAL-TIME MARKET PRICES</span>
+                <span className="truncate">LIVE BIDDING • REAL MARKET PRICES</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* View Mode Switcher */}
-            <div className="flex bg-slate-950/80 rounded-lg p-1 border border-slate-700/60 shadow-inner">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-3 ml-auto">
+            {/* Guide Info Button */}
+            <button
+              onClick={() => setShowGuideModal(true)}
+              className="px-2.5 py-1.5 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/40 text-purple-300 flex items-center gap-1 text-[11px] font-bold transition-all shadow-sm shrink-0"
+            >
+              <HelpCircle className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+              <span className="hidden sm:inline">Guide</span>
+            </button>
+
+            {/* View Mode Switcher (Always visible text on all screen sizes!) */}
+            <div className="flex bg-slate-950/90 rounded-lg p-1 border border-slate-700/70 shadow-inner">
               <button 
                 onClick={() => setViewMode('both')}
                 className={cn(
-                  "px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1.5",
-                  viewMode === 'both' ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  "px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1",
+                  viewMode === 'both' ? "bg-purple-500/25 text-purple-200 border border-purple-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
                 )}
               >
                 <SlidersHorizontal className="w-3 h-3 text-purple-400 shrink-0" />
-                <span className="hidden sm:inline">Dual View</span>
+                <span>Dual</span>
               </button>
               <button 
                 onClick={() => setViewMode('expensive_only')}
                 className={cn(
-                  "px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1.5",
-                  viewMode === 'expensive_only' ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  "px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1",
+                  viewMode === 'expensive_only' ? "bg-amber-500/25 text-amber-200 border border-amber-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
                 )}
               >
                 <Trophy className="w-3 h-3 text-amber-400 shrink-0" />
-                <span className="hidden sm:inline">Expensive Only</span>
+                <span>Grail ($100+)</span>
               </button>
               <button 
                 onClick={() => setViewMode('normal_only')}
                 className={cn(
-                  "px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1.5",
-                  viewMode === 'normal_only' ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
+                  "px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-[11px] font-bold tracking-wider uppercase transition-all flex items-center gap-1",
+                  viewMode === 'normal_only' ? "bg-cyan-500/25 text-cyan-200 border border-cyan-500/50 shadow-sm" : "text-slate-400 hover:text-slate-200"
                 )}
               >
                 <Zap className="w-3 h-3 text-cyan-400 shrink-0" />
-                <span className="hidden sm:inline">Less Expensive Only</span>
+                <span>Blitz (&lt;$100)</span>
               </button>
             </div>
 
-            <div className="h-8 w-px bg-slate-700/60 hidden md:block" />
+            <div className="h-6 w-px bg-slate-700/60 hidden md:block" />
 
-            <div className="flex flex-col items-end shrink-0">
-              <span className="text-[9px] tracking-[0.2em] text-slate-400 font-mono uppercase">Wallet Balance</span>
-              <span className="text-sm sm:text-base font-mono text-slate-100 font-bold">${walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className="flex flex-col items-end shrink-0 bg-slate-950/60 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-800">
+              <span className="text-[9px] tracking-widest text-slate-400 font-mono uppercase">Wallet Balance</span>
+              <span className="text-xs sm:text-sm font-mono text-slate-100 font-bold">${walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           </div>
         </header>
 
-        {/* CONTENT GRID: EXACT 1-SCREEN HEIGHT, 0 OVERFLOW */}
+        {/* CONTENT GRID: Auto-scrollable on mobile `< xl` so nothing ever cuts off, locked 100% height on desktop `xl:` */}
         <div className={cn(
-          "flex-1 grid gap-3 min-h-0 overflow-hidden",
-          viewMode === 'both' ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
+          "flex-1 grid gap-3 min-h-0",
+          viewMode === 'both' ? "grid-cols-1 xl:grid-cols-2 overflow-y-auto xl:overflow-hidden" : "grid-cols-1 overflow-hidden"
         )}>
           {/* SECTION 1: EXPENSIVE CARDS ARENA (Grail Lots >= $100) */}
           {(viewMode === 'both' || viewMode === 'expensive_only') && (
-            <div className="h-full min-h-0 overflow-hidden">
+            <div className={cn(
+              "min-h-0 overflow-hidden rounded-2xl",
+              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] xl:min-h-0 xl:h-full" : "h-full"
+            )}>
               <AuctionLotSection
                 type="expensive"
-                title="Expensive Cards Arena"
+                title="Grail Cards Arena"
                 subtitle="Grail Lots (≥ $100) • 50% Start"
                 lotNumber={412 + expensiveLot.cardIndex}
                 currentCard={expensiveCard}
@@ -766,10 +1038,13 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
           {/* SECTION 2: LESS EXPENSIVE CARDS ARENA (Blitz $1 Starts < $100) */}
           {(viewMode === 'both' || viewMode === 'normal_only') && (
-            <div className="h-full min-h-0 overflow-hidden">
+            <div className={cn(
+              "min-h-0 overflow-hidden rounded-2xl",
+              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] xl:min-h-0 xl:h-full" : "h-full"
+            )}>
               <AuctionLotSection
                 type="normal"
-                title="Less Expensive Cards Arena"
+                title="Blitz Cards Arena"
                 subtitle="Blitz Starts (< $100) • $1 Start"
                 lotNumber={824 + normalLot.cardIndex}
                 currentCard={normalCard}
