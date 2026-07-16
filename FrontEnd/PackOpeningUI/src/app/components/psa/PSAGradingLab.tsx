@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { getCollectedCards, saveCollectedCard, savePSAGradingResult, type Card } from '../binder/types';
 import { sound } from '../../services/sound';
+import { trackMissionProgress } from '../../services/missions';
 
 interface PSAGradingLabProps {
   onBackToPacks: () => void;
@@ -531,6 +532,8 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
           valueMultiplier
         );
         loadCards();
+        trackMissionProgress('grade_psa', 1);
+        if (finalGrade === 10) trackMissionProgress('grade_psa_10', 1);
         if (onGradeComplete) onGradeComplete();
       }
       setStage('result');

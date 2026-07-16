@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -20,6 +20,8 @@ import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView from './components/cardShow/CardShowView';
+import { MissionsView } from './components/missions/MissionsView';
+import { getPackPasses, usePackPass, trackMissionProgress, getMissions } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
@@ -832,6 +834,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
     setChatInput('');
     sound.playButtonClick();
     setIsVendorTyping(true);
+    trackMissionProgress('vendor_chat', 1);
 
     try {
       const fullCardSet = liveCardFull?.set?.name || (activePoke as any).set?.name || (activePoke.name.includes('(') ? activePoke.name.split('(')[1].replace(')', '').trim() : 'Paradise Dragona / Japanese Series');
@@ -1650,6 +1653,12 @@ export default function App() {
   const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(false);
 
   useEffect(() => {
+    if (inspectedCard) {
+      trackMissionProgress('inspect_card', 1);
+    }
+  }, [inspectedCard]);
+
+  useEffect(() => {
     setIsChaseCardsRevealed(false);
     const isJaSet = selectedLanguage === 'ja' || Boolean(currentSet?.id?.endsWith('_ja')) || Boolean(currentSet?.name?.toLowerCase().includes('japanese'));
     const waitTime = isJaSet ? 3000 : 10000;
@@ -1660,11 +1669,25 @@ export default function App() {
   }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
-  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow'>('pack');
+  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions'>('pack');
+  const [packPasses, setPackPasses] = useState<number>(() => getPackPasses());
+  const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
   const [matchId, setMatchId] = useState<string>('');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<string | number>>(new Set());
   const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
   const [availableBinders, setAvailableBinders] = useState<Binder[]>([]);
+
+  useEffect(() => {
+    const handlePassesUpdate = (e: any) => {
+      if (typeof e.detail?.passes === 'number') {
+        setPackPasses(e.detail.passes);
+      } else {
+        setPackPasses(getPackPasses());
+      }
+    };
+    window.addEventListener('pack_passes_updated', handlePassesUpdate);
+    return () => window.removeEventListener('pack_passes_updated', handlePassesUpdate);
+  }, []);
 
   // Sleeve animation state – set when user picks a binder
   const [sleeveQueue, setSleeveQueue] = useState<{
@@ -1878,6 +1901,12 @@ export default function App() {
 
   const handleTearPack = () => {
     if (packStage !== 'unopened') return;
+    if (!usePackPass(1)) {
+      sound.playModalOpen();
+      setShowOutofPassesModal(true);
+      return;
+    }
+    trackMissionProgress('open_pack', 1);
     setTearProgress(100);
     sound.playFoilTear();
     setPackStage('tearing');
@@ -2132,6 +2161,11 @@ export default function App() {
   };
 
   const handleResetPack = async () => {
+    if (getPackPasses() <= 0) {
+      sound.playModalOpen();
+      setShowOutofPassesModal(true);
+      return;
+    }
     sound.playPackOpen();
     setIsRevealingAll(false);
     setPackStage('unopened');
@@ -2495,18 +2529,53 @@ export default function App() {
             }}
           />
         </div>
+      ) : activeTab === 'missions' ? (
+        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
+          <MissionsView
+            onBackToPacks={() => setActiveTab('pack')}
+            onOpenCardCatalogue={(binderCard) => {
+              sound.playModalOpen();
+              setInspectedViewMode('art');
+              const cardData: any = {
+                id: binderCard.id,
+                originalIndex: 0,
+                flipped: false,
+                collected: true,
+                value: (binderCard as any).value || (binderCard as any).currentPrice || 150,
+                pokemon: binderCard
+              };
+              setInspectedCard(cardData);
+            }}
+          />
+        </div>
       ) : (
         <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
-          {/* Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 text-center shrink-0"
-          >
-            {currentSet?.name || 'Live Cards'}
-          </motion.h1>
+          {/* Title Row with Small Circle Missions & Checklist Symbol */}
+          <div className="w-full max-w-4xl mx-auto flex items-center justify-between sm:justify-center gap-4 mb-5 px-2 relative shrink-0">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 text-center"
+            >
+              {currentSet?.name || 'Live Cards'}
+            </motion.h1>
+
+            {/* SMALL CIRCLE WITH CHECKLIST SYMBOL */}
+            <motion.button
+              onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
+              whileHover={{ scale: 1.15, rotate: 6 }}
+              whileTap={{ scale: 0.9 }}
+              title="Daily, Weekly & Monthly Missions Checklist"
+              className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_25px_rgba(56,189,248,0.7)] cursor-pointer shrink-0 relative group animate-bounce"
+            >
+              <ListChecks className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+              <span className="absolute -top-1 -right-1 bg-amber-400 text-black font-mono font-black text-[9px] px-1.5 py-0.2 rounded-full border border-black shadow-md animate-pulse">
+                TASKS
+              </span>
+            </motion.button>
+          </div>
 
           {/* Unified Command & Stats Console HUD */}
           <motion.div
@@ -2518,8 +2587,8 @@ export default function App() {
             {/* Subtle ambient glowing background glow */}
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Top Grid: Financial Performance Pods */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 relative z-10">
+            {/* Top Grid: Financial Performance & Missions Pods */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 relative z-10">
               {/* Pod 1: Pack Price */}
               <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
                 <div className="flex items-center justify-between text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
@@ -2570,6 +2639,33 @@ export default function App() {
                   : 'text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.4)]'
                   }`}>
                   {(sessionTotal - sessionSpent) >= 0 ? '+' : '-'}${Math.abs(sessionTotal - sessionSpent).toFixed(2)}
+                </div>
+              </div>
+
+              {/* Pod 5: Missions & Pack Passes */}
+              <div 
+                onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
+                className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group col-span-2 sm:col-span-1"
+              >
+                <div className="flex items-center justify-between text-[#38bdf8] text-[11px] font-extrabold uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <ListChecks className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform animate-pulse" />
+                    Missions & Passes
+                  </span>
+                  <span className="w-4 h-4 rounded-full bg-[#38bdf8] text-black text-[9px] font-black flex items-center justify-center animate-bounce">
+                    ✓
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between mt-1.5">
+                  <div>
+                    <span className="text-lg sm:text-xl font-black font-mono tracking-tight text-white drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">
+                      {packPasses}
+                    </span>
+                    <span className="text-[10px] text-gray-400 font-bold ml-1 uppercase">Passes</span>
+                  </div>
+                  <span className="text-[9px] bg-[#38bdf8]/20 text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#38bdf8]/40 font-mono font-bold uppercase group-hover:bg-[#38bdf8] group-hover:text-black transition-colors">
+                    Earn Passes 🎯
+                  </span>
                 </div>
               </div>
             </div>
@@ -3330,6 +3426,7 @@ export default function App() {
               
               setAvailableBinders(getBinders());
               window.dispatchEvent(new Event('storage'));
+              trackMissionProgress('buy_vendor', 1);
               setInspectedCard(null);
             }}
             onAddToBinder={activeTab === 'pack' ? (c) => {
@@ -3734,6 +3831,61 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Out of Pack Passes Modal */}
+      <AnimatePresence>
+        {showOutofPassesModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowOutofPassesModal(false)}
+            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#1c1c2e] via-[#141422] to-[#0e0e18] border border-[#38bdf8]/50 shadow-[0_0_50px_rgba(56,189,248,0.3)] p-6 text-center relative overflow-hidden"
+            >
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#38bdf8]/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white mx-auto mb-4 shadow-[0_0_25px_rgba(56,189,248,0.6)] animate-bounce">
+                <ListChecks className="w-8 h-8" />
+              </div>
+
+              <h2 className="text-2xl font-black text-white tracking-tight mb-2">
+                Out of Booster Pack Passes! 🛑
+              </h2>
+              <p className="text-sm text-gray-300 font-medium mb-6 leading-relaxed">
+                You&apos;ve opened all your currently available packs! Complete <strong className="text-[#38bdf8]">Daily, Weekly & Monthly Missions</strong> to claim more Booster Pack Passes and exclusive Promo Cards right now!
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setShowOutofPassesModal(false)}
+                  className="flex-1 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-gray-300 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    sound.playTabSwitch();
+                    setShowOutofPassesModal(false);
+                    setActiveTab('missions');
+                  }}
+                  className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-indigo-600 hover:from-[#38bdf8]/90 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(56,189,248,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ListChecks className="w-4 h-4" />
+                  Go To Missions List
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <BulkCatalogueModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
       

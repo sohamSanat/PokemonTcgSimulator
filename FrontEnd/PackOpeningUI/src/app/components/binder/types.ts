@@ -1,5 +1,6 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
+import { trackMissionProgress } from '../../services/missions';
 
 export interface BulkCard {
   id: string;
@@ -274,6 +275,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
     localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cards));
     getBinders();
     syncToFirestore();
+    trackMissionProgress('collect_card', 1);
   } catch (e) {
     console.error('Failed to save card to binder', e);
   }
