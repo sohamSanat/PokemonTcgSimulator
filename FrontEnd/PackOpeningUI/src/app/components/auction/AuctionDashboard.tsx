@@ -215,7 +215,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
   const strokeDashoffset = maxTime > 0 ? circumference - (timeLeft / maxTime) * circumference : 0;
 
   return (
-    <div className="absolute inset-0 z-50 bg-[#050914] text-slate-200 font-sans overflow-hidden selection:bg-cyan-500/30 flex flex-col items-center justify-center">
+    <div className="absolute inset-0 z-50 bg-[#050914] text-slate-200 font-sans overflow-y-auto selection:bg-cyan-500/30 flex flex-col items-center justify-start">
       
       {/* Background glow effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-cyan-900/20 rounded-full blur-[120px] pointer-events-none" />
@@ -223,7 +223,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       <div className="absolute top-[20%] left-[50%] translate-x-[-50%] w-[30vw] h-[30vw] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Main Grid Layout */}
-      <div className="w-full max-w-[1920px] h-full max-h-screen p-6 flex flex-col gap-6 relative z-10">
+      <div className="w-full max-w-[1920px] h-full min-h-[850px] p-6 flex flex-col gap-6 relative z-10">
         
         {/* HEADER */}
         <header className="flex-none flex items-center justify-between px-6 py-4 bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-2xl shadow-lg">
