@@ -1,6 +1,7 @@
 import { PokemonCard } from './tcgdex';
 import { saveCollectedCard } from '../components/binder/types';
 
+// --- Types ---
 export interface Mission {
   id: string;
   title: string;
@@ -9,11 +10,21 @@ export interface Mission {
   target: number;
   progress: number;
   claimed: boolean;
-  rewardPacks: number;
+  // Updated: reward is specific set packs
+  rewardSetPacks: Array<{ setId: string; setName: string; count: number; language: 'en' | 'ja' }>;
   rewardCard?: any;
   actionType: 'open_pack' | 'vendor_chat' | 'inspect_card' | 'grade_psa' | 'grade_psa_10' | 'buy_vendor' | 'collect_card';
 }
 
+// --- Storage Keys ---
+const DAILY_ENGLISH_FREE_KEY = 'tcg_daily_english_free';
+const DAILY_JAPANESE_FREE_KEY = 'tcg_daily_japanese_free';
+const DAILY_CASH_KEY = 'tcg_daily_cash';
+const LAST_RESET_KEY = 'tcg_last_pass_reset';
+const MISSIONS_STATE_KEY = 'tcg_user_missions';
+const EARNED_SET_PACKS_KEY = 'tcg_earned_set_packs'; // Track earned packs from missions
+
+// --- Promo Cards ---
 const PROMO_CARDS: Record<string, any> = {
   charizard_v_special: {
     id: 'swsh3-19' as string,
@@ -72,6 +83,7 @@ const PROMO_CARDS: Record<string, any> = {
   }
 };
 
+// --- Initial Missions (Updated to give specific set packs) ---
 const INITIAL_MISSIONS: Mission[] = [
   // --- DAILY MISSIONS ---
   {
@@ -82,7 +94,10 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 3,
     progress: 0,
     claimed: false,
-    rewardPacks: 3,
+    rewardSetPacks: [
+      { setId: 'swsh3', setName: 'Darkness Ablaze', count: 2, language: 'en' },
+      { setId: 'sv01', setName: 'Scarlet & Violet Base', count: 1, language: 'en' }
+    ],
     actionType: 'open_pack'
   },
   {
@@ -93,7 +108,10 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 1,
     progress: 0,
     claimed: false,
-    rewardPacks: 2,
+    rewardSetPacks: [
+      { setId: 'sv02', setName: 'Paldea Evolved', count: 1, language: 'en' },
+      { setId: 'sv1v', setName: 'Violet ex', count: 1, language: 'ja' }
+    ],
     actionType: 'vendor_chat'
   },
   {
@@ -104,7 +122,9 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 5,
     progress: 0,
     claimed: false,
-    rewardPacks: 2,
+    rewardSetPacks: [
+      { setId: 'swsh12', setName: 'Silver Tempest', count: 2, language: 'en' }
+    ],
     actionType: 'inspect_card'
   },
 
@@ -117,7 +137,12 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 15,
     progress: 0,
     claimed: false,
-    rewardPacks: 10,
+    rewardSetPacks: [
+      { setId: 'sv03', setName: 'Obsidian Flames', count: 5, language: 'en' },
+      { setId: 'sv2d', setName: 'Clay Burst', count: 3, language: 'ja' },
+      { setId: 'sv2p', setName: 'Snow Hazard', count: 2, language: 'ja' }
+    ],
+    rewardCard: PROMO_CARDS.charizard_v_special,
     actionType: 'open_pack'
   },
   {
@@ -128,8 +153,11 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 3,
     progress: 0,
     claimed: false,
-    rewardPacks: 5,
-    rewardCard: PROMO_CARDS.charizard_v_special,
+    rewardSetPacks: [
+      { setId: 'swsh10', setName: 'Astral Radiance', count: 3, language: 'en' },
+      { setId: 'sv3', setName: 'Ruler of the Black Flame', count: 2, language: 'ja' }
+    ],
+    rewardCard: PROMO_CARDS.pikachu_illustrator,
     actionType: 'grade_psa'
   },
   {
@@ -140,8 +168,10 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 2,
     progress: 0,
     claimed: false,
-    rewardPacks: 8,
-    rewardCard: PROMO_CARDS.pikachu_illustrator,
+    rewardSetPacks: [
+      { setId: 'sv04', setName: 'Paradox Rift', count: 5, language: 'en' },
+      { setId: 'sv4a', setName: 'Shiny Treasure ex', count: 3, language: 'ja' }
+    ],
     actionType: 'buy_vendor'
   },
 
@@ -154,7 +184,11 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 50,
     progress: 0,
     claimed: false,
-    rewardPacks: 30,
+    rewardSetPacks: [
+      { setId: 'swsh7', setName: 'Evolving Skies', count: 10, language: 'en' },
+      { setId: 'sv8', setName: 'Super Electric Breaker', count: 10, language: 'ja' },
+      { setId: 'sv08', setName: 'Surging Sparks', count: 10, language: 'en' }
+    ],
     rewardCard: PROMO_CARDS.rayquaza_gold_star,
     actionType: 'open_pack'
   },
@@ -166,7 +200,10 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 2,
     progress: 0,
     claimed: false,
-    rewardPacks: 20,
+    rewardSetPacks: [
+      { setId: 'swsh4', setName: 'Vivid Voltage', count: 10, language: 'en' },
+      { setId: 'sv6', setName: 'Transformation Mask', count: 10, language: 'ja' }
+    ],
     rewardCard: PROMO_CARDS.lugia_v_special,
     actionType: 'grade_psa_10'
   },
@@ -178,82 +215,157 @@ const INITIAL_MISSIONS: Mission[] = [
     target: 30,
     progress: 0,
     claimed: false,
-    rewardPacks: 40,
+    rewardSetPacks: [
+      { setId: 'sv05', setName: 'Temporal Forces', count: 15, language: 'en' },
+      { setId: 'sv7', setName: 'Stellar Miracle', count: 15, language: 'ja' },
+      { setId: 'sv09', setName: 'Journey Together', count: 10, language: 'en' }
+    ],
     rewardCard: PROMO_CARDS.mewtwo_gold_secret,
     actionType: 'collect_card'
   }
 ];
 
-const PACK_PASSES_KEY = 'tcg_pack_passes';
-const LAST_RESET_KEY = 'tcg_last_pass_reset';
-const MISSIONS_STATE_KEY = 'tcg_user_missions';
-
-/**
- * Checks and resets daily pack passes if it's a new calendar day
- */
+// --- Daily Reset Logic ---
 function checkDailyReset() {
   if (typeof window === 'undefined') return;
   const today = new Date().toISOString().slice(0, 10);
   const lastReset = localStorage.getItem(LAST_RESET_KEY);
   if (lastReset !== today) {
     localStorage.setItem(LAST_RESET_KEY, today);
-    // Give 10 fresh daily passes at the start of a new day!
-    const currentPasses = getPackPasses(true);
-    localStorage.setItem(PACK_PASSES_KEY, String(Math.max(10, currentPasses + 5)));
-    
-    // Also reset daily missions progress
+    // Give 5 English and 5 Japanese free packs daily
+    localStorage.setItem(DAILY_ENGLISH_FREE_KEY, '5');
+    localStorage.setItem(DAILY_JAPANESE_FREE_KEY, '5');
+    // Give $40 daily cash allowance
+    localStorage.setItem(DAILY_CASH_KEY, '40');
+
+    // Reset daily missions progress
     const missions = getMissions();
     const updated = missions.map(m => m.type === 'daily' ? { ...m, progress: 0, claimed: false } : m);
     localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(updated));
   }
 }
 
-/**
- * Get current pack passes available to open
- */
-export function getPackPasses(skipResetCheck = false): number {
-  if (typeof window === 'undefined') return 10;
-  if (!skipResetCheck) {
-    checkDailyReset();
-  }
-  const val = localStorage.getItem(PACK_PASSES_KEY);
-  if (val === null) {
-    localStorage.setItem(PACK_PASSES_KEY, '10');
-    return 10;
-  }
-  const num = parseInt(val, 10);
-  return isNaN(num) ? 10 : num;
+// --- Get Daily Free Packs ---
+export function getDailyFreePacks(): { english: number; japanese: number } {
+  if (typeof window === 'undefined') return { english: 5, japanese: 5 };
+  checkDailyReset();
+  const english = parseInt(localStorage.getItem(DAILY_ENGLISH_FREE_KEY) || '5', 10);
+  const japanese = parseInt(localStorage.getItem(DAILY_JAPANESE_FREE_KEY) || '5', 10);
+  return {
+    english: isNaN(english) ? 5 : english,
+    japanese: isNaN(japanese) ? 5 : japanese
+  };
 }
 
-/**
- * Add booster pack passes (e.g. from mission rewards)
- */
-export function addPackPasses(count: number): number {
-  if (typeof window === 'undefined') return 10;
-  const current = getPackPasses();
-  const next = Math.max(0, current + count);
-  localStorage.setItem(PACK_PASSES_KEY, String(next));
-  window.dispatchEvent(new CustomEvent('pack_passes_updated', { detail: { passes: next } }));
-  return next;
+// --- Get Daily Cash ---
+export function getDailyCash(): number {
+  if (typeof window === 'undefined') return 40;
+  checkDailyReset();
+  const cash = parseFloat(localStorage.getItem(DAILY_CASH_KEY) || '40');
+  return isNaN(cash) ? 40 : cash;
 }
 
-/**
- * Consume 1 or more pack passes when opening booster packs.
- * Returns true if consumed, false if 0 remaining passes.
- */
-export function usePackPass(count = 1): boolean {
+// --- Use Daily Cash (and optionally net return) ---
+// Returns a tuple: [success, amountToDeductFromNetReturn]
+// If using net return, amountToDeductFromNetReturn is the amount to add to sessionSpent to reduce net return
+export function useDailyCash(amount: number, netReturn: number = 0): [boolean, number] {
+  if (typeof window === 'undefined') return [true, 0];
+  const currentDailyCash = getDailyCash();
+  
+  let remainingAmount = amount;
+  let deductFromNetReturn = 0;
+  
+  // First use daily cash
+  if (currentDailyCash > 0) {
+    const fromDailyCash = Math.min(currentDailyCash, remainingAmount);
+    remainingAmount -= fromDailyCash;
+    if (fromDailyCash > 0) {
+      const nextDailyCash = Math.max(0, Number((currentDailyCash - fromDailyCash).toFixed(2)));
+      localStorage.setItem(DAILY_CASH_KEY, nextDailyCash.toString());
+      window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: nextDailyCash }));
+    }
+  }
+  
+  // Then use net return if needed
+  if (remainingAmount > 0 && netReturn >= remainingAmount) {
+    deductFromNetReturn = remainingAmount;
+    remainingAmount = 0;
+  }
+  
+  if (remainingAmount > 0) {
+    return [false, 0];
+  }
+  
+  return [true, deductFromNetReturn];
+}
+
+// --- Use Daily Free Pack ---
+export function useDailyFreePack(language: 'en' | 'ja'): boolean {
   if (typeof window === 'undefined') return true;
-  const current = getPackPasses();
-  if (current < count) return false;
-  const next = current - count;
-  localStorage.setItem(PACK_PASSES_KEY, String(next));
-  window.dispatchEvent(new CustomEvent('pack_passes_updated', { detail: { passes: next } }));
+  const key = language === 'en' ? DAILY_ENGLISH_FREE_KEY : DAILY_JAPANESE_FREE_KEY;
+  const current = parseInt(localStorage.getItem(key) || '0', 10);
+  if (current <= 0) return false;
+  const next = current - 1;
+  localStorage.setItem(key, String(next));
+  window.dispatchEvent(new CustomEvent('daily_packs_updated', { 
+    detail: getDailyFreePacks() 
+  }));
   return true;
 }
 
-/**
- * Get all current missions with saved progress
- */
+// --- Earned Set Packs ---
+export interface EarnedSetPack {
+  setId: string;
+  setName: string;
+  language: 'en' | 'ja';
+  count: number;
+}
+
+export function getEarnedSetPacks(): EarnedSetPack[] {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem(EARNED_SET_PACKS_KEY);
+  if (!saved) return [];
+  try {
+    return JSON.parse(saved) as EarnedSetPack[];
+  } catch {
+    return [];
+  }
+}
+
+export function addEarnedSetPacks(packs: EarnedSetPack[]) {
+  if (typeof window === 'undefined') return;
+  const current = getEarnedSetPacks();
+  const updated = [...current];
+  packs.forEach(newPack => {
+    const existingIndex = updated.findIndex(p => 
+      p.setId === newPack.setId && p.language === newPack.language
+    );
+    if (existingIndex !== -1) {
+      updated[existingIndex] = {
+        ...updated[existingIndex],
+        count: updated[existingIndex].count + newPack.count
+      };
+    } else {
+      updated.push(newPack);
+    }
+  });
+  localStorage.setItem(EARNED_SET_PACKS_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
+}
+
+export function useEarnedSetPack(setId: string, language: 'en' | 'ja'): boolean {
+  if (typeof window === 'undefined') return true;
+  const current = getEarnedSetPacks();
+  const packIndex = current.findIndex(p => p.setId === setId && p.language === language && p.count > 0);
+  if (packIndex === -1) return false;
+  current[packIndex].count -= 1;
+  const updated = current.filter(p => p.count > 0);
+  localStorage.setItem(EARNED_SET_PACKS_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
+  return true;
+}
+
+// --- Missions ---
 export function getMissions(): Mission[] {
   if (typeof window === 'undefined') return INITIAL_MISSIONS;
   checkDailyReset();
@@ -264,7 +376,6 @@ export function getMissions(): Mission[] {
   }
   try {
     const parsed = JSON.parse(saved) as Mission[];
-    // Ensure any new missions in schema exist
     const parsedMap = new Map(parsed.map(m => [m.id, m]));
     return INITIAL_MISSIONS.map(init => {
       const existing = parsedMap.get(init.id);
@@ -275,9 +386,6 @@ export function getMissions(): Mission[] {
   }
 }
 
-/**
- * Track user action across missions and increment progress
- */
 export function trackMissionProgress(
   action: 'open_pack' | 'vendor_chat' | 'inspect_card' | 'grade_psa' | 'grade_psa_10' | 'buy_vendor' | 'collect_card',
   count = 1
@@ -300,22 +408,23 @@ export function trackMissionProgress(
   }
 }
 
-/**
- * Claim reward for a completed mission
- */
-export function claimMissionReward(missionId: string): { success: boolean; rewardPacks: number; rewardCard?: PokemonCard & { promoTitle?: string } } {
-  if (typeof window === 'undefined') return { success: false, rewardPacks: 0 };
+export function claimMissionReward(missionId: string): { 
+  success: boolean; 
+  rewardSetPacks: EarnedSetPack[]; 
+  rewardCard?: PokemonCard & { promoTitle?: string } 
+} {
+  if (typeof window === 'undefined') return { success: false, rewardSetPacks: [] };
   const missions = getMissions();
   const targetIndex = missions.findIndex(m => m.id === missionId);
-  if (targetIndex === -1) return { success: false, rewardPacks: 0 };
+  if (targetIndex === -1) return { success: false, rewardSetPacks: [] };
 
   const mission = missions[targetIndex];
   if (mission.progress < mission.target || mission.claimed) {
-    return { success: false, rewardPacks: 0 };
+    return { success: false, rewardSetPacks: [] };
   }
 
-  // 1. Add reward packs
-  addPackPasses(mission.rewardPacks);
+  // 1. Add earned set packs
+  addEarnedSetPacks(mission.rewardSetPacks);
 
   // 2. Add promo reward card to binder if included
   if (mission.rewardCard) {
@@ -333,5 +442,20 @@ export function claimMissionReward(missionId: string): { success: boolean; rewar
   localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(missions));
   window.dispatchEvent(new CustomEvent('missions_updated', { detail: { missions } }));
 
-  return { success: true, rewardPacks: mission.rewardPacks, rewardCard: mission.rewardCard };
+  return { 
+    success: true, 
+    rewardSetPacks: mission.rewardSetPacks, 
+    rewardCard: mission.rewardCard 
+  };
+}
+
+// --- Compatibility for old code (we'll remove these later) ---
+export function getPackPasses(): number {
+  return 0;
+}
+export function addPackPasses(): number {
+  return 0;
+}
+export function usePackPass(): boolean {
+  return false;
 }

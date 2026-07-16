@@ -675,10 +675,29 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
   if (uncommons.length === 0) uncommons.push(...pool);
   if (rares.length === 0) rares.push(...pool);
 
-  const getFrom = (p: TCGDexCardSummary[], fallback: TCGDexCardSummary[] = pool): TCGDexCardSummary => {
-    if (p.length > 0) return p[Math.floor(Math.random() * p.length)];
-    if (fallback.length > 0) return fallback[Math.floor(Math.random() * fallback.length)];
-    return pool[0];
+  const getFrom = (
+    p: TCGDexCardSummary[], 
+    fallback: TCGDexCardSummary[] = pool,
+    usedIds?: Set<string>
+  ): TCGDexCardSummary => {
+    // Filter out already used cards if we have a usedIds set
+    let candidates = usedIds ? p.filter(card => !usedIds.has(card.id)) : [...p];
+    
+    if (candidates.length === 0) {
+      candidates = usedIds ? fallback.filter(card => !usedIds.has(card.id)) : [...fallback];
+    }
+    
+    // If still no candidates, use any from pool (last resort)
+    if (candidates.length === 0) {
+      candidates = usedIds ? pool.filter(card => !usedIds.has(card.id)) : [...pool];
+    }
+    
+    // If absolutely no unique candidates left, just pick any (super edge case)
+    if (candidates.length === 0) {
+      candidates = [...p];
+    }
+    
+    return candidates[Math.floor(Math.random() * candidates.length)];
   };
 
   // Check for "God Pack Exception" (~0.5% to 1% chance in High Class/premium sets)
@@ -846,6 +865,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
 
   for (let idx = 0; idx < packCountPerBox; idx++) {
     const isThisGodPack = idx === godPackIndex;
+    const usedIds = new Set<string>();
 
     if (isThisGodPack) {
       // GOD PACK: Every single card is upgraded to a high-tier rarity!
@@ -862,7 +882,8 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       ];
       const slots: JapaneseBoxSlotData[] = [];
       for (let s = 0; s < cardsPerPack; s++) {
-        const c = getFrom(godPool, rares);
+        const c = getFrom(godPool, rares, usedIds);
+        usedIds.add(c.id);
         slots.push({
           summary: c,
           defaultRarity: 'God Pack Hit (' + (c.rarity || 'SAR') + ')',
@@ -873,7 +894,9 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       continue;
     }
 
-    const seededHit = slotPulls[pullIndex++] || { summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' };
+    // Add seeded hit to usedIds first
+    const seededHit = slotPulls[pullIndex++] || { summary: getFrom(rares, pool, usedIds), defaultRarity: 'R (Holo Rare)' };
+    usedIds.add(seededHit.summary.id);
 
     if (cardsPerPack === 5) {
       // STANDARD JAPANESE 5-CARD PACK STRUCTURE
@@ -882,13 +905,27 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // Slot 3: Common (C) or Uncommon (U)
       // Slot 4: Uncommon (U)
       // Slot 5 (Hit Slot): Rare (R) or higher (All holographic!)
-      const slots: JapaneseBoxSlotData[] = [
-        { summary: getFrom(commons), defaultRarity: 'Common' },
-        { summary: getFrom(commons), defaultRarity: 'Common' },
-        { summary: Math.random() < 0.5 ? getFrom(commons) : getFrom(uncommons), defaultRarity: Math.random() < 0.5 ? 'Common' : 'Uncommon' },
-        { summary: getFrom(uncommons), defaultRarity: 'Uncommon' },
-        { summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true }
-      ];
+      const slots: JapaneseBoxSlotData[] = [];
+      const card1 = getFrom(commons, pool, usedIds);
+      usedIds.add(card1.id);
+      slots.push({ summary: card1, defaultRarity: 'Common' });
+      
+      const card2 = getFrom(commons, pool, usedIds);
+      usedIds.add(card2.id);
+      slots.push({ summary: card2, defaultRarity: 'Common' });
+      
+      const card3Pool = Math.random() < 0.5 ? commons : uncommons;
+      const card3Rarity = Math.random() < 0.5 ? 'Common' : 'Uncommon';
+      const card3 = getFrom(card3Pool, pool, usedIds);
+      usedIds.add(card3.id);
+      slots.push({ summary: card3, defaultRarity: card3Rarity });
+      
+      const card4 = getFrom(uncommons, pool, usedIds);
+      usedIds.add(card4.id);
+      slots.push({ summary: card4, defaultRarity: 'Uncommon' });
+      
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      
       packs.push({ slots, isGodPack: false });
     } else if (config.rawId === 'sv2a') {
       // POKÉMON 151 (7-card pack)
@@ -898,32 +935,59 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // Slot 6: The seeded Box Hit (R, RR, AR, SR, SAR, UR)
       // Slot 7: Energy / Holo / Uncommon
       const isMasterBall = idx === Math.floor(packCountPerBox / 2); // Exactly 1 Masterball in box
-      const slots: JapaneseBoxSlotData[] = [
-        { summary: getFrom(commons), defaultRarity: 'Common' },
-        { summary: getFrom(commons), defaultRarity: 'Common' },
-        { summary: getFrom(commons), defaultRarity: 'Common' },
-        { summary: getFrom(uncommons), defaultRarity: 'Uncommon' },
-        { summary: getFrom([...commons, ...uncommons]), defaultRarity: isMasterBall ? 'Master Ball Reverse Holo' : 'Poké Ball Reverse Holo', isReverseHolo: true },
-        { summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true },
-        { summary: getFrom([...rares, ...uncommons]), defaultRarity: 'Uncommon / Energy' }
-      ];
+      const slots: JapaneseBoxSlotData[] = [];
+      
+      for (let i = 0; i < 3; i++) {
+        const card = getFrom(commons, pool, usedIds);
+        usedIds.add(card.id);
+        slots.push({ summary: card, defaultRarity: 'Common' });
+      }
+      
+      const card4 = getFrom(uncommons, pool, usedIds);
+      usedIds.add(card4.id);
+      slots.push({ summary: card4, defaultRarity: 'Uncommon' });
+      
+      const card5 = getFrom([...commons, ...uncommons], pool, usedIds);
+      usedIds.add(card5.id);
+      slots.push({ summary: card5, defaultRarity: isMasterBall ? 'Master Ball Reverse Holo' : 'Poké Ball Reverse Holo', isReverseHolo: true });
+      
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      
+      const card7 = getFrom([...rares, ...uncommons], pool, usedIds);
+      usedIds.add(card7.id);
+      slots.push({ summary: card7, defaultRarity: 'Uncommon / Energy' });
+      
       packs.push({ slots, isGodPack: false });
     } else {
       // 10 or 11-CARD HIGH CLASS PACK STRUCTURE
       const slots: JapaneseBoxSlotData[] = [];
       // Slots 1-4: Commons
-      for (let s = 0; s < 4; s++) slots.push({ summary: getFrom(commons), defaultRarity: 'Common' });
+      for (let s = 0; s < 4; s++) {
+        const card = getFrom(commons, pool, usedIds);
+        usedIds.add(card.id);
+        slots.push({ summary: card, defaultRarity: 'Common' });
+      }
       // Slots 5-6: Uncommons
-      for (let s = 0; s < 2; s++) slots.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
+      for (let s = 0; s < 2; s++) {
+        const card = getFrom(uncommons, pool, usedIds);
+        usedIds.add(card.id);
+        slots.push({ summary: card, defaultRarity: 'Uncommon' });
+      }
       // Slot 7: Reverse Holo
-      slots.push({ summary: getFrom([...commons, ...uncommons, ...rares]), defaultRarity: 'Reverse Holo', isReverseHolo: true });
+      const card7 = getFrom([...commons, ...uncommons, ...rares], pool, usedIds);
+      usedIds.add(card7.id);
+      slots.push({ summary: card7, defaultRarity: 'Reverse Holo', isReverseHolo: true });
       // Slot 8: Guaranteed RR/RRR/ex/V per High Class pack
-      slots.push({ summary: getFrom([...doubleRares, ...tripleRares, ...rares]), defaultRarity: 'Double Rare / ex / V', isReverseHolo: true });
+      const card8 = getFrom([...doubleRares, ...tripleRares, ...rares], pool, usedIds);
+      usedIds.add(card8.id);
+      slots.push({ summary: card8, defaultRarity: 'Double Rare / ex / V', isReverseHolo: true });
       // Slot 9: The Box Seeded Hit
       slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
       // Slots 10+
       for (let s = 9; s < cardsPerPack; s++) {
-        slots.push({ summary: getFrom([...rares, ...uncommons]), defaultRarity: 'Reverse Holo / Energy', isReverseHolo: true });
+        const card = getFrom([...rares, ...uncommons], pool, usedIds);
+        usedIds.add(card.id);
+        slots.push({ summary: card, defaultRarity: 'Reverse Holo / Energy', isReverseHolo: true });
       }
       packs.push({ slots, isGodPack: false });
     }

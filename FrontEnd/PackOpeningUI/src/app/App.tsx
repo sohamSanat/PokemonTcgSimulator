@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -21,7 +21,7 @@ import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
-import { getPackPasses, usePackPass, trackMissionProgress, getMissions } from './services/missions';
+import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
@@ -593,7 +593,7 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
 
 const formatAndSortCards = (newCards: PokemonCard[]): CardData[] => {
   const formatted = newCards.map((poke, idx) => ({
-    id: Date.now() + idx + Math.floor(Math.random() * 1000),
+    id: `${poke.id || 'card'}-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 9)}`,
     originalIndex: idx,
     flipped: false,
     collected: false,
@@ -1670,23 +1670,34 @@ export default function App() {
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions'>('pack');
-  const [packPasses, setPackPasses] = useState<number>(() => getPackPasses());
+  const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
+  const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
+  const [dailyCash, setDailyCash] = useState(() => getDailyCash());
   const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
+  const [showInsufficientCashModal, setShowInsufficientCashModal] = useState<boolean>(false);
   const [matchId, setMatchId] = useState<string>('');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<string | number>>(new Set());
   const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
   const [availableBinders, setAvailableBinders] = useState<Binder[]>([]);
 
   useEffect(() => {
-    const handlePassesUpdate = (e: any) => {
-      if (typeof e.detail?.passes === 'number') {
-        setPackPasses(e.detail.passes);
-      } else {
-        setPackPasses(getPackPasses());
-      }
+    const handleDailyPacksUpdate = (e: any) => {
+      setDailyFreePacks(e.detail);
     };
-    window.addEventListener('pack_passes_updated', handlePassesUpdate);
-    return () => window.removeEventListener('pack_passes_updated', handlePassesUpdate);
+    const handleEarnedPacksUpdate = (e: any) => {
+      setEarnedSetPacks(e.detail);
+    };
+    const handleDailyCashUpdate = (e: any) => {
+      setDailyCash(e.detail);
+    };
+    window.addEventListener('daily_packs_updated', handleDailyPacksUpdate);
+    window.addEventListener('earned_packs_updated', handleEarnedPacksUpdate);
+    window.addEventListener('daily_cash_updated', handleDailyCashUpdate);
+    return () => {
+      window.removeEventListener('daily_packs_updated', handleDailyPacksUpdate);
+      window.removeEventListener('earned_packs_updated', handleEarnedPacksUpdate);
+      window.removeEventListener('daily_cash_updated', handleDailyCashUpdate);
+    };
   }, []);
 
   // Sleeve animation state – set when user picks a binder
@@ -1901,17 +1912,63 @@ export default function App() {
 
   const handleTearPack = () => {
     if (packStage !== 'unopened') return;
-    if (!usePackPass(1)) {
+    
+    const setPrice = getSetBoosterPrice(currentSet);
+    const isFreeEligible = setPrice <= 20;
+    const setLanguage = selectedLanguage; // 'en' or 'ja'
+    const netReturn = sessionTotal - sessionSpent;
+    
+    let canOpen = false;
+    let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
+    let deductFromNetReturn = 0;
+    // First check if we have earned packs for this set and language
+    const earnedPackForThisSet = earnedSetPacks.find(
+      p => p.setId === currentSet.id && p.language === setLanguage && p.count > 0
+    );
+    if (earnedPackForThisSet) {
+      canOpen = useEarnedSetPack(currentSet.id, setLanguage);
+      if (canOpen) {
+        wasPaidPack = false; // Used earned pack, not paid
+      }
+    } else if (isFreeEligible) {
+      // If no earned pack, check free daily packs
+      canOpen = useDailyFreePack(setLanguage);
+      if (canOpen) {
+        wasPaidPack = false; // Used free pack, not paid
+      } else {
+        // If no free packs, check daily cash + net return
+        [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
+        if (canOpen) {
+          wasPaidPack = false; // Used daily cash/net return, not paid
+        }
+      }
+    } else {
+      // Not eligible for free packs, check daily cash + net return
+      [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
+      if (canOpen) {
+        wasPaidPack = false; // Used daily cash/net return, not paid
+      }
+    }
+
+    if (!canOpen) {
       sound.playModalOpen();
-      setShowOutofPassesModal(true);
+      setShowInsufficientCashModal(true);
       return;
     }
+
     trackMissionProgress('open_pack', 1);
     setTearProgress(100);
     sound.playFoilTear();
     setPackStage('tearing');
     setPackCount(p => p + 1);
-    setSessionSpent(s => Number((s + getSetBoosterPrice(currentSet)).toFixed(2)));
+    // Only add to sessionSpent if it was a paid pack
+    if (wasPaidPack) {
+      setSessionSpent(s => Number((s + getSetBoosterPrice(currentSet)).toFixed(2)));
+    }
+    // If we used net return, add that to sessionSpent
+    if (deductFromNetReturn > 0) {
+      setSessionSpent(s => Number((s + deductFromNetReturn).toFixed(2)));
+    }
     setTimeout(() => {
       sound.playCardSlide();
     }, 450);
@@ -2161,17 +2218,67 @@ export default function App() {
   };
 
   const handleResetPack = async () => {
-    if (getPackPasses() <= 0) {
+    if (!currentSet) return;
+    const setPrice = getSetBoosterPrice(currentSet);
+    const isFreeEligible = setPrice <= 20;
+    const setLanguage = selectedLanguage; // 'en' or 'ja'
+    const netReturn = sessionTotal - sessionSpent;
+    
+    let canOpen = false;
+    let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
+    let deductFromNetReturn = 0;
+    // First check if we have earned packs for this set and language
+    const earnedPackForThisSet = earnedSetPacks.find(
+      p => p.setId === currentSet.id && p.language === setLanguage && p.count > 0
+    );
+    if (earnedPackForThisSet) {
+      canOpen = useEarnedSetPack(currentSet.id, setLanguage);
+      if (canOpen) {
+        wasPaidPack = false; // Used earned pack, not paid
+      }
+    } else if (isFreeEligible) {
+      // If no earned pack, check free daily packs
+      canOpen = useDailyFreePack(setLanguage);
+      if (canOpen) {
+        wasPaidPack = false; // Used free pack, not paid
+      } else {
+        // If no free packs, check daily cash + net return
+        [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
+        if (canOpen) {
+          wasPaidPack = false; // Used daily cash/net return, not paid
+        }
+      }
+    } else {
+      // Not eligible for free packs, check daily cash + net return
+      [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
+      if (canOpen) {
+        wasPaidPack = false; // Used daily cash/net return, not paid
+      }
+    }
+
+    if (!canOpen) {
       sound.playModalOpen();
-      setShowOutofPassesModal(true);
+      setShowInsufficientCashModal(true);
       return;
     }
+
+    trackMissionProgress('open_pack', 1);
     sound.playPackOpen();
     setIsRevealingAll(false);
     setPackStage('unopened');
     setTearProgress(0);
     setBinderAddedIds(new Set());
     setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
+    setPackCount(p => p + 1);
+    // Only add to sessionSpent if it was a paid pack
+    if (wasPaidPack) {
+      const price = getSetBoosterPrice(currentSet);
+      setSessionSpent(prev => prev + price);
+    }
+    // If we used net return, add that to sessionSpent
+    if (deductFromNetReturn > 0) {
+      setSessionSpent(prev => prev + deductFromNetReturn);
+    }
     if (currentSet) {
       if (isLoadingPackRef.current) return;
       isLoadingPackRef.current = true;
@@ -2225,9 +2332,12 @@ export default function App() {
         
         {/* Mobile Hamburger Row & Desktop Logo */}
         <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
-          <div className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md">
+          <button 
+            onClick={() => { sound.playButtonClick(); setActiveTab('pack'); setIsMobileMenuOpen(false); }} 
+            className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md cursor-pointer hover:scale-105 transition-transform"
+          >
             <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="inline">POKE TCG</span>
-          </div>
+          </button>
           <button 
             onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
             className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
@@ -2642,7 +2752,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Pod 5: Missions & Pack Passes */}
+              {/* Pod 5: Missions & Free Packs */}
               <div 
                 onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
                 className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group col-span-2 sm:col-span-1"
@@ -2650,22 +2760,37 @@ export default function App() {
                 <div className="flex items-center justify-between text-[#38bdf8] text-[11px] font-extrabold uppercase tracking-wider">
                   <span className="flex items-center gap-1.5">
                     <ListChecks className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform animate-pulse" />
-                    Missions & Passes
+                    Free Packs & Missions
                   </span>
                   <span className="w-4 h-4 rounded-full bg-[#38bdf8] text-black text-[9px] font-black flex items-center justify-center animate-bounce">
                     ✓
                   </span>
                 </div>
-                <div className="flex items-baseline justify-between mt-1.5">
-                  <div>
-                    <span className="text-lg sm:text-xl font-black font-mono tracking-tight text-white drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">
-                      {packPasses}
+                <div className="flex flex-col gap-1 mt-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-300 font-bold">🇺🇸 English</span>
+                    <span className="text-sm font-black font-mono text-white">
+                      {dailyFreePacks.english}/5
                     </span>
-                    <span className="text-[10px] text-gray-400 font-bold ml-1 uppercase">Passes</span>
                   </div>
-                  <span className="text-[9px] bg-[#38bdf8]/20 text-[#38bdf8] px-1.5 py-0.5 rounded border border-[#38bdf8]/40 font-mono font-bold uppercase group-hover:bg-[#38bdf8] group-hover:text-black transition-colors">
-                    Earn Passes 🎯
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-300 font-bold">🇯🇵 Japanese</span>
+                    <span className="text-sm font-black font-mono text-white">
+                      {dailyFreePacks.japanese}/5
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-300 font-bold">Earned</span>
+                      <span className="text-sm font-black font-mono text-white">
+                        {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-300 font-bold">Cash</span>
+                      <span className="text-sm font-black font-mono text-amber-400">
+                        ${dailyCash.toFixed(2)}
+                      </span>
+                    </div>
                 </div>
               </div>
             </div>
@@ -3879,6 +4004,49 @@ export default function App() {
                 >
                   <ListChecks className="w-4 h-4" />
                   Go To Missions List
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Insufficient Cash Fund Modal */}
+      <AnimatePresence>
+        {showInsufficientCashModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowInsufficientCashModal(false)}
+            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#1c1c2e] via-[#141422] to-[#0e0e18] border border-red-500/50 shadow-[0_0_50px_rgba(244,63,94,0.3)] p-6 text-center relative overflow-hidden"
+            >
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-red-500 via-orange-500 to-red-600 border-2 border-white flex items-center justify-center text-white mx-auto mb-4 shadow-[0_0_25px_rgba(244,63,94,0.6)] animate-pulse">
+                <Lock className="w-8 h-8" />
+              </div>
+
+              <h2 className="text-2xl font-black text-white tracking-tight mb-2">
+                Insufficient Cash Fund! 🔒
+              </h2>
+              <p className="text-sm text-gray-300 font-medium mb-6 leading-relaxed">
+                You don&apos;t have enough daily cash allowance to open this pack! Come back tomorrow for your $40 daily cash refresh!
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setShowInsufficientCashModal(false)}
+                  className="flex-1 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-gray-300 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  Close
                 </button>
               </div>
             </motion.div>

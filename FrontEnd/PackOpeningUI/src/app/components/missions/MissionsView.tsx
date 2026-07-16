@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Target, Award, CheckCircle2, Gift, Sparkles, Clock, Package, Coins, Trophy, ChevronRight, Zap, RefreshCw, Layers } from 'lucide-react';
-import { getMissions, getPackPasses, claimMissionReward, type Mission } from '../../services/missions';
+import { getMissions, getDailyFreePacks, getEarnedSetPacks, getDailyCash, claimMissionReward, type Mission, type EarnedSetPack } from '../../services/missions';
 import { sound } from '../../services/sound';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import { PokemonCard } from '../../services/tcgdex';
@@ -13,7 +13,9 @@ interface MissionsViewProps {
 
 export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpenCardCatalogue }) => {
   const [missions, setMissions] = useState<Mission[]>(() => getMissions());
-  const [packPasses, setPackPasses] = useState<number>(() => getPackPasses());
+  const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
+  const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
+  const [dailyCash, setDailyCash] = useState(() => getDailyCash());
   const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [claimedCardReward, setClaimedCardReward] = useState<any | null>(null);
   const [justClaimedId, setJustClaimedId] = useState<string | null>(null);
@@ -26,19 +28,25 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
         setMissions(getMissions());
       }
     };
-    const handlePassesUpdate = (e: any) => {
-      if (typeof e.detail?.passes === 'number') {
-        setPackPasses(e.detail.passes);
-      } else {
-        setPackPasses(getPackPasses());
-      }
+    const handleDailyPacksUpdate = (e: any) => {
+      setDailyFreePacks(e.detail);
+    };
+    const handleEarnedPacksUpdate = (e: any) => {
+      setEarnedSetPacks(e.detail);
+    };
+    const handleDailyCashUpdate = (e: any) => {
+      setDailyCash(e.detail);
     };
 
     window.addEventListener('missions_updated', handleMissionsUpdate);
-    window.addEventListener('pack_passes_updated', handlePassesUpdate);
+    window.addEventListener('daily_packs_updated', handleDailyPacksUpdate);
+    window.addEventListener('earned_packs_updated', handleEarnedPacksUpdate);
+    window.addEventListener('daily_cash_updated', handleDailyCashUpdate);
     return () => {
       window.removeEventListener('missions_updated', handleMissionsUpdate);
-      window.removeEventListener('pack_passes_updated', handlePassesUpdate);
+      window.removeEventListener('daily_packs_updated', handleDailyPacksUpdate);
+      window.removeEventListener('earned_packs_updated', handleEarnedPacksUpdate);
+      window.removeEventListener('daily_cash_updated', handleDailyCashUpdate);
     };
   }, []);
 
@@ -49,8 +57,8 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
       sound.playLegendaryFanfare();
       setJustClaimedId(mission.id);
       setTimeout(() => setJustClaimedId(null), 2500);
-      setPackPasses(getPackPasses());
       setMissions(getMissions());
+      setEarnedSetPacks(getEarnedSetPacks());
       if (result.rewardCard) {
         setClaimedCardReward(result.rewardCard);
       }
@@ -81,30 +89,61 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
           </div>
         </div>
 
-        {/* Live Pack Passes Counter */}
-        <div className="flex items-center gap-4 bg-[#111827] px-5 py-3.5 rounded-2xl border border-[#38bdf8]/40 shadow-[0_0_25px_rgba(56,189,248,0.15)] shrink-0 w-full lg:w-auto justify-between lg:justify-start">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-              <Package className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Available Passes</span>
-              <div className="flex items-baseline gap-1.5 font-mono">
-                <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
-                  {packPasses}
-                </span>
-                <span className="text-xs text-gray-400 font-semibold">Booster Passes</span>
+        {/* Live Free Packs, Earned Packs & Cash Dashboard */}
+        <div className="flex flex-col gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-4 bg-[#111827] px-5 py-3.5 rounded-2xl border border-[#38bdf8]/40 shadow-[0_0_25px_rgba(56,189,248,0.15)] shrink-0">
+            <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">🇺🇸 English Free Packs</span>
+                <div className="flex items-baseline gap-1.5 font-mono">
+                  <span className="text-2xl font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                    {dailyFreePacks.english}/5
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">🇯🇵 Japanese Free Packs</span>
+                <div className="flex items-baseline gap-1.5 font-mono">
+                  <span className="text-2xl font-black text-rose-400 drop-shadow-[0_0_10px_rgba(244,63,94,0.5)]">
+                    {dailyFreePacks.japanese}/5
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          {onBackToPacks && (
-            <button
-              onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
-            >
-              <Package className="w-3.5 h-3.5" /> Open Packs Now
-            </button>
-          )}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#111827] px-5 py-3.5 rounded-2xl border border-amber-500/40 shadow-[0_0_25px_rgba(245,158,11,0.15)] shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                <Gift className="w-5 h-5" />
+              </div>
+              <div className="flex items-center gap-6">
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Earned Set Packs</span>
+                  <div className="flex items-baseline gap-1.5 font-mono">
+                    <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
+                    </span>
+                    <span className="text-xs text-gray-400 font-semibold">Total</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Daily Cash</span>
+                  <div className="flex items-baseline gap-1.5 font-mono">
+                    <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+                      ${dailyCash.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {onBackToPacks && (
+              <button
+                onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105">
+                <Package className="w-3.5 h-3.5" /> Open Packs Now
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -151,6 +190,30 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
           </div>
         </div>
       </div>
+
+      {/* Earned Set Packs Summary */}
+      {earnedSetPacks.length > 0 && (
+        <div className="mb-8 bg-[#111827]/90 p-4 rounded-2xl border border-amber-500/30 backdrop-blur-md">
+          <h2 className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Gift className="w-4 h-4 text-amber-400" /> Earned Set Packs
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {earnedSetPacks.map((pack, idx) => (
+              <div
+                key={idx}
+                className={`p-3 rounded-xl border text-center ${
+                  pack.language === 'en'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                }`}
+              >
+                <div className="text-[10px] font-mono text-gray-400 uppercase">{pack.setName}</div>
+                <div className="text-lg font-black font-mono mt-1">{pack.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Missions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
@@ -209,9 +272,18 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                 <div className="bg-[#0b0f19] p-3 rounded-xl border border-white/10 mb-5 space-y-2">
                   <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-wider block">Mission Rewards:</span>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm">
-                      <Package className="w-3.5 h-3.5" /> +{mission.rewardPacks} Booster Passes
-                    </span>
+                    {mission.rewardSetPacks.map((pack, idx) => (
+                      <span
+                        key={idx}
+                        className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm ${
+                          pack.language === 'en'
+                            ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-300'
+                            : 'bg-rose-500/15 border-rose-400/40 text-rose-300'
+                        }`}
+                      >
+                        <Package className="w-3.5 h-3.5" /> +{pack.count} {pack.setName} ({pack.language.toUpperCase()})
+                      </span>
+                    ))}
                     {mission.rewardCard && (
                       <span className="px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-400/40 text-purple-300 text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm">
                         <Sparkles className="w-3.5 h-3.5 text-purple-400" /> Exclusive {mission.rewardCard.rarity || 'Promo'} Card
@@ -257,7 +329,7 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                     onClick={() => handleClaim(mission)}
                     className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 text-black font-mono font-black text-sm tracking-wide transition-all duration-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] border-2 border-white transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer animate-pulse"
                   >
-                    <Gift className="w-4 h-4" /> CLAIM REWARD ({mission.rewardPacks} PACKS{mission.rewardCard ? ' + CARD' : ''})
+                    <Gift className="w-4 h-4" /> CLAIM REWARD ({mission.rewardSetPacks.reduce((acc, rp) => acc + rp.count, 0)} PACKS{mission.rewardCard ? ' + CARD' : ''})
                   </button>
                 ) : (
                   <button
