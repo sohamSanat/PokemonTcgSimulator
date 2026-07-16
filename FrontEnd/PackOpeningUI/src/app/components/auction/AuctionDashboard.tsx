@@ -270,6 +270,27 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               src={currentCard.img} 
               alt={currentCard.name} 
               className="w-full h-full object-cover" 
+              crossOrigin="anonymous"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                try {
+                  const canvas = document.createElement('canvas');
+                  canvas.width = 8;
+                  canvas.height = 8;
+                  const ctx = canvas.getContext('2d');
+                  if (ctx) {
+                    ctx.drawImage(img, 0, 0, 8, 8);
+                    const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
+                    const isCardBack = r < 50 && g < 75 && b > 90;
+                    if (isCardBack) {
+                      if (onImageError) onImageError();
+                      else onNextLot();
+                    }
+                  }
+                } catch (err) {
+                  // Fallback: ignore
+                }
+              }}
               onError={() => {
                 if (onImageError) onImageError();
                 else onNextLot();
@@ -453,6 +474,27 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               src={currentCard.img} 
               alt={currentCard.name} 
               className="w-full h-full object-cover" 
+              crossOrigin="anonymous"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                try {
+                  const canvas = document.createElement('canvas');
+                  canvas.width = 8;
+                  canvas.height = 8;
+                  const ctx = canvas.getContext('2d');
+                  if (ctx) {
+                    ctx.drawImage(img, 0, 0, 8, 8);
+                    const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
+                    const isCardBack = r < 50 && g < 75 && b > 90;
+                    if (isCardBack) {
+                      if (onImageError) onImageError();
+                      else onNextLot();
+                    }
+                  }
+                } catch (err) {
+                  // Fallback: ignore
+                }
+              }}
               onError={() => {
                 if (onImageError) onImageError();
                 else onNextLot();
