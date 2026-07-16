@@ -15,18 +15,20 @@ interface Bid {
   time: number;
 }
 
+const MOCK_USERS = ["PokeFan99", "TCG_Master", "AshKetchum", "GaryOak", "MistyWater", "BrockRock", "PikaPal", "CharizardLover", "SnorlaxSleeps", "GengarGhost", "EeveeEvolution", "MewtwoStrikes", "RocketGrunt", "Red", "Blue"];
+
 const DUMMY_CARDS = {
   expensive: [
-    { name: "Charizard V (Secret Art Promo)", price: 45000, color: "amber", title: "Prismatic Secret Rare • PSA 10 GEM MINT", img: "https://images.pokemontcg.io/swsh3/19_hires.png" },
-    { name: "Pikachu Illustrator", price: 150000, color: "yellow", title: "Promo • BGS 9.5", img: "https://images.pokemontcg.io/swsh4/44_hires.png" },
-    { name: "Lugia V (Alt Art)", price: 32000, color: "blue", title: "Special Art Rare • PSA 10", img: "https://images.pokemontcg.io/swsh12/186_hires.png" }
+    { name: "Charizard V (Alt Art)", price: 220, color: "amber", title: "Special Art Rare • PSA 10 GEM MINT", img: "https://images.pokemontcg.io/swsh9/154_hires.png" },
+    { name: "Giratina V (Alt Art)", price: 450, color: "yellow", title: "Special Art Rare • PSA 10", img: "https://images.pokemontcg.io/swsh11/186_hires.png" },
+    { name: "Umbreon VMAX (Alt Art)", price: 1100, color: "blue", title: "Secret Rare • PSA 10", img: "https://images.pokemontcg.io/swsh7/215_hires.png" }
   ],
   normal: [
-    { name: "Mewtwo VSTAR", price: 1, color: "purple", title: "Gold Secret Rare • NM", img: "https://images.pokemontcg.io/pgo/80_hires.png" },
-    { name: "Rayquaza VMAX", price: 1, color: "emerald", title: "Trainer Gallery • NM", img: "https://images.pokemontcg.io/swsh7/218_hires.png" },
-    { name: "Gengar VMAX", price: 1, color: "fuchsia", title: "Secret Rare • LP", img: "https://images.pokemontcg.io/swsh8/271_hires.png" },
-    { name: "Umbreon V", price: 1, color: "indigo", title: "Alt Art • NM", img: "https://images.pokemontcg.io/swsh7/189_hires.png" },
-    { name: "Sylveon VMAX", price: 1, color: "pink", title: "Alt Art • NM", img: "https://images.pokemontcg.io/swsh7/212_hires.png" }
+    { name: "Mewtwo VSTAR", price: 80, color: "purple", title: "Gold Secret Rare • NM", img: "https://images.pokemontcg.io/pgo/80_hires.png" },
+    { name: "Rayquaza VMAX", price: 40, color: "emerald", title: "Trainer Gallery • NM", img: "https://images.pokemontcg.io/swsh7/218_hires.png" },
+    { name: "Gengar VMAX", price: 90, color: "fuchsia", title: "Secret Rare • LP", img: "https://images.pokemontcg.io/swsh8/271_hires.png" },
+    { name: "Umbreon V", price: 95, color: "indigo", title: "Alt Art • NM", img: "https://images.pokemontcg.io/swsh7/189_hires.png" },
+    { name: "Sylveon VMAX", price: 75, color: "pink", title: "Alt Art • NM", img: "https://images.pokemontcg.io/swsh7/212_hires.png" }
   ]
 };
 
@@ -49,7 +51,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     
     setTimeLeft(initialTime);
     setMaxTime(initialTime);
-    setCurrentBid(card.price);
+    const startPrice = isNormal ? 1 : Math.floor(card.price * 0.5);
+    setCurrentBid(startPrice);
     
     // Generate initial bids only for expensive
     if (isNormal) {
@@ -58,8 +61,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       setBids(
         Array.from({ length: 5 }).map((_, i) => ({
           id: Date.now() - (5 - i) * 1000,
-          user: `Bidder_0x${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase()}`,
-          amount: card.price - (5 - i) * 1000,
+          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+          amount: startPrice - (5 - i) * 10,
           time: Date.now() - (5 - i) * 1000,
         }))
       );
@@ -86,24 +89,24 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     const bidInterval = setInterval(() => {
       const isNormal = auctionMode === 'normal';
       // In normal mode, bids are small (+1 to +5). In expensive, (+100 to +600)
-      const bidChance = isNormal ? 0.8 : 0.6; 
+      const bidChance = isNormal ? 0.95 : 0.6; 
       
       if (Math.random() < bidChance && timeLeft > 0) {
         const increment = isNormal 
-          ? Math.floor(Math.random() * 5 + 1)
-          : Math.floor(Math.random() * 5 + 1) * 100;
+          ? Math.floor(Math.random() * 4 + 1)
+          : Math.floor(Math.random() * 3 + 1) * 10;
           
         const newBidAmount = currentBid + increment;
         const newBid = {
           id: Date.now(),
-          user: `Bidder_0x${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase()}`,
+          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
           amount: newBidAmount,
           time: Date.now(),
         };
         setBids((prev) => [...prev, newBid].slice(-30));
         setCurrentBid(newBidAmount);
       }
-    }, auctionMode === 'normal' ? 800 : 2500);
+    }, auctionMode === 'normal' ? 200 : 2500);
     
     return () => clearInterval(bidInterval);
   }, [currentBid, auctionMode, timeLeft]);
@@ -284,9 +287,9 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 <span className="text-xs font-mono tracking-[0.3em] text-slate-400 mb-2 uppercase">Current Bid</span>
                 <motion.div 
                   key={currentBid}
-                  initial={{ scale: 1.2, color: "#4ade80" }}
-                  animate={{ scale: 1, color: auctionMode === 'expensive' ? "#fbbf24" : "#22d3ee" }}
-                  transition={{ duration: 0.5 }}
+                  initial={{ scale: 1.4, color: "#4ade80", y: -10 }}
+                  animate={{ scale: 1, color: auctionMode === 'expensive' ? "#fbbf24" : "#22d3ee", y: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   className="text-6xl font-bold tracking-tight"
                   style={{ textShadow: `0 0 40px ${auctionMode === 'expensive' ? 'rgba(251, 191, 36, 0.4)' : 'rgba(34, 211, 238, 0.4)'}` }}
                 >
@@ -321,8 +324,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   return (
                     <motion.div
                       key={bid.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       className={cn(
                         "flex items-center justify-between p-2.5 rounded border font-mono text-sm transition-colors",
                         isLatest 
@@ -345,19 +348,19 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             {/* Action Area */}
             <div className="p-4 bg-slate-950/60 border-t border-slate-700/50 backdrop-blur-md">
               <div className="flex gap-2 mb-3">
-                {(auctionMode === 'expensive' ? [100, 500, 1000] : [1, 5, 10]).map((inc) => (
+                {(auctionMode === 'expensive' ? [10, 25, 50] : [1, 5, 10]).map((inc) => (
                   <button 
                     key={inc}
                     onClick={() => handlePlayerBid(inc)}
                     disabled={timeLeft <= 0}
                     className="flex-1 py-2 rounded bg-slate-800/80 border border-slate-600 hover:border-cyan-500/50 hover:bg-slate-700/80 text-xs font-mono text-slate-300 transition-all hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    +${inc >= 1000 ? `${inc/1000}k` : inc}
+                    +${inc}
                   </button>
                 ))}
               </div>
               <button 
-                onClick={() => handlePlayerBid(auctionMode === 'expensive' ? 500 : 5)}
+                onClick={() => handlePlayerBid(auctionMode === 'expensive' ? 50 : 5)}
                 disabled={timeLeft <= 0}
                 className="w-full py-4 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold tracking-[0.2em] uppercase transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >

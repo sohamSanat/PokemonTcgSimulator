@@ -1978,9 +1978,10 @@ export default function App() {
     }, 900);
   };
 
-  const loadSetAndGeneratePack = useCallback(async (setId: string) => {
+  const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja') => {
     if (isLoadingPackRef.current) return;
     isLoadingPackRef.current = true;
+    const langToUse = forceLanguage || selectedLanguage;
     sound.playPackOpen();
     setIsLoadingPack(true);
     setIsSetSelectorOpen(false);
@@ -1994,7 +1995,7 @@ export default function App() {
     setPackArtIndex(Math.floor(Math.random() * setArts.length));
 
     try {
-      if (selectedLanguage === 'ja') {
+      if (langToUse === 'ja') {
         const setDetails = await fetchSingleJapaneseSet(setId);
         setCurrentSet(setDetails);
         const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
@@ -2643,6 +2644,11 @@ export default function App() {
         <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
           <MissionsView
             onBackToPacks={() => setActiveTab('pack')}
+            onSelectEarnedPack={(setId, language) => {
+              setActiveTab('pack');
+              setSelectedLanguage(language);
+              loadSetAndGeneratePack(setId, language);
+            }}
             onOpenCardCatalogue={(binderCard) => {
               sound.playModalOpen();
               setInspectedViewMode('art');

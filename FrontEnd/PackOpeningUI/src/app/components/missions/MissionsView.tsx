@@ -9,9 +9,10 @@ import { PokemonCard } from '../../services/tcgdex';
 interface MissionsViewProps {
   onBackToPacks?: () => void;
   onOpenCardCatalogue?: (card: PokemonCard) => void;
+  onSelectEarnedPack?: (setId: string, language: 'en' | 'ja') => void;
 }
 
-export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpenCardCatalogue }) => {
+export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpenCardCatalogue, onSelectEarnedPack }) => {
   const [missions, setMissions] = useState<Mission[]>(() => getMissions());
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
@@ -201,10 +202,16 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
             {earnedSetPacks.map((pack, idx) => (
               <div
                 key={idx}
-                className={`p-3 rounded-xl border text-center ${
+                onClick={() => {
+                  sound.playButtonClick();
+                  if (onSelectEarnedPack) {
+                    onSelectEarnedPack(pack.setId, pack.language);
+                  }
+                }}
+                className={`p-3 rounded-xl border text-center cursor-pointer hover:scale-105 transition-all shadow-md hover:shadow-lg ${
                   pack.language === 'en'
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                    : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50'
+                    : 'bg-rose-500/10 border-rose-500/30 text-rose-300 hover:bg-rose-500/20 hover:border-rose-500/50'
                 }`}
               >
                 <div className="text-[10px] font-mono text-gray-400 uppercase">{pack.setName}</div>
