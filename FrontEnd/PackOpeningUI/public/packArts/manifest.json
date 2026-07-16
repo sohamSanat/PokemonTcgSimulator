@@ -1702,8 +1702,9 @@
     "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
   ],
   "sm3": [
-    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
-    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
   ],
   "sm03": [
     "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
@@ -1718,6 +1719,46 @@
     "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
   ],
   "burning-shadows": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3h": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3h_ja": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3hja": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3n": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3n_ja": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "sm3nja": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "did you see the fighting rainbow?": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "didyouseethefightingrainbow": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "darkness that consumes light": [
+    "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
+    "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
+  ],
+  "darknessthatconsumeslight": [
     "/packArts/SunAndMoon-Generation/burning-shadow/2.webp",
     "/packArts/SunAndMoon-Generation/burning-shadow/4.webp"
   ],
@@ -1756,6 +1797,66 @@
     "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
     "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
   ],
+  "sm6b": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "sm6b_ja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "sm6bja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "sm7_ja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "sm7ja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "champion road": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "championroad": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "champion road_ja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "championroadja": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "charisma of the sky": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "charismaofthesky": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
+  "sky": [
+    "/packArts/SunAndMoon-Generation/celesital-storm/1.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/2.webp",
+    "/packArts/SunAndMoon-Generation/celesital-storm/3.webp"
+  ],
   "cosmic-eclipse": [
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
@@ -1772,6 +1873,166 @@
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
   ],
   "cosmic eclipse": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11a": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11a_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11aja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11b": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11b_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm11bja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm12_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm12ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm12a": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm12a_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "sm12aja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "remix bout": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "remixbout": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "remix bout_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "remixboutja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "dream league": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "dreamleague": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "dream league_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "dreamleagueja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "alter genesis": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "altergenesis": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "alter genesis_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "altergenesisja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tag team gx tag all stars": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tagteamgxtagallstars": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tag team gx: tag all stars": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tag all stars": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tagallstars": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tag all stars_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tagallstarsja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tag team gx tag all stars_ja": [
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
+    "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
+  ],
+  "tagteamgxtagallstarsja": [
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/1.webp",
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/2.webp",
     "/packArts/SunAndMoon-Generation/cosmic-eclipse/3.webp"
@@ -1806,6 +2067,120 @@
     "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
     "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
   ],
+  "sm4s": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4s_ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4sja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4a": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4a_ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4aja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4+": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4+_ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4pt_ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "sm4ptja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "awakening hero": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "awakeninghero": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "ultradimensional beasts": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "ultradimensionalbeasts": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "gx battle boost": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "gxbattleboost": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "gx battle boost_ja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
+  "gxbattleboostja": [
+    "/packArts/SunAndMoon-Generation/crimson-invasion/1.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/2.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/3.webp",
+    "/packArts/SunAndMoon-Generation/crimson-invasion/4.webp"
+  ],
   "detective-pikachu": [
     "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
   ],
@@ -1822,6 +2197,15 @@
     "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
   ],
   "detective pikachu": [
+    "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
+  ],
+  "smp2": [
+    "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
+  ],
+  "smp2_ja": [
+    "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
+  ],
+  "smp2ja": [
     "/packArts/SunAndMoon-Generation/detective-pikachu/1.webp"
   ],
   "dragon-majesty": [
@@ -1859,6 +2243,41 @@
     "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
     "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
   ],
+  "sm7a": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "sm7a_ja": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "sm7aja": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "lightning spark": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "lightningspark": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "thunderclap spark": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
+  "thunderclapspark": [
+    "/packArts/SunAndMoon-Generation/dragon-majesty/1.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/2.webp",
+    "/packArts/SunAndMoon-Generation/dragon-majesty/3.webp"
+  ],
   "forbidden-light": [
     "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
     "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
@@ -1880,6 +2299,101 @@
     "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
   ],
   "forbidden light": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm5+": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm5": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5+_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm5ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm5pt_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm5ptja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm6_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm6ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm6a": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm6a_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "sm6aja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "ultra force": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "ultraforce": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "ultra force_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "ultraforceja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "dragon storm": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "dragonstorm": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "dragon storm_ja": [
+    "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
+    "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
+  ],
+  "dragonstormja": [
     "/packArts/SunAndMoon-Generation/forbidden-light/1.webp",
     "/packArts/SunAndMoon-Generation/forbidden-light/2.webp",
     "/packArts/SunAndMoon-Generation/forbidden-light/3.webp"
@@ -1909,6 +2423,108 @@
     "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
   ],
   "guardians rising": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2k": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2k_ja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2kja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2l": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2l_ja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2lja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2+": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2+_ja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2ja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2pt_ja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "sm2ptja": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "islands waiting for you": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "islandswaitingforyou": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "alolan moonlight": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "alolanmoonlight": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "beyond the new trial": [
+    "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
+    "/packArts/SunAndMoon-Generation/guardians-rising/4.webp"
+  ],
+  "beyondthenewtrial": [
     "/packArts/SunAndMoon-Generation/guardians-rising/1.webp",
     "/packArts/SunAndMoon-Generation/guardians-rising/2.webp",
     "/packArts/SunAndMoon-Generation/guardians-rising/3.webp",
@@ -1979,6 +2595,41 @@
     "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
     "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
   ],
+  "sm8b": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "sm8b_ja": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "sm8bja": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "gx ultra shiny": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "gxultrashiny": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "gx ultra shiny_ja": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
+  "gxultrashinyja": [
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/1.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/2.webp",
+    "/packArts/SunAndMoon-Generation/hidden-fates-shiny-vault/3.webp"
+  ],
   "lost-thunder": [
     "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
     "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
@@ -2004,6 +2655,126 @@
     "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
   ],
   "lost thunder": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm7b": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm7b_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm7bja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm8_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm8ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm8a": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm8a_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "sm8aja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "fairy rise": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "fairyrise": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "fairy rise_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "fairyriseja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "super impact": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "superimpact": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "super impact_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "superimpactja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "dark order": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "darkorder": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "dark order_ja": [
+    "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
+    "/packArts/SunAndMoon-Generation/lost-thunder/4.webp"
+  ],
+  "darkorderja": [
     "/packArts/SunAndMoon-Generation/lost-thunder/1.webp",
     "/packArts/SunAndMoon-Generation/lost-thunder/2.webp",
     "/packArts/SunAndMoon-Generation/lost-thunder/3.webp",
@@ -2040,6 +2811,31 @@
     "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
   ],
   "slg": [
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
+  ],
+  "sm3+": [
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
+  ],
+  "sm3+_ja": [
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
+  ],
+  "sm3ja": [
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
+  ],
+  "sm3pt_ja": [
+    "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
+    "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
+  ],
+  "sm3ptja": [
     "/packArts/SunAndMoon-Generation/shining-legends/1.webp",
     "/packArts/SunAndMoon-Generation/shining-legends/2.webp",
     "/packArts/SunAndMoon-Generation/shining-legends/3.webp"
@@ -2122,6 +2918,82 @@
     "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
     "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
   ],
+  "sm1s": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1s_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1sja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1m": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1m_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1mja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1+": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1+_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1pt_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "sm1ptja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collection sun": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collectionsun": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collection sun_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collectionsunja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collection moon": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collectionmoon": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collection moon_ja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
+  "collectionmoonja": [
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/1.webp",
+    "/packArts/SunAndMoon-Generation/sun-and-moon-baseset/2.webp"
+  ],
   "team-up": [
     "/packArts/SunAndMoon-Generation/team-up/1.webp",
     "/packArts/SunAndMoon-Generation/team-up/2.webp",
@@ -2152,6 +3024,84 @@
     "/packArts/SunAndMoon-Generation/team-up/3.webp",
     "/packArts/SunAndMoon-Generation/team-up/4.webp"
   ],
+  "sm9_ja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "sm9ja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "sm9a": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "sm9a_ja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "sm9aja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "tag bolt": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "tagbolt": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "tag bolt_ja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "tagboltja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "night unison": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "nightunison": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "night unison_ja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
+  "nightunisonja": [
+    "/packArts/SunAndMoon-Generation/team-up/1.webp",
+    "/packArts/SunAndMoon-Generation/team-up/2.webp",
+    "/packArts/SunAndMoon-Generation/team-up/3.webp",
+    "/packArts/SunAndMoon-Generation/team-up/4.webp"
+  ],
   "ultra-prism": [
     "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
@@ -2162,17 +3112,82 @@
     "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
   ],
-  "sm5": [
-    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
-    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
-    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
-  ],
   "sm05": [
     "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
   ],
   "ultra prism": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5s": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5s_ja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5sja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5m": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5m_ja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "sm5mja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultra sun": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultrasun": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultra sun_ja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultrasunja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultra moon": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultramoon": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultra moon_ja": [
+    "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
+    "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
+  ],
+  "ultramoonja": [
     "/packArts/SunAndMoon-Generation/ultra-prism/1.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/2.webp",
     "/packArts/SunAndMoon-Generation/ultra-prism/3.webp"
@@ -2201,6 +3216,132 @@
     "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
     "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
   ],
+  "sm9b": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm9b_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm9bja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm10_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm10ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sn10a": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sn10a_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sn10aja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm10a_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "sm10aja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "full metal wall": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "fullmetalwall": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "full metal wall_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "fullmetalwallja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "double blaze": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "doubleblaze": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "double blaze_ja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "doubleblazeja": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "g-g end": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "ggend": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
+  "gg end": [
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/1.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/2.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/3.webp",
+    "/packArts/SunAndMoon-Generation/unbroken-bonds/4.webp"
+  ],
   "unified-minds": [
     "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
     "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
@@ -2220,6 +3361,102 @@
     "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
   ],
   "unified minds": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sm10b": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sm10b_ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sm10bja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sn11": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sn11_ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sn11ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sm11_ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sm11ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sky legend": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "skylegend": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "sky legend_ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "skylegendja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "miracle twin": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "miracletwin": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "miracle twin_ja": [
+    "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
+    "/packArts/SunAndMoon-Generation/unified-minds/4.webp"
+  ],
+  "miracletwinja": [
     "/packArts/SunAndMoon-Generation/unified-minds/1.webp",
     "/packArts/SunAndMoon-Generation/unified-minds/2.webp",
     "/packArts/SunAndMoon-Generation/unified-minds/3.webp",
@@ -2260,6 +3497,153 @@
     "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
     "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
   ],
+  "s9a": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s9a_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s9aja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10d": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10d_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10dja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10p": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10p_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "s10pja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "battle region": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "battleregion": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "battle region_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "battleregionja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "time gazer": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "timegazer": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "time gazer_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "timegazerja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "space juggler": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "spacejuggler": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "space juggler_ja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
+  "spacejugglerja": [
+    "/packArts/SwordAndShield-Generation/astral-radiance/1.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/2.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/3.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/4.webp",
+    "/packArts/SwordAndShield-Generation/astral-radiance/5.webp"
+  ],
   "battle-styles": [
     "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
     "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
@@ -2285,6 +3669,90 @@
     "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
   ],
   "swsh05": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5i": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5i_ja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5ija": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5r": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5r_ja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "s5rja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "single strike master": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "singlestrikemaster": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "single strike master_ja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "singlestrikemasterja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "rapid strike master": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "rapidstrikemaster": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "rapid strike master_ja": [
+    "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
+    "/packArts/SwordAndShield-Generation/battle-styles/4.webp"
+  ],
+  "rapidstrikemasterja": [
     "/packArts/SwordAndShield-Generation/battle-styles/1.webp",
     "/packArts/SwordAndShield-Generation/battle-styles/2.webp",
     "/packArts/SwordAndShield-Generation/battle-styles/3.webp",
@@ -2344,6 +3812,48 @@
     "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
     "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
   ],
+  "s9": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "s9_ja": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "s9ja": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "star birth": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "starbirth": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "star birth_ja": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
+  "starbirthja": [
+    "/packArts/SwordAndShield-Generation/brillinant-stars/1.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/2.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/3.webp",
+    "/packArts/SwordAndShield-Generation/brillinant-stars/4.webp"
+  ],
   "celebrations": [
     "/packArts/SwordAndShield-Generation/celebrations/1.webp"
   ],
@@ -2360,6 +3870,27 @@
     "/packArts/SwordAndShield-Generation/celebrations/1.webp"
   ],
   "swsh25": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "s8a": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "s8a_ja": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "s8aja": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "25th anniversary collection": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "25thanniversarycollection": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "25th anniversary collection_ja": [
+    "/packArts/SwordAndShield-Generation/celebrations/1.webp"
+  ],
+  "25thanniversarycollectionja": [
     "/packArts/SwordAndShield-Generation/celebrations/1.webp"
   ],
   "champions-path": [
@@ -2424,6 +3955,144 @@
     "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
     "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
   ],
+  "s5a": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s5a_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s5aja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6h": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6h_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6hja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6k": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6k_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "s6kja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "matchless fighters": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "matchlessfighters": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "matchless fighters_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "matchlessfightersja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "peerless fighters": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "peerlessfighters": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "silver lance": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "silverlance": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "silver lance_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "silverlanceja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "jet-black spirit": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "jetblackspirit": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "jet-black spirit_ja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
+  "jetblackspiritja": [
+    "/packArts/SwordAndShield-Generation/chilling-reign/1.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/2.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/3.webp",
+    "/packArts/SwordAndShield-Generation/chilling-reign/4.webp"
+  ],
   "crown-zenith": [
     "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
   ],
@@ -2446,6 +4115,27 @@
     "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
   ],
   "crown zenith": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "s12a": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "s12a_ja": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "s12aja": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "vstar universe": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "vstaruniverse": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "vstar universe_ja": [
+    "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
+  ],
+  "vstaruniverseja": [
     "/packArts/SwordAndShield-Generation/crown-zenith/1.webp"
   ],
   "DarknessAblaze": [
@@ -2484,6 +4174,60 @@
     "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
     "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
   ],
+  "s3": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "s3_ja": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "s3ja": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "mugen zone": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "mugenzone": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "infinity zone": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "infinityzone": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "mugen zone_ja": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
+  "mugenzoneja": [
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp",
+    "/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp"
+  ],
   "evolving-skies": [
     "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
     "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
@@ -2509,6 +4253,132 @@
     "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
   ],
   "swsh07": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s6a": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s6a_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s6aja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7d": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7d_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7dja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7r": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7r_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "s7rja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "eevee heroes": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "eeveeheroes": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "eevee heroes_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "eeveeheroesja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "skyscraping perfection": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "skyscrapingperfection": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "skyscraping perfection_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "skyscrapingperfectionja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "blue sky stream": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "blueskystream": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "blue sky stream_ja": [
+    "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
+    "/packArts/SwordAndShield-Generation/evolving-skies/4.webp"
+  ],
+  "blueskystreamja": [
     "/packArts/SwordAndShield-Generation/evolving-skies/1.webp",
     "/packArts/SwordAndShield-Generation/evolving-skies/2.webp",
     "/packArts/SwordAndShield-Generation/evolving-skies/3.webp",
@@ -2544,6 +4414,90 @@
     "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
     "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
   ],
+  "s8": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "s8_ja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "s8ja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "s8b": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "s8b_ja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "s8bja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "fusion arts": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "fusionarts": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "fusion arts_ja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "fusionartsja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "vmax climax": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "vmaxclimax": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "vmax climax_ja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
+  "vmaxclimaxja": [
+    "/packArts/SwordAndShield-Generation/fusion-strike/1.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/2.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/3.webp",
+    "/packArts/SwordAndShield-Generation/fusion-strike/4.webp"
+  ],
   "lost-origin": [
     "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
     "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
@@ -2574,6 +4528,90 @@
     "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
     "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
   ],
+  "s10a": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "s10a_ja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "s10aja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "s11": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "s11_ja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "s11ja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "dark phantasma": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "darkphantasma": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "dark phantasma_ja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "darkphantasmaja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "lost abyss": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "lostabyss": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "lost abyss_ja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
+  "lostabyssja": [
+    "/packArts/SwordAndShield-Generation/lost-origin/1.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/2.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/3.webp",
+    "/packArts/SwordAndShield-Generation/lost-origin/4.webp"
+  ],
   "pokemon-go": [
     "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
   ],
@@ -2593,6 +4631,15 @@
     "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
   ],
   "pokemon go": [
+    "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
+  ],
+  "s10b": [
+    "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
+  ],
+  "s10b_ja": [
+    "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
+  ],
+  "s10bja": [
     "/packArts/SwordAndShield-Generation/pokemon-go/1.webp"
   ],
   "rebel-clash": [
@@ -2620,6 +4667,90 @@
     "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
   ],
   "swsh02": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2_ja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2ja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2a": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2a_ja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "s2aja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "rebel crush": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "rebelcrush": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "rebel crush_ja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "rebelcrushja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "explosive walker": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "explosivewalker": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "explosive walker_ja": [
+    "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
+    "/packArts/SwordAndShield-Generation/rebel-clash/4.webp"
+  ],
+  "explosivewalkerja": [
     "/packArts/SwordAndShield-Generation/rebel-clash/1.webp",
     "/packArts/SwordAndShield-Generation/rebel-clash/2.webp",
     "/packArts/SwordAndShield-Generation/rebel-clash/3.webp",
@@ -2721,6 +4852,48 @@
     "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
     "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
   ],
+  "s4a": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "s4a_ja": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "s4aja": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "shiny star v": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "shinystarv": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "shiny star v_ja": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
+  "shinystarvja": [
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/1.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/2.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/3.webp",
+    "/packArts/SwordAndShield-Generation/shiny-fates-shiny-vault/4.webp"
+  ],
   "silver-tempest": [
     "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
     "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
@@ -2746,6 +4919,90 @@
     "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
   ],
   "swsh12tg": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s11a": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s11a_ja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s11aja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s12": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s12_ja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "s12ja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "incandescent arcana": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "incandescentarcana": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "incandescent arcana_ja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "incandescentarcanaja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "paradigm trigger": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "paradigmtrigger": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "paradigm trigger_ja": [
+    "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
+    "/packArts/SwordAndShield-Generation/silver-tempest/4.webp"
+  ],
+  "paradigmtriggerja": [
     "/packArts/SwordAndShield-Generation/silver-tempest/1.webp",
     "/packArts/SwordAndShield-Generation/silver-tempest/2.webp",
     "/packArts/SwordAndShield-Generation/silver-tempest/3.webp",
@@ -2829,6 +5086,120 @@
     "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
     "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
   ],
+  "s1w": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1w_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1wja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1h": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1h_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1hja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1a": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1a_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "s1aja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "sword": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "sword_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "swordja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "shield": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "shield_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "shieldja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "vmax rising": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "vmaxrising": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "vmax rising_ja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
+  "vmaxrisingja": [
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_4uatno4uatno4uat.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_g9dyejg9dyejg9dy.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_w46ay4w46ay4w46a.webp",
+    "/packArts/SwordAndShield-Generation/sword-and-shield/Gemini_Generated_Image_yg9qetyg9qetyg9q.webp"
+  ],
   "vivd-voltage": [
     "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
     "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
@@ -2872,6 +5243,90 @@
     "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
   ],
   "swsh04": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s3a": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s3a_ja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s3aja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s4": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s4_ja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "s4ja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "legendary heartbeat": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "legendaryheartbeat": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "legendary heartbeat_ja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "legendaryheartbeatja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "amazing volt tackle": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "amazingvolttackle": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "amazing volt tackle_ja": [
+    "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",
+    "/packArts/SwordAndShield-Generation/vivd-voltage/4.webp"
+  ],
+  "amazingvolttackleja": [
     "/packArts/SwordAndShield-Generation/vivd-voltage/1.webp",
     "/packArts/SwordAndShield-Generation/vivd-voltage/2.webp",
     "/packArts/SwordAndShield-Generation/vivd-voltage/3.webp",

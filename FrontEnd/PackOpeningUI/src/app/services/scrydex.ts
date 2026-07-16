@@ -127,6 +127,23 @@ export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: stri
     if (jaCardPricesCache[setIdOrKey] !== undefined) return jaCardPricesCache[setIdOrKey];
     const raw = setIdOrKey.replace(/_ja$/i, '').toLowerCase();
     if (jaCardPricesCache[raw] !== undefined) return jaCardPricesCache[raw];
+    
+    // Attempt swsh vs s conversion for single keys if formatted like s8b-180
+    const parts = raw.split('-');
+    if (parts.length === 2) {
+      const setPrefix = parts[0];
+      const num = parts[1];
+      if (setPrefix.startsWith('s') && !setPrefix.startsWith('sv') && !setPrefix.startsWith('sm') && !setPrefix.startsWith('sn')) {
+        const swshPrefix = 'swsh' + setPrefix.slice(1);
+        if (jaCardPricesCache[`${swshPrefix}-${num}`] !== undefined) return jaCardPricesCache[`${swshPrefix}-${num}`];
+        if (jaCardPricesCache[`${swshPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${swshPrefix}_ja-${num}`];
+      }
+      if (setPrefix.startsWith('swsh')) {
+        const sPrefix = 's' + setPrefix.slice(4);
+        if (jaCardPricesCache[`${sPrefix}-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}-${num}`];
+        if (jaCardPricesCache[`${sPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}_ja-${num}`];
+      }
+    }
     return undefined;
   }
   const num = localIdOrNum.toString().trim();
@@ -136,7 +153,65 @@ export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: stri
   if (jaCardPricesCache[`${rawId}_ja-${num}`] !== undefined) return jaCardPricesCache[`${rawId}_ja-${num}`];
   if (jaCardPricesCache[`${setIdOrKey.toLowerCase()}-${num}`] !== undefined) return jaCardPricesCache[`${setIdOrKey.toLowerCase()}-${num}`];
   
+  // SWSH vs S prefix fallback
+  if (rawId.startsWith('s') && !rawId.startsWith('sv') && !rawId.startsWith('sm') && !rawId.startsWith('sn')) {
+    const swshPrefix = 'swsh' + rawId.slice(1);
+    if (jaCardPricesCache[`${swshPrefix}-${num}`] !== undefined) return jaCardPricesCache[`${swshPrefix}-${num}`];
+    if (jaCardPricesCache[`${swshPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${swshPrefix}_ja-${num}`];
+  }
+  if (rawId.startsWith('swsh')) {
+    const sPrefix = 's' + rawId.slice(4);
+    if (jaCardPricesCache[`${sPrefix}-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}-${num}`];
+    if (jaCardPricesCache[`${sPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}_ja-${num}`];
+  }
+  
   return undefined;
+}
+
+export function getMaxCardNumForJapaneseSet(setId: string): number {
+  if (!jaCardPricesCache) return 0;
+  const rawId = setId.replace(/_ja$/i, '').toLowerCase();
+  
+  const prefixes = new Set<string>([`${rawId}-`, `${rawId}_ja-`]);
+  
+  // Also check SWSH variants
+  if (rawId.startsWith('s') && !rawId.startsWith('sv') && !rawId.startsWith('sm') && !rawId.startsWith('sn')) {
+    const swshPrefix = 'swsh' + rawId.slice(1);
+    prefixes.add(`${swshPrefix}-`);
+    prefixes.add(`${swshPrefix}_ja-`);
+  }
+  if (rawId.startsWith('swsh')) {
+    const sPrefix = 's' + rawId.slice(4);
+    prefixes.add(`${sPrefix}-`);
+    prefixes.add(`${sPrefix}_ja-`);
+  }
+
+  let maxNum = 0;
+  for (const key of Object.keys(jaCardPricesCache)) {
+    for (const prefix of prefixes) {
+      if (key.startsWith(prefix)) {
+        const numPart = key.slice(prefix.length);
+        const num = parseInt(numPart, 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+  }
+  
+  if (jaTopCardsCache) {
+    for (const card of jaTopCardsCache) {
+      const cardRawId = card.setId?.replace(/_ja$/i, '').toLowerCase() || '';
+      if (cardRawId === rawId || (rawId.startsWith('s') && cardRawId === 'swsh' + rawId.slice(1))) {
+        const num = parseInt(card.num, 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+  }
+  
+  return maxNum;
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
@@ -376,7 +451,8 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   const cacheKey = `${rawId}_ja`;
   const jaRegex = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/;
   const s = (jaSetsCache || []).find(item => item.id.toLowerCase() === rawId.toLowerCase());
-  const totalCards = s?.cardCount?.total || s?.cardCount?.official || (rawId.toLowerCase() === 'sv2a' ? 210 : 103);
+  const maxKnownNum = getMaxCardNumForJapaneseSet(rawId);
+  const totalCards = Math.max(s?.cardCount?.total || 0, s?.cardCount?.official || 0, maxKnownNum || (rawId.toLowerCase() === 'sv2a' ? 210 : 103));
   const officialCount = s?.cardCount?.official || Math.floor(totalCards * 0.75);
   
   if (scrydexSetCache.has(cacheKey)) {
@@ -484,7 +560,20 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     const cardNum = i.toString();
     const lookupKey = `${prefixLow}_ja-${cardNum}`;
     const altKey = `${prefixLow}-${cardNum}`;
-    let resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || `${setName} Card #${cardNum}`;
+
+    let topCardName = '';
+    if (jaTopCardsCache) {
+      const topMatch = jaTopCardsCache.find(c => 
+        c.id === lookupKey || 
+        c.id === altKey || 
+        (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn') && (c.id === `swsh${prefixLow.slice(1)}_ja-${cardNum}` || c.id === `swsh${prefixLow.slice(1)}-${cardNum}`))
+      );
+      if (topMatch && topMatch.name) {
+        topCardName = topMatch.name.replace(/Japanese\s+/i, '').replace(/\s*\([^)]*\)$/, '').trim();
+      }
+    }
+
+    let resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || topCardName || `${setName} Card #${cardNum}`;
     if (jaRegex.test(resolvedName) || resolvedName.includes('Card #') || resolvedName.includes('Card ')) {
       resolvedName = translateJapaneseName(resolvedName);
     }
