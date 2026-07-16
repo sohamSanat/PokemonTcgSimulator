@@ -659,7 +659,15 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
     else if (r.includes('ace spec') || nameLow.includes('ace spec')) aceSpecs.push(card);
     else if (r === 's' || r === 'shiny rare') shinyRares.push(card);
     else if (r === 'ssr' || r === 'shiny super rare') shinySuperRares.push(card);
-    else commons.push(card); // fallback
+    else {
+      const rawSetId = config.rawId;
+      const p = getJapaneseCardRealPrice(rawSetId, card.localId) ?? getJapaneseCardRealPrice(card.id) ?? (card as any)?.pricing?.tcgplayer?.normal?.marketPrice ?? 0.15;
+      if (p > 12) superRares.push(card);
+      else if (p > 6) artRares.push(card);
+      else if (p > 2) doubleRares.push(card);
+      else if (p > 0.5) uncommons.push(card);
+      else commons.push(card);
+    }
   }
 
   // Robust fallbacks if set metadata missed specific pools
@@ -1001,7 +1009,15 @@ export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<Pokem
       id: `${p.summary.id}-${idx}-${Date.now()}`,
       localId: p.summary.localId,
       name: exactName,
-      rarity: (p.summary.rarity && p.summary.rarity !== 'C' && p.summary.rarity !== 'U' && p.summary.rarity !== 'Common' && p.summary.rarity !== 'Uncommon') ? p.summary.rarity : (p.defaultRarity || p.summary.rarity || 'Common'),
+      rarity: (() => {
+        let finalRarity = (p.summary.rarity && p.summary.rarity !== 'C' && p.summary.rarity !== 'U' && p.summary.rarity !== 'Common' && p.summary.rarity !== 'Uncommon') ? p.summary.rarity : (p.defaultRarity || p.summary.rarity || 'Common');
+        if (realPrice > 12 && (finalRarity.includes('Common') || finalRarity.includes('Uncommon') || finalRarity === 'C' || finalRarity === 'U')) {
+          finalRarity = 'Special Art Rare';
+        } else if (realPrice > 5 && (finalRarity.includes('Common') || finalRarity.includes('Uncommon'))) {
+          finalRarity = 'Art Rare';
+        }
+        return finalRarity;
+      })(),
       isReverseHolo: p.isReverseHolo,
       image: p.summary.image,
       images: {
