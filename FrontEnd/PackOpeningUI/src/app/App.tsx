@@ -817,13 +817,25 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
     setIsVendorTyping(true);
 
     try {
+      const fullCardSet = liveCardFull?.set?.name || (activePoke as any).set?.name || (activePoke.name.includes('(') ? activePoke.name.split('(')[1].replace(')', '').trim() : 'Paradise Dragona / Japanese Series');
+      const fullCardRarity = liveCardFull?.rarity || activePoke.rarity || 'Special Art / Rare';
+      const fullCardArtist = liveCardFull?.illustrator || activePoke.illustrator || 'Ken Sugimori / Official Pokémon Artist';
+      const fullCardHp = liveCardFull?.hp || (activePoke as any).hp || 'Standard';
+      const fullCardTypes = liveCardFull?.types ? liveCardFull.types.join(', ') : ((activePoke as any).types ? (activePoke as any).types.join(', ') : 'Dragon / Multi');
+
       const reply = await generateVendorReply({
         vendorName,
         vendorBooth,
         vendorRating,
-        cardName: poke.name,
+        cardName: activePoke.name || poke.name,
         cardPrice: vendorPrice,
         cardGrade: poke.slabGrade !== 'N/A' && poke.slabGrade ? poke.slabGrade : 'Near Mint / Slab',
+        cardSet: fullCardSet,
+        cardRarity: fullCardRarity,
+        cardIllustrator: fullCardArtist,
+        cardHp: String(fullCardHp),
+        cardTypes: fullCardTypes,
+        cardId: activePoke.id,
         chatHistory: chatMessages,
         userMessage: userMsgText
       });
