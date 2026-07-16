@@ -1,9 +1,8 @@
 // AI Vendor Chat Service powered by Google Gemini
-// NOTE: If the Gemini API key is blocked/leaked, the Smart Local AI Engine handles ALL conversations naturally.
-
-// IMPORTANT: The API key below was reported as leaked by Google and is permanently disabled.
-// To restore live Gemini AI: go to https://aistudio.google.com/app/apikey, create a NEW key, and replace the value below.
-const GEMINI_API_KEY = "REDACTED_GEMINI_KEY"; // REPLACE THIS WITH A NEW KEY
+// API key is loaded from the VITE_GEMINI_API_KEY environment variable.
+// - Locally: set it in .env.local (already in .gitignore — safe to commit)
+// - Vercel: add VITE_GEMINI_API_KEY in your Vercel project → Settings → Environment Variables
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
 
 export interface VendorChatContext {
   vendorName: string;
