@@ -1,0 +1,10 @@
+{
+  "description": "Visualize and participate in live high-stakes digital trading card auctions with real-time bidding, detailed 3D card views, and dynamic lot tracking.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

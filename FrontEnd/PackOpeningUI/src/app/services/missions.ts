@@ -95,7 +95,7 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'swsh3', setName: 'Darkness Ablaze', count: 2, language: 'en' },
+      { setId: 'me02.5', setName: 'Ascended Heroes', count: 2, language: 'en' },
       { setId: 'sv01', setName: 'Scarlet & Violet Base', count: 1, language: 'en' }
     ],
     actionType: 'open_pack'
@@ -126,6 +126,19 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'swsh12', setName: 'Silver Tempest', count: 2, language: 'en' }
     ],
     actionType: 'inspect_card'
+  },
+  {
+    id: 'daily_collect_cards',
+    title: 'Daily Binder Addition',
+    description: 'Add 5 cards to your personal Binder collections.',
+    type: 'daily',
+    target: 5,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv03', setName: 'Obsidian Flames', count: 1, language: 'en' }
+    ],
+    actionType: 'collect_card'
   },
 
   // --- WEEKLY MISSIONS ---
@@ -173,6 +186,19 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'sv4a', setName: 'Shiny Treasure ex', count: 3, language: 'ja' }
     ],
     actionType: 'buy_vendor'
+  },
+  {
+    id: 'weekly_inspect_market',
+    title: 'Market Analyst',
+    description: 'Inspect 20 different cards using the 3D Market Inspector or Art Studio.',
+    type: 'weekly',
+    target: 20,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'swsh11', setName: 'Lost Origin', count: 3, language: 'en' }
+    ],
+    actionType: 'inspect_card'
   },
 
   // --- MONTHLY MISSIONS ---
@@ -222,6 +248,19 @@ const INITIAL_MISSIONS: Mission[] = [
     ],
     rewardCard: PROMO_CARDS.mewtwo_gold_secret,
     actionType: 'collect_card'
+  },
+  {
+    id: 'monthly_vendor_chat',
+    title: 'Master Negotiator',
+    description: 'Chat or negotiate price with convention booth vendors 15 times.',
+    type: 'monthly',
+    target: 15,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'swsh12pt5', setName: 'Crown Zenith', count: 5, language: 'en' }
+    ],
+    actionType: 'vendor_chat'
   }
 ];
 

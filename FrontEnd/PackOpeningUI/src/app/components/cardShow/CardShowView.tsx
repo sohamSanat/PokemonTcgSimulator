@@ -29,6 +29,7 @@ import {
   RotateCcw,
   TrendingDown
 } from "lucide-react";
+import { AuctionDashboard } from '../auction/AuctionDashboard';
 
 interface CardShowViewProps {
   onBackToPacks?: () => void;
@@ -45,6 +46,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
+  const [showAuctionDashboard, setShowAuctionDashboard] = useState(false);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
   const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(12);
@@ -363,6 +365,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   };
 
   const handleBoothSelect = (vendorObj: any) => {
+    if (vendorObj.id === 'stage' || vendorObj.type === 'auction' || vendorObj.name.includes("AUCTION")) {
+      setShowAuctionDashboard(true);
+      return;
+    }
     const fullObj = {
       ...vendorObj,
       type: getBoothType(vendorObj.name, vendorObj.type)
@@ -784,6 +790,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
     return matchesSearch;
   });
+
+  if (showAuctionDashboard) {
+    return <AuctionDashboard onBack={() => setShowAuctionDashboard(false)} />;
+  }
 
   return (
     <div className="w-full h-full min-h-[calc(100vh-5rem)] bg-[#090a0c] text-[#f8fafc] flex flex-col font-sans overflow-hidden">
