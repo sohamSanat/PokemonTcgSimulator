@@ -1,8 +1,9 @@
-// AI Vendor Chat Service powered by Google Gemini (gemini-1.5-flash / gemini-2.5-flash)
-// Includes a Smart Local AI Shopkeeper Engine that takes over dynamically if Google disables or rate-limits the API key,
-// and answers literally ANY question about the card (set, illustrator, rarity, HP, condition, price, shipping) directly from the API metadata!
+// AI Vendor Chat Service powered by Google Gemini
+// NOTE: If the Gemini API key is blocked/leaked, the Smart Local AI Engine handles ALL conversations naturally.
 
-const GEMINI_API_KEY = "REDACTED_GEMINI_KEY";
+// IMPORTANT: The API key below was reported as leaked by Google and is permanently disabled.
+// To restore live Gemini AI: go to https://aistudio.google.com/app/apikey, create a NEW key, and replace the value below.
+const GEMINI_API_KEY = "REDACTED_GEMINI_KEY"; // REPLACE THIS WITH A NEW KEY
 
 export interface VendorChatContext {
   vendorName: string;
@@ -21,87 +22,79 @@ export interface VendorChatContext {
   userMessage: string;
 }
 
-function getVendorPersonality(vendorName: string): string {
+function getVendorPersonality(vendorName: string): { description: string; tone: string; greeting: string } {
   const name = vendorName.toUpperCase();
   if (name.includes("VINTAGEVAULT")) {
-    return "You are a nostalgic 90s WOTC & vintage card connoisseur. You love old-school holos, clean swirls, and Wizards of the Coast history. Tone: Warm, nostalgic, classic collector.";
+    return { description: "nostalgic 90s WOTC vintage connoisseur", tone: "warm and nostalgic", greeting: "Man, you've got great taste in classics!" };
   } else if (name.includes("ALPHA GRAILS")) {
-    return "You are a high-end Wall Street style card investor. You care about strict population reports, liquidity, and PSA 10 gem rates. Tone: Sharp, business-minded, elite dealer.";
+    return { description: "high-end Wall Street card investor", tone: "sharp and business-minded", greeting: "Only serious collectors end up at our booth." };
   } else if (name.includes("GOLD STAR")) {
-    return "You are obsessed with ultra-rare Gold Star and shiny Pokémon cards. You get hyped over extreme rarity and low print numbers. Tone: High-energy, passionate, collector-focused.";
+    return { description: "ultra-rare Gold Star specialist", tone: "high-energy and passionate", greeting: "You found the holy grail aisle of this entire convention!" };
   } else if (name.includes("SLAB CITY") || name.includes("SPECS GRADED") || name.includes("FILMERA") || name.includes("UDS")) {
-    return "You are a strict professional graded slab specialist. You focus heavily on centering, corner sub-grades, and slab case clarity. Tone: Precise, analytical, strict grader.";
+    return { description: "professional graded slab specialist", tone: "precise and analytical", greeting: "Every card here has been meticulously graded and verified." };
   } else if (name.includes("PALDEA") || name.includes("MODERN ALT") || name.includes("PROMOS")) {
-    return "You are a modern era alt-art and secret rare specialist! You love illustration rares, vibrant modern art, and top chase hits. Tone: Trendy, fast-paced, hype.";
+    return { description: "modern alt-art and secret rare specialist", tone: "trendy and hype", greeting: "You've got incredible taste, this is THE booth for modern hits!" };
   } else if (name.includes("JAPANESE")) {
-    return "You are a direct-from-Tokyo Japanese card import specialist. You take pride in superior Japanese print quality and exclusive Kanji promos. Tone: Polite, knowledgeable, authentic.";
+    return { description: "direct-from-Tokyo Japanese card specialist", tone: "polite and authentic", greeting: "Welcome! We ship these directly from Japan, the quality is unmatched." };
   } else if (name.includes("SEALED")) {
-    return "You are a sealed booster box and pristine factory seal purist. You value unweighed packs and tight factory wrap above all else. Tone: Protective, purist, seasoned hoarder.";
+    return { description: "sealed product and factory box purist", tone: "protective and seasoned", greeting: "Every box here is unweighed, untampered, factory-fresh — guaranteed." };
   } else if (name.includes("RETRO")) {
-    return "You are a classic Game Boy era retro geek who loves Ken Sugimori artwork and early Nintendo trading history. Tone: Friendly, nostalgic, welcoming.";
+    return { description: "classic Pokémon retro geek", tone: "friendly and nostalgic", greeting: "Welcome to the good old days of Pokémon collecting!" };
   }
-  return "You are a charismatic, street-smart convention floor card dealer who loves fast deals and knowing exact market pricing. Tone: Charismatic, sharp, friendly trader.";
+  return { description: "charismatic convention floor card dealer", tone: "friendly and sharp", greeting: "Welcome to the booth, glad you stopped by!" };
 }
 
 export async function generateVendorReply(context: VendorChatContext): Promise<string> {
-  const personality = getVendorPersonality(context.vendorName);
+  const persona = getVendorPersonality(context.vendorName);
 
-  const systemPrompt = `You are a convention booth representative for booth "${context.vendorBooth}" ("${context.vendorName}").
-Your Booth Rating: ${context.vendorRating}.
-Your Unique Personality & Vibe: ${personality}
+  const systemPrompt = `You are a real Pokémon TCG convention booth vendor at "${context.vendorBooth}" ("${context.vendorName}").
+Personality: ${persona.description}. Tone: ${persona.tone}.
+Booth Rating: ${context.vendorRating}.
 
-You are negotiating with a buyer inspecting this card from your showcase:
-- Card Name: "${context.cardName}" (ID: ${context.cardId || "N/A"})
-- Expansion / Set Name: "${context.cardSet || "Pokémon TCG Set"}"
-- Card Rarity: "${context.cardRarity || "Ultra Rare"}"
-- Illustrator / Artist: "${context.cardIllustrator || "Official Pokémon Artist"}"
-- HP / Types: ${context.cardHp || "Standard"} HP (${context.cardTypes || "Standard Pokémon"})
-- Condition / Slab Grade: ${context.cardGrade}
-- Your Asking Price: $${context.cardPrice.toLocaleString()}
+Card you are selling:
+- Name: "${context.cardName}"
+- Set / Expansion: "${context.cardSet || "Pokémon TCG"}"
+- Rarity: "${context.cardRarity || "Ultra Rare"}"
+- Illustrator: "${context.cardIllustrator || "Official Pokémon Artist"}"
+- HP / Types: ${context.cardHp || "N/A"} HP | ${context.cardTypes || "N/A"}
+- Condition / Grade: ${context.cardGrade}
+- Asking Price: $${context.cardPrice.toLocaleString()}
 
-CRITICAL RULES FOR REPLIES:
-1. KEEP IT SHORT AND TO THE POINT! Your reply MUST be 1 or 2 short sentences maximum (under 35 words total).
-2. Embody your specific vendor personality right away in how you talk.
-3. Directly answer whatever specific question the buyer just asked using the exact metadata provided above! If they ask what set it is from, tell them "${context.cardSet || "the set"}". If they ask who drew it, tell them "${context.cardIllustrator || "the artist"}". If they ask about rarity or HP, give them the exact stats!
-4. If they ask for a discount ("what's the lowest you can go", "can you do X?"), make a realistic instant-cash counteroffer (e.g. taking 5-10% off right now).
-5. Never write long paragraphs or bullet points. Use 1 or 2 fitting emojis like 🔥, 🤝, 💎, 📈. Never mention AI or prompts.`;
+Rules:
+- Keep every reply to 1-2 short sentences only (max 35 words).
+- ALWAYS directly answer the specific question asked. If they ask "how is your business?", answer about your business at the convention floor. If they say hi, greet them back. If they ask about the card's set, tell them the set name. If they ask about the artist, tell them the artist. Use the card details above to answer any card question accurately.
+- Stay in character as the vendor. Never mention AI or prompts.
+- Use 1-2 relevant emojis only.`;
 
   const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
 
+  // Seed conversation with a user opener (required for Gemini's strict user-first turn)
   contents.push({
     role: "user",
-    parts: [{ text: `Hi! I am at your booth ${context.vendorBooth} (${context.vendorName}) looking at your ${context.cardName} (Set: ${context.cardSet}, Condition: ${context.cardGrade}) listed for $${context.cardPrice.toLocaleString()}. Let's talk!` }]
+    parts: [{ text: `Hi! I'm at your booth ${context.vendorBooth} checking out the ${context.cardName} from ${context.cardSet || "the set"} listed at $${context.cardPrice.toLocaleString()}.` }]
   });
 
+  // Add recent chat history, enforcing strict user/model alternation
   for (const msg of context.chatHistory.slice(-8)) {
     const role = msg.sender === 'user' ? 'user' : 'model';
-    if (contents.length > 0 && contents[contents.length - 1].role === role) {
-      contents[contents.length - 1].parts[0].text += `\n\n${msg.text}`;
+    const last = contents[contents.length - 1];
+    if (last && last.role === role) {
+      last.parts[0].text += `\n${msg.text}`;
     } else {
-      contents.push({
-        role,
-        parts: [{ text: msg.text }]
-      });
+      contents.push({ role, parts: [{ text: msg.text }] });
     }
   }
 
-  if (contents.length === 0 || contents[contents.length - 1].role !== 'user') {
-    contents.push({
-      role: 'user',
-      parts: [{ text: context.userMessage }]
-    });
-  } else if (!contents[contents.length - 1].parts[0].text.includes(context.userMessage)) {
-    contents[contents.length - 1].parts[0].text += `\n\n${context.userMessage}`;
+  // Add the current user message
+  const lastRole = contents[contents.length - 1]?.role;
+  if (lastRole !== 'user') {
+    contents.push({ role: 'user', parts: [{ text: context.userMessage }] });
+  } else {
+    contents[contents.length - 1].parts[0].text += `\n${context.userMessage}`;
   }
 
-  // Try standard v1beta Gemini endpoints
-  const modelsToTry = [
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-latest",
-    "gemini-2.0-flash-exp",
-    "gemini-1.5-pro",
-    "gemini-2.5-flash"
-  ];
+  // Try Gemini API models in order
+  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro", "gemini-2.0-flash-exp"];
 
   for (const model of modelsToTry) {
     try {
@@ -110,89 +103,120 @@ CRITICAL RULES FOR REPLIES:
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
+          systemInstruction: { parts: [{ text: systemPrompt }] },
           contents,
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 120,
-          }
+          generationConfig: { temperature: 0.85, maxOutputTokens: 100 }
         })
       });
 
       if (!response.ok) {
+        const errText = await response.text();
+        console.warn(`[VendorChat] Gemini ${model} rejected (${response.status}):`, errText.slice(0, 200));
         continue;
       }
 
       const data = await response.json();
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-      if (reply) {
-        return reply;
-      }
+      if (reply) return reply;
     } catch (err) {
-      console.warn(`Gemini vendor chat fetch error with ${model}:`, err);
+      console.warn(`[VendorChat] Network error with ${model}:`, err);
     }
   }
 
-  // =========================================================================================
-  // SMART LOCAL AI SHOPKEEPER ENGINE (With Full API Metadata Access)
-  // When Google blocks the API key for being leaked, this intelligent local engine uses all card
-  // details from the API (set name, rarity, illustrator, HP, condition, price) to answer accurately!
-  // =========================================================================================
-  const lowerMsg = context.userMessage.toLowerCase();
-  const discounted = Math.round(context.cardPrice * 0.92 * 100) / 100;
-  const setName = context.cardSet || (context.cardName.includes('(') ? context.cardName.split('(')[1].replace(')', '').trim() : 'the Pokémon TCG expansion');
-  const rarityName = context.cardRarity || 'Special Art Rare';
-  const artistName = context.cardIllustrator || 'Ken Sugimori / Official TCG Artist';
-  const hpValue = context.cardHp && context.cardHp !== 'Standard' && context.cardHp !== 'N/A' ? `${context.cardHp} HP` : 'top-tier battle stats';
-  const typesValue = context.cardTypes && context.cardTypes !== 'Standard Pokémon' ? context.cardTypes : 'Dragon/Multi';
+  // =======================================================================
+  // SMART LOCAL AI ENGINE — full card metadata, truly conversational
+  // Handles ANY message naturally when Gemini API is unavailable.
+  // =======================================================================
+  return localVendorReply(context, persona);
+}
 
-  // 1. User asks which SET / SERIES / EXPANSION / PACK the card is from
-  if (lowerMsg.includes("set") || lowerMsg.includes("from") || lowerMsg.includes("series") || lowerMsg.includes("expansion") || lowerMsg.includes("pack") || lowerMsg.includes("box")) {
-    return `This exact ${context.cardName} is from the ${setName} expansion! It's one of the top ${rarityName} chase hits in the entire set. Still want to lock it in at $${discounted.toLocaleString()}? 🔥🤝`;
+function localVendorReply(
+  context: VendorChatContext,
+  persona: { description: string; tone: string; greeting: string }
+): string {
+  const msg = context.userMessage.toLowerCase().trim();
+  const name = context.cardName;
+  const price = context.cardPrice.toLocaleString();
+  const dealPrice = (Math.round(context.cardPrice * 0.92 * 100) / 100).toLocaleString();
+  const set = context.cardSet || "the set";
+  const rarity = context.cardRarity || "Ultra Rare";
+  const artist = context.cardIllustrator || "the official Pokémon artist";
+  const hp = context.cardHp && context.cardHp !== 'Standard' && context.cardHp !== 'N/A' ? `${context.cardHp} HP` : "top stats";
+  const types = context.cardTypes && context.cardTypes !== 'N/A' ? context.cardTypes : "standard";
+  const booth = context.vendorBooth;
+  const vendor = context.vendorName;
+
+  // ---- GREETINGS & SMALL TALK ----
+  if (/^(hi|hey|hello|howdy|sup|yo|good\s*(morning|afternoon|evening)|what'?s up|hiya)/i.test(msg)) {
+    return `${persona.greeting} How can I help you with this ${name} today? 😊🔥`;
   }
 
-  // 2. User asks about ARTIST / ILLUSTRATOR / WHO DREW IT / ARTWORK
-  if (lowerMsg.includes("artist") || lowerMsg.includes("illustrator") || lowerMsg.includes("drew") || lowerMsg.includes("draw") || lowerMsg.includes("design") || (lowerMsg.includes("who") && lowerMsg.includes("art"))) {
-    return `The artwork on this ${context.cardName} was illustrated by ${artistName}! Look at how clean and vibrant those colors are in person. Ready to add it to your collection for $${discounted.toLocaleString()}? 💎✨`;
+  if (/how.*?business|how.*?going|how.*?(are|r)\s+you|how.*?do(ing)?|everything\s+good|everything\s+ok/i.test(msg)) {
+    return `Business is booming at ${booth} today! Collectors have been going crazy for this ${name}. Anything I can tell you about it? 🔥`;
   }
 
-  // 3. User asks about RARITY / SECRET RARE / HIT / PULL
-  if (lowerMsg.includes("rarity") || lowerMsg.includes("rare") || lowerMsg.includes("secret") || lowerMsg.includes("pull") || lowerMsg.includes("hit")) {
-    return `It's an official ${rarityName}! Finding or pulling one of these with centering this sharp is super tough! I can do $${discounted.toLocaleString()} cash out the door right now! 🔥📈`;
+  if (/busy|crowded|traffic|floor|convention|show|event/i.test(msg)) {
+    return `It's been an incredible day at ${vendor} — the floor is packed and cards are flying off the showcase! Anything I can help you with on the ${name}? 🎉`;
   }
 
-  // 4. User asks about HP / TYPE / STATS / BATTLE / PLAY
-  if (lowerMsg.includes("hp") || lowerMsg.includes("type") || lowerMsg.includes("stat") || lowerMsg.includes("battle") || lowerMsg.includes("play") || lowerMsg.includes("deck")) {
-    return `In battle, this ${context.cardName} boasts ${hpValue} (${typesValue} type)! Whether you play competitively or display it in a binder, it's a beast! Ready for $${discounted.toLocaleString()}? ⚡📦`;
+  if (/thank|thanks|appreciate|cool|nice|great|awesome|amazing|love it/i.test(msg)) {
+    return `Appreciate you stopping by ${booth} (${vendor})! If the ${name} catches your eye, I can do $${dealPrice} cash right now. 🤝🔥`;
   }
 
-  // 5. User expresses excitement / finding card / hunting all day
-  if (lowerMsg.includes("looking") || lowerMsg.includes("found") || lowerMsg.includes("all day") || lowerMsg.includes("finally") || lowerMsg.includes("love") || lowerMsg.includes("grail")) {
-    return `That's what I love to hear! Finding a grail like this ${context.cardName} after hunting all day is the best feeling! Since you appreciate it so much, I can let you take it home right now for $${discounted.toLocaleString()}! 🔥💎`;
+  if (/bye|goodbye|see you|later|take care|cya/i.test(msg)) {
+    return `Thanks for stopping by ${booth}! Come back anytime — the ${name} will be waiting for you at $${price}! 👋🔥`;
   }
 
-  // 6. User asks about CONDITION / GRADE / PSA 9 / PSA 10 / CENTERING / WHITENING / CORNERS
-  if (lowerMsg.includes("condition") || lowerMsg.includes("psa") || lowerMsg.includes("grade") || lowerMsg.includes("10") || lowerMsg.includes("9") || lowerMsg.includes("center") || lowerMsg.includes("corner") || lowerMsg.includes("whitening")) {
-    return `The condition on this ${context.cardName} is exceptionally clean—razor sharp corners, zero whitening, and strong centering (${context.cardGrade})! Definitely worthy of a PSA 9 or 10 candidate! Still want to close at $${discounted.toLocaleString()}? 🔥💎`;
+  // ---- CARD SET / SERIES / EXPANSION ----
+  if (/which\s+set|what\s+set|from\s+set|what\s+expansion|which\s+expansion|what\s+series|what\s+pack|which\s+pack|where.*?(from|come)|what.*?collection/i.test(msg)) {
+    return `This ${name} is from the ${set} expansion! It's one of the top ${rarity} hits in the entire set. 🔥📦`;
   }
 
-  // 7. User asks about PRICE / DISCOUNT / LOWEST / OFFER / DEAL
-  if (lowerMsg.includes("lowest") || lowerMsg.includes("discount") || lowerMsg.includes("price") || lowerMsg.includes("do") || lowerMsg.includes("offer") || lowerMsg.includes("deal") || lowerMsg.includes("cheaper") || lowerMsg.includes("$")) {
-    return `My sticker price is $${context.cardPrice.toLocaleString()}, but since you're standing right here at booth ${context.vendorBooth}, I can knock it down to $${discounted.toLocaleString()} cash out the door! Do we have a deal? 🤝🔥`;
+  // ---- CARD ARTIST / ILLUSTRATOR ----
+  if (/who.*?(drew|draw|painted|illust|design|made|creat|artist)|illustrat|artwork.*?(by|who)|who.*?art/i.test(msg)) {
+    return `This card was illustrated by ${artist}! The artwork is what makes it such a grail piece for collectors. 💎✨`;
   }
 
-  // 8. User asks about SHIPPING / PACKING / SENDING
-  if (lowerMsg.includes("ship") || lowerMsg.includes("send") || lowerMsg.includes("pack") || lowerMsg.includes("box") || lowerMsg.includes("mail")) {
-    return `We ship every order in premium top-loaders wrapped tightly in double bubble wrap inside rigid crush-proof boxes directly from ${context.vendorName}! Ready to make it yours? 📦✨`;
+  // ---- RARITY ----
+  if (/how\s+rare|what.*?rarity|is it rare|rare card|secret rare|pull rate|how\s+hard|hard to\s+(find|get|pull)/i.test(msg)) {
+    return `It's an official ${rarity} — these are seriously tough to pull and even harder to find in ${context.cardGrade} condition! 🔥📈`;
   }
 
-  // 9. User asks about AUTHENTICITY / REAL / VERIFIED
-  if (lowerMsg.includes("why") || lowerMsg.includes("real") || lowerMsg.includes("authentic") || lowerMsg.includes("fake") || lowerMsg.includes("legit")) {
-    return `Every single card in our showcase at ${context.vendorBooth} is 100% verified and authenticated before hitting the convention floor! Guaranteed authentic! 🛡️✨`;
+  // ---- HP / TYPES / BATTLE STATS ----
+  if (/how.*?hp|what.*?hp|\bhp\b|hit\s*points|how.*?strong|what\s+type|which\s+type|battle|playable|competitive|deck/i.test(msg)) {
+    return `This ${name} packs ${hp} and is a ${types} type — an absolute powerhouse for the game and gorgeous to display! ⚡💎`;
   }
 
-  // 10. Comprehensive conversational fallback using full card metadata
-  return `This ${context.cardName} (from the ${setName} expansion, ${rarityName}) is one of the cleanest hits at booth ${context.vendorBooth}! If you have any other questions or want to lock it in right now for $${discounted.toLocaleString()}, let me know! 🤝🔥`;
+  // ---- CONDITION / GRADE / PSA ----
+  if (/condition|grade|psa|bgs|cgc|centering|corners|whitening|scratches|nm|near\s*mint|mint|raw|slab/i.test(msg)) {
+    return `The condition on this ${name} is ${context.cardGrade} — sharp corners, zero whitening, clean centering. A strong PSA 9/10 candidate! 🔥💎`;
+  }
+
+  // ---- PRICE / DEAL / DISCOUNT / OFFER ----
+  if (/price|cost|how\s+much|lowest|discount|deal|offer|negotiate|cheaper|can\s+(you|u)\s+do|best\s+price|what.*?(take|accept)/i.test(msg)) {
+    return `Asking $${price} but since you're right here at booth ${booth}, I can do $${dealPrice} cash out the door right now! 🤝🔥`;
+  }
+
+  // ---- SHIPPING / PACKING ----
+  if (/ship|send|mail|post|deliver|packag|how.*?(get|receive)|online/i.test(msg)) {
+    return `We ship in premium top-loaders with double-bubble wrap inside rigid crush-proof boxes — every order from ${vendor} arrives mint! 📦✨`;
+  }
+
+  // ---- AUTHENTICITY ----
+  if (/real|authentic|legit|fake|counterfeit|verified|genuine/i.test(msg)) {
+    return `Every card in our ${booth} showcase is 100% authenticated before hitting the floor — never sold a fake in our lives! 🛡️✨`;
+  }
+
+  // ---- ABOUT THE CARD (general) ----
+  if (/tell.*?about|what.*?is|info|details|describe|know\s+about|specs/i.test(msg)) {
+    return `This ${name} is a ${rarity} from the ${set} expansion, illustrated by ${artist}, in ${context.cardGrade} condition — one of the cleanest copies at the show! 💎🔥`;
+  }
+
+  // ---- GENERAL CONVERSATIONAL FALLBACK ----
+  const responses = [
+    `We've been selling Pokémon cards at conventions like this for years — ${booth} (${vendor}) is the real deal! What would you like to know about this ${name}? 😊`,
+    `Always happy to chat! This ${name} from the ${set} set is honestly one of the best pieces in our ${booth} showcase right now. 🔥`,
+    `Great talking to you! Whether it's about condition, pricing, or the card's history — I'm here to help at ${booth}. What's on your mind? 🤝`,
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
 }
