@@ -162,7 +162,7 @@ export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal:
   });
 
   const expensive = allCombined.filter(c => c.price >= 100);
-  const normal = allCombined.filter(c => c.price < 100 && c.price > 0);
+  const normal = allCombined.filter(c => c.price <= 400 && c.price >= 5);
 
   return {
     expensive: expensive.length > 0 ? expensive : allCombined,

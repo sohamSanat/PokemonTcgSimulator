@@ -605,16 +605,17 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
   const [normalLot, setNormalLot] = useState<AuctionLotState>(() => {
     const initCard = pools.normal[0] || DUMMY_CARDS.normal[0];
+    const startPrice = Math.max(1, Math.floor(initCard.price * 0.35));
     return {
       cardIndex: 0,
-      currentBid: 1,
-      timeLeftMs: 15000,
-      maxTimeMs: 15000,
+      currentBid: startPrice,
+      timeLeftMs: 45000,
+      maxTimeMs: 45000,
       bids: Array.from({ length: 2 }).map((_, i) => ({
-        id: Date.now() - (2 - i) * 500,
+        id: Date.now() - (2 - i) * 1000,
         user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-        amount: 1 + i * 2,
-        time: Date.now() - (2 - i) * 500,
+        amount: Math.max(1, startPrice - (2 - i) * 2),
+        time: Date.now() - (2 - i) * 1000,
       })),
       status: 'active',
       soldTimeLeftMs: 5000,
@@ -623,7 +624,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     };
   });
 
-  // --- BACKGROUND ENGINE 1: GRAIL LOTS (Expensive >= $100, 50% start price, 120s timer) ---
+  // --- BACKGROUND ENGINE 1: GRAIL LOTS (Slabs >= $100, 50% start price, 120s timer, realistic pacing) ---
   useEffect(() => {
     const timer = setInterval(() => {
       setExpensiveLot((prev) => {
@@ -635,7 +636,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             const initBids = Array.from({ length: 3 }).map((_, i) => ({
               id: Date.now() - (3 - i) * 1000,
               user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-              amount: startPrice - (3 - i) * 10,
+              amount: Math.max(1, startPrice - (3 - i) * 10),
               time: Date.now() - (3 - i) * 1000,
             }));
             return {
@@ -674,8 +675,22 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           };
         }
 
-        if (Math.random() < 0.35) {
-          const increment = Math.floor(Math.random() * 4 + 1) * 10;
+        const currentCard = pools.expensive[prev.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
+        const marketPrice = currentCard.price;
+
+        // Realistic pacing & market price ceiling (Never bid above 102% of market value)
+        let bidChance = 0.28;
+        if (prev.currentBid >= marketPrice * 0.85) bidChance = 0.12;
+        if (prev.currentBid >= marketPrice * 0.95) bidChance = 0.03;
+        if (prev.currentBid >= marketPrice * 1.02) bidChance = 0; // Ceiling: NPCs stop bidding above market price!
+
+        if (Math.random() < bidChance) {
+          let increment = Math.floor(Math.random() * 3 + 1) * 10; // $10 to $30
+          if (marketPrice > 1500) increment = Math.floor(Math.random() * 4 + 2) * 25; // $50 to $125
+          if (prev.currentBid + increment > marketPrice * 1.02) {
+            increment = Math.max(5, Math.floor(marketPrice * 1.02 - prev.currentBid));
+          }
+
           const newAmount = prev.currentBid + increment;
           const newBid = {
             id: Date.now() + Math.floor(Math.random() * 1000),
@@ -700,19 +715,27 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     return () => clearInterval(timer);
   }, [pools.expensive]);
 
-  // --- BACKGROUND ENGINE 2: BLITZ $1 STARTS (< $100 cards, $1 start, 15s duration, rapid bids) ---
+  // --- BACKGROUND ENGINE 2: STANDARD ARENA ($5 - $400 hits, 35% start, 45s timer, 1s tick with ceiling) ---
   useEffect(() => {
     const timer = setInterval(() => {
       setNormalLot((prev) => {
         if (prev.status === 'sold') {
-          if (prev.soldTimeLeftMs <= 250) {
+          if (prev.soldTimeLeftMs <= 1000) {
             const nextIdx = prev.cardIndex + 1;
+            const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
+            const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
+            const initBids = Array.from({ length: 2 }).map((_, i) => ({
+              id: Date.now() - (2 - i) * 1000,
+              user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+              amount: Math.max(1, startPrice - (2 - i) * 2),
+              time: Date.now() - (2 - i) * 1000,
+            }));
             return {
               cardIndex: nextIdx,
-              currentBid: 1,
-              timeLeftMs: 15000,
-              maxTimeMs: 15000,
-              bids: [],
+              currentBid: startPrice,
+              timeLeftMs: 45000,
+              maxTimeMs: 45000,
+              bids: initBids,
               status: 'active',
               soldTimeLeftMs: 5000,
               winner: '',
@@ -721,11 +744,11 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           }
           return {
             ...prev,
-            soldTimeLeftMs: prev.soldTimeLeftMs - 250
+            soldTimeLeftMs: prev.soldTimeLeftMs - 1000
           };
         }
 
-        if (prev.timeLeftMs <= 250) {
+        if (prev.timeLeftMs <= 1000) {
           const lastBid = prev.bids[prev.bids.length - 1];
           const winner = lastBid ? lastBid.user : (MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)]);
           const finalPrice = prev.currentBid;
@@ -742,8 +765,25 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           };
         }
 
-        if (Math.random() < 0.80) {
-          const increment = Math.floor(Math.random() * 3 + 1);
+        const currentCard = pools.normal[prev.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
+        const marketPrice = currentCard.price;
+
+        // Realistic pacing: prevent $30 card from shooting past market value
+        let bidChance = 0.25;
+        if (prev.currentBid >= marketPrice * 0.85) bidChance = 0.10;
+        if (prev.currentBid >= marketPrice * 0.95) bidChance = 0.03;
+        if (prev.currentBid >= marketPrice * 1.01) bidChance = 0; // Absolute ceiling: NPCs stop bidding at market price!
+
+        if (Math.random() < bidChance) {
+          let increment = 1;
+          if (marketPrice > 150) increment = Math.floor(Math.random() * 2 + 1) * 5; // $5 to $10
+          else if (marketPrice > 50) increment = Math.floor(Math.random() * 3 + 2); // $2 to $4
+          else increment = Math.floor(Math.random() * 2 + 1); // $1 to $2
+
+          if (prev.currentBid + increment > marketPrice * 1.01) {
+            increment = Math.max(1, Math.floor(marketPrice * 1.01 - prev.currentBid));
+          }
+
           const newAmount = prev.currentBid + increment;
           const newBid = {
             id: Date.now() + Math.floor(Math.random() * 1000),
@@ -753,7 +793,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           };
           return {
             ...prev,
-            timeLeftMs: prev.timeLeftMs - 250,
+            timeLeftMs: prev.timeLeftMs - 1000,
             currentBid: newAmount,
             bids: [...prev.bids, newBid].slice(-30)
           };
@@ -761,10 +801,10 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
         return {
           ...prev,
-          timeLeftMs: prev.timeLeftMs - 250
+          timeLeftMs: prev.timeLeftMs - 1000
         };
       });
-    }, 250);
+    }, 1000);
     return () => clearInterval(timer);
   }, [pools.normal]);
 
@@ -794,7 +834,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
         const initBids = Array.from({ length: 3 }).map((_, i) => ({
           id: Date.now() - (3 - i) * 1000,
           user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-          amount: startPrice - (3 - i) * 10,
+          amount: Math.max(1, startPrice - (3 - i) * 10),
           time: Date.now() - (3 - i) * 1000,
         }));
         return {
@@ -813,13 +853,21 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     } else {
       setNormalLot((prev) => {
         const nextIdx = prev.cardIndex + 1;
+        const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
+        const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
+        const initBids = Array.from({ length: 2 }).map((_, i) => ({
+          id: Date.now() - (2 - i) * 1000,
+          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+          amount: Math.max(1, startPrice - (2 - i) * 2),
+          time: Date.now() - (2 - i) * 1000,
+        }));
         return {
           ...prev,
           cardIndex: nextIdx,
-          currentBid: 1,
-          timeLeftMs: 15000,
-          maxTimeMs: 15000,
-          bids: [],
+          currentBid: startPrice,
+          timeLeftMs: 45000,
+          maxTimeMs: 45000,
+          bids: initBids,
           status: 'active',
           soldTimeLeftMs: 5000,
           winner: '',
@@ -883,8 +931,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 <div className="p-3 rounded-xl bg-slate-950/60 border border-cyan-500/30 flex gap-3 items-start">
                   <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-bold text-cyan-300">Blitz Arena (&lt; $100 Cards)</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Rapid-fire budget cards starting at only $1 with a 15-second timer. Fast clicks win here!</p>
+                    <h4 className="font-bold text-cyan-300">Standard &amp; Blitz Arena ($5 - $400 Cards)</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Slabs &amp; raw binder hits starting at 35% of market value with a 45-second timer and realistic NPC pacing anchored to market price.</p>
                   </div>
                 </div>
 
@@ -892,7 +940,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   <Coins className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-purple-300">Winning &amp; Market Value</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Click any bid button (`+$10`, `+$25`, etc.) to outbid NPC players. If you hold the highest bid when the clock hits 0:00, you win! The final price is deducted from your wallet balance.</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Click any bid button (`+$10`, `+$25`, etc.) to outbid NPC players. NPCs respect market price ceilings so items won't artificially shoot past value! If you hold the highest bid when the clock hits 0:00, you win!</p>
                   </div>
                 </div>
               </div>
@@ -976,7 +1024,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 )}
               >
                 <Zap className="w-3 h-3 text-cyan-400 shrink-0" />
-                <span>Blitz (&lt;$100)</span>
+                <span>Standard ($5-$400)</span>
               </button>
             </div>
 
@@ -1016,8 +1064,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 finalPrice={expensiveLot.finalPrice}
                 onPlaceBid={(increment) => handlePlayerBid('expensive', increment)}
                 onNextLot={() => handleNextLot('expensive')}
-                bidIncrements={[10, 25, 50]}
-                defaultBidIncrement={50}
+                bidIncrements={expensiveCard.price > 1500 ? [50, 100, 250] : [10, 25, 50]}
+                defaultBidIncrement={expensiveCard.price > 1500 ? 100 : 50}
                 theme={{
                   badgeBg: "bg-amber-500/20",
                   badgeText: "text-amber-400",
@@ -1036,7 +1084,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             </div>
           )}
 
-          {/* SECTION 2: LESS EXPENSIVE CARDS ARENA (Blitz $1 Starts < $100) */}
+          {/* SECTION 2: STANDARD / BLITZ ARENA ($5 - $400 hits) */}
           {(viewMode === 'both' || viewMode === 'normal_only') && (
             <div className={cn(
               "min-h-0 overflow-hidden rounded-2xl",
@@ -1044,8 +1092,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             )}>
               <AuctionLotSection
                 type="normal"
-                title="Blitz Cards Arena"
-                subtitle="Blitz Starts (< $100) • $1 Start"
+                title="Standard &amp; Blitz Arena"
+                subtitle="Slabs &amp; Binder Hits ($5 - $400) • 35% Start"
                 lotNumber={824 + normalLot.cardIndex}
                 currentCard={normalCard}
                 currentBid={normalLot.currentBid}
@@ -1058,8 +1106,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 finalPrice={normalLot.finalPrice}
                 onPlaceBid={(increment) => handlePlayerBid('normal', increment)}
                 onNextLot={() => handleNextLot('normal')}
-                bidIncrements={[1, 5, 10]}
-                defaultBidIncrement={5}
+                bidIncrements={normalCard.price > 150 ? [10, 25, 50] : normalCard.price > 50 ? [5, 10, 25] : [1, 2, 5]}
+                defaultBidIncrement={normalCard.price > 150 ? 25 : normalCard.price > 50 ? 10 : 2}
                 theme={{
                   badgeBg: "bg-cyan-500/20",
                   badgeText: "text-cyan-400",
