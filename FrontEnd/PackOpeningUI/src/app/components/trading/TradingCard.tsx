@@ -25,6 +25,15 @@ export const TradingCard: React.FC<{
   const [userCards, setUserCards] = useState<Card[]>([])
   const [sellerCards, setSellerCards] = useState<any[]>([])
 
+  // ── Sequential vault loading ──────────────────────────────────────────────
+  const BATCH_SIZE = 9
+  const [visibleCount, setVisibleCount] = useState(0)
+  const [resolvedIndices, setResolvedIndices] = useState<Set<number>>(new Set())
+  const reserveRef = React.useRef<any[]>([])
+  // Tracks how many times a slot has been swapped so a pathological slot can
+  // never loop forever replacing itself.
+  const replaceAttemptsRef = React.useRef<Record<number, number>>({})
+
   useEffect(() => {
     let cancelled = false
 
@@ -88,7 +97,13 @@ export const TradingCard: React.FC<{
         })
       }
 
-      if (!cancelled) setSellerCards(result)
+      if (!cancelled) {
+        setSellerCards(result)
+        // Keep the unused pool as a replacement reserve so any card whose art
+        // fails to load can be swapped for a fresh, real card — never a
+        // placeholder.
+        reserveRef.current = [...english.slice(ei), ...japanese.slice(ji)]
+      }
     })
 
     return () => { cancelled = true }
@@ -99,6 +114,90 @@ export const TradingCard: React.FC<{
   // CardShowView's handleCardShowImageError which works correctly.
   const sellerCardsRef = React.useRef<any[]>([])
   useEffect(() => { sellerCardsRef.current = sellerCards }, [sellerCards])
+
+  // ── Replacement engine ─────────────────────────────────────────────────────
+  // Marks a vault slot as "resolved" so the sequential loader can advance.
+  const markResolved = React.useCallback((idx: number) => {
+    setResolvedIndices(prev => {
+      if (prev.has(idx)) return prev
+      const next = new Set(prev)
+      next.add(idx)
+      return next
+    })
+  }, [])
+
+  // Swaps a failed/placeholder card for a fresh one from the reserve pool.
+  // If the reserve is empty (or a slot has been swapped too many times) we fall
+  // back to a guaranteed-real card so the user never sees a placeholder.
+  const replaceCard = React.useCallback((
+    cardId: string,
+    isJpn: boolean,
+    img: HTMLImageElement
+  ) => {
+    const idx = sellerCardsRef.current.findIndex(
+      c => c.id === cardId || c.originalId === cardId
+    )
+    if (idx < 0) return
+
+    const attempts = (replaceAttemptsRef.current[idx] || 0) + 1
+    replaceAttemptsRef.current[idx] = attempts
+
+    const reserve = reserveRef.current
+    let pick = -1
+    if (reserve.length && attempts <= 6) {
+      // Prefer the same language to keep the EN/JP mix stable.
+      pick = reserve.findIndex(c => isJapaneseVendorCard(c) === isJpn)
+      if (pick < 0) pick = 0
+    }
+
+    if (pick < 0) {
+      // Out of replacements — show a guaranteed-real card (loads fine, so no
+      // placeholder is ever displayed).
+      try {
+        img.crossOrigin = null as any
+        img.removeAttribute('crossorigin')
+        img.src = isJpn
+          ? 'https://images.pokemontcg.io/swsh12a/196_hires.png'
+          : 'https://images.pokemontcg.io/swsh3/19_hires.png'
+      } catch {}
+      markResolved(idx)
+      return
+    }
+
+    const src = reserve.splice(pick, 1)[0]
+    const newCard = {
+      ...src,
+      img: src.img,
+      originalImg: src.img,
+      id: `${src.id}-vault-${idx}-${Date.now()}`,
+      originalId: src.originalId || src.id,
+      selected: Math.random() > 0.95
+    }
+    setSellerCards(prev => {
+      const next = [...prev]
+      next[idx] = newCard
+      return next
+    })
+    // The slot re-renders with a fresh <img>; mark resolved so the batch can
+    // advance even while the replacement image is still downloading.
+    markResolved(idx)
+  }, [markResolved])
+
+  // Advance to the next batch once the current visible batch has all resolved.
+  useEffect(() => {
+    if (sellerCards.length === 0) return
+    if (visibleCount === 0) {
+      setVisibleCount(Math.min(BATCH_SIZE, sellerCards.length))
+      return
+    }
+    const batchDone = Array.from({ length: visibleCount }, (_, i) =>
+      resolvedIndices.has(i)
+    ).every(Boolean)
+    if (batchDone && visibleCount < sellerCards.length) {
+      setVisibleCount(c => Math.min(c + BATCH_SIZE, sellerCards.length))
+    }
+  }, [resolvedIndices, visibleCount, sellerCards])
+  // ───────────────────────────────────────────────────────────────────────────
 
   const handleVaultImageError = React.useCallback((
     e: React.SyntheticEvent<HTMLImageElement, Event>,
@@ -142,11 +241,11 @@ export const TradingCard: React.FC<{
     }
 
     handleCardImageError(img, setId, num, () => {
-      img.src = isJpnCard
-        ? 'https://images.pokemontcg.io/swsh12a/196_hires.png'
-        : 'https://images.pokemontcg.io/swsh3/19_hires.png'
+      // All fallbacks exhausted — swap this card for a fresh one instead of
+      // leaving a placeholder behind.
+      replaceCard(cardId || '', isJpnCard, img)
     })
-  }, [])
+  }, [replaceCard])
 
   /**
    * onLoad canvas pixel check — mirrors CardShowView.handleCardShowImageLoad.
@@ -380,8 +479,9 @@ export const TradingCard: React.FC<{
                 <span className="text-xs font-mono tracking-widest">LOADING VAULT...</span>
               </div>
             ) : (
+            <>
             <div className="grid grid-cols-3 gap-6 perspective-1000">
-              {sellerCards.map((card, i) => {
+              {sellerCards.slice(0, visibleCount).map((card, i) => {
                 const isJpCard = isJapaneseVendorCard(card) ||
                   (card.originalId || '').includes('_ja') ||
                   (card.originalImg || '').includes('_ja')
@@ -413,8 +513,8 @@ export const TradingCard: React.FC<{
                     alt={card.name}
                     className="w-full h-full object-cover"
                     crossOrigin="anonymous"
-                    onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
-                    onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
+                    onLoad={(e) => { handleVaultImageLoad(e, card.id, isJpCard); markResolved(i) }}
+                    onError={(e) => { handleVaultImageError(e, card.id, isJpCard); markResolved(i) }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 
@@ -455,6 +555,13 @@ export const TradingCard: React.FC<{
                 </motion.div>
               )})}
             </div>
+            {visibleCount < sellerCards.length && (
+              <div className="flex items-center justify-center gap-2 py-6 text-gray-500">
+                <RefreshCcw className="w-5 h-5 animate-spin" />
+                <span className="text-xs font-mono tracking-widest">LOADING MORE FROM VAULT...</span>
+              </div>
+            )}
+            </>
             )}
           </div>
 
