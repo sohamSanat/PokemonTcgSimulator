@@ -15,6 +15,19 @@ import { getCombinedVendorCardPool, isJapaneseVendorCard } from "../../services/
 import { loadJapaneseMetadata } from "../../services/scrydex"
 import { handleCardImageError } from "../../services/tcgdex"
 
+/**
+ * Convert any scrydex.com URL → pokemontcg.io _hires.png URL.
+ * pokemontcg.io returns real HTTP 404 for missing cards, so <img onError> fires
+ * naturally and the handleCardImageError fallback chain takes over.
+ * scrydex silently serves a generic card-back at HTTP 200, blocking onError.
+ */
+function toPokeIoUrl(img: string, setId: string, num: string): string {
+  if (!img.includes('scrydex.com')) return img          // already reliable
+  const cleanSet = setId.replace(/_ja$/i, '').toLowerCase()
+  const cleanNum  = String(num || '1')
+  return `https://images.pokemontcg.io/${cleanSet}/${cleanNum}_hires.png`
+}
+
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
   onInspectCard?: (card: any) => void,
@@ -42,43 +55,46 @@ export const TradingCard: React.FC<{
     }
 
     // ── Load Japanese metadata FIRST so the dynamic pool has real cards ──────
-    // This is the same pattern used by CardShowView which works correctly.
     loadJapaneseMetadata().then(() => {
       if (cancelled) return
 
-      // Build a large pool now that metadata is loaded
       const pool = getCombinedVendorCardPool(4000)
 
-      // Deduplicate by img URL so we never show the same artwork twice
-      const seenImgs = new Set<string>()
+      // Deduplicate by originalId so we never show the same card twice
+      const seenIds = new Set<string>()
       const uniquePool = pool.filter(c => {
-        if (!c.img || seenImgs.has(c.img)) return false
-        seenImgs.add(c.img)
+        const key = c.originalId || c.id
+        if (!key || seenIds.has(key)) return false
+        seenIds.add(key)
         return true
       })
 
-      const english = shuffle(uniquePool.filter(c => !isJapaneseVendorCard(c)))
-      const japanese = shuffle(uniquePool.filter(c => isJapaneseVendorCard(c)))
+      const english  = shuffle(uniquePool.filter(c => !isJapaneseVendorCard(c)))
+      const japanese = shuffle(uniquePool.filter(c =>  isJapaneseVendorCard(c)))
 
       const TARGET = 250
       const result: any[] = []
       let ei = 0, ji = 0
 
-      // Interleave English and Japanese without wrapping (no repeats)
       while (result.length < TARGET) {
         const wantEng = result.length % 2 === 0
-        if (wantEng && ei < english.length) {
-          result.push({ ...english[ei], id: `${english[ei].id}-vault-${result.length}`, originalId: english[ei].originalId || english[ei].id, selected: Math.random() > 0.95 })
-          ei++
-        } else if (ji < japanese.length) {
-          result.push({ ...japanese[ji], id: `${japanese[ji].id}-vault-${result.length}`, originalId: japanese[ji].originalId || japanese[ji].id, selected: Math.random() > 0.95 })
-          ji++
-        } else if (ei < english.length) {
-          result.push({ ...english[ei], id: `${english[ei].id}-vault-${result.length}`, originalId: english[ei].originalId || english[ei].id, selected: Math.random() > 0.95 })
-          ei++
-        } else {
-          break // ran out of unique cards
-        }
+        const src =
+          wantEng && ei < english.length  ? english[ei++]  :
+          ji < japanese.length             ? japanese[ji++] :
+          ei < english.length              ? english[ei++]  : null
+        if (!src) break
+
+        // ── KEY FIX: use pokemontcg.io as primary src so onError fires on miss ──
+        const reliableImg = toPokeIoUrl(src.img, src.setId, src.num)
+
+        result.push({
+          ...src,
+          img: reliableImg,
+          originalImg: src.img,          // keep scrydex URL for fallback chain
+          id: `${src.id}-vault-${result.length}`,
+          originalId: src.originalId || src.id,
+          selected: Math.random() > 0.95
+        })
       }
 
       if (!cancelled) setSellerCards(result)
@@ -100,32 +116,28 @@ export const TradingCard: React.FC<{
   ) => {
     const img = e.currentTarget
 
-    // Look up the card to get its pre-parsed setId / num
+    // Look up the card — setId/num are pre-parsed on every VendorCard
     const cardItem = sellerCardsRef.current.find(
       c => c.id === cardId || c.originalId === cardId
     )
 
-    // Primary: pre-parsed fields (always present on VendorCard)
     let setId = cardItem?.setId || 'swsh3'
     let num   = cardItem?.num !== undefined ? String(cardItem.num) : '1'
 
-    // Secondary: parse from img src URL (handles edge cases)
+    // If lookup failed, parse from current src URL
     if (!cardItem || setId === 'swsh3') {
       const m =
+        img.src.match(/pokemontcg\.io\/([a-z0-9_-]+)\/([0-9]+)/i) ||
         img.src.match(/\/pokemon\/([a-z0-9_]+)[_-]([0-9]+)(?:\/|$)/i) ||
-        img.src.match(/pokemontcg\.io\/([a-z0-9]+)\/([0-9]+)/i) ||
         img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(?:\/large|\/high|\.png|\.webp|_hires)/i)
       if (m) { setId = m[1]; num = m[2] }
     }
 
-    // Japanese detection
     const origStr = cardItem?.originalId || cardItem?.id || cardId || ''
     const isJpnCard = Boolean(
       isJpn ||
       setId.toLowerCase().includes('_ja') ||
       origStr.includes('_ja') ||
-      img.src.includes('_ja') ||
-      img.src.includes('/ja/') ||
       cardItem?.name?.toLowerCase().includes('japanese')
     )
     if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
@@ -138,37 +150,6 @@ export const TradingCard: React.FC<{
         : 'https://images.pokemontcg.io/swsh3/19_hires.png'
     })
   }, [])
-
-  const handleVaultImageLoad = React.useCallback((
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-    cardId?: string,
-    isJpn?: boolean
-  ) => {
-    const img = e.currentTarget
-    // Only scrydex can silently serve placeholder card-backs as HTTP 200
-    if (!img.src.includes('scrydex.com')) return
-
-    // Use a HEAD request to check content-length against known placeholder sizes
-    const PLACEHOLDER_BYTES = new Set([186316, 350441])
-    fetch(img.src, { method: 'HEAD', signal: AbortSignal.timeout(5000) })
-      .then(r => {
-        if (!r.ok) {
-          handleVaultImageError(
-            { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-            cardId, isJpn
-          )
-          return
-        }
-        const len = Number(r.headers.get('content-length') || 0)
-        if (len > 0 && PLACEHOLDER_BYTES.has(len)) {
-          handleVaultImageError(
-            { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-            cardId, isJpn
-          )
-        }
-      })
-      .catch(() => {})
-  }, [handleVaultImageError])
   // ───────────────────────────────────────────────────────────────────────────
 
   const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
@@ -363,7 +344,9 @@ export const TradingCard: React.FC<{
             ) : (
             <div className="grid grid-cols-3 gap-6 perspective-1000">
               {sellerCards.map((card, i) => {
-                const isJpCard = isJapaneseVendorCard(card)
+                const isJpCard = isJapaneseVendorCard(card) ||
+                  (card.originalId || '').includes('_ja') ||
+                  (card.originalImg || '').includes('_ja')
                 return (
                 <motion.div
                   key={card.id}
@@ -392,7 +375,6 @@ export const TradingCard: React.FC<{
                     alt={card.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
                     onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
