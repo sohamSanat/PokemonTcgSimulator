@@ -1,0 +1,892 @@
+[
+  {
+    "id": "swsh11-049",
+    "name": "Kyurem VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/049/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/049/high.webp"
+    },
+    "value": 2.27
+  },
+  {
+    "id": "swsh11-057",
+    "name": "Magnezone VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/057/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/057/high.webp"
+    },
+    "value": 3.02
+  },
+  {
+    "id": "swsh11-093",
+    "name": "Aerodactyl VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/093/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/093/high.webp"
+    },
+    "value": 5.45
+  },
+  {
+    "id": "swsh11-119",
+    "name": "Drapion VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/119/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/119/high.webp"
+    },
+    "value": 7.12
+  },
+  {
+    "id": "swsh11-131",
+    "name": "Giratina VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/131/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/131/high.webp"
+    },
+    "value": 2.56
+  },
+  {
+    "id": "swsh11-136",
+    "name": "Hisuian Goodra VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/136/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/136/high.webp"
+    },
+    "value": 8.08
+  },
+  {
+    "id": "swsh11-147",
+    "name": "Hisuian Zoroark VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/147/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/147/high.webp"
+    },
+    "value": 3.22
+  },
+  {
+    "id": "swsh11-197",
+    "name": "Kyurem VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/197/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/197/high.webp"
+    },
+    "value": 4.28
+  },
+  {
+    "id": "swsh11-198",
+    "name": "Magnezone VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/198/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/198/high.webp"
+    },
+    "value": 2.19
+  },
+  {
+    "id": "swsh11-199",
+    "name": "Aerodactyl VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/199/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/199/high.webp"
+    },
+    "value": 3.86
+  },
+  {
+    "id": "swsh11-200",
+    "name": "Drapion VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/200/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/200/high.webp"
+    },
+    "value": 3.25
+  },
+  {
+    "id": "swsh11-201",
+    "name": "Giratina VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/201/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/201/high.webp"
+    },
+    "value": 4.33
+  },
+  {
+    "id": "swsh11-202",
+    "name": "Hisuian Goodra VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/202/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/202/high.webp"
+    },
+    "value": 9.91
+  },
+  {
+    "id": "swsh11-203",
+    "name": "Hisuian Zoroark VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/203/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/203/high.webp"
+    },
+    "value": 5.04
+  },
+  {
+    "id": "swsh11-212",
+    "name": "Giratina VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/212/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/212/high.webp"
+    },
+    "value": 2.49
+  },
+  {
+    "id": "swsh11-213",
+    "name": "Hisuian Zoroark VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh11/213/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh11/213/high.webp"
+    },
+    "value": 4.62
+  },
+  {
+    "id": "swsh10-018",
+    "name": "Hisuian Lilligant VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/018/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/018/high.webp"
+    },
+    "value": 4.84
+  },
+  {
+    "id": "swsh10-026",
+    "name": "Heatran VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/026/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/026/high.webp"
+    },
+    "value": 3.24
+  },
+  {
+    "id": "swsh10-040",
+    "name": "Origin Forme Palkia VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/040/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/040/high.webp"
+    },
+    "value": 5.1
+  },
+  {
+    "id": "swsh10-054",
+    "name": "Hisuian Typhlosion VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/054/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/054/high.webp"
+    },
+    "value": 9.17
+  },
+  {
+    "id": "swsh10-073",
+    "name": "Machamp VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/073/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/073/high.webp"
+    },
+    "value": 3.95
+  },
+  {
+    "id": "swsh10-084",
+    "name": "Hisuian Decidueye VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/084/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/084/high.webp"
+    },
+    "value": 6.77
+  },
+  {
+    "id": "swsh10-099",
+    "name": "Darkrai VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/099/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/099/high.webp"
+    },
+    "value": 2.24
+  },
+  {
+    "id": "swsh10-102",
+    "name": "Hisuian Samurott VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/102/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/102/high.webp"
+    },
+    "value": 8.06
+  },
+  {
+    "id": "swsh10-114",
+    "name": "Origin Forme Dialga VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/114/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/114/high.webp"
+    },
+    "value": 3.28
+  },
+  {
+    "id": "swsh10-190",
+    "name": "Hisuian Lilligant VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/190/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/190/high.webp"
+    },
+    "value": 5.59
+  },
+  {
+    "id": "swsh10-191",
+    "name": "Heatran VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/191/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/191/high.webp"
+    },
+    "value": 4.72
+  },
+  {
+    "id": "swsh10-192",
+    "name": "Origin Forme Palkia VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/192/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/192/high.webp"
+    },
+    "value": 5.43
+  },
+  {
+    "id": "swsh10-193",
+    "name": "Hisuian Typhlosion VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/193/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/193/high.webp"
+    },
+    "value": 5.12
+  },
+  {
+    "id": "swsh10-194",
+    "name": "Machamp VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/194/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/194/high.webp"
+    },
+    "value": 8.63
+  },
+  {
+    "id": "swsh10-195",
+    "name": "Hisuian Decidueye VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/195/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/195/high.webp"
+    },
+    "value": 6.25
+  },
+  {
+    "id": "swsh10-196",
+    "name": "Kleavor VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/196/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/196/high.webp"
+    },
+    "value": 2.03
+  },
+  {
+    "id": "swsh10-197",
+    "name": "Hisuian Samurott VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/197/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/197/high.webp"
+    },
+    "value": 3.21
+  },
+  {
+    "id": "swsh10-198",
+    "name": "Origin Forme Dialga VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/198/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/198/high.webp"
+    },
+    "value": 5.02
+  },
+  {
+    "id": "swsh10-208",
+    "name": "Origin Forme Palkia VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/208/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/208/high.webp"
+    },
+    "value": 2.11
+  },
+  {
+    "id": "swsh10-209",
+    "name": "Hisuian Samurott VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/209/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/209/high.webp"
+    },
+    "value": 4.31
+  },
+  {
+    "id": "swsh10-210",
+    "name": "Origin Forme Dialga VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/210/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/210/high.webp"
+    },
+    "value": 7.24
+  },
+  {
+    "id": "swsh10-TG15",
+    "name": "Ice Rider Calyrex VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/TG15/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/TG15/high.webp"
+    },
+    "value": 6.24
+  },
+  {
+    "id": "swsh10-TG18",
+    "name": "Shadow Rider Calyrex VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/TG18/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/TG18/high.webp"
+    },
+    "value": 8.2
+  },
+  {
+    "id": "swsh10-TG29",
+    "name": "Ice Rider Calyrex VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/TG29/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/TG29/high.webp"
+    },
+    "value": 6.09
+  },
+  {
+    "id": "swsh10-TG30",
+    "name": "Shadow Rider Calyrex VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh10/TG30/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh10/TG30/high.webp"
+    },
+    "value": 8.01
+  },
+  {
+    "id": "swsh9-014",
+    "name": "Shaymin VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/014/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/014/high.webp"
+    },
+    "value": 3.13
+  },
+  {
+    "id": "swsh9-018",
+    "name": "Charizard VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/018/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/018/high.webp"
+    },
+    "value": 9.58
+  },
+  {
+    "id": "swsh9-029",
+    "name": "Kingler VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/029/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/029/high.webp"
+    },
+    "value": 9.03
+  },
+  {
+    "id": "swsh9-065",
+    "name": "Whimsicott VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/065/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/065/high.webp"
+    },
+    "value": 9.77
+  },
+  {
+    "id": "swsh9-069",
+    "name": "Mimikyu VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/069/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/069/high.webp"
+    },
+    "value": 7.33
+  },
+  {
+    "id": "swsh9-097",
+    "name": "Aggron VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/097/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/097/high.webp"
+    },
+    "value": 5.9
+  },
+  {
+    "id": "swsh9-123",
+    "name": "Arceus VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/123/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/123/high.webp"
+    },
+    "value": 6.24
+  },
+  {
+    "id": "swsh9-173",
+    "name": "Shaymin VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/173/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/173/high.webp"
+    },
+    "value": 5.16
+  },
+  {
+    "id": "swsh9-174",
+    "name": "Charizard VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/174/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/174/high.webp"
+    },
+    "value": 8.21
+  },
+  {
+    "id": "swsh9-175",
+    "name": "Whimsicott VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/175/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/175/high.webp"
+    },
+    "value": 9.96
+  },
+  {
+    "id": "swsh9-176",
+    "name": "Arceus VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/176/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/176/high.webp"
+    },
+    "value": 9.27
+  },
+  {
+    "id": "swsh9-184",
+    "name": "Arceus VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/en/swsh/swsh9/184/low.webp",
+      "large": "https://assets.tcgdex.net/en/swsh/swsh9/184/high.webp"
+    },
+    "value": 3.61
+  },
+  {
+    "id": "S12a-012",
+    "name": "\u30ea\u30fc\u30d5\u30a3\u30a2VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/012/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/012/high.webp"
+    },
+    "value": 6.63
+  },
+  {
+    "id": "S12a-014",
+    "name": "\u30ea\u30b6\u30fc\u30c9\u30f3VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/014/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/014/high.webp"
+    },
+    "value": 6.56
+  },
+  {
+    "id": "S12a-021",
+    "name": "\u30d0\u30aa\u30c3\u30ad\u30fcVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/021/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/021/high.webp"
+    },
+    "value": 8.46
+  },
+  {
+    "id": "S12a-028",
+    "name": "\u30aa\u30ea\u30b8\u30f3\u30d1\u30eb\u30ad\u30a2VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/028/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/028/high.webp"
+    },
+    "value": 2.34
+  },
+  {
+    "id": "S12a-041",
+    "name": "\u30bc\u30e9\u30aa\u30e9VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/041/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/041/high.webp"
+    },
+    "value": 9.78
+  },
+  {
+    "id": "S12a-042",
+    "name": "\u30bc\u30e9\u30aa\u30e9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/042/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/042/high.webp"
+    },
+    "value": 4.76
+  },
+  {
+    "id": "S12a-051",
+    "name": "\u30df\u30e5\u30a6\u30c4\u30fcVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/051/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/051/high.webp"
+    },
+    "value": 6.86
+  },
+  {
+    "id": "S12a-054",
+    "name": "\u30df\u30e5\u30a6VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/054/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/054/high.webp"
+    },
+    "value": 9.45
+  },
+  {
+    "id": "S12a-066",
+    "name": "\u30d6\u30ea\u30e0\u30aa\u30f3VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/066/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/066/high.webp"
+    },
+    "value": 8.46
+  },
+  {
+    "id": "S12a-072",
+    "name": "\u30ab\u30a4\u30ea\u30ad\u30fcVMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/072/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/072/high.webp"
+    },
+    "value": 9.85
+  },
+  {
+    "id": "S12a-087",
+    "name": "\u30d2\u30b9\u30a4 \u30c0\u30a4\u30b1\u30f3\u30adVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/087/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/087/high.webp"
+    },
+    "value": 9.88
+  },
+  {
+    "id": "S12a-101",
+    "name": "\u30aa\u30ea\u30b8\u30f3\u30c7\u30a3\u30a2\u30eb\u30acVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/101/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/101/high.webp"
+    },
+    "value": 4.29
+  },
+  {
+    "id": "S12a-108",
+    "name": "\u30ec\u30c3\u30af\u30a6\u30b6VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/108/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/108/high.webp"
+    },
+    "value": 2.97
+  },
+  {
+    "id": "S12a-111",
+    "name": "\u30ae\u30e9\u30c6\u30a3\u30caVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/111/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/111/high.webp"
+    },
+    "value": 7.85
+  },
+  {
+    "id": "S12a-125",
+    "name": "\u30ec\u30b8\u30ae\u30ac\u30b9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/125/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/125/high.webp"
+    },
+    "value": 5.16
+  },
+  {
+    "id": "S12a-127",
+    "name": "\u30a2\u30eb\u30bb\u30a6\u30b9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/127/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/127/high.webp"
+    },
+    "value": 4.86
+  },
+  {
+    "id": "S12a-129",
+    "name": "\u30d2\u30b9\u30a4 \u30be\u30ed\u30a2\u30fc\u30afVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/129/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/129/high.webp"
+    },
+    "value": 2.5
+  },
+  {
+    "id": "S12a-210",
+    "name": "\u30ea\u30fc\u30d5\u30a3\u30a2VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/210/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/210/high.webp"
+    },
+    "value": 9.31
+  },
+  {
+    "id": "S12a-212",
+    "name": "\u30ea\u30b6\u30fc\u30c9\u30f3VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/212/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/212/high.webp"
+    },
+    "value": 9.49
+  },
+  {
+    "id": "S12a-214",
+    "name": "\u30d0\u30aa\u30c3\u30ad\u30fcVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/214/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/214/high.webp"
+    },
+    "value": 7.34
+  },
+  {
+    "id": "S12a-217",
+    "name": "\u30b0\u30ec\u30a4\u30b7\u30a2VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/217/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/217/high.webp"
+    },
+    "value": 7.13
+  },
+  {
+    "id": "S12a-219",
+    "name": "\u30bc\u30e9\u30aa\u30e9VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/219/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/219/high.webp"
+    },
+    "value": 7.48
+  },
+  {
+    "id": "S12a-220",
+    "name": "\u30bc\u30e9\u30aa\u30e9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/220/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/220/high.webp"
+    },
+    "value": 2.66
+  },
+  {
+    "id": "S12a-221",
+    "name": "\u30df\u30e5\u30a6\u30c4\u30fcVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/221/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/221/high.webp"
+    },
+    "value": 3.48
+  },
+  {
+    "id": "S12a-222",
+    "name": "\u30c7\u30aa\u30ad\u30b7\u30b9VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/222/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/222/high.webp"
+    },
+    "value": 7.52
+  },
+  {
+    "id": "S12a-223",
+    "name": "\u30c7\u30aa\u30ad\u30b7\u30b9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/223/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/223/high.webp"
+    },
+    "value": 9.73
+  },
+  {
+    "id": "S12a-224",
+    "name": "\u30d6\u30ea\u30e0\u30aa\u30f3VMAX",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/224/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/224/high.webp"
+    },
+    "value": 5.25
+  },
+  {
+    "id": "S12a-226",
+    "name": "\u30eb\u30ab\u30ea\u30aaVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/226/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/226/high.webp"
+    },
+    "value": 6.23
+  },
+  {
+    "id": "S12a-228",
+    "name": "\u30c0\u30fc\u30af\u30e9\u30a4VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/228/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/228/high.webp"
+    },
+    "value": 9.11
+  },
+  {
+    "id": "S12a-230",
+    "name": "\u30d2\u30b9\u30a4 \u30c0\u30a4\u30b1\u30f3\u30adVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/230/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/230/high.webp"
+    },
+    "value": 6.47
+  },
+  {
+    "id": "S12a-233",
+    "name": "\u30ec\u30b8\u30ae\u30ac\u30b9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/233/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/233/high.webp"
+    },
+    "value": 7.27
+  },
+  {
+    "id": "S12a-234",
+    "name": "\u30d2\u30b9\u30a4 \u30be\u30ed\u30a2\u30fc\u30afVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/234/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/234/high.webp"
+    },
+    "value": 9.49
+  },
+  {
+    "id": "S12a-259",
+    "name": "\u30aa\u30ea\u30b8\u30f3\u30d1\u30eb\u30ad\u30a2VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/259/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/259/high.webp"
+    },
+    "value": 3.86
+  },
+  {
+    "id": "S12a-260",
+    "name": "\u30aa\u30ea\u30b8\u30f3\u30c7\u30a3\u30a2\u30eb\u30acVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/260/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/260/high.webp"
+    },
+    "value": 2.97
+  },
+  {
+    "id": "S12a-261",
+    "name": "\u30ae\u30e9\u30c6\u30a3\u30caVSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/261/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/261/high.webp"
+    },
+    "value": 2.05
+  },
+  {
+    "id": "S12a-262",
+    "name": "\u30a2\u30eb\u30bb\u30a6\u30b9VSTAR",
+    "rarity": "Common",
+    "images": {
+      "small": "https://assets.tcgdex.net/ja/S/S12a/262/low.webp",
+      "large": "https://assets.tcgdex.net/ja/S/S12a/262/high.webp"
+    },
+    "value": 9.53
+  }
+]

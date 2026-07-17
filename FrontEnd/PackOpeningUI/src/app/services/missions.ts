@@ -1,5 +1,6 @@
 import { PokemonCard } from './tcgdex';
 import { saveCollectedCard } from '../components/binder/types';
+import promoCardsData from '../data/promo_cards.json';
 
 // --- Types ---
 export interface Mission {
@@ -25,63 +26,17 @@ const MISSIONS_STATE_KEY = 'tcg_user_missions';
 const EARNED_SET_PACKS_KEY = 'tcg_earned_set_packs'; // Track earned packs from missions
 
 // --- Promo Cards ---
-const PROMO_CARDS: Record<string, any> = {
-  charizard_v_special: {
-    id: 'swsh3-19' as string,
-    name: 'Charizard V (Secret Art Promo)',
-    rarity: 'Secret Rare',
-    illustrator: '5ban Graphics',
-    hp: 220,
-    types: ['Fire'],
+const PROMO_CARDS_POOL = promoCardsData as any[];
+
+function getRandomRewardCard(promoTitle: string) {
+  if (!PROMO_CARDS_POOL || PROMO_CARDS_POOL.length === 0) return undefined;
+  const card = PROMO_CARDS_POOL[Math.floor(Math.random() * PROMO_CARDS_POOL.length)];
+  return {
+    ...card,
     isVendorCatalog: false,
-    value: 145.00,
-    promoTitle: 'Weekly Champion Award'
-  },
-  pikachu_illustrator: {
-    id: 'swsh4-44' as string,
-    name: 'Pikachu VMAX (Rainbow Secret)',
-    rarity: 'Rainbow Secret Rare',
-    illustrator: 'PLANETA Mochizuki',
-    hp: 310,
-    types: ['Lightning'],
-    isVendorCatalog: false,
-    value: 210.00,
-    promoTitle: 'Convention Master Award'
-  },
-  rayquaza_gold_star: {
-    id: 'swsh7-218' as string,
-    name: 'Rayquaza VMAX (Alternate Secret Art)',
-    rarity: 'Special Art Rare',
-    illustrator: 'Anesaki Dynamic',
-    hp: 320,
-    types: ['Dragon'],
-    isVendorCatalog: false,
-    value: 380.00,
-    promoTitle: 'Monthly Dragon Lord Award'
-  },
-  lugia_v_special: {
-    id: 'swsh12-186' as string,
-    name: 'Lugia V (Silver Tempest Alt Art)',
-    rarity: 'Special Art Rare',
-    illustrator: 'kawayoo',
-    hp: 220,
-    types: ['Colorless'],
-    isVendorCatalog: false,
-    value: 295.00,
-    promoTitle: 'Pristine Grader Award'
-  },
-  mewtwo_gold_secret: {
-    id: 'pgo-80' as string,
-    name: 'Mewtwo VSTAR (Gold Secret Rare)',
-    rarity: 'Gold Secret Rare',
-    illustrator: 'PLANETA Yamashita',
-    hp: 280,
-    types: ['Psychic'],
-    isVendorCatalog: false,
-    value: 185.00,
-    promoTitle: 'Master Collector Trophy'
-  }
-};
+    promoTitle
+  };
+}
 
 // --- Initial Missions (Updated to give specific set packs) ---
 const INITIAL_MISSIONS: Mission[] = [
@@ -155,7 +110,7 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'sv2d', setName: 'Clay Burst', count: 3, language: 'ja' },
       { setId: 'sv2p', setName: 'Snow Hazard', count: 2, language: 'ja' }
     ],
-    rewardCard: PROMO_CARDS.charizard_v_special,
+    rewardCard: getRandomRewardCard('Weekly Champion Award'),
     actionType: 'open_pack'
   },
   {
@@ -170,7 +125,7 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'swsh10', setName: 'Astral Radiance', count: 3, language: 'en' },
       { setId: 'sv3', setName: 'Ruler of the Black Flame', count: 2, language: 'ja' }
     ],
-    rewardCard: PROMO_CARDS.pikachu_illustrator,
+    rewardCard: getRandomRewardCard('Convention Master Award'),
     actionType: 'grade_psa'
   },
   {
@@ -215,7 +170,7 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'sv8', setName: 'Super Electric Breaker', count: 10, language: 'ja' },
       { setId: 'sv08', setName: 'Surging Sparks', count: 10, language: 'en' }
     ],
-    rewardCard: PROMO_CARDS.rayquaza_gold_star,
+    rewardCard: getRandomRewardCard('Monthly Dragon Lord Award'),
     actionType: 'open_pack'
   },
   {
@@ -230,7 +185,7 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'swsh4', setName: 'Vivid Voltage', count: 10, language: 'en' },
       { setId: 'sv6', setName: 'Transformation Mask', count: 10, language: 'ja' }
     ],
-    rewardCard: PROMO_CARDS.lugia_v_special,
+    rewardCard: getRandomRewardCard('Pristine Grader Award'),
     actionType: 'grade_psa_10'
   },
   {
@@ -246,7 +201,7 @@ const INITIAL_MISSIONS: Mission[] = [
       { setId: 'sv7', setName: 'Stellar Miracle', count: 15, language: 'ja' },
       { setId: 'sv09', setName: 'Journey Together', count: 10, language: 'en' }
     ],
-    rewardCard: PROMO_CARDS.mewtwo_gold_secret,
+    rewardCard: getRandomRewardCard('Master Collector Trophy'),
     actionType: 'collect_card'
   },
   {
