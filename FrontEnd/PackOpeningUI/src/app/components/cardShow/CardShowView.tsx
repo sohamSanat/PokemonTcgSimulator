@@ -30,7 +30,6 @@ import {
   TrendingDown
 } from "lucide-react";
 import { AuctionDashboard } from '../auction/AuctionDashboard';
-import { TradingCard } from '../trading/TradingCard';
 
 interface CardShowViewProps {
   initialShowAuction?: boolean;
@@ -50,8 +49,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
   const [showAuctionDashboard, setShowAuctionDashboard] = useState(initialShowAuction);
-  const [showTradingCard, setShowTradingCard] = useState(false);
-  
   useEffect(() => {
     setShowAuctionDashboard(initialShowAuction);
   }, [initialShowAuction]);
@@ -382,11 +379,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       setShowAuctionDashboard(true);
       return;
     }
-    // Open the Trading Card UI when a Trading Zone booth is clicked
-    if (isTradingZone(vendorObj.name) || vendorObj.id === 'trading_zone8' || vendorObj.id === 'trading_east') {
-      setShowTradingCard(true);
-      return;
-    }
+
     const fullObj = {
       ...vendorObj,
       type: getBoothType(vendorObj.name, vendorObj.type)
@@ -1917,15 +1910,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       </main>
 
     </div>
-
-    {showTradingCard && (
-      <TradingCard 
-        onClose={() => setShowTradingCard(false)} 
-        onInspectCard={onInspectCard}
-        onImageLoad={handleCardShowImageLoad}
-        onImageError={handleCardShowImageError}
-      />
-    )}
     </>
   );
 };
