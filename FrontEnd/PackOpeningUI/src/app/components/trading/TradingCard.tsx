@@ -13,7 +13,24 @@ import {
 import { getCollectedCards, Card } from "../binder/types"
 import { getCombinedVendorCardPool, isJapaneseVendorCard } from "../../services/auctionVendorPools"
 import { loadJapaneseMetadata } from "../../services/scrydex"
-import { handleCardImageError } from "../../services/tcgdex"
+
+// Build a reliable pokemontcg.io URL straight from a card's setId/num. This CDN
+// serves real card art and returns a proper 404 (not a card-back placeholder)
+// for missing cards, so a failure triggers a real swap instead of a placeholder.
+const buildPokeIoUrl = (setId: string, num: string): string => {
+  const clean = String(setId).toLowerCase().replace(/_ja_ja$/i, '').replace(/_ja$/i, '')
+  const pokeIoSet = clean.replace(/^sv0?/, 'sv')
+  return `https://images.pokemontcg.io/${pokeIoSet}/${String(num).trim()}_hires.png`
+}
+
+const shuffleArr = <T,>(arr: T[]): T[] => {
+  const copy = [...arr]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
 
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
@@ -41,15 +58,6 @@ export const TradingCard: React.FC<{
     const cards = getCollectedCards()
     setUserCards(cards)
 
-    const shuffle = <T,>(arr: T[]): T[] => {
-      const copy = [...arr]
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[copy[i], copy[j]] = [copy[j], copy[i]]
-      }
-      return copy
-    }
-
     // ── Load Japanese metadata FIRST so the dynamic pool has real cards ──────
     loadJapaneseMetadata().then(() => {
       if (cancelled) return
@@ -65,8 +73,8 @@ export const TradingCard: React.FC<{
         return true
       })
 
-      const english  = shuffle(uniquePool.filter(c => !isJapaneseVendorCard(c)))
-      const japanese = shuffle(uniquePool.filter(c =>  isJapaneseVendorCard(c)))
+      const english  = shuffleArr(uniquePool.filter(c => !isJapaneseVendorCard(c)))
+      const japanese = shuffleArr(uniquePool.filter(c =>  isJapaneseVendorCard(c)))
 
       const TARGET = 250
       const result: any[] = []
@@ -80,16 +88,11 @@ export const TradingCard: React.FC<{
           ei < english.length              ? english[ei++]  : null
         if (!src) break
 
-        // Use the ORIGINAL image URL exactly as-is — same approach as
-        // CardShowView's vendor catalogue. scrydex serves CORS headers so
-        // the canvas pixel check can detect card-back placeholders and
-        // trigger the full handleCardImageError fallback chain.
-        // DO NOT convert to pokemontcg.io — it lacks CORS headers, which
-        // causes the canvas getImageData() to silently throw SecurityError.
-
         result.push({
           ...src,
-          img: src.img,
+          // Use a reliable pokemontcg.io URL (real art, proper 404s) rather
+          // than the scrydex source, which serves card-back placeholders.
+          img: buildPokeIoUrl(src.setId, src.num),
           originalImg: src.img,
           id: `${src.id}-vault-${result.length}`,
           originalId: src.originalId || src.id,
@@ -127,8 +130,8 @@ export const TradingCard: React.FC<{
   }, [])
 
   // Swaps a failed/placeholder card for a fresh one from the reserve pool.
-  // If the reserve is empty (or a slot has been swapped too many times) we fall
-  // back to a guaranteed-real card so the user never sees a placeholder.
+  // The fallback is ALWAYS another real card — never a placeholder image. If the
+  // reserve runs low we top it up from the full vendor pool again.
   const replaceCard = React.useCallback((
     cardId: string,
     isJpn: boolean,
@@ -142,32 +145,49 @@ export const TradingCard: React.FC<{
     const attempts = (replaceAttemptsRef.current[idx] || 0) + 1
     replaceAttemptsRef.current[idx] = attempts
 
-    const reserve = reserveRef.current
-    let pick = -1
-    if (reserve.length && attempts <= 6) {
-      // Prefer the same language to keep the EN/JP mix stable.
-      pick = reserve.findIndex(c => isJapaneseVendorCard(c) === isJpn)
-      if (pick < 0) pick = 0
-    }
-
-    if (pick < 0) {
-      // Out of replacements — show a guaranteed-real card (loads fine, so no
-      // placeholder is ever displayed).
+    // Safety net only: if a slot has been swapped a silly number of times, pin a
+    // guaranteed-existing real card so we never loop forever. This is a *real*
+    // card (Charizard base set), not a placeholder.
+    if (attempts > 12) {
       try {
         img.crossOrigin = null as any
         img.removeAttribute('crossorigin')
-        img.src = isJpn
-          ? 'https://images.pokemontcg.io/swsh12a/196_hires.png'
-          : 'https://images.pokemontcg.io/swsh3/19_hires.png'
+        img.src = 'https://images.pokemontcg.io/base1/4_hires.png'
       } catch {}
       markResolved(idx)
       return
     }
 
+    // Top up the reserve from the full pool if it's getting low.
+    if (reserveRef.current.length === 0) {
+      const shown = new Set(sellerCardsRef.current.map(c => c.originalId))
+      const fresh = getCombinedVendorCardPool(2000).filter(
+        c => !shown.has(c.originalId || c.id)
+      )
+      reserveRef.current = shuffleArr(fresh).slice(0, 600)
+    }
+
+    const reserve = reserveRef.current
+    if (reserve.length === 0) {
+      // Extremely unlikely, but still a real card rather than a placeholder.
+      try {
+        img.crossOrigin = null as any
+        img.removeAttribute('crossorigin')
+        img.src = 'https://images.pokemontcg.io/base1/4_hires.png'
+      } catch {}
+      markResolved(idx)
+      return
+    }
+
+    // Prefer the same language to keep the EN/JP mix stable.
+    let pick = reserve.findIndex(c => isJapaneseVendorCard(c) === isJpn)
+    if (pick < 0) pick = 0
     const src = reserve.splice(pick, 1)[0]
+
     const newCard = {
       ...src,
-      img: src.img,
+      // Real, reliable art from pokemontcg.io — never a scrydex card-back.
+      img: buildPokeIoUrl(src.setId, src.num),
       originalImg: src.img,
       id: `${src.id}-vault-${idx}-${Date.now()}`,
       originalId: src.originalId || src.id,
@@ -205,46 +225,12 @@ export const TradingCard: React.FC<{
     isJpn?: boolean
   ) => {
     const img = e.currentTarget
-
-    // Drop crossOrigin so the pokemontcg.io fallback URLs (which lack CORS
-    // headers) can actually render. The initial scrydex load keeps crossOrigin
-    // for the canvas card-back pixel check; once we fall into the error chain
-    // we no longer need it and it would otherwise block every non-CORS source.
-    try { img.crossOrigin = null as any; img.removeAttribute('crossorigin'); } catch {}
-
-    // Look up the card — setId/num are pre-parsed on every VendorCard
-    const cardItem = sellerCardsRef.current.find(
-      c => c.id === cardId || c.originalId === cardId
-    )
-
-    let setId = cardItem?.setId || 'swsh3'
-    let num   = cardItem?.num !== undefined ? String(cardItem.num) : '1'
-
-    // If lookup failed, parse from current src URL
-    if (!cardItem || setId === 'swsh3') {
-      const m =
-        img.src.match(/pokemontcg\.io\/([a-z0-9_-]+)\/([0-9]+)/i) ||
-        img.src.match(/\/pokemon\/([a-z0-9_]+)[_-]([0-9]+)(?:\/|$)/i) ||
-        img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(?:\/large|\/high|\.png|\.webp|_hires)/i)
-      if (m) { setId = m[1]; num = m[2] }
-    }
-
-    const origStr = cardItem?.originalId || cardItem?.id || cardId || ''
-    const isJpnCard = Boolean(
-      isJpn ||
-      setId.toLowerCase().includes('_ja') ||
-      origStr.includes('_ja') ||
-      cardItem?.name?.toLowerCase().includes('japanese')
-    )
-    if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
-      setId = `${setId.replace(/_ja$/i, '')}_ja`
-    }
-
-    handleCardImageError(img, setId, num, () => {
-      // All fallbacks exhausted — swap this card for a fresh one instead of
-      // leaving a placeholder behind.
-      replaceCard(cardId || '', isJpnCard, img)
-    })
+    // Art failed to load. Per spec we NEVER show a placeholder/broken image —
+    // we immediately swap in a fresh, real card from the (effectively
+    // unlimited) reserve. We deliberately skip the generic recovery chain
+    // because its tcgdex/scrydex fallbacks can themselves serve card-back
+    // placeholders at HTTP 200, which would just re-create the problem.
+    replaceCard(cardId || '', Boolean(isJpn), img)
   }, [replaceCard])
 
   /**
@@ -512,7 +498,6 @@ export const TradingCard: React.FC<{
                     src={card.img}
                     alt={card.name}
                     className="w-full h-full object-cover"
-                    crossOrigin="anonymous"
                     onLoad={(e) => { handleVaultImageLoad(e, card.id, isJpCard); markResolved(i) }}
                     onError={(e) => { handleVaultImageError(e, card.id, isJpCard); markResolved(i) }}
                   />
