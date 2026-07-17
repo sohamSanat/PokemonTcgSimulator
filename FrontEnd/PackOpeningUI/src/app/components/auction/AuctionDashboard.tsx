@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X } from 'lucide-react';
+import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X, Eye, Users } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
@@ -17,6 +17,8 @@ interface Bid {
   time: number;
 }
 
+type Temperature = 'cold' | 'warm' | 'hot';
+
 interface AuctionLotState {
   cardIndex: number;
   currentBid: number;
@@ -27,7 +29,17 @@ interface AuctionLotState {
   soldTimeLeftMs: number;
   winner: string;
   finalPrice: number;
-  dealCeilingRatio?: number;
+  // Realistic auction-house fields
+  reservePrice: number;
+  reserveMet: boolean;
+  passed: boolean;
+  bidderCount: number;
+  watchers: number;
+  temperature: Temperature;
+  goingStage: '' | 'once' | 'twice';
+  extendedCount: number;
+  heat: number;
+  bidderMaxes: number[];
 }
 
 const MOCK_USERS = [
@@ -51,6 +63,209 @@ const DUMMY_CARDS: Record<'expensive' | 'normal', AuctionPoolCard[]> = {
   ]
 };
 
+// ── Realistic auction-house engine ───────────────────────────────────────────
+// Soft-close window: if a bid lands inside this window the auction is extended,
+// exactly like anti-sniping rules at real houses (PWCC / Heritage / eBay).
+const SOFT_CLOSE: Record<'expensive' | 'normal', number> = { expensive: 9000, normal: 5000 };
+const EXTEND_BY: Record<'expensive' | 'normal', number> = { expensive: 8000, normal: 4000 };
+
+// Tiered bid increments that scale with the current price (real auction style).
+function auctionIncrement(amount: number): number {
+  if (amount < 25) return 1;
+  if (amount < 100) return 5;
+  if (amount < 250) return 10;
+  if (amount < 500) return 25;
+  if (amount < 1000) return 50;
+  if (amount < 2500) return 100;
+  if (amount < 5000) return 250;
+  return 500;
+}
+
+// Per-lot "market heat" drives how many bidders show up and how high they'll pay.
+// Most lots finish near or below market; a rare few become hype frenzies.
+function drawHeat(): number {
+  const r = Math.random();
+  if (r < 0.30) return 0.45 + Math.random() * 0.30; // COLD  – overlooked, settles well under market
+  if (r < 0.75) return 0.80 + Math.random() * 0.35; // WARM  – fair, near-market finish
+  if (r < 0.93) return 1.15 + Math.random() * 0.75; // HOT   – genuine bidding war, above market
+  return 1.90 + Math.random() * 1.60;               // FRENZY – hype grail, can run 2x–3.5x market
+}
+
+// Decide whether an NPC bids this tick and at what price. An NPC bids exactly one
+// increment above the current price (capped at its private max) so the price
+// escalates realistically instead of teleporting to the ceiling.
+function decideNpcBid(prev: AuctionLotState, type: 'expensive' | 'normal'): { amount: number; extended: boolean } | null {
+  const inc = auctionIncrement(prev.currentBid);
+  const candidates = prev.bidderMaxes.filter((m) => m >= prev.currentBid + inc);
+  if (candidates.length === 0) return null;
+
+  const chosenMax = Math.random() < 0.7
+    ? Math.max(...candidates)
+    : candidates[Math.floor(Math.random() * candidates.length)];
+
+  let amount = prev.currentBid + inc;
+  if (amount > chosenMax) amount = chosenMax;
+
+  const remaining = prev.timeLeftMs - 1000;
+  const extended = remaining > 0 && remaining <= SOFT_CLOSE[type];
+  return { amount, extended };
+}
+
+// Build a fresh, fully randomized lot. The hidden reserve + each bidder's private
+// max valuation are what make the final price realistic and varied, not scripted.
+const setupLot = (card: AuctionPoolCard, type: 'expensive' | 'normal', idx = 0): AuctionLotState => {
+  const mkt = card.price || 50;
+  const heat = drawHeat();
+
+  const startFrac = type === 'expensive' ? 0.30 + Math.random() * 0.25 : 0.20 + Math.random() * 0.30;
+  const startPrice = Math.max(1, Math.floor(mkt * startFrac));
+
+  const tierBoost = mkt > 1000 ? 4 : mkt > 200 ? 2 : 0;
+  let bidderCount = Math.round(1 + heat * 3 + tierBoost + Math.random() * 3);
+  bidderCount = Math.max(1, Math.min(16, bidderCount));
+
+  // Hidden seller reserve — usually below market, occasionally an confident seller asks more.
+  let reserveFrac = 0.40 + Math.random() * 0.40;
+  if (heat > 1.5 && Math.random() < 0.3) reserveFrac = 0.85 + Math.random() * 0.25;
+  const reservePrice = Math.max(startPrice + 1, Math.floor(mkt * reserveFrac));
+
+  // Each competing bidder gets a private willingness-to-pay centered on market*heat.
+  const bidderMaxes: number[] = [];
+  for (let i = 0; i < bidderCount; i++) {
+    const noise = (Math.random() - 0.4) * 0.5;
+    bidderMaxes.push(Math.max(startPrice + 1, Math.floor(mkt * heat * (1 + noise))));
+  }
+  bidderMaxes.sort((a, b) => b - a);
+
+  const watchers = bidderCount * (2 + Math.floor(Math.random() * 5)) + Math.floor(Math.random() * 20);
+  const maxTimeMs = type === 'expensive' ? 120000 : 15000;
+  const inc = auctionIncrement(startPrice);
+  const seedCount = Math.min(3, bidderCount);
+  const initBids: Bid[] = Array.from({ length: seedCount }).map((_, i) => ({
+    id: Date.now() - (seedCount - i) * 1000,
+    user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+    amount: Math.max(1, startPrice - (seedCount - 1 - i) * inc),
+    time: Date.now() - (seedCount - i) * 1000,
+  }));
+
+  return {
+    cardIndex: idx,
+    currentBid: startPrice,
+    timeLeftMs: maxTimeMs,
+    maxTimeMs,
+    bids: initBids,
+    status: 'active',
+    soldTimeLeftMs: type === 'expensive' ? 6000 : 5000,
+    winner: '',
+    finalPrice: 0,
+    reservePrice,
+    reserveMet: startPrice >= reservePrice,
+    passed: false,
+    bidderCount,
+    watchers,
+    temperature: 'warm',
+    goingStage: '',
+    extendedCount: 0,
+    heat,
+    bidderMaxes,
+  };
+};
+
+interface TickResult {
+  state: AuctionLotState;
+  won?: { price: number; card: AuctionPoolCard; grade?: string };
+}
+
+// Advance one lot by a single second. Handles live bidding escalation and the
+// final "hammer" when the clock hits zero. Does NOT roll to the next lot (the
+// effect does that once the post-sale countdown elapses).
+const runAuctionTick = (prev: AuctionLotState, type: 'expensive' | 'normal', pool: AuctionPoolCard[]): TickResult => {
+  const card = pool[prev.cardIndex % pool.length] || DUMMY_CARDS[type][0];
+
+  if (prev.timeLeftMs <= 1000) {
+    const lastBid = prev.bids[prev.bids.length - 1];
+    const winner = lastBid ? lastBid.user : '';
+    const finalPrice = prev.currentBid;
+    const passed = !lastBid || finalPrice < prev.reservePrice;
+    return {
+      state: {
+        ...prev,
+        timeLeftMs: 0,
+        status: 'sold',
+        soldTimeLeftMs: prev.soldTimeLeftMs,
+        winner,
+        finalPrice,
+        passed,
+        reserveMet: !passed,
+        goingStage: '',
+      },
+      won: winner === 'YOU' && !passed ? { price: finalPrice, card, grade: card.grade } : undefined,
+    };
+  }
+
+  const dec = prev.timeLeftMs - 1000;
+  const inc = auctionIncrement(prev.currentBid);
+  const playerIsTop = prev.bids.length > 0 && prev.bids[prev.bids.length - 1].user === 'YOU';
+  const eligibleCount = prev.bidderMaxes.filter((m) => m >= prev.currentBid + inc).length;
+
+  let bidChance = 0.18 + prev.heat * 0.22;
+  if (dec < 15000) bidChance += 0.15;
+  if (dec <= SOFT_CLOSE[type]) bidChance += 0.15;
+  if (playerIsTop) bidChance *= 0.65;
+  if (eligibleCount <= 1) bidChance *= 0.7;
+  bidChance = Math.min(0.92, bidChance);
+
+  const now = Date.now();
+  const recent = prev.bids.filter((b) => now - b.time < 12000).length;
+  const temperature: Temperature = recent >= 5 ? 'hot' : recent >= 2 ? 'warm' : 'cold';
+
+  if (Math.random() < bidChance && eligibleCount > 0) {
+    const npc = decideNpcBid(prev, type);
+    if (npc) {
+      const newBid: Bid = {
+        id: now + Math.floor(Math.random() * 1000),
+        user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
+        amount: npc.amount,
+        time: now,
+      };
+      let timeLeftMs = dec;
+      let maxTimeMs = prev.maxTimeMs;
+      let extendedCount = prev.extendedCount;
+      if (npc.extended) {
+        timeLeftMs = dec + EXTEND_BY[type];
+        maxTimeMs = Math.max(maxTimeMs, timeLeftMs);
+        extendedCount += 1;
+      }
+      return {
+        state: {
+          ...prev,
+          currentBid: npc.amount,
+          bids: [...prev.bids, newBid].slice(-40),
+          timeLeftMs,
+          maxTimeMs,
+          extendedCount,
+          reserveMet: npc.amount >= prev.reservePrice,
+          temperature,
+          goingStage: '',
+        },
+      };
+    }
+  }
+
+  const frac = dec / prev.maxTimeMs;
+  const goingStage: AuctionLotState['goingStage'] = frac <= 0.12 ? 'twice' : frac <= 0.25 ? 'once' : '';
+
+  return {
+    state: {
+      ...prev,
+      timeLeftMs: dec,
+      temperature,
+      goingStage,
+      reserveMet: prev.currentBid >= prev.reservePrice,
+    },
+  };
+};
+
 interface AuctionLotSectionProps {
   type: 'expensive' | 'normal';
   title: string;
@@ -65,6 +280,13 @@ interface AuctionLotSectionProps {
   soldTimeLeftSeconds: number;
   winner: string;
   finalPrice: number;
+  passed: boolean;
+  reserveMet: boolean;
+  bidderCount: number;
+  watchers: number;
+  temperature: Temperature;
+  goingStage: '' | 'once' | 'twice';
+  extendedCount: number;
   onPlaceBid: (increment: number) => void;
   onNextLot: () => void;
   onImageError?: () => void;
@@ -100,6 +322,13 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   soldTimeLeftSeconds,
   winner,
   finalPrice,
+  passed,
+  reserveMet,
+  bidderCount,
+  watchers,
+  temperature,
+  goingStage,
+  extendedCount,
   onPlaceBid,
   onNextLot,
   onImageError,
@@ -123,6 +352,21 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
     setRotationY(0);
   };
 
+  // Flash a "time extended" banner whenever a late bid triggers anti-sniping.
+  const extRef = useRef(extendedCount);
+  const [extFlash, setExtFlash] = useState(false);
+  useEffect(() => {
+    if (extendedCount > extRef.current) {
+      extRef.current = extendedCount;
+      setExtFlash(true);
+      const t = setTimeout(() => setExtFlash(false), 2600);
+      return () => clearTimeout(t);
+    }
+  }, [extendedCount]);
+
+  const tempLabel = temperature === 'hot' ? '🔥🔥 HOT' : temperature === 'warm' ? '🔥 WARM' : '❄️ COLD';
+  const tempClass = temperature === 'hot' ? 'text-rose-400' : temperature === 'warm' ? 'text-amber-400' : 'text-sky-400';
+
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
@@ -141,6 +385,27 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
       {/* Subtle grid texture */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
 
+      {/* GOING ONCE / GOING TWICE banner */}
+      {goingStage && status === 'active' && (
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 px-4 py-1.5 rounded-full bg-red-600/90 border border-red-300 text-white font-black text-xs sm:text-sm tracking-widest uppercase shadow-[0_0_20px_rgba(239,68,68,0.5)] animate-pulse">
+          🔨 Going {goingStage.toUpperCase()}...
+        </div>
+      )}
+
+      {/* Anti-snipe TIME EXTENDED flash */}
+      <AnimatePresence>
+        {extFlash && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="absolute top-12 left-1/2 -translate-x-1/2 z-40 px-3 py-1 rounded-full bg-amber-500/90 border border-amber-200 text-slate-950 font-bold text-[10px] sm:text-xs tracking-wide shadow-lg whitespace-nowrap"
+          >
+            ⏱ TIME EXTENDED — BIDDING WAR!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* OVERLAY: SOLD FINAL PRICE (Shown automatically when auction ends) */}
       <AnimatePresence>
         {status === 'sold' && (
@@ -154,9 +419,16 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             {/* Winner Stamp */}
             <div className={cn(
               "px-4 py-1.5 rounded-full border mb-3 font-extrabold text-xs sm:text-sm tracking-widest uppercase flex items-center gap-2 shadow-lg",
-              winner === 'YOU' ? "bg-green-500/20 border-green-500 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "bg-slate-800 border-slate-600 text-slate-200"
+              passed
+                ? "bg-slate-700/40 border-slate-500 text-slate-200"
+                : winner === 'YOU' ? "bg-green-500/20 border-green-500 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.3)]" : "bg-slate-800 border-slate-600 text-slate-200"
             )}>
-              {winner === 'YOU' ? (
+              {passed ? (
+                <>
+                  <X className="w-4 h-4 text-slate-300" />
+                  <span>🔨 PASSED — RESERVE NOT MET</span>
+                </>
+              ) : winner === 'YOU' ? (
                 <>
                   <CheckCircle2 className="w-4 h-4 text-green-400" />
                   <span>🎉 YOU WON THIS AUCTION! 🎉</span>
@@ -175,35 +447,45 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 
             {/* Auction Final Sold Price Box */}
             <div className="w-full max-w-md bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 sm:p-5 mb-5 shadow-2xl flex flex-col items-center justify-center">
-              <span className="text-[11px] font-mono tracking-wider text-slate-400 uppercase">Auction Final Sold Price</span>
-              <span className={cn("text-3xl sm:text-4xl font-black mt-1", winner === 'YOU' ? "text-green-400" : theme.badgeText)}>
+              <span className="text-[11px] font-mono tracking-wider text-slate-400 uppercase">{passed ? "High Bid (Did Not Sell)" : "Auction Final Sold Price"}</span>
+              <span className={cn("text-3xl sm:text-4xl font-black mt-1", passed ? "text-slate-300" : winner === 'YOU' ? "text-green-400" : theme.badgeText)}>
                 ${finalPrice.toLocaleString()}
               </span>
               <span className="text-xs text-slate-400 font-mono mt-2.5 uppercase tracking-wide">
-                {winner === 'YOU' ? "✨ Added to your personal collection ✨" : `Acquired by @${winner}`}
+                {passed
+                  ? "No sale — reserve not met"
+                  : winner === 'YOU' ? "✨ Added to your personal collection ✨" : `Acquired by @${winner}`}
               </span>
 
               {/* Reveal Market Value & Bargain percentage post-auction */}
               <div className="w-full border-t border-slate-800/80 mt-4 pt-4 flex flex-col items-center gap-1.5">
-                <div className="flex items-center gap-2 text-xs font-mono">
-                  <span className="text-slate-400 font-medium">Card Market Value:</span>
-                  <span className="text-slate-200 font-bold">${currentCard.price.toLocaleString()}</span>
-                </div>
-                {currentCard.price !== finalPrice ? (
-                  <div className={cn(
-                    "text-xs font-mono px-3 py-1 rounded-full border mt-1",
-                    currentCard.price > finalPrice
-                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                      : "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                  )}>
-                    {currentCard.price > finalPrice
-                      ? `🎉 Bargain! Won at ${Math.round(((currentCard.price - finalPrice) / currentCard.price) * 100)}% below market`
-                      : `Premium: Sold at ${Math.round(((finalPrice - currentCard.price) / currentCard.price) * 100)}% above market`}
+                {passed ? (
+                  <div className="text-xs font-mono px-3 py-1 rounded-full border bg-slate-800/50 border-slate-700/50 text-slate-300">
+                    ⚠ Lot returned to consignor — hidden reserve unmet
                   </div>
                 ) : (
-                  <div className="text-xs font-mono px-3 py-1 rounded-full border bg-slate-800/50 border-slate-700/50 text-slate-300 mt-1">
-                    🤝 Sold exactly at market value
-                  </div>
+                  <>
+                    <div className="flex items-center gap-2 text-xs font-mono">
+                      <span className="text-slate-400 font-medium">Card Market Value:</span>
+                      <span className="text-slate-200 font-bold">${currentCard.price.toLocaleString()}</span>
+                    </div>
+                    {currentCard.price !== finalPrice ? (
+                      <div className={cn(
+                        "text-xs font-mono px-3 py-1 rounded-full border mt-1",
+                        currentCard.price > finalPrice
+                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                          : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                      )}>
+                        {currentCard.price > finalPrice
+                          ? `🎉 Bargain! Won at ${Math.round(((currentCard.price - finalPrice) / currentCard.price) * 100)}% below market`
+                          : `Premium: Sold at ${Math.round(((finalPrice - currentCard.price) / currentCard.price) * 100)}% above market`}
+                      </div>
+                    ) : (
+                      <div className="text-xs font-mono px-3 py-1 rounded-full border bg-slate-800/50 border-slate-700/50 text-slate-300 mt-1">
+                        🤝 Sold exactly at market value
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -254,6 +536,13 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             <Clock className={cn("w-3 h-3 animate-pulse", theme.badgeText)} />
             <span className="font-mono text-xs font-bold text-slate-100">{formatTime(timeLeftSeconds)}</span>
           </div>
+        </div>
+
+        {/* Live meta row */}
+        <div className="flex items-center justify-between gap-2 text-[9px] font-mono text-slate-400 shrink-0 -mt-1">
+          <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{watchers} watching</span>
+          <span className="flex items-center gap-1"><Users className="w-3 h-3" />{bidderCount} bidding</span>
+          <span className={cn("flex items-center gap-0.5 font-bold uppercase", tempClass)}>{tempLabel}</span>
         </div>
 
         {/* Side-by-Side Card & Live Price Stage */}
@@ -313,6 +602,9 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               >
                 ${currentBid.toLocaleString()}
               </motion.div>
+              <div className={cn("text-[9px] font-mono px-2 py-0.5 rounded-full border self-start mt-1", reserveMet ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-rose-500/10 border-rose-500/30 text-rose-300")}>
+                {reserveMet ? "✅ Reserve Met" : "⚠ Reserve Not Met"}
+              </div>
             </div>
 
             {/* Live Lot Activity Box */}
@@ -428,6 +720,11 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
           </div>
           <h3 className="text-base sm:text-lg font-bold text-white tracking-tight line-clamp-1">{currentCard.name}</h3>
           <p className="text-[10px] sm:text-xs text-slate-400 font-mono uppercase tracking-wider line-clamp-1 mt-0.5">{subtitle} • {currentCard.title}</p>
+          <div className="flex items-center gap-3 mt-1.5 text-[10px] font-mono text-slate-400">
+            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{watchers} watching</span>
+            <span className="flex items-center gap-1"><Users className="w-3 h-3" />{bidderCount} bidding</span>
+            <span className={cn("flex items-center gap-0.5 font-bold uppercase", tempClass)}>{tempLabel}</span>
+          </div>
         </div>
 
         {/* 3D Holographic Card + Progress Ring */}
@@ -517,6 +814,11 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
           >
             ${currentBid.toLocaleString()}
           </motion.div>
+
+          {/* Reserve status pill */}
+          <div className={cn("text-[10px] font-mono px-2.5 py-0.5 rounded-full border mt-1.5", reserveMet ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300" : "bg-rose-500/10 border-rose-500/30 text-rose-300")}>
+            {reserveMet ? "✅ Reserve Met" : "⚠ Reserve Not Met"}
+          </div>
 
           {/* Live Lot Activity Indicator */}
           <div className="flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-400">
@@ -682,305 +984,119 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     }
   };
 
-  const getExpensiveCeiling = () => {
-    const roll = Math.random();
-    if (roll < 0.35) return 0.55 + Math.random() * 0.25; // 35% of the time: 55% to 80% (Underpriced steals)
-    if (roll < 0.75) return 0.81 + Math.random() * 0.14; // 40% of the time: 81% to 95% (Fair deals)
-    return 0.96 + Math.random() * 0.09; // 25% of the time: 96% to 105% (Competitive bidding)
-  };
+  const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() =>
+    setupLot(pools.expensive[0] || DUMMY_CARDS.expensive[0], 'expensive')
+  );
 
-  const getNormalCeiling = () => {
-    const roll = Math.random();
-    if (roll < 0.35) return 0.45 + Math.random() * 0.30; // 35% of the time: 45% to 75% (Underpriced steals)
-    if (roll < 0.75) return 0.76 + Math.random() * 0.19; // 40% of the time: 76% to 95% (Fair deals)
-    return 0.96 + Math.random() * 0.09; // 25% of the time: 96% to 105% (Competitive bidding)
-  };
+  const [normalLot, setNormalLot] = useState<AuctionLotState>(() =>
+    setupLot(pools.normal[0] || DUMMY_CARDS.normal[0], 'normal')
+  );
 
-  const [expensiveLot, setExpensiveLot] = useState<AuctionLotState>(() => {
-    const initCard = pools.expensive[0] || DUMMY_CARDS.expensive[0];
-    const startPrice = Math.max(1, Math.floor(initCard.price * 0.5));
-    return {
-      cardIndex: 0,
-      currentBid: startPrice,
-      timeLeftMs: 120000,
-      maxTimeMs: 120000,
-      bids: Array.from({ length: 3 }).map((_, i) => ({
-        id: Date.now() - (3 - i) * 1000,
-        user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-        amount: startPrice - (3 - i) * 10,
-        time: Date.now() - (3 - i) * 1000,
-      })),
-      status: 'active',
-      soldTimeLeftMs: 6000,
-      winner: '',
-      finalPrice: 0,
-      dealCeilingRatio: getExpensiveCeiling()
-    };
-  });
-
-  const [normalLot, setNormalLot] = useState<AuctionLotState>(() => {
-    const initCard = pools.normal[0] || DUMMY_CARDS.normal[0];
-    const startPrice = Math.max(1, Math.floor(initCard.price * 0.35));
-    return {
-      cardIndex: 0,
-      currentBid: startPrice,
-      timeLeftMs: 15000,
-      maxTimeMs: 15000,
-      bids: Array.from({ length: 2 }).map((_, i) => ({
-        id: Date.now() - (2 - i) * 1000,
-        user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-        amount: Math.max(1, startPrice - (2 - i) * 2),
-        time: Date.now() - (2 - i) * 1000,
-      })),
-      status: 'active',
-      soldTimeLeftMs: 5000,
-      winner: '',
-      finalPrice: 0,
-      dealCeilingRatio: getNormalCeiling()
-    };
-  });
-
-  // --- BACKGROUND ENGINE 1: GRAIL LOTS (Slabs >= $100, 50% start price, 120s timer, realistic pacing) ---
+  // --- BACKGROUND ENGINE 1: GRAIL LOTS (Slabs >= $100, live reserve, 120s timer) ---
   useEffect(() => {
     const timer = setInterval(() => {
       setExpensiveLot((prev) => {
         if (prev.status === 'sold') {
-          if (prev.soldTimeLeftMs <= 1000) {
-            const nextIdx = getNextValidCardIndex(pools.expensive, prev.cardIndex);
-            const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
-            const startPrice = Math.max(1, Math.floor(nextCard.price * 0.5));
-            const initBids = Array.from({ length: 3 }).map((_, i) => ({
-              id: Date.now() - (3 - i) * 1000,
-              user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-              amount: Math.max(1, startPrice - (3 - i) * 10),
-              time: Date.now() - (3 - i) * 1000,
-            }));
-            return {
-              cardIndex: nextIdx,
-              currentBid: startPrice,
-              timeLeftMs: 120000,
-              maxTimeMs: 120000,
-              bids: initBids,
-              status: 'active',
-              soldTimeLeftMs: 6000,
-              winner: '',
-              finalPrice: 0,
-              dealCeilingRatio: getExpensiveCeiling()
-            };
+          if (prev.soldTimeLeftMs > 1000) {
+            return { ...prev, soldTimeLeftMs: prev.soldTimeLeftMs - 1000 };
           }
-          return {
-            ...prev,
-            soldTimeLeftMs: prev.soldTimeLeftMs - 1000
-          };
+          const nextIdx = getNextValidCardIndex(pools.expensive, prev.cardIndex);
+          const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
+          return setupLot(nextCard, 'expensive', nextIdx);
         }
 
-        const currentCard = pools.expensive[prev.cardIndex % pools.expensive.length] || DUMMY_CARDS.expensive[0];
-
-        // status === 'active'
-        if (prev.timeLeftMs <= 1000) {
-          const lastBid = prev.bids[prev.bids.length - 1];
-          const winner = lastBid ? lastBid.user : (MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)]);
-          const finalPrice = prev.currentBid;
-          if (winner === 'YOU') {
-            setWalletBalance(b => Math.max(0, b - finalPrice));
-            const newCard = saveCollectedCard({
-              value: currentCard.price,
-              pokemon: {
-                id: currentCard.id,
-                name: currentCard.name,
-                images: { large: currentCard.img },
-                rarity: currentCard.title || 'Rare'
-              }
-            }, 'Auction Win');
-            if (currentCard.grade && newCard) {
-              updateCardSlabStatus(newCard.id, currentCard.grade);
+        const res = runAuctionTick(prev, 'expensive', pools.expensive);
+        if (res.won) {
+          setWalletBalance((b) => Math.max(0, b - res.won!.price));
+          const c = res.won.card;
+          const saved = saveCollectedCard({
+            value: c.price,
+            pokemon: {
+              id: c.id,
+              name: c.name,
+              images: { large: c.img },
+              rarity: c.title || 'Rare'
             }
-          }
-          return {
-            ...prev,
-            timeLeftMs: 0,
-            status: 'sold',
-            soldTimeLeftMs: 6000,
-            winner,
-            finalPrice
-          };
+          }, 'Auction Win');
+          if (c.grade && saved) updateCardSlabStatus(saved.id, c.grade);
         }
-        const marketPrice = currentCard.price;
-        const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.75);
-
-        // If the current bid reaches or exceeds the secret target ceiling for this lot, NPCs STOP bidding!
-        if (prev.currentBid >= targetCeiling) {
-          return {
-            ...prev,
-            timeLeftMs: prev.timeLeftMs - 1000
-          };
-        }
-
-        const ratio = prev.currentBid / targetCeiling;
-        let bidChance = 0.45;
-        if (ratio >= 0.70) bidChance = 0.25;
-        if (ratio >= 0.90) bidChance = 0.12;
-
-        if (Math.random() < bidChance) {
-          let increment = Math.floor(Math.random() * 3 + 1) * 10; // $10 to $30
-          if (marketPrice > 1500) increment = Math.floor(Math.random() * 4 + 2) * 25; // $50 to $125
-          if (prev.currentBid + increment > targetCeiling) {
-            increment = Math.max(5, Math.floor(targetCeiling - prev.currentBid));
-          }
-
-          const newAmount = prev.currentBid + increment;
-          const newBid = {
-            id: Date.now() + Math.floor(Math.random() * 1000),
-            user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-            amount: newAmount,
-            time: Date.now(),
-          };
-          return {
-            ...prev,
-            timeLeftMs: prev.timeLeftMs - 1000,
-            currentBid: newAmount,
-            bids: [...prev.bids, newBid].slice(-30)
-          };
-        }
-
-        return {
-          ...prev,
-          timeLeftMs: prev.timeLeftMs - 1000
-        };
+        return res.state;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, [pools.expensive]);
 
-  // --- BACKGROUND ENGINE 2: STANDARD ARENA ($5 - $400 hits, 35% start, 45s timer, 1s tick with ceiling) ---
+  // --- BACKGROUND ENGINE 2: STANDARD ARENA ($5 - $400 hits, live reserve, 15s timer) ---
   useEffect(() => {
     const timer = setInterval(() => {
       setNormalLot((prev) => {
         if (prev.status === 'sold') {
-          if (prev.soldTimeLeftMs <= 1000) {
-            const nextIdx = getNextValidCardIndex(pools.normal, prev.cardIndex);
-            const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
-            const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
-            const initBids = Array.from({ length: 2 }).map((_, i) => ({
-              id: Date.now() - (2 - i) * 1000,
-              user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-              amount: Math.max(1, startPrice - (2 - i) * 2),
-              time: Date.now() - (2 - i) * 1000,
-            }));
-            return {
-              cardIndex: nextIdx,
-              currentBid: startPrice,
-              timeLeftMs: 15000,
-              maxTimeMs: 15000,
-              bids: initBids,
-              status: 'active',
-              soldTimeLeftMs: 5000,
-              winner: '',
-              finalPrice: 0,
-              dealCeilingRatio: getNormalCeiling()
-            };
+          if (prev.soldTimeLeftMs > 1000) {
+            return { ...prev, soldTimeLeftMs: prev.soldTimeLeftMs - 1000 };
           }
-          return {
-            ...prev,
-            soldTimeLeftMs: prev.soldTimeLeftMs - 1000
-          };
+          const nextIdx = getNextValidCardIndex(pools.normal, prev.cardIndex);
+          const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
+          return setupLot(nextCard, 'normal', nextIdx);
         }
 
-        const currentCard = pools.normal[prev.cardIndex % pools.normal.length] || DUMMY_CARDS.normal[0];
-
-        if (prev.timeLeftMs <= 1000) {
-          const lastBid = prev.bids[prev.bids.length - 1];
-          const winner = lastBid ? lastBid.user : (MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)]);
-          const finalPrice = prev.currentBid;
-          if (winner === 'YOU') {
-            setWalletBalance(b => Math.max(0, b - finalPrice));
-            const newCard = saveCollectedCard({
-              value: currentCard.price,
-              pokemon: {
-                id: currentCard.id,
-                name: currentCard.name,
-                images: { large: currentCard.img },
-                rarity: currentCard.title || 'Rare'
-              }
-            }, 'Auction Win');
-            if (currentCard.grade && newCard) {
-              updateCardSlabStatus(newCard.id, currentCard.grade);
+        const res = runAuctionTick(prev, 'normal', pools.normal);
+        if (res.won) {
+          setWalletBalance((b) => Math.max(0, b - res.won!.price));
+          const c = res.won.card;
+          const saved = saveCollectedCard({
+            value: c.price,
+            pokemon: {
+              id: c.id,
+              name: c.name,
+              images: { large: c.img },
+              rarity: c.title || 'Rare'
             }
-          }
-          return {
-            ...prev,
-            timeLeftMs: 0,
-            status: 'sold',
-            soldTimeLeftMs: 5000,
-            winner,
-            finalPrice
-          };
+          }, 'Auction Win');
+          if (c.grade && saved) updateCardSlabStatus(saved.id, c.grade);
         }
-        const marketPrice = currentCard.price;
-        const targetCeiling = marketPrice * (prev.dealCeilingRatio ?? 0.65);
-
-        // If the current bid reaches or exceeds the secret target ceiling for this lot, NPCs STOP bidding!
-        if (prev.currentBid >= targetCeiling) {
-          return {
-            ...prev,
-            timeLeftMs: prev.timeLeftMs - 1000
-          };
-        }
-
-        const ratio = prev.currentBid / targetCeiling;
-        let bidChance = 0.40;
-        if (ratio >= 0.70) bidChance = 0.20;
-        if (ratio >= 0.90) bidChance = 0.10;
-
-        if (Math.random() < bidChance) {
-          let increment = 1;
-          if (marketPrice > 150) increment = Math.floor(Math.random() * 2 + 1) * 5; // $5 to $10
-          else if (marketPrice > 50) increment = Math.floor(Math.random() * 3 + 2); // $2 to $4
-          else increment = Math.floor(Math.random() * 2 + 1); // $1 to $2
-
-          if (prev.currentBid + increment > targetCeiling) {
-            increment = Math.max(1, Math.floor(targetCeiling - prev.currentBid));
-          }
-
-          const newAmount = prev.currentBid + increment;
-          const newBid = {
-            id: Date.now() + Math.floor(Math.random() * 1000),
-            user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-            amount: newAmount,
-            time: Date.now(),
-          };
-          return {
-            ...prev,
-            timeLeftMs: prev.timeLeftMs - 1000,
-            currentBid: newAmount,
-            bids: [...prev.bids, newBid].slice(-30)
-          };
-        }
-
-        return {
-          ...prev,
-          timeLeftMs: prev.timeLeftMs - 1000
-        };
+        return res.state;
       });
     }, 1000);
     return () => clearInterval(timer);
   }, [pools.normal]);
 
   const handlePlayerBid = (type: 'expensive' | 'normal', increment: number) => {
-    const activeLot = type === 'expensive' ? expensiveLot : normalLot;
-    if (activeLot.timeLeftMs <= 0 || activeLot.status === 'sold') return;
-    const newBidAmount = activeLot.currentBid + increment;
-    const newBid = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      user: 'YOU',
-      amount: newBidAmount,
-      time: Date.now(),
+    const apply = (prev: AuctionLotState): AuctionLotState => {
+      if (prev.timeLeftMs <= 0 || prev.status === 'sold') return prev;
+      const newBidAmount = prev.currentBid + increment;
+      const newBid: Bid = {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        user: 'YOU',
+        amount: newBidAmount,
+        time: Date.now(),
+      };
+      const remaining = prev.timeLeftMs - 1000;
+      const extended = remaining > 0 && remaining <= SOFT_CLOSE[type];
+      let timeLeftMs = prev.timeLeftMs;
+      let maxTimeMs = prev.maxTimeMs;
+      let extendedCount = prev.extendedCount;
+      if (extended) {
+        timeLeftMs = remaining + EXTEND_BY[type];
+        maxTimeMs = Math.max(maxTimeMs, timeLeftMs);
+        extendedCount += 1;
+      }
+      const now = Date.now();
+      const recent = [...prev.bids, newBid].filter((b) => now - b.time < 12000).length;
+      const temperature: Temperature = recent >= 5 ? 'hot' : recent >= 2 ? 'warm' : 'cold';
+      return {
+        ...prev,
+        currentBid: newBidAmount,
+        bids: [...prev.bids, newBid].slice(-40),
+        timeLeftMs,
+        maxTimeMs,
+        extendedCount,
+        reserveMet: newBidAmount >= prev.reservePrice,
+        temperature,
+        goingStage: '',
+      };
     };
-    if (type === 'expensive') {
-      setExpensiveLot((prev) => ({ ...prev, currentBid: newBidAmount, bids: [...prev.bids, newBid].slice(-30) }));
-    } else {
-      setNormalLot((prev) => ({ ...prev, currentBid: newBidAmount, bids: [...prev.bids, newBid].slice(-30) }));
-    }
+    if (type === 'expensive') setExpensiveLot(apply);
+    else setNormalLot(apply);
   };
 
   const handleNextLot = (type: 'expensive' | 'normal') => {
@@ -988,51 +1104,13 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       setExpensiveLot((prev) => {
         const nextIdx = getNextValidCardIndex(pools.expensive, prev.cardIndex);
         const nextCard = pools.expensive[nextIdx % pools.expensive.length] || DUMMY_CARDS.expensive[0];
-        const startPrice = Math.max(1, Math.floor(nextCard.price * 0.5));
-        const initBids = Array.from({ length: 3 }).map((_, i) => ({
-          id: Date.now() - (3 - i) * 1000,
-          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-          amount: Math.max(1, startPrice - (3 - i) * 10),
-          time: Date.now() - (3 - i) * 1000,
-        }));
-        return {
-          ...prev,
-          cardIndex: nextIdx,
-          currentBid: startPrice,
-          timeLeftMs: 120000,
-          maxTimeMs: 120000,
-          bids: initBids,
-          status: 'active',
-          soldTimeLeftMs: 6000,
-          winner: '',
-          finalPrice: 0,
-          dealCeilingRatio: getExpensiveCeiling()
-        };
+        return setupLot(nextCard, 'expensive', nextIdx);
       });
     } else {
       setNormalLot((prev) => {
         const nextIdx = getNextValidCardIndex(pools.normal, prev.cardIndex);
         const nextCard = pools.normal[nextIdx % pools.normal.length] || DUMMY_CARDS.normal[0];
-        const startPrice = Math.max(1, Math.floor(nextCard.price * 0.35));
-        const initBids = Array.from({ length: 2 }).map((_, i) => ({
-          id: Date.now() - (2 - i) * 1000,
-          user: MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)],
-          amount: Math.max(1, startPrice - (2 - i) * 2),
-          time: Date.now() - (2 - i) * 1000,
-        }));
-        return {
-          ...prev,
-          cardIndex: nextIdx,
-          currentBid: startPrice,
-          timeLeftMs: 15000,
-          maxTimeMs: 15000,
-          bids: initBids,
-          status: 'active',
-          soldTimeLeftMs: 5000,
-          winner: '',
-          finalPrice: 0,
-          dealCeilingRatio: getNormalCeiling()
-        };
+        return setupLot(nextCard, 'normal', nextIdx);
       });
     }
   };
@@ -1124,7 +1202,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   <Trophy className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-amber-300">Grail Arena (≥ $100 Cards)</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">High-end graded slabs starting at 50% of market value with a 2-minute countdown timer. Best spot for massive market steals!</p>
+                    <p className="text-xs text-slate-400 mt-0.5">High-end graded slabs open at 30–55% of market with a 2-minute timer. Every lot has a hidden seller <b>reserve</b> — if bidding doesn't reach it, the lot is <b>passed</b> (no sale).</p>
                   </div>
                 </div>
 
@@ -1132,15 +1210,15 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                   <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-bold text-cyan-300">Standard &amp; Blitz Arena ($5 - $400 Cards)</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Slabs &amp; raw binder hits starting at 35% of market value with a 15-second timer and realistic NPC pacing anchored to market price.</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Slabs &amp; raw binder hits open at 20–50% of market with a 15-second timer. Competition varies per lot — some finish as steals, some as bidding wars.</p>
                   </div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-950/60 border border-purple-500/30 flex gap-3 items-start">
                   <Coins className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-bold text-purple-300">Winning &amp; Market Value</h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Click any bid button (`+$10`, `+$25`, etc.) to outbid NPC players. NPCs respect market price ceilings so items won't artificially shoot past value! If you hold the highest bid when the clock hits 0:00, you win!</p>
+                    <h4 className="font-bold text-purple-300">Real Auction House Rules</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Each lot draws a random number of rival bidders, each with their own private max. Bids escalate one increment at a time. A late bid in the final seconds <b>extends the clock</b> (anti-sniping). Hold the top bid at "Going twice…" and it's yours — often for far less than market!</p>
                   </div>
                 </div>
               </div>
@@ -1251,7 +1329,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
               <AuctionLotSection
                 type="expensive"
                 title="Grail Cards Arena"
-                subtitle="Grail Lots (≥ $100) • 50% Start"
+                subtitle="Grail Lots (≥ $100) • Live Reserve"
                 lotNumber={412 + expensiveLot.cardIndex}
                 currentCard={expensiveCard}
                 currentBid={expensiveLot.currentBid}
@@ -1262,11 +1340,18 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 soldTimeLeftSeconds={Math.max(0, Math.ceil(expensiveLot.soldTimeLeftMs / 1000))}
                 winner={expensiveLot.winner}
                 finalPrice={expensiveLot.finalPrice}
+                passed={expensiveLot.passed}
+                reserveMet={expensiveLot.reserveMet}
+                bidderCount={expensiveLot.bidderCount}
+                watchers={expensiveLot.watchers}
+                temperature={expensiveLot.temperature}
+                goingStage={expensiveLot.goingStage}
+                extendedCount={expensiveLot.extendedCount}
                 onPlaceBid={(increment) => handlePlayerBid('expensive', increment)}
                 onNextLot={() => handleNextLot('expensive')}
                 onImageError={() => handleImageError('expensive', expensiveCard?.img)}
-                bidIncrements={expensiveCard.price > 1500 ? [50, 100, 250] : [10, 25, 50]}
-                defaultBidIncrement={expensiveCard.price > 1500 ? 100 : 50}
+                bidIncrements={(() => { const i = auctionIncrement(expensiveLot.currentBid); return [i, i * 2, i * 5]; })()}
+                defaultBidIncrement={auctionIncrement(expensiveLot.currentBid)}
                 theme={{
                   badgeBg: "bg-amber-500/20",
                   badgeText: "text-amber-400",
@@ -1294,7 +1379,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
               <AuctionLotSection
                 type="normal"
                 title="Standard &amp; Blitz Arena"
-                subtitle="Slabs &amp; Binder Hits ($5 - $400) • 35% Start"
+                subtitle="Slabs &amp; Binder Hits ($5 - $400) • Live Reserve"
                 lotNumber={824 + normalLot.cardIndex}
                 currentCard={normalCard}
                 currentBid={normalLot.currentBid}
@@ -1305,11 +1390,18 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 soldTimeLeftSeconds={Math.max(0, Math.ceil(normalLot.soldTimeLeftMs / 1000))}
                 winner={normalLot.winner}
                 finalPrice={normalLot.finalPrice}
+                passed={normalLot.passed}
+                reserveMet={normalLot.reserveMet}
+                bidderCount={normalLot.bidderCount}
+                watchers={normalLot.watchers}
+                temperature={normalLot.temperature}
+                goingStage={normalLot.goingStage}
+                extendedCount={normalLot.extendedCount}
                 onPlaceBid={(increment) => handlePlayerBid('normal', increment)}
                 onNextLot={() => handleNextLot('normal')}
                 onImageError={() => handleImageError('normal', normalCard?.img)}
-                bidIncrements={normalCard.price > 150 ? [10, 25, 50] : normalCard.price > 50 ? [5, 10, 25] : [1, 2, 5]}
-                defaultBidIncrement={normalCard.price > 150 ? 25 : normalCard.price > 50 ? 10 : 2}
+                bidIncrements={(() => { const i = auctionIncrement(normalLot.currentBid); return [i, i * 2, i * 5]; })()}
+                defaultBidIncrement={auctionIncrement(normalLot.currentBid)}
                 theme={{
                   badgeBg: "bg-cyan-500/20",
                   badgeText: "text-cyan-400",
