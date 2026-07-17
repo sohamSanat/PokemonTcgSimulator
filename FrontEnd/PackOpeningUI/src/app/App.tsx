@@ -843,7 +843,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
       const fullCardHp = liveCardFull?.hp || (activePoke as any).hp || 'Standard';
       const fullCardTypes = liveCardFull?.types ? liveCardFull.types.join(', ') : ((activePoke as any).types ? (activePoke as any).types.join(', ') : 'Dragon / Multi');
 
-      const reply = await generateVendorReply({
+      const vendorReply = await generateVendorReply({
         vendorName,
         vendorBooth,
         vendorRating,
@@ -860,38 +860,33 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
         userMessage: userMsgText
       });
 
-      // Check if vendor offered a lower price in the reply
-      const dollarMatches = Array.from(reply.matchAll(/\$(\d+(?:\.\d{1,2})?)/g)).map(m => parseFloat(m[1]));
-      if (dollarMatches.length > 0) {
-        const minOffered = Math.min(...dollarMatches.filter(n => n > 0.05 && n < negotiatedPrice));
-        if (minOffered && minOffered < negotiatedPrice) {
-          setNegotiatedPrice(minOffered);
-          setIsPriceUpdated(true);
-          sound.playCoinClink();
-          setTimeout(() => setIsPriceUpdated(false), 3000);
-        }
+      // Only lower the negotiated price when the vendor explicitly made an offer.
+      // Condition questions / general chat return offerPrice === null and keep the listed price.
+      if (vendorReply.offerPrice && vendorReply.offerPrice > 0.05 && vendorReply.offerPrice < negotiatedPrice) {
+        setNegotiatedPrice(vendorReply.offerPrice);
+        setIsPriceUpdated(true);
+        sound.playCoinClink();
+        setTimeout(() => setIsPriceUpdated(false), 3000);
       }
 
       setChatMessages(prev => [
         ...prev,
         {
           sender: 'vendor' as const,
-          text: reply,
+          text: vendorReply.text,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
       sound.playCardCollect();
     } catch (err) {
-      const fallbackPrice = Number((negotiatedPrice * 0.92).toFixed(2));
-      setNegotiatedPrice(fallbackPrice);
-      setIsPriceUpdated(true);
-      setTimeout(() => setIsPriceUpdated(false), 3000);
-
+      // Connection failed — do NOT auto-discount the price. Keep the listed
+      // price and let the buyer retry. Only surface a graceful message.
+      console.warn('[VendorChat] failed to reach AI vendor:', err);
       setChatMessages(prev => [
         ...prev,
         {
           sender: 'vendor' as const,
-          text: `Since you're right here at booth ${vendorBooth}, I can do $${fallbackPrice.toLocaleString()} cash out the door right now! Do we have a deal? 🤝🔥`,
+          text: `Apologies — my connection on the convention floor just dropped for a sec! 📶 Ask me again and I'll sort you out on the ${activePoke.name || poke.name}.`,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
