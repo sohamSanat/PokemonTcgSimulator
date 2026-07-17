@@ -277,6 +277,34 @@ export function addCash(amount: number): number {
   return next;
 }
 
+// ── Net returns (real earning power used by the auction wallet) ──────────────
+// Net return = value of pulled cards minus money spent on packs. This is what
+// the user has *actually* earned, so the auction uses it instead of an absurd
+// default play-money balance. Floored at 0 (you can't bid on credit).
+const SESSION_TOTAL_KEY = 'tcg_session_total';
+const SESSION_SPENT_KEY = 'tcg_session_spent';
+
+export function getNetReturn(): number {
+  try {
+    const total = parseFloat(localStorage.getItem(SESSION_TOTAL_KEY) || '0');
+    const spent = parseFloat(localStorage.getItem(SESSION_SPENT_KEY) || '0');
+    const net = (isFinite(total) ? total : 0) - (isFinite(spent) ? spent : 0);
+    return Math.max(0, +net.toFixed(2));
+  } catch {
+    return 0;
+  }
+}
+
+// Pay for an auction win by reducing the user's net return (raise sessionSpent).
+export function spendFromNetReturn(amount: number): void {
+  try {
+    const spent = parseFloat(localStorage.getItem(SESSION_SPENT_KEY) || '0') || 0;
+    const next = Math.max(0, spent + Math.max(0, amount));
+    localStorage.setItem(SESSION_SPENT_KEY, next.toString());
+    window.dispatchEvent(new Event('storage'));
+  } catch { }
+}
+
 export function saveCollectedCard(cardData: any, setName: string, binderId: string = 'my-collection'): Card {
   const cards = getCollectedCards();
   const basePrice = cardData.value || 0.50;

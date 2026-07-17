@@ -2352,7 +2352,7 @@ export default function App() {
           </div>
 
           {/* Center: Innovative Pill Navigation (Desktop) / Vertical List (Mobile) */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1 w-full lg:w-auto lg:bg-[#0a0a0f]/60 lg:backdrop-blur-md lg:p-1.5 lg:rounded-2xl lg:border lg:border-white/5 lg:shadow-[inset_0_1px_2px_rgba(255,255,255,0.05),0_4px_10px_rgba(0,0,0,0.5)] shrink-0">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1 w-full lg:w-auto lg:bg-[#0a0a0f]/60 lg:backdrop-blur-md lg:p-1.5 lg:rounded-2xl lg:border lg:border-white/5 lg:shadow-[inset_0_1px_2px_rgba(255,255,255,0.05),0_4px_10px_rgba(0,0,0,0.5)] lg:overflow-x-auto lg:[&::-webkit-scrollbar]:hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] min-w-0">
 
             {/* Packs Tab */}
             <button

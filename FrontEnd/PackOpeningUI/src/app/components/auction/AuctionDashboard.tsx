@@ -4,7 +4,7 @@ import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
-import { saveCollectedCard, updateCardSlabStatus, getCash, spendCash } from '../binder/types';
+import { saveCollectedCard, updateCardSlabStatus, getNetReturn, spendFromNetReturn } from '../binder/types';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,6 +29,7 @@ interface AuctionLotState {
   soldTimeLeftMs: number;
   winner: string;
   finalPrice: number;
+  insufficientFunds: boolean;
   // Realistic auction-house fields
   reservePrice: number;
   reserveMet: boolean;
@@ -158,6 +159,7 @@ const setupLot = (card: AuctionPoolCard, type: 'expensive' | 'normal', idx = 0):
     soldTimeLeftMs: type === 'expensive' ? 6000 : 5000,
     winner: '',
     finalPrice: 0,
+    insufficientFunds: false,
     reservePrice,
     reserveMet: startPrice >= reservePrice,
     passed: false,
@@ -195,6 +197,7 @@ const runAuctionTick = (prev: AuctionLotState, type: 'expensive' | 'normal', poo
         soldTimeLeftMs: prev.soldTimeLeftMs,
         winner,
         finalPrice,
+        insufficientFunds: false,
         passed,
         reserveMet: !passed,
         goingStage: '',
@@ -281,6 +284,7 @@ interface AuctionLotSectionProps {
   winner: string;
   finalPrice: number;
   passed: boolean;
+  insufficientFunds: boolean;
   reserveMet: boolean;
   bidderCount: number;
   watchers: number;
@@ -323,6 +327,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   winner,
   finalPrice,
   passed,
+  insufficientFunds,
   reserveMet,
   bidderCount,
   watchers,
@@ -440,6 +445,13 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
                 </>
               )}
             </div>
+
+            {/* Insufficient funds notice (red) */}
+            {insufficientFunds && (
+              <div className="w-full max-w-md px-4 py-2.5 rounded-xl border-2 border-red-500/70 bg-red-950/60 text-red-300 font-bold text-sm sm:text-base text-center shadow-[0_0_25px_rgba(239,68,68,0.35)] mb-1">
+                You dont have enough funds to buy this card , card going to 2nd highest bidder
+              </div>
+            )}
 
             {/* Card Title */}
             <h3 className="text-xl sm:text-2xl font-black text-white line-clamp-1">{currentCard.name}</h3>
@@ -924,7 +936,17 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       normal: shuffle(raw.normal)
     };
   });
-  const [walletBalance, setWalletBalance] = useState<number>(() => getCash());
+  const [walletBalance, setWalletBalance] = useState<number>(() => getNetReturn());
+  const walletRef = useRef(walletBalance);
+  useEffect(() => { walletRef.current = walletBalance; }, [walletBalance]);
+  const [fundsAlerts, setFundsAlerts] = useState<{ id: number; cardName: string; price: number }[]>([]);
+  useEffect(() => {
+    if (fundsAlerts.length === 0) return;
+    const timers = fundsAlerts.map((a) =>
+      setTimeout(() => setFundsAlerts((prev) => prev.filter((x) => x.id !== a.id)), 9000)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [fundsAlerts]);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   const brokenUrlsRef = useRef<Set<string>>(new Set());
@@ -992,6 +1014,42 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     setupLot(pools.normal[0] || DUMMY_CARDS.normal[0], 'normal')
   );
 
+  // Settle a finished lot where the player ('YOU') held the top bid at hammer.
+  // If the player can actually afford the winning price we deduct it from their
+  // net returns and award the card. Otherwise the card is passed to the 2nd
+  // highest bidder and a red insufficient-funds popup is shown.
+  const settleWin = (res: TickResult): AuctionLotState => {
+    if (!res.won) return res.state;
+    const price = res.won.price;
+    if (walletRef.current >= price) {
+      spendFromNetReturn(price);
+      setWalletBalance((b) => Math.max(0, b - price));
+      const c = res.won!.card;
+      const saved = saveCollectedCard({
+        value: c.price,
+        pokemon: {
+          id: c.id,
+          name: c.name,
+          images: { large: c.img },
+          rarity: c.title || 'Rare'
+        }
+      }, 'Auction Win');
+      if (c.grade && saved) updateCardSlabStatus(saved.id, c.grade);
+      return res.state;
+    }
+    // Not enough funds → card goes to the 2nd highest bidder.
+    const second = [...res.state.bids].reverse().find((b) => b.user !== 'YOU');
+    const nextWinner = second ? second.user : '';
+    setFundsAlerts((prev) => [...prev, { id: Date.now() + Math.random(), cardName: res.won!.card.name, price }]);
+    return {
+      ...res.state,
+      winner: nextWinner,
+      finalPrice: second ? second.amount : res.state.finalPrice,
+      passed: !second,
+      insufficientFunds: true,
+    };
+  };
+
   // --- BACKGROUND ENGINE 1: GRAIL LOTS (Slabs >= $100, live reserve, 120s timer) ---
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1006,22 +1064,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
         }
 
         const res = runAuctionTick(prev, 'expensive', pools.expensive);
-        if (res.won) {
-          spendCash(res.won.price);
-          setWalletBalance((b) => Math.max(0, b - res.won!.price));
-          const c = res.won.card;
-          const saved = saveCollectedCard({
-            value: c.price,
-            pokemon: {
-              id: c.id,
-              name: c.name,
-              images: { large: c.img },
-              rarity: c.title || 'Rare'
-            }
-          }, 'Auction Win');
-          if (c.grade && saved) updateCardSlabStatus(saved.id, c.grade);
-        }
-        return res.state;
+        return settleWin(res);
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -1041,22 +1084,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
         }
 
         const res = runAuctionTick(prev, 'normal', pools.normal);
-        if (res.won) {
-          spendCash(res.won.price);
-          setWalletBalance((b) => Math.max(0, b - res.won!.price));
-          const c = res.won.card;
-          const saved = saveCollectedCard({
-            value: c.price,
-            pokemon: {
-              id: c.id,
-              name: c.name,
-              images: { large: c.img },
-              rarity: c.title || 'Rare'
-            }
-          }, 'Auction Win');
-          if (c.grade && saved) updateCardSlabStatus(saved.id, c.grade);
-        }
-        return res.state;
+        return settleWin(res);
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -1311,7 +1339,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
             <div className="h-6 w-px bg-slate-700/60 hidden md:block" />
 
             <div className="flex flex-col items-end shrink-0 bg-slate-950/60 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-800">
-              <span className="text-[9px] tracking-widest text-slate-400 font-mono uppercase">Wallet Balance</span>
+              <span className="text-[9px] tracking-widest text-slate-400 font-mono uppercase">Your Net Returns</span>
               <span className="text-xs sm:text-sm font-mono text-slate-100 font-bold">${walletBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           </div>
@@ -1343,6 +1371,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 winner={expensiveLot.winner}
                 finalPrice={expensiveLot.finalPrice}
                 passed={expensiveLot.passed}
+                insufficientFunds={expensiveLot.insufficientFunds}
                 reserveMet={expensiveLot.reserveMet}
                 bidderCount={expensiveLot.bidderCount}
                 watchers={expensiveLot.watchers}
@@ -1393,6 +1422,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
                 winner={normalLot.winner}
                 finalPrice={normalLot.finalPrice}
                 passed={normalLot.passed}
+                insufficientFunds={normalLot.insufficientFunds}
                 reserveMet={normalLot.reserveMet}
                 bidderCount={normalLot.bidderCount}
                 watchers={normalLot.watchers}
@@ -1423,6 +1453,38 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
           )}
         </div>
 
+      </div>
+
+      {/* INSUFFICIENT FUNDS POPUPS (red) — shown after an auction ends where the
+          user won but couldn't cover the price. */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center gap-2 w-full max-w-md px-3 pointer-events-none">
+        <AnimatePresence>
+          {fundsAlerts.map((alert) => (
+            <motion.div
+              key={alert.id}
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              className="pointer-events-auto w-full flex items-start gap-2 px-4 py-3 rounded-xl border-2 border-red-500/80 bg-red-950/90 backdrop-blur-md shadow-[0_0_30px_rgba(239,68,68,0.45)]"
+            >
+              <div className="flex-1">
+                <p className="text-red-200 font-extrabold text-sm leading-snug">
+                  You dont have enough funds to buy this card , card going to 2nd highest bidder
+                </p>
+                <p className="text-red-400/80 text-[11px] font-mono mt-1">
+                  {alert.cardName} • Winning bid ${alert.price.toLocaleString()}
+                </p>
+              </div>
+              <button
+                onClick={() => setFundsAlerts((prev) => prev.filter((a) => a.id !== alert.id))}
+                className="text-red-300 hover:text-white transition-colors shrink-0 p-0.5"
+                aria-label="Dismiss"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
