@@ -274,8 +274,8 @@ function checkDailyReset() {
     // Give 5 English and 5 Japanese free packs daily
     localStorage.setItem(DAILY_ENGLISH_FREE_KEY, '5');
     localStorage.setItem(DAILY_JAPANESE_FREE_KEY, '5');
-    // Give $100 daily cash allowance
-    localStorage.setItem(DAILY_CASH_KEY, '100');
+    // Give $80 daily cash allowance
+    localStorage.setItem(DAILY_CASH_KEY, '80');
 
     // Reset daily missions progress
     const missions = getMissions();
@@ -298,10 +298,10 @@ export function getDailyFreePacks(): { english: number; japanese: number } {
 
 // --- Get Daily Cash ---
 export function getDailyCash(): number {
-  if (typeof window === 'undefined') return 100;
+  if (typeof window === 'undefined') return 80;
   checkDailyReset();
-  const cash = parseFloat(localStorage.getItem(DAILY_CASH_KEY) || '100');
-  return isNaN(cash) ? 100 : cash;
+  const cash = parseFloat(localStorage.getItem(DAILY_CASH_KEY) || '80');
+  return isNaN(cash) ? 80 : cash;
 }
 
 // --- Use Daily Cash (and optionally net return) ---
