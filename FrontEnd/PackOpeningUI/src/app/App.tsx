@@ -329,7 +329,9 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
 };
 
 const getRealCardPrice = (poke: PokemonCard): number => {
-  if (poke.id) {
+  const isJapaneseCard = poke.id?.includes('_ja');
+
+  if (poke.id && isJapaneseCard) {
     const rawSet = poke.id.split('-')[0] || '';
     const localNum = poke.localId || poke.id.split('-')[1] || '';
     const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
@@ -341,7 +343,6 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
   // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
   // and the error fallback would overwrite the correct Scrydex CDN image URL.
-  const isJapaneseCard = poke.id?.includes('_ja');
   if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
     fetchCardFull(poke.id).catch(() => { });
   }
