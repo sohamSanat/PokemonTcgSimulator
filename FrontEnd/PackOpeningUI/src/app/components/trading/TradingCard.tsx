@@ -114,53 +114,37 @@ export const TradingCard: React.FC<{
     isJpn?: boolean
   ) => {
     const img = e.currentTarget
-    let setId = 'swsh3'
-    let num = '1'
 
     const targetId = cardId || img.dataset.imgId
     // Look up in vault cards (uses ref so it always has fresh list)
     const cardItem = sellerCardsRef.current.find(
       c => c.id === targetId || c.originalId === targetId
     )
-    if (cardItem) {
-      if (cardItem.setId) setId = cardItem.setId
-      if (cardItem.num !== undefined) num = String(cardItem.num)
-      const orig = cardItem.originalId || cardItem.id || ''
-      if (orig.includes('-')) {
-        const parts = orig.split('-')
-        const lp = parts[0].toLowerCase()
-        const isVendorPrefix = lp.includes('vault') || lp.includes('booth') || lp.includes('core') || lp.includes('vintage') ||
-          lp.includes('alpha') || lp.includes('digimon') || lp.includes('slab') ||
-          lp.includes('retro') || lp.includes('tcg') || lp.includes('special') || lp.includes('gold') ||
-          lp.includes('sealed') || lp.includes('modern') || lp.includes('japanese') ||
-          lp === 'jp' || (parts[1] && (parts[1] === 'core' || parts[1].includes('jp')))
-        if (!isVendorPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
-          setId = parts[0]; num = parts[1]
-        }
-      }
+
+    // ── Primary: use the pre-parsed setId/num already on the VendorCard ──────
+    let setId = (cardItem?.setId) || 'swsh3'
+    let num   = (cardItem?.num !== undefined) ? String(cardItem.num) : '1'
+
+    // ── Secondary: parse directly from the img src URL (most reliable) ───────
+    if (setId === 'swsh3' || !cardItem) {
+      const match =
+        img.src.match(/\/pokemon\/([a-z0-9_]+)[_-]([0-9]+)(?:\/|$)/i) ||
+        img.src.match(/pokemontcg\.io\/([a-z0-9]+)\/([0-9]+)/i) ||
+        img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(?:\/large|\/high|\.png|\.webp|_hires)/i)
+      if (match) { setId = match[1]; num = match[2] }
     }
 
-    // Fall back: parse setId/num from the src URL
-    const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
-                  img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
-                  img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i)
-    if (match && (!cardItem || setId === 'swsh3')) {
-      setId = match[1]; num = match[2]
-    } else if (!cardItem && targetId && targetId.includes('-')) {
-      const parts = targetId.split('-')
-      const lp = parts[0].toLowerCase()
-      const isVendorPrefix = lp.includes('vault') || lp.includes('booth') || lp === 'jp'
-      if (!isVendorPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
-        setId = parts[0]; num = parts[1]
-      }
-    }
-
+    // ── Japanese detection ────────────────────────────────────────────────────
     const origStr = cardItem?.originalId || cardItem?.id || targetId || ''
     const isKnownJpPrefix = /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(origStr) ||
       /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(setId)
-    const isJpnCard = Boolean(isJpn || isKnownJpPrefix || setId.toLowerCase().includes('_ja') ||
-      cardItem?.name?.includes('Japanese') || origStr.includes('_ja') ||
-      img.src.includes('_ja') || img.src.includes('/ja/'))
+    const isJpnCard = Boolean(
+      isJpn || isKnownJpPrefix ||
+      setId.toLowerCase().includes('_ja') ||
+      cardItem?.name?.includes('Japanese') ||
+      origStr.includes('_ja') ||
+      img.src.includes('_ja') || img.src.includes('/ja/')
+    )
     if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
       setId = `${setId.replace(/_ja$/i, '')}_ja`
     }
@@ -178,24 +162,31 @@ export const TradingCard: React.FC<{
     isJpn?: boolean
   ) => {
     const img = e.currentTarget
-    // Only need the canvas check for known placeholder-serving hosts
-    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return
-    try {
-      const canvas = document.createElement('canvas')
-      canvas.width = 8; canvas.height = 8
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-      ctx.drawImage(img, 0, 0, 8, 8)
-      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data
-      const isCardBack = r < 50 && g < 75 && b > 90
-      if (isCardBack) {
-        handleVaultImageError(
-          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-          cardId,
-          isJpn
-        )
-      }
-    } catch { /* tainted canvas – do nothing */ }
+    // Only scrydex and pokemontcg.io can serve placeholder card-backs — skip other hosts
+    if (!img.src.includes('scrydex.com') && !img.src.includes('pokemontcg.io') && !img.src.includes('tcgdex')) return
+    // Canvas pixel-check is blocked by CORS for cross-origin images.
+    // Instead, verify via a HEAD request whether scrydex returned a placeholder.
+    if (img.src.includes('scrydex.com')) {
+      const PLACEHOLDER_BYTES = new Set([186316, 350441])
+      fetch(img.src, { method: 'HEAD', signal: AbortSignal.timeout(5000) })
+        .then(r => {
+          if (!r.ok) {
+            handleVaultImageError(
+              { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+              cardId, isJpn
+            )
+            return
+          }
+          const len = Number(r.headers.get('content-length') || 0)
+          if (len > 0 && PLACEHOLDER_BYTES.has(len)) {
+            handleVaultImageError(
+              { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+              cardId, isJpn
+            )
+          }
+        })
+        .catch(() => {})
+    }
   }, [handleVaultImageError])
   // ───────────────────────────────────────────────────────────────────────────
 
