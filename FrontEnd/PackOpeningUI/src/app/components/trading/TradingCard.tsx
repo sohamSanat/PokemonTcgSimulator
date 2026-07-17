@@ -406,8 +406,6 @@ export const TradingCard: React.FC<{
                     src={card.img}
                     alt={card.name}
                     className="w-full h-full object-cover"
-                    loading="lazy"
-                    crossOrigin="anonymous"
                     onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
                     onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
                   />
