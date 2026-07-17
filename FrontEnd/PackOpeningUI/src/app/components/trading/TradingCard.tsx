@@ -15,19 +15,6 @@ import { getCombinedVendorCardPool, isJapaneseVendorCard } from "../../services/
 import { loadJapaneseMetadata } from "../../services/scrydex"
 import { handleCardImageError } from "../../services/tcgdex"
 
-/**
- * Convert any scrydex.com URL → pokemontcg.io _hires.png URL.
- * pokemontcg.io returns real HTTP 404 for missing cards, so <img onError> fires
- * naturally and the handleCardImageError fallback chain takes over.
- * scrydex silently serves a generic card-back at HTTP 200, blocking onError.
- */
-function toPokeIoUrl(img: string, setId: string, num: string): string {
-  if (!img.includes('scrydex.com')) return img          // already reliable
-  const cleanSet = setId.replace(/_ja$/i, '').toLowerCase()
-  const cleanNum  = String(num || '1')
-  return `https://images.pokemontcg.io/${cleanSet}/${cleanNum}_hires.png`
-}
-
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
   onInspectCard?: (card: any) => void,
@@ -84,13 +71,17 @@ export const TradingCard: React.FC<{
           ei < english.length              ? english[ei++]  : null
         if (!src) break
 
-        // ── KEY FIX: use pokemontcg.io as primary src so onError fires on miss ──
-        const reliableImg = toPokeIoUrl(src.img, src.setId, src.num)
+        // Use the ORIGINAL image URL exactly as-is — same approach as
+        // CardShowView's vendor catalogue. scrydex serves CORS headers so
+        // the canvas pixel check can detect card-back placeholders and
+        // trigger the full handleCardImageError fallback chain.
+        // DO NOT convert to pokemontcg.io — it lacks CORS headers, which
+        // causes the canvas getImageData() to silently throw SecurityError.
 
         result.push({
           ...src,
-          img: reliableImg,
-          originalImg: src.img,          // keep scrydex URL for fallback chain
+          img: src.img,
+          originalImg: src.img,
           id: `${src.id}-vault-${result.length}`,
           originalId: src.originalId || src.id,
           selected: Math.random() > 0.95
@@ -416,6 +407,7 @@ export const TradingCard: React.FC<{
                     alt={card.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    crossOrigin="anonymous"
                     onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
                     onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
                   />
