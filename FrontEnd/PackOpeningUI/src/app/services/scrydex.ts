@@ -556,23 +556,26 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   }
 
   const offlineNames = jaCardNamesCache || {};
-  // SM and SWSH (S-prefix) sets use 3-digit padded card numbers on Scrydex
-  const needsPadding = prefixLow.startsWith('sm') || (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn'));
-  // swsh-prefixed equivalent for S-prefix SWSH sets
-  const swshEquivPrefix = (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn')) ? `swsh${prefixLow.slice(1)}` : null;
+  // Determine the correct Scrydex set ID prefix.
+  // SM sets: use lowercase sm prefix, NO number padding (e.g. sm9_ja-55)
+  // SWSH sets: TCGDex uses 'S1W','S12a' but Scrydex uses 'swsh1w','swsh12a' (full swsh prefix)
+  // SV sets: use lowercase sv prefix, NO padding (e.g. sv2a_ja-1)
+  const isSwshSet = prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn');
+  const scrydexSetPrefix = isSwshSet ? `swsh${prefixLow.slice(1)}` : prefixLow;
 
   for (let i = 1; i <= totalCards; i++) {
     const cardNum = i.toString();
-    const paddedNum = needsPadding ? cardNum.padStart(3, '0') : cardNum;
     const lookupKey = `${prefixLow}_ja-${cardNum}`;
     const altKey = `${prefixLow}-${cardNum}`;
+    // Also check swsh-prefixed key for SWSH sets
+    const scrydexLookupKey = isSwshSet ? `${scrydexSetPrefix}_ja-${cardNum}` : lookupKey;
 
     let topCardName = '';
     if (jaTopCardsCache) {
       const topMatch = jaTopCardsCache.find(c =>
         c.id === lookupKey ||
         c.id === altKey ||
-        (swshEquivPrefix && (c.id === `${swshEquivPrefix}_ja-${cardNum}` || c.id === `${swshEquivPrefix}-${cardNum}`))
+        c.id === scrydexLookupKey
       );
       if (topMatch && topMatch.name) {
         topCardName = topMatch.name.replace(/Japanese\s+/i, '').replace(/\s*\([^)]*\)$/, '').trim();
@@ -589,8 +592,8 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
       updated: new Date().toISOString(),
       normal: { marketPrice: realPrice, midPrice: Number((realPrice * 1.05).toFixed(2)), lowPrice: Number((realPrice * 0.85).toFixed(2)), highPrice: Number((realPrice * 1.4).toFixed(2)) }
     };
-    // Use padded number in the Scrydex image URL for SM/SWSH sets
-    const scrydexImgUrl = `https://images.scrydex.com/pokemon/${prefixLow}_ja-${paddedNum}/large`;
+    // Use the correct Scrydex prefix: swsh for SWSH sets, sm/sv as-is for others
+    const scrydexImgUrl = `https://images.scrydex.com/pokemon/${scrydexSetPrefix}_ja-${cardNum}/large`;
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
