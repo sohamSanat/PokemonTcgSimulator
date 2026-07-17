@@ -107,6 +107,12 @@ export const TradingCard: React.FC<{
   ) => {
     const img = e.currentTarget
 
+    // Drop crossOrigin so the pokemontcg.io fallback URLs (which lack CORS
+    // headers) can actually render. The initial scrydex load keeps crossOrigin
+    // for the canvas card-back pixel check; once we fall into the error chain
+    // we no longer need it and it would otherwise block every non-CORS source.
+    try { img.crossOrigin = null as any; img.removeAttribute('crossorigin'); } catch {}
+
     // Look up the card — setId/num are pre-parsed on every VendorCard
     const cardItem = sellerCardsRef.current.find(
       c => c.id === cardId || c.originalId === cardId
@@ -406,6 +412,7 @@ export const TradingCard: React.FC<{
                     src={card.img}
                     alt={card.name}
                     className="w-full h-full object-cover"
+                    crossOrigin="anonymous"
                     onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
                     onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
                   />
