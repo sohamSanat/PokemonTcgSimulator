@@ -150,6 +150,47 @@ export const TradingCard: React.FC<{
         : 'https://images.pokemontcg.io/swsh3/19_hires.png'
     })
   }, [])
+
+  /**
+   * onLoad canvas pixel check — mirrors CardShowView.handleCardShowImageLoad.
+   * Scrydex CDN serves a generic card-back at HTTP 200 (no 404), so onError
+   * never fires for missing cards. We sample a corner pixel: if it matches
+   * the dark navy card-back palette we treat it as a failure and hand off to
+   * handleVaultImageError so the real fallback chain kicks in.
+   */
+  const handleVaultImageLoad = React.useCallback((
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+    cardId?: string,
+    isJpn?: boolean
+  ) => {
+    const img = e.currentTarget
+    // Only perform the check for pokemontcg.io / scrydex — other sources are fine
+    if (
+      !img.src.includes('pokemontcg.io') &&
+      !img.src.includes('scrydex.com') &&
+      !img.src.includes('tcgdex')
+    ) return
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = 8
+      canvas.height = 8
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.drawImage(img, 0, 0, 8, 8)
+      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data
+      // Card-back heuristic: dark (r<50), slightly blue-tinted (b>90)
+      const isCardBack = r < 50 && g < 75 && b > 90
+      if (isCardBack) {
+        handleVaultImageError(
+          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+          cardId,
+          isJpn
+        )
+      }
+    } catch {
+      // Cross-origin canvas taint — safe to ignore, onError will handle real failures
+    }
+  }, [handleVaultImageError])
   // ───────────────────────────────────────────────────────────────────────────
 
   const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
@@ -375,6 +416,7 @@ export const TradingCard: React.FC<{
                     alt={card.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onLoad={(e) => handleVaultImageLoad(e, card.id, isJpCard)}
                     onError={(e) => handleVaultImageError(e, card.id, isJpCard)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
