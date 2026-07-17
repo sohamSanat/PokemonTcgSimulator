@@ -515,8 +515,12 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
 
   // Fetch live card titles from TCGDex Japanese & English endpoints where available
   const resolvedCardNamesMap = new Map<string, string>();
+  let tcgdexJaId = prefixLow;
+  if (tcgdexJaId.startsWith('swsh')) {
+    tcgdexJaId = 's' + tcgdexJaId.slice(4);
+  }
   try {
-    const resJa = await fetch(`https://api.tcgdex.net/v2/ja/sets/${rawId}`);
+    const resJa = await fetch(`https://api.tcgdex.net/v2/ja/sets/${tcgdexJaId}`);
     if (resJa.ok) {
       const dataJa = await resJa.json();
       if (Array.isArray(dataJa?.cards)) {
