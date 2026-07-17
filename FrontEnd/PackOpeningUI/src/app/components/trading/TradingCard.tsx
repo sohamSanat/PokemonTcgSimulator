@@ -32,6 +32,16 @@ const shuffleArr = <T,>(arr: T[]): T[] => {
   return copy
 }
 
+// Confirm (via a detached Image() loader) that a URL actually loads. Returns
+// false on any failure so a broken/placeholder source is never used.
+const preloadImage = (url: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    const im = new Image()
+    im.onload = () => resolve(true)
+    im.onerror = () => resolve(false)
+    im.src = url
+  })
+
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
   onInspectCard?: (card: any) => void,
@@ -45,7 +55,12 @@ export const TradingCard: React.FC<{
   // ── Sequential vault loading ──────────────────────────────────────────────
   const BATCH_SIZE = 9
   const [visibleCount, setVisibleCount] = useState(0)
-  const [resolvedIndices, setResolvedIndices] = useState<Set<number>>(new Set())
+  // Indices whose art has been pre-validated (confirmed to actually load)
+  // before it is ever rendered into the DOM.
+  const validatedRef = React.useRef<Set<number>>(new Set())
+  const [validatedTick, setValidatedTick] = useState(0)
+  // Bumped to force a re-validation pass (e.g. a card that failed at display time).
+  const [revalidateTick, setRevalidateTick] = useState(0)
   const reserveRef = React.useRef<any[]>([])
   // Tracks how many times a slot has been swapped so a pathological slot can
   // never loop forever replacing itself.
@@ -118,47 +133,9 @@ export const TradingCard: React.FC<{
   const sellerCardsRef = React.useRef<any[]>([])
   useEffect(() => { sellerCardsRef.current = sellerCards }, [sellerCards])
 
-  // ── Replacement engine ─────────────────────────────────────────────────────
-  // Marks a vault slot as "resolved" so the sequential loader can advance.
-  const markResolved = React.useCallback((idx: number) => {
-    setResolvedIndices(prev => {
-      if (prev.has(idx)) return prev
-      const next = new Set(prev)
-      next.add(idx)
-      return next
-    })
-  }, [])
-
-  // Swaps a failed/placeholder card for a fresh one from the reserve pool.
-  // The fallback is ALWAYS another real card — never a placeholder image. If the
-  // reserve runs low we top it up from the full vendor pool again.
-  const replaceCard = React.useCallback((
-    cardId: string,
-    isJpn: boolean,
-    img: HTMLImageElement
-  ) => {
-    const idx = sellerCardsRef.current.findIndex(
-      c => c.id === cardId || c.originalId === cardId
-    )
-    if (idx < 0) return
-
-    const attempts = (replaceAttemptsRef.current[idx] || 0) + 1
-    replaceAttemptsRef.current[idx] = attempts
-
-    // Safety net only: if a slot has been swapped a silly number of times, pin a
-    // guaranteed-existing real card so we never loop forever. This is a *real*
-    // card (Charizard base set), not a placeholder.
-    if (attempts > 12) {
-      try {
-        img.crossOrigin = null as any
-        img.removeAttribute('crossorigin')
-        img.src = 'https://images.pokemontcg.io/base1/4_hires.png'
-      } catch {}
-      markResolved(idx)
-      return
-    }
-
-    // Top up the reserve from the full pool if it's getting low.
+  // Pull a fresh replacement card from the reserve, preferring the same
+  // language to keep the EN/JP mix stable. Returns null when empty.
+  const pickReserveCard = React.useCallback((isJpn: boolean): any | null => {
     if (reserveRef.current.length === 0) {
       const shown = new Set(sellerCardsRef.current.map(c => c.originalId))
       const fresh = getCombinedVendorCardPool(2000).filter(
@@ -166,44 +143,76 @@ export const TradingCard: React.FC<{
       )
       reserveRef.current = shuffleArr(fresh).slice(0, 600)
     }
-
     const reserve = reserveRef.current
-    if (reserve.length === 0) {
-      // Extremely unlikely, but still a real card rather than a placeholder.
-      try {
-        img.crossOrigin = null as any
-        img.removeAttribute('crossorigin')
-        img.src = 'https://images.pokemontcg.io/base1/4_hires.png'
-      } catch {}
-      markResolved(idx)
-      return
-    }
-
-    // Prefer the same language to keep the EN/JP mix stable.
+    if (reserve.length === 0) return null
     let pick = reserve.findIndex(c => isJapaneseVendorCard(c) === isJpn)
     if (pick < 0) pick = 0
-    const src = reserve.splice(pick, 1)[0]
+    return reserve.splice(pick, 1)[0]
+  }, [])
 
-    const newCard = {
-      ...src,
-      // Real, reliable art from pokemontcg.io — never a scrydex card-back.
-      img: buildPokeIoUrl(src.setId, src.num),
-      originalImg: src.img,
-      id: `${src.id}-vault-${idx}-${Date.now()}`,
-      originalId: src.originalId || src.id,
-      selected: Math.random() > 0.95
-    }
-    setSellerCards(prev => {
-      const next = [...prev]
-      next[idx] = newCard
-      return next
-    })
-    // The slot re-renders with a fresh <img>; mark resolved so the batch can
-    // advance even while the replacement image is still downloading.
-    markResolved(idx)
-  }, [markResolved])
+  // Build a display-ready card using a guaranteed-real pokemontcg.io URL.
+  const makeDisplayCard = (src: any, idx: number, attempt: number): any => ({
+    ...src,
+    img: buildPokeIoUrl(src.setId, src.num),
+    originalImg: src.img,
+    id: `${src.id}-vault-${idx}-${Date.now()}-${attempt}`,
+    originalId: src.originalId || src.id,
+    selected: Math.random() > 0.95
+  })
 
-  // Advance to the next batch once the current visible batch has all resolved.
+  // Pre-validate + sequentially advance the vault. Every visible slot's art is
+  // confirmed (via a hidden Image() loader) to actually load BEFORE it is ever
+  // placed in the DOM. Failures are swapped for a reserve card and retried, so a
+  // card-back / broken image can never reach the screen.
+  useEffect(() => {
+    if (sellerCards.length === 0 || visibleCount === 0) return
+    let cancelled = false
+
+    ;(async () => {
+      for (let i = 0; i < visibleCount; i++) {
+        if (cancelled || validatedRef.current.has(i)) continue
+
+        let card = sellerCardsRef.current[i]
+        let attempt = replaceAttemptsRef.current[i] || 0
+        let ok = false
+
+        while (card && attempt < 25) {
+          ok = await preloadImage(buildPokeIoUrl(card.setId, card.num))
+          if (cancelled) return
+          if (ok) break
+
+          const rep = pickReserveCard(isJapaneseVendorCard(card))
+          if (!rep) { card = null; break }
+          const next = makeDisplayCard(rep, i, attempt + 1)
+          setSellerCards(prev => { const n = [...prev]; n[i] = next; return n })
+          card = next
+          attempt++
+          replaceAttemptsRef.current[i] = attempt
+        }
+
+        if (cancelled) return
+        if (card && ok) {
+          validatedRef.current.add(i)
+          setValidatedTick(t => t + 1)
+        } else if (card && !ok) {
+          // Reserve exhausted — pin a guaranteed-real card so the slot is
+          // never blank or broken.
+          setSellerCards(prev => {
+            const n = [...prev]
+            n[i] = { ...prev[i], img: 'https://images.pokemontcg.io/base1/4_hires.png', id: `pin-${i}-${Date.now()}` }
+            return n
+          })
+          validatedRef.current.add(i)
+          setValidatedTick(t => t + 1)
+        }
+      }
+    })()
+
+    return () => { cancelled = true }
+  }, [visibleCount, revalidateTick])
+
+  // Kick off the first batch and advance to the next once every visible slot
+  // has been confirmed to render real art.
   useEffect(() => {
     if (sellerCards.length === 0) return
     if (visibleCount === 0) {
@@ -211,68 +220,12 @@ export const TradingCard: React.FC<{
       return
     }
     const batchDone = Array.from({ length: visibleCount }, (_, i) =>
-      resolvedIndices.has(i)
+      validatedRef.current.has(i)
     ).every(Boolean)
     if (batchDone && visibleCount < sellerCards.length) {
       setVisibleCount(c => Math.min(c + BATCH_SIZE, sellerCards.length))
     }
-  }, [resolvedIndices, visibleCount, sellerCards])
-  // ───────────────────────────────────────────────────────────────────────────
-
-  const handleVaultImageError = React.useCallback((
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-    cardId?: string,
-    isJpn?: boolean
-  ) => {
-    const img = e.currentTarget
-    // Art failed to load. Per spec we NEVER show a placeholder/broken image —
-    // we immediately swap in a fresh, real card from the (effectively
-    // unlimited) reserve. We deliberately skip the generic recovery chain
-    // because its tcgdex/scrydex fallbacks can themselves serve card-back
-    // placeholders at HTTP 200, which would just re-create the problem.
-    replaceCard(cardId || '', Boolean(isJpn), img)
-  }, [replaceCard])
-
-  /**
-   * onLoad canvas pixel check — mirrors CardShowView.handleCardShowImageLoad.
-   * Scrydex CDN serves a generic card-back at HTTP 200 (no 404), so onError
-   * never fires for missing cards. We sample a corner pixel: if it matches
-   * the dark navy card-back palette we treat it as a failure and hand off to
-   * handleVaultImageError so the real fallback chain kicks in.
-   */
-  const handleVaultImageLoad = React.useCallback((
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-    cardId?: string,
-    isJpn?: boolean
-  ) => {
-    const img = e.currentTarget
-    // Only perform the check for pokemontcg.io / scrydex — other sources are fine
-    if (
-      !img.src.includes('pokemontcg.io') &&
-      !img.src.includes('scrydex.com') &&
-      !img.src.includes('tcgdex')
-    ) return
-    try {
-      const canvas = document.createElement('canvas')
-      canvas.width = 8
-      canvas.height = 8
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-      ctx.drawImage(img, 0, 0, 8, 8)
-      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data
-      // Card-back heuristic: dark (r<50), slightly blue-tinted (b>90)
-      const isCardBack = r < 50 && g < 75 && b > 90
-      if (isCardBack) {
-        handleVaultImageError(
-          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-          cardId,
-          isJpn
-        )
-      }
-    } catch {
-      // Cross-origin canvas taint — safe to ignore, onError will handle real failures
-    }
-  }, [handleVaultImageError])
+  }, [validatedTick, visibleCount, sellerCards])
   // ───────────────────────────────────────────────────────────────────────────
 
   const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
@@ -468,9 +421,6 @@ export const TradingCard: React.FC<{
             <>
             <div className="grid grid-cols-3 gap-6 perspective-1000">
               {sellerCards.slice(0, visibleCount).map((card, i) => {
-                const isJpCard = isJapaneseVendorCard(card) ||
-                  (card.originalId || '').includes('_ja') ||
-                  (card.originalImg || '').includes('_ja')
                 return (
                 <motion.div
                   key={card.id}
@@ -494,13 +444,21 @@ export const TradingCard: React.FC<{
                   `}
                   data-card-container="true"
                 >
-                  <img
-                    src={card.img}
-                    alt={card.name}
-                    className="w-full h-full object-cover"
-                    onLoad={(e) => { handleVaultImageLoad(e, card.id, isJpCard); markResolved(i) }}
-                    onError={(e) => { handleVaultImageError(e, card.id, isJpCard); markResolved(i) }}
-                  />
+                  {validatedRef.current.has(i) ? (
+                    <img
+                      src={card.img}
+                      alt={card.name}
+                      className="w-full h-full object-cover"
+                      onError={() => {
+                        // A pre-validated URL that still failed at display time:
+                        // drop validation so the vault re-validates the slot.
+                        validatedRef.current.delete(i)
+                        setRevalidateTick(t => t + 1)
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-tr from-[#0b1220] to-[#16233b] animate-pulse" />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 
                   {card.selected && (
