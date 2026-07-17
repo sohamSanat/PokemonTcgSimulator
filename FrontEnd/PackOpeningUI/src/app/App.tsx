@@ -343,7 +343,7 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   // and the error fallback would overwrite the correct Scrydex CDN image URL.
   const isJapaneseCard = poke.id?.includes('_ja');
   if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
-    fetchCardFull(poke.id).catch(() => {});
+    fetchCardFull(poke.id).catch(() => { });
   }
   const cached = cardFullCache.get(poke.id);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
@@ -521,12 +521,12 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
     if (energy.length > 0) return energy[Math.floor(Math.random() * energy.length)];
     const id = (fallbackSet?.id || '').toLowerCase();
     const name = (fallbackSet?.name || '').toLowerCase();
-    const era: EnergyEra = 
+    const era: EnergyEra =
       id.startsWith('me') || name.includes('mega evolution') || name.includes('phantasmal') || name.includes('ascended') || name.includes('perfect order') || name.includes('chaos rising') ? 'me' :
-      id.startsWith('sv') || name.includes('scarlet') || name.includes('paldea') || name.includes('obsidian') || name.includes('paradox') || name.includes('temporal') || name.includes('twilight') || name.includes('stellar') || name.includes('surging') || name.includes('151') || name.includes('prismatic') || name.includes('shrouded') ? 'sv' :
-      id.startsWith('sm') || name.includes('sun & moon') || name.includes('guardians rising') || name.includes('burning shadows') || name.includes('cosmic eclipse') || name.includes('hidden fates') ? 'sm' :
-      id.startsWith('xy') || name.includes('flashfire') || name.includes('furious fists') || name.includes('roaring skies') || name.includes('evolutions') || name.includes('phantom forces') ? 'xy' :
-      id.startsWith('base') || id === 'bs1' || id === 'bs2' || id === 'ju' || id === 'fo' || id === 'tr' || name.includes('base set') || name.includes('jungle') || name.includes('fossil') || name.includes('team rocket') ? 'base' : 'swsh';
+        id.startsWith('sv') || name.includes('scarlet') || name.includes('paldea') || name.includes('obsidian') || name.includes('paradox') || name.includes('temporal') || name.includes('twilight') || name.includes('stellar') || name.includes('surging') || name.includes('151') || name.includes('prismatic') || name.includes('shrouded') ? 'sv' :
+          id.startsWith('sm') || name.includes('sun & moon') || name.includes('guardians rising') || name.includes('burning shadows') || name.includes('cosmic eclipse') || name.includes('hidden fates') ? 'sm' :
+            id.startsWith('xy') || name.includes('flashfire') || name.includes('furious fists') || name.includes('roaring skies') || name.includes('evolutions') || name.includes('phantom forces') ? 'xy' :
+              id.startsWith('base') || id === 'bs1' || id === 'bs2' || id === 'ju' || id === 'fo' || id === 'tr' || name.includes('base set') || name.includes('jungle') || name.includes('fossil') || name.includes('team rocket') ? 'base' : 'swsh';
     const pool = ENERGY_POOLS_BY_ERA[era] || ENERGY_POOLS_BY_ERA.sv;
     const chosen = pool[Math.floor(Math.random() * pool.length)];
     return {
@@ -945,7 +945,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   </span>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => { sound.playModalClose(); onClose(); }}
                 className="p-2.5 rounded-full bg-black/40 hover:bg-black border border-white/10 hover:border-amber-500/50 text-white/60 hover:text-amber-400 transition-all cursor-pointer backdrop-blur-md shadow-xl"
@@ -981,13 +981,12 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
             <div className={`pt-4 border-t border-white/10 flex flex-wrap items-center ${isFromVendor ? 'justify-between' : 'justify-end'} gap-4 z-10 bg-black/40 p-4 rounded-2xl border border-white/5`}>
               {isFromVendor && (
                 <div className="flex items-center gap-3 flex-wrap">
-                  <div className={`px-3.5 py-1.5 rounded-xl border flex flex-col justify-center transition-all duration-300 ${
-                    isPriceUpdated
+                  <div className={`px-3.5 py-1.5 rounded-xl border flex flex-col justify-center transition-all duration-300 ${isPriceUpdated
                       ? 'bg-emerald-500 border-white shadow-[0_0_25px_rgba(16,185,129,1)] scale-110 animate-bounce'
                       : negotiatedPrice < vendorPrice
                         ? 'bg-gradient-to-r from-emerald-500/30 to-teal-500/30 border-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.4)]'
                         : 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-                  }`}>
+                    }`}>
                     <span className={`text-[9px] font-mono font-bold uppercase tracking-wider ${isPriceUpdated ? 'text-black' : 'text-emerald-300/80'}`}>
                       Booth {vendorBooth} Price {isPriceUpdated && '🔥 DROP!'}
                     </span>
@@ -1008,11 +1007,10 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   </button>
                   <button
                     onClick={handleBuyFromVendorAction}
-                    className={`px-4 py-2 rounded-xl font-mono font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 ${
-                      isPriceUpdated
+                    className={`px-4 py-2 rounded-xl font-mono font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 ${isPriceUpdated
                         ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_20px_rgba(250,204,21,0.8)] border-2 border-white'
                         : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/50'
-                    }`}
+                      }`}
                   >
                     <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
                   </button>
@@ -1086,9 +1084,8 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                 <Eye className="w-3.5 h-3.5 text-amber-400" /> Admire Card Art Studio
               </button>
               <div className="mt-4 text-center w-full px-2">
-                <div className={`transition-all duration-300 rounded-2xl py-1 px-2 ${
-                  isPriceUpdated ? 'bg-emerald-500/20 border-2 border-emerald-400 scale-105 animate-bounce shadow-[0_0_25px_rgba(16,185,129,0.5)]' : ''
-                }`}>
+                <div className={`transition-all duration-300 rounded-2xl py-1 px-2 ${isPriceUpdated ? 'bg-emerald-500/20 border-2 border-emerald-400 scale-105 animate-bounce shadow-[0_0_25px_rgba(16,185,129,0.5)]' : ''
+                  }`}>
                   <div className="flex items-center justify-center gap-2">
                     {isFromVendor && negotiatedPrice < vendorPrice && (
                       <span className="text-lg font-mono text-gray-500 line-through font-normal">${vendorPrice.toLocaleString()}</span>
@@ -1105,11 +1102,10 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   <div className="mt-3.5 space-y-2.5 w-full">
                     <button
                       onClick={handleBuyFromVendorAction}
-                      className={`w-full py-2.5 rounded-xl font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 ${
-                        isPriceUpdated
+                      className={`w-full py-2.5 rounded-xl font-mono font-black text-xs md:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 ${isPriceUpdated
                           ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_20px_rgba(250,204,21,0.8)] border-2 border-white'
                           : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
-                      }`}
+                        }`}
                     >
                       <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
                     </button>
@@ -1337,13 +1333,12 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                     Trading Item: <span className="text-[#38bdf8]">{poke.name}</span>
                   </span>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className={`px-2.5 py-1 rounded-lg font-black transition-all duration-300 flex items-center gap-1.5 ${
-                      isPriceUpdated 
-                        ? 'bg-emerald-500 text-black shadow-[0_0_25px_rgba(16,185,129,1)] scale-110 animate-bounce border-2 border-white' 
+                    <span className={`px-2.5 py-1 rounded-lg font-black transition-all duration-300 flex items-center gap-1.5 ${isPriceUpdated
+                        ? 'bg-emerald-500 text-black shadow-[0_0_25px_rgba(16,185,129,1)] scale-110 animate-bounce border-2 border-white'
                         : negotiatedPrice < vendorPrice
                           ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
                           : 'text-emerald-400'
-                    }`}>
+                      }`}>
                       {negotiatedPrice < vendorPrice && (
                         <span className="line-through text-gray-500 text-[10px] mr-1 font-normal">${vendorPrice.toLocaleString()}</span>
                       )}
@@ -1367,11 +1362,10 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                         <span>•</span>
                         <span>{msg.time}</span>
                       </div>
-                      <div className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl font-mono text-xs leading-relaxed ${
-                        msg.sender === 'user'
+                      <div className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl font-mono text-xs leading-relaxed ${msg.sender === 'user'
                           ? 'bg-gradient-to-r from-[#38bdf8] to-[#0284c7] text-white rounded-br-none shadow-[0_4px_12px_rgba(56,189,248,0.25)]'
                           : 'bg-[#1e293b] text-[#f1f5f9] border border-white/10 rounded-bl-none shadow-md'
-                      }`}>
+                        }`}>
                         {msg.text}
                       </div>
                     </div>
@@ -1412,11 +1406,10 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   </div>
                   <button
                     onClick={handleBuyFromVendorAction}
-                    className={`px-4 sm:px-5 py-2 rounded-xl font-mono font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 shrink-0 ${
-                      isPriceUpdated
+                    className={`px-4 sm:px-5 py-2 rounded-xl font-mono font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer shadow-lg transform hover:scale-105 active:scale-95 shrink-0 ${isPriceUpdated
                         ? 'bg-gradient-to-r from-yellow-300 via-emerald-400 to-yellow-300 text-black animate-pulse shadow-[0_0_25px_rgba(250,204,21,0.8)] border-2 border-white'
                         : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
-                    }`}
+                      }`}
                   >
                     <ShoppingCart className="w-4 h-4" />
                     <span>Buy now at ${negotiatedPrice.toLocaleString()}</span>
@@ -1593,7 +1586,7 @@ export default function App() {
         const fbTotal = data.sessionTotal ?? 0;
         const fbCount = data.packCount ?? 0;
         const fbSpent = data.sessionSpent ?? 0;
-        
+
         lastSyncedStatsRef.current = {
           sessionTotal: fbTotal,
           packCount: fbCount,
@@ -1603,7 +1596,7 @@ export default function App() {
         // Prevent wiping out local stats if Firebase is completely empty but local has data
         // ONLY do this if `rootData.stats` does NOT exist. If it DOES exist and is 0, it means it was explicitly reset.
         const isMigration = !rootData.stats;
-        
+
         setSessionTotal(prev => (isMigration && fbTotal === 0 && prev > 0) ? prev : fbTotal);
         setPackCount(prev => (isMigration && fbCount === 0 && prev > 0) ? prev : fbCount);
         setSessionSpent(prev => (isMigration && fbSpent === 0 && prev > 0) ? prev : fbSpent);
@@ -1618,10 +1611,10 @@ export default function App() {
       localStorage.setItem('tcg_session_total', sessionTotal.toString());
       localStorage.setItem('tcg_session_pack_count', packCount.toString());
       localStorage.setItem('tcg_session_spent', sessionSpent.toString());
-      
+
       if (currentUser && hasLoadedFromFirebase) {
         // Only write if the current state differs from what we just received from Firebase
-        const isFromFirebase = 
+        const isFromFirebase =
           sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
           packCount === lastSyncedStatsRef.current.packCount &&
           sessionSpent === lastSyncedStatsRef.current.sessionSpent;
@@ -1637,7 +1630,7 @@ export default function App() {
           }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
         }
       }
-    } catch {}
+    } catch { }
   }, [sessionTotal, packCount, sessionSpent, currentUser]);
   const [isRevealingAll, setIsRevealingAll] = useState(false);
   const [cards, setCards] = useState<CardData[]>([]);
@@ -1739,7 +1732,7 @@ export default function App() {
       const img = new Image();
       img.fetchPriority = 'high';
       img.src = src;
-      
+
       // Inject network-level preload links to bypass React rendering delays
       if (!document.querySelector(`link[href="${src}"]`)) {
         const link = document.createElement('link');
@@ -1772,7 +1765,7 @@ export default function App() {
       try {
         const seriesData = await fetchSeriesDetails(seriesId);
         if (!isActive || !seriesData || !seriesData.sets) return;
-        
+
         const logos = seriesData.sets
           .map(set => getSetLogoUrl(set, setLogosManifest, lang))
           .filter(Boolean) as string[];
@@ -1821,7 +1814,7 @@ export default function App() {
         } else if (!imgUrl) {
           imgUrl = `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`;
         }
-        
+
         if (imgUrl) {
           const img = new Image();
           // Use low priority so it doesn't block UI threads, since they have time before opening
@@ -1893,8 +1886,8 @@ export default function App() {
       setCacheTick(t => (t + 1) % 1000000);
     };
     onCardFullCacheUpdated.add(handleCacheUpdate);
-    return () => { 
-      onCardFullCacheUpdated.delete(handleCacheUpdate); 
+    return () => {
+      onCardFullCacheUpdated.delete(handleCacheUpdate);
     };
   }, []);
 
@@ -1907,12 +1900,12 @@ export default function App() {
 
   const handleTearPack = () => {
     if (packStage !== 'unopened') return;
-    
+
     const setPrice = getSetBoosterPrice(currentSet);
     const isFreeEligible = setPrice <= 20;
     const setLanguage = selectedLanguage; // 'en' or 'ja'
     const netReturn = sessionTotal - sessionSpent;
-    
+
     let canOpen = false;
     let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
     let deductFromNetReturn = 0;
@@ -2219,7 +2212,7 @@ export default function App() {
     const isFreeEligible = setPrice <= 20;
     const setLanguage = selectedLanguage; // 'en' or 'ja'
     const netReturn = sessionTotal - sessionSpent;
-    
+
     let canOpen = false;
     let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
     let deductFromNetReturn = 0;
@@ -2281,8 +2274,8 @@ export default function App() {
       setIsLoadingPack(true);
       try {
         const isJaSet = selectedLanguage === 'ja' || currentSet.id.endsWith('_ja');
-        const newCards = isJaSet 
-          ? await generateJapanesePackFromSet(currentSet) 
+        const newCards = isJaSet
+          ? await generateJapanesePackFromSet(currentSet)
           : await generatePackFromSet(currentSet);
         setCards(formatAndSortCards(newCards));
         orchestrateSetLoading(currentSet, newCards.map(c => c.id));
@@ -2303,7 +2296,7 @@ export default function App() {
       localStorage.removeItem('tcg_session_total');
       localStorage.removeItem('tcg_session_pack_count');
       localStorage.removeItem('tcg_session_spent');
-    } catch {}
+    } catch { }
     setSessionTotal(0);
     setPackCount(0);
     setSessionSpent(0);
@@ -2325,16 +2318,16 @@ export default function App() {
 
       {/* Premium Leather-Bound Header */}
       <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-4 md:px-6 flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
-        
+
         {/* Mobile Hamburger Row & Desktop Logo */}
         <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
-          <button 
-            onClick={() => { sound.playButtonClick(); setActiveTab('pack'); setIsMobileMenuOpen(false); }} 
+          <button
+            onClick={() => { sound.playButtonClick(); setActiveTab('pack'); setIsMobileMenuOpen(false); }}
             className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md cursor-pointer hover:scale-105 transition-transform"
           >
             <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="inline">POKE TCG</span>
           </button>
-          <button 
+          <button
             onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
             className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
           >
@@ -2348,7 +2341,7 @@ export default function App() {
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
           lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-4 lg:transition-none lg:ml-6 lg:opacity-100 lg:pointer-events-auto
         `}>
-          
+
           {/* Left / Primary Action */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full lg:w-auto shrink-0">
             <motion.button
@@ -2365,14 +2358,14 @@ export default function App() {
 
           {/* Center: Innovative Pill Navigation (Desktop) / Vertical List (Mobile) */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1 w-full lg:w-auto lg:bg-[#0a0a0f]/60 lg:backdrop-blur-md lg:p-1.5 lg:rounded-2xl lg:border lg:border-white/5 lg:shadow-[inset_0_1px_2px_rgba(255,255,255,0.05),0_4px_10px_rgba(0,0,0,0.5)] shrink-0">
-            
+
             {/* Packs Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('pack'); setIsMobileMenuOpen(false); }}
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(251,191,36,0.2)] ${activeTab === 'pack'
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-amber-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <Package className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[15deg] group-hover:text-amber-400 ${activeTab === 'pack' ? 'text-amber-400' : ''}`} />
               <span>Packs</span>
@@ -2384,7 +2377,7 @@ export default function App() {
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(56,189,248,0.2)] ${activeTab === 'binder'
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-sky-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <BookOpen className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:text-sky-400 ${activeTab === 'binder' ? 'text-amber-400' : ''}`} />
               <span>Binder</span>
@@ -2396,7 +2389,7 @@ export default function App() {
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(244,63,94,0.2)] ${activeTab === 'psa'
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-rose-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <Award className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-rose-400 ${activeTab === 'psa' ? 'text-red-400' : ''}`} />
               <span>PSA Lab</span>
@@ -2408,7 +2401,7 @@ export default function App() {
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena')
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-purple-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <Users className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:scale-105 group-hover:text-purple-400 ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena') ? 'text-purple-400' : ''}`} />
               <span>Versus</span>
@@ -2420,7 +2413,7 @@ export default function App() {
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(45,212,191,0.2)] ${activeTab === 'cardShow'
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-teal-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <Package className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-teal-400 ${activeTab === 'cardShow' ? 'text-teal-400' : ''}`} />
               <span>Card Show</span>
@@ -2432,7 +2425,7 @@ export default function App() {
               className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] ${activeTab === 'auctions'
                 ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
                 : 'text-gray-400 hover:text-red-100 hover:bg-white/5'
-              }`}
+                }`}
             >
               <div className={`w-2 h-2 rounded-full ${activeTab === 'auctions' ? 'bg-red-500 animate-pulse' : 'bg-red-500/50 group-hover:bg-red-400'}`} />
               <span className={activeTab === 'auctions' ? 'text-red-400' : ''}>Live Auctions</span>
@@ -2447,7 +2440,7 @@ export default function App() {
               <span>Vault</span>
             </button>
           </div>
-          
+
           {/* Right: Utilities */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0 shrink-0">
             <button
@@ -2455,13 +2448,13 @@ export default function App() {
               className={`px-4 lg:px-2.5 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 ${soundEnabled
                 ? 'bg-[#1f1f2e] lg:bg-transparent border-amber-500/40 lg:border-amber-500/20 text-amber-300 hover:bg-[#28283c] lg:hover:bg-amber-500/10'
                 : 'bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-500 hover:bg-white/10 hover:text-gray-300'
-              }`}
+                }`}
               title={soundEnabled ? "Sound Effects ON" : "Sound Effects MUTED"}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" /> : <VolumeX className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />}
               <span className="lg:hidden xl:inline">{soundEnabled ? 'SFX' : 'Muted'}</span>
             </button>
-            
+
             {currentUser ? (
               <button
                 onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
@@ -2531,19 +2524,19 @@ export default function App() {
         />
       ) : activeTab === 'multiplayerLobby' ? (
         <div className="flex-1 overflow-y-auto min-h-0">
-          <PackOffLobby 
-            onBack={() => setActiveTab('pack')} 
+          <PackOffLobby
+            onBack={() => setActiveTab('pack')}
             onEnterArena={(id) => {
               setMatchId(id);
               setActiveTab('multiplayerArena');
             }}
-            selectedPackId={currentSet?.id || 'swsh3'} 
+            selectedPackId={currentSet?.id || 'swsh3'}
           />
         </div>
       ) : activeTab === 'multiplayerArena' ? (
         <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-          <PackOffArena 
-            matchId={matchId} 
+          <PackOffArena
+            matchId={matchId}
             onLeave={() => setActiveTab('multiplayerLobby')}
             onChangeSetRequest={() => setIsSetSelectorOpen(true)}
             packArts={currentPackArts}
@@ -2552,8 +2545,8 @@ export default function App() {
               if (currentSet) {
                 try {
                   const isJaSet = selectedLanguage === 'ja' || currentSet.id.endsWith('_ja');
-                  const newCards = isJaSet 
-                    ? await generateJapanesePackFromSet(currentSet) 
+                  const newCards = isJaSet
+                    ? await generateJapanesePackFromSet(currentSet)
                     : await generatePackFromSet(currentSet);
                   return formatAndSortCards(newCards);
                 } catch {
@@ -2572,12 +2565,12 @@ export default function App() {
                 <AnimatePresence>
                   {stackCards.map((c, idx) => {
                     const topCardIndex = stackCards.length - 1 - Math.max(0, revealedIndex);
-                    
+
                     if (idx > topCardIndex) return null; // Collected cards
-                    
+
                     const isTopCard = idx === topCardIndex;
                     const isFlipped = isTopCard && revealedIndex >= 0;
-                    
+
                     const midIdx = Math.floor(stackCards.length / 2);
                     const rotation = (idx - midIdx) * 3.8;
                     const offsetX = (idx - midIdx) * 11;
@@ -2586,7 +2579,7 @@ export default function App() {
                     return (
                       <Card
                         key={c.id || idx}
-                        card={{...c, flipped: isFlipped}}
+                        card={{ ...c, flipped: isFlipped }}
                         rotation={rotation}
                         offsetX={offsetX}
                         offsetY={offsetY}
@@ -2767,7 +2760,7 @@ export default function App() {
               </div>
 
               {/* Pod 5: Missions & Free Packs */}
-              <div 
+              <div
                 onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
                 className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group col-span-2 sm:col-span-1"
               >
@@ -2794,17 +2787,17 @@ export default function App() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-300 font-bold">Earned</span>
-                      <span className="text-sm font-black font-mono text-white">
-                        {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-300 font-bold">Cash</span>
-                      <span className="text-sm font-black font-mono text-amber-400">
-                        ${dailyCash.toFixed(2)}
-                      </span>
-                    </div>
+                    <span className="text-xs text-gray-300 font-bold">Earned</span>
+                    <span className="text-sm font-black font-mono text-white">
+                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-300 font-bold">Cash</span>
+                    <span className="text-sm font-black font-mono text-amber-400">
+                      ${dailyCash.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3049,21 +3042,21 @@ export default function App() {
                                 className="w-9 h-12 rounded-md overflow-hidden bg-black/60 shrink-0 border border-white/20 relative flex items-center justify-center card-aspect-ratio-sm"
                                 style={{ minWidth: '36px', minHeight: '48px', aspectRatio: '63 / 88' }}
                               >
-                              <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-0.5 text-center z-0">
-                                <span className="font-bold text-white text-[6px] leading-tight truncate w-full">{card.name}</span>
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-0.5 text-center z-0">
+                                  <span className="font-bold text-white text-[6px] leading-tight truncate w-full">{card.name}</span>
+                                </div>
+                                <img
+                                  src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
+                                  alt={card.name}
+                                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block z-10"
+                                  onError={(e) => {
+                                    const target = e.currentTarget as HTMLImageElement;
+                                    const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
+                                    const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
+                                    handleCardImageError(target, setId, num);
+                                  }}
+                                />
                               </div>
-                              <img
-                                src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
-                                alt={card.name}
-                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block z-10"
-                                onError={(e) => {
-                                  const target = e.currentTarget as HTMLImageElement;
-                                  const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
-                                  const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
-                                  handleCardImageError(target, setId, num);
-                                }}
-                              />
-                            </div>
                             </div>
                             <div className="min-w-0">
                               <div className="text-[11px] font-bold text-white truncate group-hover:text-amber-300 transition-colors">
@@ -3399,21 +3392,19 @@ export default function App() {
                 <div className="bg-[#0f0f13] border border-white/10 rounded-full p-1 flex shadow-inner">
                   <button
                     onClick={() => { sound.playTabSwitch(); setSelectedLanguage('en'); setSelectedSeriesId(ENGLISH_SERIES_TABS[0].id); }}
-                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${
-                      selectedLanguage === 'en'
+                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'en'
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     English
                   </button>
                   <button
                     onClick={() => { sound.playTabSwitch(); setSelectedLanguage('ja'); setSelectedSeriesId(JAPANESE_SERIES_TABS[0].id); }}
-                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${
-                      selectedLanguage === 'ja'
+                    className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'ja'
                         ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     Japanese
                   </button>
@@ -3549,7 +3540,7 @@ export default function App() {
               // 1. Subtract that from their net income section on main page by increasing total spent
               // (Net Return / Net Profit pod = sessionTotal - sessionSpent)
               setSessionSpent(prev => Number((prev + buyPrice).toFixed(2)));
-              
+
               // 2. Transfer that card to the user's binder
               const setName = (cardToBuy.pokemon as any)?.set?.name || cardToBuy.pokemon?.name?.split('(')[1]?.replace(')', '').trim() || 'Vendor Acquisition';
               saveCollectedCard({
@@ -3562,7 +3553,7 @@ export default function App() {
                   isVendorCatalog: false
                 }
               }, setName, 'my-collection');
-              
+
               setAvailableBinders(getBinders());
               window.dispatchEvent(new Event('storage'));
               trackMissionProgress('buy_vendor', 1);
@@ -3989,7 +3980,7 @@ export default function App() {
               className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#1c1c2e] via-[#141422] to-[#0e0e18] border border-[#38bdf8]/50 shadow-[0_0_50px_rgba(56,189,248,0.3)] p-6 text-center relative overflow-hidden"
             >
               <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#38bdf8]/10 rounded-full blur-3xl pointer-events-none" />
-              
+
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white mx-auto mb-4 shadow-[0_0_25px_rgba(56,189,248,0.6)] animate-bounce">
                 <ListChecks className="w-8 h-8" />
               </div>
@@ -4043,7 +4034,7 @@ export default function App() {
               className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#1c1c2e] via-[#141422] to-[#0e0e18] border border-red-500/50 shadow-[0_0_50px_rgba(244,63,94,0.3)] p-6 text-center relative overflow-hidden"
             >
               <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
-              
+
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-red-500 via-orange-500 to-red-600 border-2 border-white flex items-center justify-center text-white mx-auto mb-4 shadow-[0_0_25px_rgba(244,63,94,0.6)] animate-pulse">
                 <Lock className="w-8 h-8" />
               </div>
@@ -4070,7 +4061,7 @@ export default function App() {
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <BulkCatalogueModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
-      
+
       {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
       <div style={{ display: 'none' }} aria-hidden="true">
         {currentPackArts.map(src => (

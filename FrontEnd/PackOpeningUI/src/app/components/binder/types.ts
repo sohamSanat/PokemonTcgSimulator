@@ -91,7 +91,7 @@ export function listenToFirestore(uid: string | null) {
     unsubscribeFirestore();
     unsubscribeFirestore = null;
   }
-  
+
   if (!uid) return;
 
   try {
@@ -113,7 +113,7 @@ export function listenToFirestore(uid: string | null) {
               localStorage.setItem(uidKey, fbStr);
               changed = true;
             }
-          } 
+          }
           // If Firebase is empty, but guest has data, migrate guest data!
           else if (guestDataStr && guestDataStr !== '[]' && guestDataStr !== '{}') {
             localStorage.setItem(uidKey, guestDataStr);
@@ -129,7 +129,7 @@ export function listenToFirestore(uid: string | null) {
         if (changed) {
           window.dispatchEvent(new Event('storage'));
         }
-        
+
         if (needsSync) {
           syncToFirestore();
         }
@@ -205,9 +205,9 @@ export function getCollectedCards(): Card[] {
     const data = localStorage.getItem(getStorageKey('tcg_my_collection'));
     if (!data) return [];
     const parsed: Card[] = JSON.parse(data);
-    const cleaned = parsed.filter(c => 
-      !c.id.startsWith('sample-') && 
-      !c.id.startsWith('ref-psa-') && 
+    const cleaned = parsed.filter(c =>
+      !c.id.startsWith('sample-') &&
+      !c.id.startsWith('ref-psa-') &&
       !c.name.includes('Demo Guaranteed') &&
       !c.setName.includes('Gem Mint 10 Test') &&
       !c.setName.includes('Mint 9 Test') &&
@@ -228,7 +228,7 @@ export function getCollectedCards(): Card[] {
 export function clearCollectedCards(): void {
   try {
     localStorage.removeItem(getStorageKey('tcg_my_collection'));
-  } catch {}
+  } catch { }
 }
 
 export function saveCollectedCard(cardData: any, setName: string, binderId: string = 'my-collection'): Card {
@@ -308,7 +308,7 @@ export function getBinders(): Binder[] {
   try {
     const data = localStorage.getItem(getStorageKey('tcg_binders'));
     const collected = getCollectedCards();
-    
+
     const calculateForBinder = (b: Binder): Binder => {
       const binderCards = collected.filter(c => {
         if (b.id === 'my-collection') {
