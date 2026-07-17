@@ -118,6 +118,7 @@ const SET_ALIASES = {
 };
 
 const JAPANESE_SET_ALIASES = {
+  // Scarlet & Violet Japanese sets
   '151': ['sv2a_ja', 'sv2aja', 'sv2a', '151_ja', 'pokemon card 151_ja', 'pokemon card 151'],
   'Ancient-Roar': ['sv4k_ja', 'sv4kja', 'sv4k', 'ancient roar_ja', 'ancient-roar_ja', 'ancient roar'],
   'Battle-Partners': ['sv9_ja', 'sv9ja', 'sv09_ja', 'sv9', 'battle partners_ja', 'battle-partners_ja', 'battle partners'],
@@ -142,7 +143,77 @@ const JAPANESE_SET_ALIASES = {
   'Violet-Ex': ['sv1v_ja', 'sv1vja', 'sv1v', 'violet ex_ja', 'violet-ex_ja', 'violet ex'],
   'White-Flare': ['sv11w_ja', 'sv11wja', 'sv11w', 'white flare_ja', 'white-flare_ja', 'white flare'],
   'Wild-Force': ['sv5k_ja', 'sv5kja', 'sv5k', 'wild force_ja', 'wild-force_ja', 'wild force'],
-  'cyber-judge': ['sv5m_ja', 'sv5mja', 'sv5m', 'cyber judge_ja', 'cyber-judge_ja', 'cyber judge']
+  'cyber-judge': ['sv5m_ja', 'sv5mja', 'sv5m', 'cyber judge_ja', 'cyber-judge_ja', 'cyber judge'],
+
+  // Sun & Moon Japanese sets (folder name → sm set IDs)
+  'Collection-Sun': ['sm1s_ja', 'sm1s', 'sm1sja', 'collection sun_ja', 'collection sun'],
+  'Collection-Moon': ['sm1m_ja', 'sm1m', 'sm1mja', 'collection moon_ja', 'collection moon'],
+  'Sun&Moon-BaseSet': ['sm1_ja', 'sm1', 'sm1ja', 'sm1+_ja', 'sm1+', 'sm01_ja', 'sun moon base_ja'],
+  'Island-Waiting-For-You': ['sm2k_ja', 'sm2k', 'sm2kja', 'islands waiting for you_ja', 'island waiting for you_ja'],
+  'Alola-Moonlight': ['sm2l_ja', 'sm2l', 'sm2lja', 'alolan moonlight_ja', 'alola moonlight_ja', 'alola moonlight'],
+  'Darkness-That-Eats-The-Light': ['sm3n_ja', 'sm3n', 'sm3nja', 'darkness that consumes light_ja', 'darkness that eats the light_ja'],
+  'Did-You-See-The-Fight': ['sm3h_ja', 'sm3h', 'sm3hja', 'did you see the fighting rainbow_ja', 'did you see the fight_ja'],
+  'Awakening-Hero': ['sm4s_ja', 'sm4s', 'sm4sja', 'awakening hero_ja', 'awakening-hero_ja'],
+  'Hyperdimension-Beast': ['sm4a_ja', 'sm4a', 'sm4aja', 'ultradimensional beasts_ja', 'hyperdimension beast_ja'],
+  'Ultra-Sun': ['sm5s_ja', 'sm5s', 'sm5sja', 'ultra sun_ja', 'ultra-sun_ja'],
+  'Ultra-Moon': ['sm5m_ja', 'sm5m', 'sm5mja', 'ultra moon_ja', 'ultra-moon_ja'],
+  'Forbidden-Light': ['sm6_ja', 'sm6', 'sm6ja', 'forbidden light_ja', 'forbidden-light_ja'],
+  'Ultra-Force': ['sm6a_ja', 'sm6a', 'sm6aja', 'ultra force_ja', 'ultra-force_ja'],
+  'Dragon-Storm': ['sm6b_ja', 'sm6b', 'sm6bja', 'dragon storm_ja', 'dragon-storm_ja'],
+  'Champion-Road': ['sm7_ja', 'sm7', 'sm7ja', 'champion road_ja', 'champion-road_ja'],
+  'Charisma-Of-The-Sky': ['sm7a_ja', 'sm7a', 'sm7aja', 'charisma of the sky_ja', 'charisma-of-the-sky_ja', 'lightning spark_ja'],
+  'Hikaru-Legend': ['sm7b_ja', 'sm7b', 'sm7bja', 'fairy rise_ja', 'hikaru legend_ja'],
+  'Super-Impact': ['sm8_ja', 'sm8', 'sm8ja', 'super impact_ja', 'super-impact_ja'],
+  'Dark-Order': ['sm8a_ja', 'sm8a', 'sm8aja', 'dark order_ja', 'dark-order_ja'],
+  'GX-Ultra-Shiny': ['sm8b_ja', 'sm8b', 'sm8bja', 'gx ultra shiny_ja', 'gx-ultra-shiny_ja'],
+  'Tag-Bolt': ['sm9_ja', 'sm9', 'sm9ja', 'tag bolt_ja', 'tag-bolt_ja'],
+  'Night-Unison': ['sm9a_ja', 'sm9a', 'sm9aja', 'night unison_ja', 'night-unison_ja'],
+  'Full-Metal-Wall': ['sm9b_ja', 'sm9b', 'sm9bja', 'full metal wall_ja', 'full-metal-wall_ja'],
+  'Double-Blaze': ['sm10_ja', 'sm10', 'sm10ja', 'double blaze_ja', 'double-blaze_ja'],
+  'GX-Battle-Boost': ['sm4+_ja', 'sm4+', 'sm4+ja', 'gx battle boost_ja', 'gx-battle-boost_ja'],
+  'Sky-Legend': ['sm10b_ja', 'sm10b', 'sm10bja', 'sky legend_ja', 'sky-legend_ja'],
+  'Miracle-Twin': ['sm11_ja', 'sm11', 'sm11ja', 'miracle twin_ja', 'miracle-twin_ja'],
+  'Detective-Pikachu': ['smp2_ja', 'smp2', 'smp2ja', 'detective pikachu_ja', 'detective-pikachu_ja'],
+  'Fairy-Rise': ['sm7b_ja', 'sm7b', 'sm7bja', 'fairy rise_ja', 'fairy-rise_ja'],
+  'Lightning-Spark': ['sm7a_ja', 'sm7a', 'sm7aja', 'lightning spark_ja', 'lightning-spark_ja'],
+  'Remix-Bout': ['sm11a_ja', 'sm11a', 'sm11aja', 'remix bout_ja', 'remix-bout_ja'],
+  'Dream-League': ['sm11b_ja', 'sm11b', 'sm11bja', 'dream league_ja', 'dream-league_ja'],
+  'Alter-Genesis': ['sm12_ja', 'sm12', 'sm12ja', 'alter genesis_ja', 'alter-genesis_ja'],
+  'TAG team GX': ['sm12a_ja', 'sm12a', 'sm12aja', 'tag team gx tag all stars_ja', 'tag all stars_ja'],
+
+  // Sword & Shield Japanese sets (folder name → s set IDs)
+  'Sword': ['s1w_ja', 's1w', 's1wja', 'sword_ja', 'vmax rising_ja'],
+  'Shield': ['s1h_ja', 's1h', 's1hja', 'shield_ja'],
+  'Vmax-Rising': ['s1a_ja', 's1a', 's1aja', 'vmax rising_ja', 'vmax-rising_ja'],
+  'Rebel-Crush': ['s2_ja', 's2', 's2ja', 'rebel crush_ja', 'rebel-crush_ja'],
+  'Explosvie-Walker': ['s2a_ja', 's2a', 's2aja', 'explosive walker_ja', 'explosvie-walker_ja'],
+  'Mugen-Zone': ['s3_ja', 's3', 's3ja', 'infinity zone_ja', 'mugen zone_ja', 'mugen-zone_ja'],
+  'Legandary-Heartbeat': ['s4_ja', 's4', 's4ja', 'legendary heartbeat_ja', 'legandary-heartbeat_ja'],
+  'Amazing-volt-tackle': ['s4a_ja', 's4a', 's4aja', 'amazing volt tackle_ja', 'shiny star v_ja', 'amazing-volt-tackle_ja'],
+  'Single-Strike-Master': ['s5i_ja', 's5i', 's5ija', 'single strike master_ja', 'single-strike-master_ja'],
+  'Rapid-Strike-Master': ['s5r_ja', 's5r', 's5rja', 'rapid strike master_ja', 'rapid-strike-master_ja'],
+  'Matchless-Fighter': ['s5a_ja', 's5a', 's5aja', 'matchless fighters_ja', 'matchless-fighter_ja'],
+  'Silver-Lance': ['s6h_ja', 's6h', 's6hja', 'silver lance_ja', 'silver-lance_ja'],
+  'Jet-Black-Spirit': ['s6k_ja', 's6k', 's6kja', 'jet black spirit_ja', 'jet-black-spirit_ja'],
+  'Eevee-Heroes': ['s6a_ja', 's6a', 's6aja', 'eevee heroes_ja', 'eevee-heroes_ja'],
+  'Skyscraping-Perfection': ['s7d_ja', 's7d', 's7dja', 'skyscraping perfection_ja', 'skyscraping-perfection_ja'],
+  'Blue-Sky-Stream': ['s7r_ja', 's7r', 's7rja', 'blue sky stream_ja', 'blue-sky-stream_ja'],
+  '25th-Anniversary': ['s8a_ja', 's8a', 's8aja', '25th anniversary collection_ja', '25th-anniversary_ja'],
+  'Fusion-Arts': ['s8b_ja', 's8b', 's8bja', 'fusion arts_ja', 'fusion-arts_ja'],
+  'Vmax-Climax': ['s8b_ja', 's8b', 's8bja', 'vmax climax_ja', 'vmax-climax_ja'],
+  'Star-Birth': ['s9_ja', 's9', 's9ja', 'star birth_ja', 'star-birth_ja'],
+  'Battle-Region': ['s9a_ja', 's9a', 's9aja', 'battle region_ja', 'battle-region_ja'],
+  'Timer-Gazer': ['s10p_ja', 's10p', 's10pja', 'time gazer_ja', 'timer-gazer_ja'],
+  'Space-Juggler': ['s10d_ja', 's10d', 's10dja', 'space juggler_ja', 'space-juggler_ja'],
+  'Pokemon-Go': ['s10b_ja', 's10b', 's10bja', 'pokemon go_ja', 'pokemon-go_ja'],
+  'Dark-Phantasma': ['s10a_ja', 's10a', 's10aja', 'dark phantasma_ja', 'dark-phantasma_ja'],
+  'Lost-Abyss': ['s11_ja', 's11', 's11ja', 'lost abyss_ja', 'lost-abyss_ja'],
+  'Incandeseant-Arcana': ['s11a_ja', 's11a', 's11aja', 'incandescent arcana_ja', 'incandeseant-arcana_ja'],
+  'Paradigm-Trigger': ['s12_ja', 's12', 's12ja', 'paradigm trigger_ja', 'paradigm-trigger_ja'],
+  'Shiny-Vstar': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'shiny-vstar_ja'],
+  'GG-End': ['s12a_ja', 's12a', 's12aja', 'gg end_ja', 'gg-end_ja'],
+  'Miracle-Twin': ['sm11_ja', 'sm11', 'sm11ja', 'miracle twin_ja', 'miracle-twin_ja'],
+  'Vstar-Universe': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'vstar-universe_ja']
 };
 
 const manifest = {};
@@ -184,9 +255,13 @@ function scanDir(dir, relativePath = '') {
       const matchFolderNameSpace = folderName.toLowerCase().replace(/-/g, ' ');
 
       if (!isJapaneseFolder) {
+        // English folders: register all aliases EXCEPT _ja variants
+        // _ja keys must exclusively point to Japanese pack art folders
         for (const [key, aliases] of Object.entries(SET_ALIASES)) {
           if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace)) {
             for (const alias of aliases) {
+              // Skip _ja keys — they belong to Japanese folders only
+              if (alias.endsWith('_ja') || alias.endsWith('_ja'.toUpperCase())) continue;
               manifest[alias] = images;
               manifest[alias.toLowerCase()] = images;
               manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
@@ -194,21 +269,25 @@ function scanDir(dir, relativePath = '') {
           }
         }
       } else {
-        // For Japanese folders, we also want to match against SET_ALIASES to pick up _ja aliases
+        // Japanese folders: match SET_ALIASES by English name to register all _ja alias keys
         for (const [key, aliases] of Object.entries(SET_ALIASES)) {
           if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace) || aliases.includes(`${matchFolderNameSpace}_ja`)) {
             for (const alias of aliases) {
-              if (alias.endsWith('_ja') || alias.includes('ja')) {
-                manifest[alias] = images;
-                manifest[alias.toLowerCase()] = images;
-                manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
-              }
+              // For Japanese folders, register _ja variants pointing to the Japanese pack art
+              const jaAlias = alias.endsWith('_ja') ? alias : `${alias}_ja`;
+              manifest[jaAlias] = images;
+              manifest[jaAlias.toLowerCase()] = images;
+              manifest[jaAlias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+              // Also register the plain alias (non-_ja) to ensure lookup by raw id like 'sm2l' works
+              manifest[alias] = images;
+              manifest[alias.toLowerCase()] = images;
+              manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
             }
           }
         }
       }
 
-      // Check Japanese aliases
+      // Check Japanese-specific aliases (like Scarlet & Violet JAPANESE_SET_ALIASES)
       for (const [key, aliases] of Object.entries(JAPANESE_SET_ALIASES)) {
         if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace)) {
           for (const alias of aliases) {

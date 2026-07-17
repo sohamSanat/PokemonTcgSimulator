@@ -554,19 +554,25 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   } catch {
     // ignore
   }
-  
+
   const offlineNames = jaCardNamesCache || {};
+  // SM and SWSH (S-prefix) sets use 3-digit padded card numbers on Scrydex
+  const needsPadding = prefixLow.startsWith('sm') || (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn'));
+  // swsh-prefixed equivalent for S-prefix SWSH sets
+  const swshEquivPrefix = (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn')) ? `swsh${prefixLow.slice(1)}` : null;
+
   for (let i = 1; i <= totalCards; i++) {
     const cardNum = i.toString();
+    const paddedNum = needsPadding ? cardNum.padStart(3, '0') : cardNum;
     const lookupKey = `${prefixLow}_ja-${cardNum}`;
     const altKey = `${prefixLow}-${cardNum}`;
 
     let topCardName = '';
     if (jaTopCardsCache) {
-      const topMatch = jaTopCardsCache.find(c => 
-        c.id === lookupKey || 
-        c.id === altKey || 
-        (prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn') && (c.id === `swsh${prefixLow.slice(1)}_ja-${cardNum}` || c.id === `swsh${prefixLow.slice(1)}-${cardNum}`))
+      const topMatch = jaTopCardsCache.find(c =>
+        c.id === lookupKey ||
+        c.id === altKey ||
+        (swshEquivPrefix && (c.id === `${swshEquivPrefix}_ja-${cardNum}` || c.id === `${swshEquivPrefix}-${cardNum}`))
       );
       if (topMatch && topMatch.name) {
         topCardName = topMatch.name.replace(/Japanese\s+/i, '').replace(/\s*\([^)]*\)$/, '').trim();
@@ -583,11 +589,13 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
       updated: new Date().toISOString(),
       normal: { marketPrice: realPrice, midPrice: Number((realPrice * 1.05).toFixed(2)), lowPrice: Number((realPrice * 0.85).toFixed(2)), highPrice: Number((realPrice * 1.4).toFixed(2)) }
     };
+    // Use padded number in the Scrydex image URL for SM/SWSH sets
+    const scrydexImgUrl = `https://images.scrydex.com/pokemon/${prefixLow}_ja-${paddedNum}/large`;
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
       name: resolvedName,
-      image: `https://images.scrydex.com/pokemon/${prefixLow}_ja-${cardNum}/large`,
+      image: scrydexImgUrl,
       rarity: getJapaneseCardRarity(cardNum, officialCount, totalCards, resolvedName),
       pricing: {
         tcgplayer: initialPricing,
