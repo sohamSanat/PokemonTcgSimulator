@@ -2,6 +2,7 @@
 @import './tailwind.css';
 @import './theme.css';
 @import './pokemon-cards.css';
+@import './trading-card.css';
 
 html, body {
   width: 100%;

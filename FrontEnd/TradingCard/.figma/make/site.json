@@ -1,0 +1,10 @@
+{
+  "description": "Visualize and execute secure peer-to-peer digital trading of collectible cards with real-time offer matching and a sleek, data-driven interface.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

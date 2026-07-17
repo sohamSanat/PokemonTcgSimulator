@@ -30,6 +30,7 @@ import {
   TrendingDown
 } from "lucide-react";
 import { AuctionDashboard } from '../auction/AuctionDashboard';
+import { TradingCard } from '../trading/TradingCard';
 
 interface CardShowViewProps {
   initialShowAuction?: boolean;
@@ -49,6 +50,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [mapZoom, setMapZoom] = useState<number>(130);
   const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
   const [showAuctionDashboard, setShowAuctionDashboard] = useState(initialShowAuction);
+  const [showTradingCard, setShowTradingCard] = useState(false);
   
   useEffect(() => {
     setShowAuctionDashboard(initialShowAuction);
@@ -359,6 +361,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     };
   }, []);
 
+  const isTradingZone = (name: string): boolean => {
+    const n = (name || "").toUpperCase();
+    return n.includes("TRADING TABLES") || n.includes("TRADING ZONE") || n.includes("TRADING POST");
+  };
+
   const getBoothType = (name: string, explicitType?: string) => {
     if (explicitType) return explicitType;
     const n = (name || "").toUpperCase();
@@ -373,6 +380,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const handleBoothSelect = (vendorObj: any) => {
     if (vendorObj.id === 'stage' || vendorObj.type === 'auction' || vendorObj.name.includes("AUCTION")) {
       setShowAuctionDashboard(true);
+      return;
+    }
+    // Open the Trading Card UI when a Trading Zone booth is clicked
+    if (isTradingZone(vendorObj.name) || vendorObj.id === 'trading_zone8' || vendorObj.id === 'trading_east') {
+      setShowTradingCard(true);
       return;
     }
     const fullObj = {
@@ -802,6 +814,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   }
 
   return (
+    <>
     <div className="w-full h-full min-h-[calc(100vh-5rem)] bg-[#090a0c] text-[#f8fafc] flex flex-col font-sans overflow-hidden">
 
       {/* Slim 40px Circuit Top Bar — Eliminating Header Bloat */}
@@ -1499,15 +1512,21 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               <text x="335" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Carbanda</text>
               <text x="375" y="292" textAnchor="middle" fill="#4a6a8a" fontSize="5.5" fontFamily="monospace">Brodes</text>
 
-              {/* Zone 3 bottom */}
-              <rect x="230" y="305" width="160" height="30" rx="3" fill="#0c1824" stroke="#f472b6" strokeWidth="1" strokeOpacity="0.5"
-                className="cursor-pointer hover:stroke-[#f472b6] hover:fill-[#f472b6]/[0.15] transition-all"
+              {/* Zone 3 bottom — TRADING ZONE (HIGHLIGHTED) */}
+              <rect x="230" y="305" width="160" height="30" rx="3" fill="#0c1824" stroke="#00ff80" strokeWidth="2" strokeOpacity="0.9"
+                className="cursor-pointer hover:stroke-[#00ff80] hover:fill-[#00ff80]/[0.18] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TRADING TABLES ZONE 8", rating: "5.0 / 5", activeListings: "Open Trading & Barter", completedTrans: "10,000+ Trades Today", booth: "Zone 8", specialties: ["Collector Meetups", "Open Binder Trading", "Community Appraisal"], discountScore: 90 })}
                 onMouseLeave={handleBoothLeave}
                 onClick={() => handleBoothSelect({ name: "TRADING TABLES ZONE 8", rating: "5.0 / 5", activeListings: "Open Trading & Barter", completedTrans: "10,000+ Trades Today", booth: "Zone 8", specialties: ["Collector Meetups", "Open Binder Trading", "Community Appraisal"], discountScore: 90 })}
               />
-              <circle cx="248" cy="320" r="10" fill="#f472b6" fillOpacity="0.2" stroke="#f472b6" strokeWidth="1.5" />
-              <text x="248" y="324" textAnchor="middle" fill="#f472b6" fontSize="9" fontFamily="monospace" fontWeight="bold">3</text>
+              {/* Pulsing highlight ring + TRADE HERE pin */}
+              <circle cx="310" cy="320" r="34" fill="none" stroke="#00ff80" strokeWidth="2">
+                <animate attributeName="r" values="30;44;30" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="stroke-opacity" values="0.9;0.15;0.9" dur="2.2s" repeatCount="indefinite" />
+              </circle>
+              <text x="310" y="286" textAnchor="middle" fill="#00ff80" fontSize="8" fontFamily="monospace" fontWeight="900" className="text-glow-green">🤝 TRADE HERE</text>
+              <circle cx="248" cy="320" r="10" fill="#00ff80" fillOpacity="0.2" stroke="#00ff80" strokeWidth="1.5" className="animate-pulse" />
+              <text x="248" y="324" textAnchor="middle" fill="#00ff80" fontSize="9" fontFamily="monospace" fontWeight="bold">3</text>
 
               <text x="420" y="305" textAnchor="middle" fill="#475569" fontSize="7" fontFamily="monospace" fontWeight="bold">15</text>
               <rect x="400" y="275" width="60" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
@@ -1525,14 +1544,19 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 onClick={() => handleBoothSelect({ name: "VINTAGE ACCESSORIES & BINDERS", rating: "4.9 / 5", activeListings: "500+ Binders & Sleeves", completedTrans: "11,000+", booth: "Booth A1", specialties: ["Toploaders & Semi-Rigids", "Custom Leather Binders", "Penny Sleeves Bulk"], discountScore: 80 })}
               />
 
-              <rect x="140" y="350" width="80" height="55" rx="3" fill="#0c1824" stroke="#1e3a5f" strokeWidth="1"
-                className="cursor-pointer hover:stroke-[#38bdf8] hover:fill-[#38bdf8]/[0.15] transition-all"
+              <rect x="140" y="350" width="80" height="55" rx="3" fill="#0c1824" stroke="#00ff80" strokeWidth="2" strokeOpacity="0.9"
+                className="cursor-pointer hover:stroke-[#00ff80] hover:fill-[#00ff80]/[0.18] transition-all"
                 onMouseEnter={() => handleBoothHover({ name: "TRADING TABLES ZONE 8 (EAST)", rating: "5.0 / 5", activeListings: "Open Tables A-F", completedTrans: "8,500+", booth: "Zone 8 East", specialties: ["Modern Trade Pods", "Quick Cash Offers", "Single Card Swaps"], discountScore: 85 })}
                 onMouseLeave={handleBoothLeave}
                 onClick={() => handleBoothSelect({ name: "TRADING TABLES ZONE 8 (EAST)", rating: "5.0 / 5", activeListings: "Open Tables A-F", completedTrans: "8,500+", booth: "Zone 8 East", specialties: ["Modern Trade Pods", "Quick Cash Offers", "Single Card Swaps"], discountScore: 85 })}
               />
-              <circle cx="180" cy="377" r="12" fill="#f472b6" fillOpacity="0.15" stroke="#f472b6" strokeWidth="1.5" />
-              <text x="180" y="381" textAnchor="middle" fill="#f472b6" fontSize="11" fontFamily="monospace" fontWeight="900">8</text>
+              <circle cx="180" cy="377" r="40" fill="none" stroke="#00ff80" strokeWidth="2">
+                <animate attributeName="r" values="34;48;34" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="stroke-opacity" values="0.9;0.15;0.9" dur="2.2s" repeatCount="indefinite" />
+              </circle>
+              <text x="180" y="338" textAnchor="middle" fill="#00ff80" fontSize="8" fontFamily="monospace" fontWeight="900" className="text-glow-green">🤝 TRADE</text>
+              <circle cx="180" cy="377" r="12" fill="#00ff80" fillOpacity="0.15" stroke="#00ff80" strokeWidth="1.5" className="animate-pulse" />
+              <text x="180" y="381" textAnchor="middle" fill="#00ff80" fontSize="11" fontFamily="monospace" fontWeight="900">8</text>
 
               {/* Bottom vendor name labels */}
               <rect x="230" y="350" width="55" height="55" rx="2" fill="#0a1420" stroke="#1e3a5f" strokeWidth="0.8"
@@ -1893,6 +1917,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       </main>
 
     </div>
+
+    {showTradingCard && (
+      <TradingCard onClose={() => setShowTradingCard(false)} />
+    )}
+    </>
   );
 };
 

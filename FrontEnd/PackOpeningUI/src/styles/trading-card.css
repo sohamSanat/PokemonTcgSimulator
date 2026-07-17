@@ -1,0 +1,48 @@
+@theme {
+  --color-magenta-500: #f0f;
+  --color-magenta-400: #f0f;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-[rgba(10,15,30,0.65)] backdrop-blur-xl border border-[rgba(0,255,255,0.15)] shadow-[0_0_30px_rgba(0,255,255,0.05)];
+  }
+
+  .glass-panel-highlight {
+    @apply bg-[rgba(15,25,45,0.7)] backdrop-blur-2xl border border-[rgba(0,255,255,0.4)] shadow-[0_0_40px_rgba(0,255,255,0.15)];
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.4);
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(0, 255, 128, 0.8), 0 0 20px rgba(0, 255, 128, 0.5);
+  }
+
+  .box-glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+
+  .box-glow-green {
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.5), inset 0 0 15px rgba(0, 255, 128, 0.2);
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+
+  .animate-spin-slow {
+    animation: trade-spin 8s linear infinite;
+  }
+}
+
+@keyframes trade-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
