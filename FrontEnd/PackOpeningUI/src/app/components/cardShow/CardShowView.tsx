@@ -1919,7 +1919,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     </div>
 
     {showTradingCard && (
-      <TradingCard onClose={() => setShowTradingCard(false)} />
+      <TradingCard 
+        onClose={() => setShowTradingCard(false)} 
+        onInspectCard={onInspectCard}
+      />
     )}
     </>
   );

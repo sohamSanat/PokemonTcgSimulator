@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from "motion/react"
 import {
   Plus,
@@ -10,75 +10,33 @@ import {
   X,
 } from "lucide-react"
 
-// Real Pokemon Cards
-const userCards = [
-  {
-    id: 1,
-    img: "https://images.pokemontcg.io/base1/4_hires.png",
-    name: "Charizard",
-    rarity: "Holo Rare",
-  },
-  {
-    id: 2,
-    img: "https://images.pokemontcg.io/base1/2_hires.png",
-    name: "Blastoise",
-    rarity: "Holo Rare",
-  },
-  {
-    id: 3,
-    img: "https://images.pokemontcg.io/base1/15_hires.png",
-    name: "Venusaur",
-    rarity: "Holo Rare",
-  },
-  {
-    id: 4,
-    img: "https://images.pokemontcg.io/base1/6_hires.png",
-    name: "Gyarados",
-    rarity: "Holo Rare",
-  },
-]
-
-const sellerCards = [
-  {
-    id: 1,
-    img: "https://images.pokemontcg.io/base2/1_hires.png",
-    name: "Clefable",
-    selected: true,
-  },
-  {
-    id: 2,
-    img: "https://images.pokemontcg.io/base2/2_hires.png",
-    name: "Electrode",
-    selected: true,
-  },
-  {
-    id: 3,
-    img: "https://images.pokemontcg.io/base2/3_hires.png",
-    name: "Kangaskhan",
-    selected: false,
-  },
-  {
-    id: 4,
-    img: "https://images.pokemontcg.io/base2/4_hires.png",
-    name: "Mewtwo",
-    selected: false,
-  },
-  {
-    id: 5,
-    img: "https://images.pokemontcg.io/base2/5_hires.png",
-    name: "Nidoqueen",
-    selected: true,
-  },
-  {
-    id: 6,
-    img: "https://images.pokemontcg.io/base2/6_hires.png",
-    name: "Pidgeot",
-    selected: false,
-  },
-]
-
-export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
+import { getCollectedCards, Card } from "../binder/types"
+import { getCardShowDynamicJapaneseCards } from "../../services/scrydex"
+export const TradingCard: React.FC<{ 
+  onClose?: () => void,
+  onInspectCard?: (card: any) => void
+}> = ({ onClose, onInspectCard }) => {
   const [cashOffer, setCashOffer] = useState(12500)
+  const [userCards, setUserCards] = useState<Card[]>([])
+  const [sellerCards, setSellerCards] = useState<any[]>([])
+
+  useEffect(() => {
+    // Load user's binders
+    const cards = getCollectedCards()
+    setUserCards(cards)
+
+    // Generate 250+ cards for the seller's vault
+    const pool = getCardShowDynamicJapaneseCards(4000)
+    const shuffled = [...pool].sort(() => 0.5 - Math.random())
+    const vaultCards = shuffled.slice(0, 250).map(c => ({
+      ...c,
+      selected: Math.random() > 0.95 // Randomly highlight a few
+    }))
+    setSellerCards(vaultCards)
+  }, [])
+
+  const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
+  const totalOfferValue = totalCardValue + cashOffer
 
   return (
     <div className="fixed inset-0 z-[200] w-full h-full bg-[#050b14] font-sans text-gray-200 overflow-hidden lg:overflow-hidden">
@@ -125,17 +83,18 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
                   className="relative group rounded-lg overflow-hidden border border-[rgba(0,255,255,0.2)] aspect-[3/4] cursor-pointer"
                 >
                   <img
-                    src={card.img}
+                    src={card.imageUrl}
                     alt={card.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
                   <div className="absolute bottom-2 left-2 right-2">
                     <div className="text-xs font-bold text-white truncate">
                       {card.name}
                     </div>
-                    <div className="text-[10px] text-cyan-300">
-                      {card.rarity}
+                    <div className="flex justify-between items-center text-[10px]">
+                      <span className="text-cyan-300 truncate">{card.rarity}</span>
+                      <span className="text-green-400 font-bold ml-1">${card.currentPrice?.toFixed(2) || '0.00'}</span>
                     </div>
                   </div>
                   <div className="absolute inset-0 box-glow-cyan opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -151,7 +110,7 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
                 <Plus className="w-4 h-4" /> ADD CASH
               </span>
               <span className="text-2xl font-bold text-cyan-400 text-glow-cyan font-mono">
-                {cashOffer.toLocaleString()}c
+                ${cashOffer.toLocaleString()}
               </span>
             </div>
             <input
@@ -163,8 +122,13 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
               onChange={(e) => setCashOffer(Number(e.target.value))}
               className="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
             />
-            <div className="mt-2 text-xs text-gray-500 text-right">
-              Total Offer Value
+            <div className="mt-3 text-xs text-gray-400 text-right font-mono flex flex-col gap-1">
+              <div>
+                Cards: <span className="text-white">${totalCardValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span> + Cash: <span className="text-white">${cashOffer.toLocaleString()}</span>
+              </div>
+              <div className="text-sm border-t border-white/10 pt-1 mt-1">
+                Total Offer Value: <span className="text-cyan-300 font-bold">${totalOfferValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -282,13 +246,34 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
                     alt={card.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 
                   {card.selected && (
-                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#0ff]" />
+                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#0ff] pointer-events-none" />
                   )}
 
-                  <div className="absolute bottom-3 left-3 right-3">
+                  {/* Click target overlay */}
+                  <div 
+                    className="absolute inset-0 z-20"
+                    onClick={() => {
+                      if (onInspectCard) {
+                        onInspectCard({
+                          id: card.id,
+                          name: card.name,
+                          currentPrice: typeof card.price === 'number' ? card.price : parseFloat(String(card.price || '10').replace(/[^0-9.]/g, '')),
+                          isSlabbed: true,
+                          slabGrade: card.grade || "PSA 9",
+                          imageUrl: card.img,
+                          isVendorCatalog: true,
+                          vendorName: "Trade Partner",
+                          vendorBooth: "Zone 8",
+                          vendorRating: "Verified Trader"
+                        })
+                      }
+                    }}
+                  />
+
+                  <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
                     <div
                       className={`text-sm font-bold truncate ${
                         card.selected ? "text-cyan-300" : "text-gray-300"
