@@ -14,6 +14,7 @@ export interface Mission {
   // Updated: reward is specific set packs
   rewardSetPacks: Array<{ setId: string; setName: string; count: number; language: 'en' | 'ja' }>;
   rewardCard?: any;
+  rewardCash?: number;
   actionType: 'open_pack' | 'vendor_chat' | 'inspect_card' | 'grade_psa' | 'grade_psa_10' | 'buy_vendor' | 'collect_card';
 }
 
@@ -38,9 +39,9 @@ function getRandomRewardCard(promoTitle: string) {
   };
 }
 
-// --- Initial Missions (Updated to give specific set packs) ---
+// --- Initial Missions (Expanded & diversified across EN + JA sets) ---
 const INITIAL_MISSIONS: Mission[] = [
-  // --- DAILY MISSIONS ---
+  // --- DAILY MISSIONS (8) ---
   {
     id: 'daily_open_packs',
     title: 'Daily Pack Ripper',
@@ -50,8 +51,8 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'me02.5', setName: 'Ascended Heroes', count: 2, language: 'en' },
-      { setId: 'sv01', setName: 'Scarlet & Violet Base', count: 1, language: 'en' }
+      { setId: 'sv01', setName: 'Scarlet & Violet', count: 2, language: 'en' },
+      { setId: 'sv1a', setName: 'Triplet Beat', count: 1, language: 'ja' }
     ],
     actionType: 'open_pack'
   },
@@ -95,8 +96,63 @@ const INITIAL_MISSIONS: Mission[] = [
     ],
     actionType: 'collect_card'
   },
+  {
+    id: 'daily_grade_psa',
+    title: 'Lab Intern',
+    description: 'Submit 1 card to the PSA Grading Lab for assessment.',
+    type: 'daily',
+    target: 1,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'swsh10', setName: 'Astral Radiance', count: 1, language: 'en' },
+      { setId: 'sv2d', setName: 'Clay Burst', count: 1, language: 'ja' }
+    ],
+    actionType: 'grade_psa'
+  },
+  {
+    id: 'daily_buy_vendor',
+    title: 'Floor Shopper',
+    description: 'Buy 1 card directly from a convention floor vendor.',
+    type: 'daily',
+    target: 1,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv04', setName: 'Paradox Rift', count: 1, language: 'en' },
+      { setId: 'sv2p', setName: 'Snow Hazard', count: 1, language: 'ja' }
+    ],
+    actionType: 'buy_vendor'
+  },
+  {
+    id: 'daily_jp_collection',
+    title: 'Eastern Binder',
+    description: 'Add 3 cards to your personal Binder collections.',
+    type: 'daily',
+    target: 3,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv2a', setName: 'Pokémon Card 151', count: 2, language: 'ja' }
+    ],
+    actionType: 'collect_card'
+  },
+  {
+    id: 'daily_cash_stash',
+    title: 'Convention Stipend',
+    description: 'Inspect 3 different cards to earn a daily cash stipend.',
+    type: 'daily',
+    target: 3,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv05', setName: 'Temporal Forces', count: 1, language: 'en' }
+    ],
+    rewardCash: 25,
+    actionType: 'inspect_card'
+  },
 
-  // --- WEEKLY MISSIONS ---
+  // --- WEEKLY MISSIONS (8) ---
   {
     id: 'weekly_open_packs',
     title: 'Booster Marathon',
@@ -106,8 +162,8 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'sv03', setName: 'Obsidian Flames', count: 5, language: 'en' },
-      { setId: 'sv2d', setName: 'Clay Burst', count: 3, language: 'ja' },
+      { setId: 'sv03', setName: 'Obsidian Flames', count: 3, language: 'en' },
+      { setId: 'sv2d', setName: 'Clay Burst', count: 2, language: 'ja' },
       { setId: 'sv2p', setName: 'Snow Hazard', count: 2, language: 'ja' }
     ],
     rewardCard: getRandomRewardCard('Weekly Champion Award'),
@@ -137,9 +193,10 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'sv04', setName: 'Paradox Rift', count: 5, language: 'en' },
-      { setId: 'sv4a', setName: 'Shiny Treasure ex', count: 3, language: 'ja' }
+      { setId: 'sv04', setName: 'Paradox Rift', count: 3, language: 'en' },
+      { setId: 'sv4a', setName: 'Shiny Treasure ex', count: 2, language: 'ja' }
     ],
+    rewardCard: getRandomRewardCard('Dealmaker Trophy'),
     actionType: 'buy_vendor'
   },
   {
@@ -155,8 +212,66 @@ const INITIAL_MISSIONS: Mission[] = [
     ],
     actionType: 'inspect_card'
   },
+  {
+    id: 'weekly_collector',
+    title: 'Vault Builder',
+    description: 'Add 15 cards to your personal Binder collections.',
+    type: 'weekly',
+    target: 15,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv06', setName: 'Twilight Masquerade', count: 3, language: 'en' },
+      { setId: 'sv3a', setName: 'Raging Surf', count: 2, language: 'ja' }
+    ],
+    actionType: 'collect_card'
+  },
+  {
+    id: 'weekly_negotiator',
+    title: 'Smooth Talker',
+    description: 'Chat or negotiate price with convention booth vendors 5 times.',
+    type: 'weekly',
+    target: 5,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv07', setName: 'Stellar Crown', count: 2, language: 'en' },
+      { setId: 'sv5a', setName: 'Crimson Haze', count: 2, language: 'ja' }
+    ],
+    actionType: 'vendor_chat'
+  },
+  {
+    id: 'weekly_pristine',
+    title: 'Pristine Seeker',
+    description: 'Score 1 pristine PSA 10 / Gem Mint grade in the grading lab.',
+    type: 'weekly',
+    target: 1,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'swsh8', setName: 'Fusion Strike', count: 2, language: 'en' },
+      { setId: 'sv4k', setName: 'Wild Force', count: 1, language: 'ja' }
+    ],
+    rewardCard: getRandomRewardCard('Pristine Seeker Award'),
+    actionType: 'grade_psa_10'
+  },
+  {
+    id: 'weekly_jp_marathon',
+    title: 'Eastern Marathon',
+    description: 'Open 8 Japanese Booster Packs during your convention run.',
+    type: 'weekly',
+    target: 8,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sv4m', setName: 'Cyber Judge', count: 3, language: 'ja' },
+      { setId: 'sv5k', setName: 'Raging Wave', count: 2, language: 'ja' }
+    ],
+    rewardCash: 40,
+    actionType: 'open_pack'
+  },
 
-  // --- MONTHLY MISSIONS ---
+  // --- MONTHLY MISSIONS (8) ---
   {
     id: 'monthly_open_packs',
     title: 'Legendary Pack Master',
@@ -166,9 +281,9 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'swsh7', setName: 'Evolving Skies', count: 10, language: 'en' },
-      { setId: 'sv8', setName: 'Super Electric Breaker', count: 10, language: 'ja' },
-      { setId: 'sv08', setName: 'Surging Sparks', count: 10, language: 'en' }
+      { setId: 'swsh7', setName: 'Evolving Skies', count: 5, language: 'en' },
+      { setId: 'sv8', setName: 'Super Electric Breaker', count: 5, language: 'ja' },
+      { setId: 'sv08', setName: 'Surging Sparks', count: 5, language: 'en' }
     ],
     rewardCard: getRandomRewardCard('Monthly Dragon Lord Award'),
     actionType: 'open_pack'
@@ -182,8 +297,8 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'swsh4', setName: 'Vivid Voltage', count: 10, language: 'en' },
-      { setId: 'sv6', setName: 'Transformation Mask', count: 10, language: 'ja' }
+      { setId: 'swsh4', setName: 'Vivid Voltage', count: 5, language: 'en' },
+      { setId: 'sv6', setName: 'Transformation Mask', count: 5, language: 'ja' }
     ],
     rewardCard: getRandomRewardCard('Pristine Grader Award'),
     actionType: 'grade_psa_10'
@@ -197,9 +312,9 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'sv05', setName: 'Temporal Forces', count: 15, language: 'en' },
-      { setId: 'sv7', setName: 'Stellar Miracle', count: 15, language: 'ja' },
-      { setId: 'sv09', setName: 'Journey Together', count: 10, language: 'en' }
+      { setId: 'sv05', setName: 'Temporal Forces', count: 5, language: 'en' },
+      { setId: 'sv7', setName: 'Stellar Miracle', count: 5, language: 'ja' },
+      { setId: 'sv09', setName: 'Journey Together', count: 5, language: 'en' }
     ],
     rewardCard: getRandomRewardCard('Master Collector Trophy'),
     actionType: 'collect_card'
@@ -213,9 +328,69 @@ const INITIAL_MISSIONS: Mission[] = [
     progress: 0,
     claimed: false,
     rewardSetPacks: [
-      { setId: 'swsh12pt5', setName: 'Crown Zenith', count: 5, language: 'en' }
+      { setId: 'swsh12.5', setName: 'Crown Zenith', count: 3, language: 'en' }
     ],
     actionType: 'vendor_chat'
+  },
+  {
+    id: 'monthly_swsh_connoisseur',
+    title: 'Sword & Shield Connoisseur',
+    description: 'Open 40 Booster Packs from the Sword & Shield era.',
+    type: 'monthly',
+    target: 40,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'swsh3', setName: 'Darkness Ablaze', count: 5, language: 'en' },
+      { setId: 'sv6a', setName: 'Night Wanderer', count: 3, language: 'ja' },
+      { setId: 'swsh9', setName: 'Brilliant Stars', count: 5, language: 'en' }
+    ],
+    actionType: 'open_pack'
+  },
+  {
+    id: 'monthly_classic_digger',
+    title: 'Classic Digger',
+    description: 'Open 30 Booster Packs from older classic expansions.',
+    type: 'monthly',
+    target: 30,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'xy1', setName: 'XY', count: 3, language: 'en' },
+      { setId: 'xy7', setName: 'Ancient Origins', count: 3, language: 'en' },
+      { setId: 'sv5m', setName: 'Cyber Crisis', count: 2, language: 'ja' }
+    ],
+    actionType: 'open_pack'
+  },
+  {
+    id: 'monthly_grading_grinder',
+    title: 'Grading Grinder',
+    description: 'Submit 10 cards to the PSA Grading Lab for assessment.',
+    type: 'monthly',
+    target: 10,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'sm1', setName: 'Sun & Moon', count: 4, language: 'en' },
+      { setId: 'sv9', setName: 'Battle Partners', count: 4, language: 'ja' }
+    ],
+    rewardCard: getRandomRewardCard('Grinding Champion Award'),
+    actionType: 'grade_psa'
+  },
+  {
+    id: 'monthly_legend_inspector',
+    title: 'Legendary Inspector',
+    description: 'Inspect 50 different cards using the 3D Market Inspector or Art Studio.',
+    type: 'monthly',
+    target: 50,
+    progress: 0,
+    claimed: false,
+    rewardSetPacks: [
+      { setId: 'base1', setName: 'Base Set', count: 2, language: 'en' },
+      { setId: 'sv10', setName: "Rocket's Glory", count: 2, language: 'ja' }
+    ],
+    rewardCash: 100,
+    actionType: 'inspect_card'
   }
 ];
 
@@ -291,6 +466,15 @@ export function useDailyCash(amount: number, netReturn: number = 0): [boolean, n
   }
 
   return [true, deductFromNetReturn];
+}
+
+// --- Add Daily Cash (mission cash rewards) ---
+export function addDailyCash(amount: number) {
+  if (typeof window === 'undefined') return;
+  const current = getDailyCash();
+  const next = Number((current + amount).toFixed(2));
+  localStorage.setItem(DAILY_CASH_KEY, next.toString());
+  window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: next }));
 }
 
 // --- Use Daily Free Pack ---
@@ -419,6 +603,11 @@ export function claimMissionReward(missionId: string): {
 
   // 1. Add earned set packs
   addEarnedSetPacks(mission.rewardSetPacks);
+
+  // 1b. Add cash reward if included
+  if (mission.rewardCash) {
+    addDailyCash(mission.rewardCash);
+  }
 
   // 2. Add promo reward card to binder if included
   if (mission.rewardCard) {

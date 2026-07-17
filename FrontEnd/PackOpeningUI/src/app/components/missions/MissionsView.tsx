@@ -296,6 +296,11 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                         <Sparkles className="w-3.5 h-3.5 text-purple-400" /> Exclusive {mission.rewardCard.rarity || 'Promo'} Card
                       </span>
                     )}
+                    {mission.rewardCash ? (
+                      <span className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm">
+                        <Coins className="w-3.5 h-3.5 text-amber-400" /> +${mission.rewardCash} Convention Cash
+                      </span>
+                    ) : null}
                   </div>
                 </div>
 
@@ -336,7 +341,7 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                     onClick={() => handleClaim(mission)}
                     className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 text-black font-mono font-black text-sm tracking-wide transition-all duration-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] border-2 border-white transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer animate-pulse"
                   >
-                    <Gift className="w-4 h-4" /> CLAIM REWARD ({mission.rewardSetPacks.reduce((acc, rp) => acc + rp.count, 0)} PACKS{mission.rewardCard ? ' + CARD' : ''})
+                    <Gift className="w-4 h-4" /> CLAIM REWARD ({mission.rewardSetPacks.reduce((acc, rp) => acc + rp.count, 0)} PACKS{mission.rewardCard ? ' + CARD' : ''}{mission.rewardCash ? ` + $${mission.rewardCash}` : ''})
                   </button>
                 ) : (
                   <button
