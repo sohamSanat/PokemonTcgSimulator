@@ -10,69 +10,69 @@ import {
   X,
 } from "lucide-react"
 
-// Images fetched from unsplash
+// Real Pokemon Cards
 const userCards = [
   {
     id: 1,
-    img: "https://images.unsplash.com/photo-1603847734787-9e8a3f3e9d60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob2xvZ3JhcGhpYyUyMGdlb21ldHJpY3xlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Alpha Core",
-    rarity: "Legendary",
+    img: "https://images.pokemontcg.io/base1/4_hires.png",
+    name: "Charizard",
+    rarity: "Holo Rare",
   },
   {
     id: 2,
-    img: "https://images.unsplash.com/photo-1476445704028-a36e0c798192?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxob2xvZ3JhcGhpYyUyMGdlb21ldHJpY3xlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Neon Shift",
-    rarity: "Epic",
+    img: "https://images.pokemontcg.io/base1/2_hires.png",
+    name: "Blastoise",
+    rarity: "Holo Rare",
   },
   {
     id: 3,
-    img: "https://images.unsplash.com/photo-1610279226915-638501982bce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw0fHxob2xvZ3JhcGhpYyUyMGdlb21ldHJpY3xlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Void Prism",
-    rarity: "Rare",
+    img: "https://images.pokemontcg.io/base1/15_hires.png",
+    name: "Venusaur",
+    rarity: "Holo Rare",
   },
   {
     id: 4,
-    img: "https://images.unsplash.com/photo-1610279226599-1f89934c1d08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw1fHxob2xvZ3JhcGhpYyUyMGdlb21ldHJpY3xlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Heart Matrix",
-    rarity: "Epic",
+    img: "https://images.pokemontcg.io/base1/6_hires.png",
+    name: "Gyarados",
+    rarity: "Holo Rare",
   },
 ]
 
 const sellerCards = [
   {
     id: 1,
-    img: "https://images.unsplash.com/photo-1677143016687-8dbb7e71db08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBhbmltZXxlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Cyber Wraith",
+    img: "https://images.pokemontcg.io/base2/1_hires.png",
+    name: "Clefable",
     selected: true,
   },
   {
     id: 2,
-    img: "https://images.unsplash.com/photo-1587930734782-4fe289d9ea8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxjeWJlcnB1bmslMjBhbmltZXxlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Neon Phantom",
+    img: "https://images.pokemontcg.io/base2/2_hires.png",
+    name: "Electrode",
     selected: true,
   },
   {
     id: 3,
-    img: "https://images.unsplash.com/photo-1642345843526-6279c8880a49?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxjeWJlcnB1bmslMjBhbmltZXxlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Alley Runner",
+    img: "https://images.pokemontcg.io/base2/3_hires.png",
+    name: "Kangaskhan",
     selected: false,
   },
   {
     id: 4,
-    img: "https://images.unsplash.com/photo-1605175519272-70ee5dd143c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw0fHxjeWJlcnB1bmslMjBhbmltZXxlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Corp Drone",
+    img: "https://images.pokemontcg.io/base2/4_hires.png",
+    name: "Mewtwo",
     selected: false,
   },
   {
     id: 5,
-    img: "https://images.unsplash.com/photo-1558473840-767aaeeeae45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHw1fHxjeWJlcnB1bmslMjBhbmltZXxlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Glitch AI",
+    img: "https://images.pokemontcg.io/base2/5_hires.png",
+    name: "Nidoqueen",
     selected: true,
   },
   {
     id: 6,
-    img: "https://images.unsplash.com/photo-1496167117681-944f702be1f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxob2xvZ3JhcGhpYyUyMGdlb21ldHJpY3xlbnwxfHx8fDE3ODQyMTY2MTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    name: "Polyhedron",
+    img: "https://images.pokemontcg.io/base2/6_hires.png",
+    name: "Pidgeot",
     selected: false,
   },
 ]
@@ -81,7 +81,8 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
   const [cashOffer, setCashOffer] = useState(12500)
 
   return (
-    <div className="fixed inset-0 z-[200] w-full h-full overflow-hidden bg-[#050b14] font-sans text-gray-200">
+    <div className="fixed inset-0 z-[200] w-full h-full bg-[#050b14] font-sans text-gray-200 overflow-hidden lg:overflow-hidden">
+      <div className="absolute inset-0 overflow-y-auto overflow-x-hidden">
       {/* Close button */}
       {onClose && (
         <button
@@ -99,14 +100,14 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
       <div className="absolute top-[30%] left-[40%] w-[30%] h-[30%] rounded-full bg-[rgba(0,255,128,0.05)] blur-[150px] pointer-events-none" />
 
       {/* Main Grid Layout */}
-      <div className="relative z-10 w-full h-full p-6 grid grid-cols-12 gap-6">
+      <div className="relative z-10 w-full min-h-full p-4 lg:p-6 flex flex-col lg:grid lg:grid-cols-12 gap-6 pb-24 lg:pb-6">
         {/* LEFT PANEL: User Offer */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          className="col-span-3 h-full flex flex-col glass-panel rounded-2xl overflow-hidden"
+          className="lg:col-span-3 flex-none lg:h-full flex flex-col glass-panel rounded-2xl overflow-hidden min-h-[400px]"
         >
-          <div className="p-5 border-b border-[rgba(0,255,255,0.1)] flex justify-between items-center bg-[rgba(0,0,0,0.2)]">
+          <div className="p-4 lg:p-5 border-b border-[rgba(0,255,255,0.1)] flex justify-between items-center bg-[rgba(0,0,0,0.2)]">
             <h2 className="text-xl font-bold tracking-widest text-cyan-400 text-glow-cyan">
               YOUR OFFER
             </h2>
@@ -169,8 +170,8 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
         </motion.div>
 
         {/* CENTER PANEL: The Trade Equation */}
-        <div className="col-span-4 h-full flex flex-col justify-center items-center px-4">
-          <div className="w-full flex flex-col items-center gap-12">
+        <div className="lg:col-span-4 flex-none lg:h-full flex flex-col justify-center items-center px-2 py-8 lg:px-4 lg:py-0">
+          <div className="w-full flex flex-col items-center gap-8 lg:gap-12">
             {/* Visual Exchange Scale */}
             <div className="w-full relative">
               <div className="flex justify-between text-xs font-bold tracking-widest text-gray-500 mb-3">
@@ -241,9 +242,9 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          className="col-span-5 h-full flex flex-col glass-panel rounded-2xl overflow-hidden relative"
+          className="lg:col-span-5 flex-none lg:h-full flex flex-col glass-panel rounded-2xl overflow-hidden relative min-h-[500px]"
         >
-          <div className="p-5 border-b border-[rgba(255,0,255,0.1)] flex justify-between items-center bg-[rgba(0,0,0,0.2)]">
+          <div className="p-4 lg:p-5 border-b border-[rgba(255,0,255,0.1)] flex justify-between items-center bg-[rgba(0,0,0,0.2)]">
             <h2 className="text-xl font-bold tracking-widest text-gray-300">
               SELLER'S DIGITAL VAULT
             </h2>
@@ -303,6 +304,7 @@ export const TradingCard: React.FC<{ onClose?: () => void }> = ({ onClose }) => 
 
           <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#0a0f1e] to-transparent pointer-events-none" />
         </motion.div>
+      </div>
       </div>
     </div>
   )
