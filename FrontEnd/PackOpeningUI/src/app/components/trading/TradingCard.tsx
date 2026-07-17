@@ -11,7 +11,8 @@ import {
 } from "lucide-react"
 
 import { getCollectedCards, Card } from "../binder/types"
-import { getCardShowDynamicJapaneseCards } from "../../services/scrydex"
+import { getCombinedVendorCardPool, isJapaneseVendorCard } from "../../services/auctionVendorPools"
+import { handleCardImageError } from "../../services/tcgdex"
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
   onInspectCard?: (card: any) => void
@@ -25,15 +26,72 @@ export const TradingCard: React.FC<{
     const cards = getCollectedCards()
     setUserCards(cards)
 
-    // Generate 250+ cards for the seller's vault
-    const pool = getCardShowDynamicJapaneseCards(4000)
-    const shuffled = [...pool].sort(() => 0.5 - Math.random())
-    const vaultCards = shuffled.slice(0, 250).map(c => ({
-      ...c,
-      selected: Math.random() > 0.95 // Randomly highlight a few
-    }))
-    setSellerCards(vaultCards)
+    // Build a 250-card seller vault that is an intentional MIX of English & Japanese
+    // cards. The combined pool is overwhelmingly Japanese (thousands of dynamic
+    // catalog cards vs. ~120 curated English singles), so a naive shuffle would
+    // surface almost only Japanese cards. We instead split by language and
+    // interleave ~50/50 so both languages are always represented.
+    const shuffle = <T,>(arr: T[]): T[] => {
+      const copy = [...arr]
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[copy[i], copy[j]] = [copy[j], copy[i]]
+      }
+      return copy
+    }
+
+    const pool = getCombinedVendorCardPool(4000)
+    const english = shuffle(pool.filter(c => !isJapaneseVendorCard(c)))
+    const japanese = shuffle(pool.filter(c => isJapaneseVendorCard(c)))
+
+    const vaultCards: any[] = []
+    let ei = 0
+    let ji = 0
+    for (let i = 0; i < 250; i++) {
+      // Alternate languages; fall back to the other language if one runs dry
+      const preferEnglish = i % 2 === 0
+      let src: any
+      if (preferEnglish && english.length > 0) {
+        src = english[ei % english.length]; ei++
+      } else if (japanese.length > 0) {
+        src = japanese[ji % japanese.length]; ji++
+      } else if (english.length > 0) {
+        src = english[ei % english.length]; ei++
+      }
+      if (!src) continue
+      vaultCards.push({
+        ...src,
+        // Unique per-slot id so React keys stay stable even when a card repeats,
+        // while originalId/setId/num are preserved for the image fallback chain.
+        id: `${src.id}-vault-${i}`,
+        originalId: src.originalId || src.id,
+        selected: Math.random() > 0.95 // Randomly highlight a few
+      })
+    }
+    setSellerCards(shuffle(vaultCards))
   }, [])
+
+  // ── PLACEHOLDER / BROKEN IMAGE GUARD ────────────────────────────────────────
+  // scrydex.com serves a generic card-back placeholder (HTTP 200) for URLs that
+  // don't resolve to a real card. Mirroring the fix used in the vendor catalogue
+  // (CardShowView), we run every vault image through the shared fallback chain so
+  // broken/placeholder cards resolve to a real scan (or a clean generic backup)
+  // instead of being left as a placeholder image.
+  const handleVaultImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, card: any) => {
+    const img = e.currentTarget
+    const isJpn = isJapaneseVendorCard(card)
+    let setId = card.setId || 'swsh3'
+    let num = card.num !== undefined ? String(card.num) : '1'
+    if (isJpn && !String(setId).toLowerCase().includes('_ja')) {
+      setId = `${String(setId).replace(/_ja$/i, '')}_ja`
+    }
+    handleCardImageError(img, setId, num, () => {
+      // Final safety net: a clean, guaranteed-valid generic card image
+      img.src = isJpn
+        ? 'https://images.pokemontcg.io/np/47_hires.png'
+        : 'https://images.pokemontcg.io/swsh3/19_hires.png'
+    })
+  }
 
   const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
   const totalOfferValue = totalCardValue + cashOffer
@@ -245,6 +303,8 @@ export const TradingCard: React.FC<{
                     src={card.img}
                     alt={card.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => handleVaultImageError(e, card)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 
