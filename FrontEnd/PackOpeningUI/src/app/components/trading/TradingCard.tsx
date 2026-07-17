@@ -16,9 +16,10 @@ import { handleCardImageError } from "../../services/tcgdex"
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
   onInspectCard?: (card: any) => void,
+  // These are now unused – image handling is self-contained below
   onImageLoad?: (e: any, id: string, isJp: boolean) => void,
   onImageError?: (e: any, id: string, isJp: boolean) => void
-}> = ({ onClose, onInspectCard, onImageLoad, onImageError }) => {
+}> = ({ onClose, onInspectCard }) => {
   const [cashOffer, setCashOffer] = useState(12500)
   const [userCards, setUserCards] = useState<Card[]>([])
   const [sellerCards, setSellerCards] = useState<any[]>([])
@@ -39,18 +40,9 @@ export const TradingCard: React.FC<{
       return copy
     }
 
-    // scrydex.com serves HTTP 200 card-back PLACEHOLDERS (never a 404) for cards
-    // that don't have a real scan, at two fixed byte sizes:
-    //   186316 → English card-back,  350441 → Japanese card-back
-    // Because these come back as "successful" 200s, an <img> onError never fires —
-    // which is why placeholders leaked into the vault. scrydex is CORS-enabled
-    // (Access-Control-Allow-Origin: *), so we can cheaply validate each URL with a
-    // HEAD request and read Content-Length to know if it's a real card scan.
     const PLACEHOLDER_BYTES = new Set([186316, 350441])
     const isRealCardImage = async (url: string): Promise<boolean> => {
       if (!url) return false
-      // Non-scrydex hosts (pokemontcg / tcgdex) return a real 404 for missing
-      // cards, so their <img> onError handler covers them — assume valid here.
       if (!url.includes('scrydex.com')) return true
       try {
         const r = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(6000) })
@@ -58,14 +50,10 @@ export const TradingCard: React.FC<{
         const len = Number(r.headers.get('content-length') || 0)
         return len > 0 && !PLACEHOLDER_BYTES.has(len)
       } catch {
-        // Network/CORS error: don't hide a potentially-real card
         return true
       }
     }
 
-    // Build an intentional MIX of English & Japanese candidates. The combined pool
-    // is overwhelmingly Japanese (thousands of dynamic catalog cards vs. ~120
-    // curated English singles), so we split by language and interleave ~50/50.
     const pool = getCombinedVendorCardPool(4000)
     const english = shuffle(pool.filter(c => !isJapaneseVendorCard(c)))
     const japanese = shuffle(pool.filter(c => isJapaneseVendorCard(c)))
@@ -74,8 +62,6 @@ export const TradingCard: React.FC<{
     const candidates: any[] = []
     let ei = 0
     let ji = 0
-    // Generate a generous candidate list (more than TARGET) so we can drop any
-    // cards whose image validates as a placeholder and still fill the vault.
     for (let i = 0; i < TARGET * 3; i++) {
       const preferEnglish = i % 2 === 0
       let src: any
@@ -89,8 +75,6 @@ export const TradingCard: React.FC<{
       if (src) candidates.push(src)
     }
 
-    // Validate candidates in concurrency-limited batches, keeping only real cards,
-    // and progressively populate the vault so it fills in smoothly.
     const CONCURRENCY = 24
     const good: any[] = []
     ;(async () => {
@@ -106,11 +90,9 @@ export const TradingCard: React.FC<{
         setSellerCards(
           good.map((src, idx) => ({
             ...src,
-            // Unique per-slot id so React keys stay stable even when a card
-            // repeats, while originalId/setId/num are kept for image fallbacks.
             id: `${src.id}-vault-${idx}`,
             originalId: src.originalId || src.id,
-            selected: Math.random() > 0.95 // Randomly highlight a few
+            selected: Math.random() > 0.95
           }))
         )
       }
@@ -119,29 +101,107 @@ export const TradingCard: React.FC<{
     return () => { cancelled = true }
   }, [])
 
-  // ── PLACEHOLDER / BROKEN IMAGE GUARD (onError safety net) ────────────────────
-  // Covers pokemontcg/tcgdex hosts (which 404 on missing cards) and any scrydex
-  // image that slipped past pre-validation. Mirrors the vendor catalogue fix:
-  // runs the shared fallback chain so a broken card resolves to a real scan (or a
-  // clean, guaranteed-valid generic backup) instead of a placeholder card-back.
-  const handleVaultImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, card: any) => {
+  // ── SELF-CONTAINED IMAGE HANDLERS ──────────────────────────────────────────
+  // These mirror the handleCardShowImageError / handleCardShowImageLoad logic
+  // in CardShowView but look up cards from the local sellerCards state.
+  // The key fix: pass a ref so the handlers always see the latest sellerCards.
+  const sellerCardsRef = React.useRef<any[]>([])
+  useEffect(() => { sellerCardsRef.current = sellerCards }, [sellerCards])
+
+  const handleVaultImageError = React.useCallback((
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+    cardId?: string,
+    isJpn?: boolean
+  ) => {
     const img = e.currentTarget
-    const isJpn = isJapaneseVendorCard(card)
-    let setId = card.setId || 'swsh3'
-    let num = card.num !== undefined ? String(card.num) : '1'
-    if (isJpn && !String(setId).toLowerCase().includes('_ja')) {
-      setId = `${String(setId).replace(/_ja$/i, '')}_ja`
+    let setId = 'swsh3'
+    let num = '1'
+
+    const targetId = cardId || img.dataset.imgId
+    // Look up in vault cards (uses ref so it always has fresh list)
+    const cardItem = sellerCardsRef.current.find(
+      c => c.id === targetId || c.originalId === targetId
+    )
+    if (cardItem) {
+      if (cardItem.setId) setId = cardItem.setId
+      if (cardItem.num !== undefined) num = String(cardItem.num)
+      const orig = cardItem.originalId || cardItem.id || ''
+      if (orig.includes('-')) {
+        const parts = orig.split('-')
+        const lp = parts[0].toLowerCase()
+        const isVendorPrefix = lp.includes('vault') || lp.includes('booth') || lp.includes('core') || lp.includes('vintage') ||
+          lp.includes('alpha') || lp.includes('digimon') || lp.includes('slab') ||
+          lp.includes('retro') || lp.includes('tcg') || lp.includes('special') || lp.includes('gold') ||
+          lp.includes('sealed') || lp.includes('modern') || lp.includes('japanese') ||
+          lp === 'jp' || (parts[1] && (parts[1] === 'core' || parts[1].includes('jp')))
+        if (!isVendorPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
+          setId = parts[0]; num = parts[1]
+        }
+      }
     }
+
+    // Fall back: parse setId/num from the src URL
+    const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
+                  img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
+                  img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i)
+    if (match && (!cardItem || setId === 'swsh3')) {
+      setId = match[1]; num = match[2]
+    } else if (!cardItem && targetId && targetId.includes('-')) {
+      const parts = targetId.split('-')
+      const lp = parts[0].toLowerCase()
+      const isVendorPrefix = lp.includes('vault') || lp.includes('booth') || lp === 'jp'
+      if (!isVendorPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
+        setId = parts[0]; num = parts[1]
+      }
+    }
+
+    const origStr = cardItem?.originalId || cardItem?.id || targetId || ''
+    const isKnownJpPrefix = /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(origStr) ||
+      /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(setId)
+    const isJpnCard = Boolean(isJpn || isKnownJpPrefix || setId.toLowerCase().includes('_ja') ||
+      cardItem?.name?.includes('Japanese') || origStr.includes('_ja') ||
+      img.src.includes('_ja') || img.src.includes('/ja/'))
+    if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
+      setId = `${setId.replace(/_ja$/i, '')}_ja`
+    }
+
     handleCardImageError(img, setId, num, () => {
-      // Final safety net: a clean, guaranteed-valid card image (np/47 is a 404).
-      img.src = isJpn
-        ? 'https://images.scrydex.com/pokemon/swsh12a_ja-205/large'
+      img.src = isJpnCard
+        ? 'https://images.pokemontcg.io/np/47_hires.png'
         : 'https://images.pokemontcg.io/swsh3/19_hires.png'
     })
-  }
+  }, [])
+
+  const handleVaultImageLoad = React.useCallback((
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+    cardId?: string,
+    isJpn?: boolean
+  ) => {
+    const img = e.currentTarget
+    // Only need the canvas check for known placeholder-serving hosts
+    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = 8; canvas.height = 8
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.drawImage(img, 0, 0, 8, 8)
+      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data
+      const isCardBack = r < 50 && g < 75 && b > 90
+      if (isCardBack) {
+        handleVaultImageError(
+          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+          cardId,
+          isJpn
+        )
+      }
+    } catch { /* tainted canvas – do nothing */ }
+  }, [handleVaultImageError])
+  // ───────────────────────────────────────────────────────────────────────────
 
   const totalCardValue = userCards.reduce((acc, card) => acc + (card.currentPrice || 0), 0)
   const totalOfferValue = totalCardValue + cashOffer
+
 
   return (
     <div className="fixed inset-0 z-[200] w-full h-full bg-[#050b14] font-sans text-gray-200 overflow-hidden lg:overflow-hidden">
@@ -352,8 +412,8 @@ export const TradingCard: React.FC<{
                     alt={card.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    onLoad={(e) => onImageLoad && onImageLoad(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja"))}
-                    onError={(e) => onImageError && onImageError(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja"))}
+                    onLoad={(e) => handleVaultImageLoad(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja") || card.originalId?.includes("_ja"))}
+                    onError={(e) => handleVaultImageError(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja") || card.originalId?.includes("_ja"))}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 
