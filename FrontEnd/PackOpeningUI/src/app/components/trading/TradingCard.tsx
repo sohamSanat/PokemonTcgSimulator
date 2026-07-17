@@ -15,8 +15,10 @@ import { getCombinedVendorCardPool, isJapaneseVendorCard } from "../../services/
 import { handleCardImageError } from "../../services/tcgdex"
 export const TradingCard: React.FC<{ 
   onClose?: () => void,
-  onInspectCard?: (card: any) => void
-}> = ({ onClose, onInspectCard }) => {
+  onInspectCard?: (card: any) => void,
+  onImageLoad?: (e: any, id: string, isJp: boolean) => void,
+  onImageError?: (e: any, id: string, isJp: boolean) => void
+}> = ({ onClose, onInspectCard, onImageLoad, onImageError }) => {
   const [cashOffer, setCashOffer] = useState(12500)
   const [userCards, setUserCards] = useState<Card[]>([])
   const [sellerCards, setSellerCards] = useState<any[]>([])
@@ -343,13 +345,15 @@ export const TradingCard: React.FC<{
                         : "border border-gray-700 hover:border-gray-500"
                     }
                   `}
+                  data-card-container="true"
                 >
                   <img
                     src={card.img}
                     alt={card.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    onError={(e) => handleVaultImageError(e, card)}
+                    onLoad={(e) => onImageLoad && onImageLoad(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja"))}
+                    onError={(e) => onImageError && onImageError(e, card.id, card.name?.includes("Japanese") || card.id?.includes("jp") || card.id?.includes("_ja"))}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
 

@@ -1922,6 +1922,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       <TradingCard 
         onClose={() => setShowTradingCard(false)} 
         onInspectCard={onInspectCard}
+        onImageLoad={handleCardShowImageLoad}
+        onImageError={handleCardShowImageError}
       />
     )}
     </>
