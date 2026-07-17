@@ -179,10 +179,13 @@ function scanDir(dir, relativePath = '') {
       const normalizedName = folderName.toLowerCase().replace(/[^a-z0-9]/g, '');
       manifest[normalizedName] = images;
 
-      // Check English aliases if not Japanese folder
+      // Check aliases
+      const matchFolderName = folderName.toLowerCase();
+      const matchFolderNameSpace = folderName.toLowerCase().replace(/-/g, ' ');
+
       if (!isJapaneseFolder) {
         for (const [key, aliases] of Object.entries(SET_ALIASES)) {
-          if (key.toLowerCase() === folderName.toLowerCase() || aliases.includes(folderName.toLowerCase())) {
+          if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace)) {
             for (const alias of aliases) {
               manifest[alias] = images;
               manifest[alias.toLowerCase()] = images;
@@ -190,11 +193,24 @@ function scanDir(dir, relativePath = '') {
             }
           }
         }
+      } else {
+        // For Japanese folders, we also want to match against SET_ALIASES to pick up _ja aliases
+        for (const [key, aliases] of Object.entries(SET_ALIASES)) {
+          if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace) || aliases.includes(`${matchFolderNameSpace}_ja`)) {
+            for (const alias of aliases) {
+              if (alias.endsWith('_ja') || alias.includes('ja')) {
+                manifest[alias] = images;
+                manifest[alias.toLowerCase()] = images;
+                manifest[alias.toLowerCase().replace(/[^a-z0-9]/g, '')] = images;
+              }
+            }
+          }
+        }
       }
 
       // Check Japanese aliases
       for (const [key, aliases] of Object.entries(JAPANESE_SET_ALIASES)) {
-        if (key.toLowerCase() === folderName.toLowerCase() || aliases.includes(folderName.toLowerCase())) {
+        if (key.toLowerCase() === matchFolderName || aliases.includes(matchFolderName) || key.toLowerCase().replace(/-/g, ' ') === matchFolderNameSpace || aliases.includes(matchFolderNameSpace)) {
           for (const alias of aliases) {
             manifest[alias] = images;
             manifest[alias.toLowerCase()] = images;

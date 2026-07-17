@@ -330,6 +330,9 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
 
   const pokeIoSet = cleanId.replace(/^sv0?/, 'sv');
 
+  // Handle swsh -> s prefix conversion for Scrydex Japanese Sword & Shield sets
+  const sPrefix = cleanId.startsWith('swsh') ? cleanId.replace(/^swsh/i, 's') : cleanId;
+
   // Define comprehensive fallback chain of specific card scans for both modern and vintage sets
   const specificFallbacks = isJapaneseSet ? [
     `${validAsset}/high.webp`,
@@ -337,8 +340,11 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `${validAsset}.png`,
     `https://images.scrydex.com/pokemon/${sLow.endsWith('_ja') ? sLow : sLow + '_ja'}-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
+    `https://images.scrydex.com/pokemon/${sPrefix}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${paddedNum}/large`,
+    `https://images.scrydex.com/pokemon/${sPrefix}_ja-${paddedNum}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/high.png`,
+    `https://images.scrydex.com/pokemon/${sPrefix}_ja-${num}/high.png`,
     `${cleanAsset}/high.webp`,
     `${cleanAsset}/high.png`,
     `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}_hires.png`,
