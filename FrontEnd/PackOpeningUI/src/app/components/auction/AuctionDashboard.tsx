@@ -4,7 +4,7 @@ import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
-import { saveCollectedCard, updateCardSlabStatus } from '../binder/types';
+import { saveCollectedCard, updateCardSlabStatus, getCash, spendCash } from '../binder/types';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -924,7 +924,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
       normal: shuffle(raw.normal)
     };
   });
-  const [walletBalance, setWalletBalance] = useState<number>(128450.00);
+  const [walletBalance, setWalletBalance] = useState<number>(() => getCash());
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   const brokenUrlsRef = useRef<Set<string>>(new Set());
@@ -1007,6 +1007,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
         const res = runAuctionTick(prev, 'expensive', pools.expensive);
         if (res.won) {
+          spendCash(res.won.price);
           setWalletBalance((b) => Math.max(0, b - res.won!.price));
           const c = res.won.card;
           const saved = saveCollectedCard({
@@ -1041,6 +1042,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
 
         const res = runAuctionTick(prev, 'normal', pools.normal);
         if (res.won) {
+          spendCash(res.won.price);
           setWalletBalance((b) => Math.max(0, b - res.won!.price));
           const c = res.won.card;
           const saved = saveCollectedCard({

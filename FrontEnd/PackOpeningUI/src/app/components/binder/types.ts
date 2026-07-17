@@ -231,6 +231,52 @@ export function clearCollectedCards(): void {
   } catch { }
 }
 
+export function removeCollectedCard(cardId: string): void {
+  try {
+    const cards = getCollectedCards();
+    const updated = cards.filter(c => c.id !== cardId);
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(updated));
+    getBinders();
+    syncToFirestore();
+    window.dispatchEvent(new Event('storage'));
+  } catch (e) {
+    console.error('Failed to remove collected card', e);
+  }
+}
+
+// ── Shared cash register (used by vendor marketplace + auctions) ──────────────
+const DEFAULT_CASH = 128450;
+
+export function getCash(): number {
+  try {
+    const data = localStorage.getItem(getStorageKey('tcg_cash'));
+    if (data == null) {
+      localStorage.setItem(getStorageKey('tcg_cash'), JSON.stringify(DEFAULT_CASH));
+      return DEFAULT_CASH;
+    }
+    const n = Number(data);
+    return isFinite(n) ? n : DEFAULT_CASH;
+  } catch {
+    return DEFAULT_CASH;
+  }
+}
+
+export function spendCash(amount: number): number {
+  const next = Math.max(0, getCash() - Math.max(0, amount));
+  try {
+    localStorage.setItem(getStorageKey('tcg_cash'), JSON.stringify(next));
+  } catch { }
+  return next;
+}
+
+export function addCash(amount: number): number {
+  const next = getCash() + Math.max(0, amount);
+  try {
+    localStorage.setItem(getStorageKey('tcg_cash'), JSON.stringify(next));
+  } catch { }
+  return next;
+}
+
 export function saveCollectedCard(cardData: any, setName: string, binderId: string = 'my-collection'): Card {
   const cards = getCollectedCards();
   const basePrice = cardData.value || 0.50;
