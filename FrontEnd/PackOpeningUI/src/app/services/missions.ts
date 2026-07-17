@@ -275,7 +275,7 @@ function checkDailyReset() {
     localStorage.setItem(DAILY_ENGLISH_FREE_KEY, '5');
     localStorage.setItem(DAILY_JAPANESE_FREE_KEY, '5');
     // Give $40 daily cash allowance
-    localStorage.setItem(DAILY_CASH_KEY, '40');
+    localStorage.setItem(DAILY_CASH_KEY, '100');
 
     // Reset daily missions progress
     const missions = getMissions();
@@ -310,10 +310,10 @@ export function getDailyCash(): number {
 export function useDailyCash(amount: number, netReturn: number = 0): [boolean, number] {
   if (typeof window === 'undefined') return [true, 0];
   const currentDailyCash = getDailyCash();
-  
+
   let remainingAmount = amount;
   let deductFromNetReturn = 0;
-  
+
   // First use daily cash
   if (currentDailyCash > 0) {
     const fromDailyCash = Math.min(currentDailyCash, remainingAmount);
@@ -324,17 +324,17 @@ export function useDailyCash(amount: number, netReturn: number = 0): [boolean, n
       window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: nextDailyCash }));
     }
   }
-  
+
   // Then use net return if needed
   if (remainingAmount > 0 && netReturn >= remainingAmount) {
     deductFromNetReturn = remainingAmount;
     remainingAmount = 0;
   }
-  
+
   if (remainingAmount > 0) {
     return [false, 0];
   }
-  
+
   return [true, deductFromNetReturn];
 }
 
@@ -346,8 +346,8 @@ export function useDailyFreePack(language: 'en' | 'ja'): boolean {
   if (current <= 0) return false;
   const next = current - 1;
   localStorage.setItem(key, String(next));
-  window.dispatchEvent(new CustomEvent('daily_packs_updated', { 
-    detail: getDailyFreePacks() 
+  window.dispatchEvent(new CustomEvent('daily_packs_updated', {
+    detail: getDailyFreePacks()
   }));
   return true;
 }
@@ -376,7 +376,7 @@ export function addEarnedSetPacks(packs: EarnedSetPack[]) {
   const current = getEarnedSetPacks();
   const updated = [...current];
   packs.forEach(newPack => {
-    const existingIndex = updated.findIndex(p => 
+    const existingIndex = updated.findIndex(p =>
       p.setId === newPack.setId && p.language === newPack.language
     );
     if (existingIndex !== -1) {
@@ -447,10 +447,10 @@ export function trackMissionProgress(
   }
 }
 
-export function claimMissionReward(missionId: string): { 
-  success: boolean; 
-  rewardSetPacks: EarnedSetPack[]; 
-  rewardCard?: PokemonCard & { promoTitle?: string } 
+export function claimMissionReward(missionId: string): {
+  success: boolean;
+  rewardSetPacks: EarnedSetPack[];
+  rewardCard?: PokemonCard & { promoTitle?: string }
 } {
   if (typeof window === 'undefined') return { success: false, rewardSetPacks: [] };
   const missions = getMissions();
@@ -481,10 +481,10 @@ export function claimMissionReward(missionId: string): {
   localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(missions));
   window.dispatchEvent(new CustomEvent('missions_updated', { detail: { missions } }));
 
-  return { 
-    success: true, 
-    rewardSetPacks: mission.rewardSetPacks, 
-    rewardCard: mission.rewardCard 
+  return {
+    success: true,
+    rewardSetPacks: mission.rewardSetPacks,
+    rewardCard: mission.rewardCard
   };
 }
 
