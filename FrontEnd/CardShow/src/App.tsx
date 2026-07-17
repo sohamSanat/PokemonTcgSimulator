@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   Menu,
   Search,
@@ -12,12 +12,72 @@ import {
   Crosshair,
   Zap,
   Activity,
+  X,
+  Wallet,
+  ArrowLeftRight,
+  Coins,
+  Info,
 } from "lucide-react"
 
 // Note: Ensure we have the fallback image component if this is a standard Make template. If not we'll use a standard img or div.
 // I will create a placeholder if it doesn't exist.
 
+type PaymentMode = "cash" | "trade" | "mix"
+
+type InventoryItem = {
+  id: string
+  name: string
+  grade: string
+  price: number
+}
+
+type OwnedCard = {
+  id: string
+  name: string
+  grade: string
+  tradeValue: number
+}
+
 const App = () => {
+  const [acquireTarget, setAcquireTarget] = useState<InventoryItem | null>(null)
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>("mix")
+  const [selectedOwnedId, setSelectedOwnedId] = useState<string | null>(null)
+
+  const featuredInventory: InventoryItem[] = [
+    { id: "inv-1", name: "Base Charizard", grade: "PSA 10", price: 24000 },
+    { id: "inv-2", name: "Lugia 1st Ed", grade: "BGS 9.5", price: 12000 },
+    { id: "inv-3", name: "Mewtwo Gold", grade: "CGC 10", price: 8000 },
+  ]
+
+  const ownedCollection: OwnedCard[] = [
+    { id: "own-1", name: "Base Charizard", grade: "PSA 9", tradeValue: 15000 },
+    { id: "own-2", name: "Lugia 1st Ed", grade: "BGS 9", tradeValue: 9000 },
+    { id: "own-3", name: "Mewtwo Gold", grade: "CGC 9", tradeValue: 5000 },
+    { id: "own-4", name: "Pikachu Illustrator", grade: "PSA 10", tradeValue: 3500 },
+  ]
+
+  const selectedOwned = ownedCollection.find((c) => c.id === selectedOwnedId) || null
+  const tradeValue = selectedOwned?.tradeValue ?? 0
+  const cashDue =
+    paymentMode === "cash"
+      ? acquireTarget?.price ?? 0
+      : paymentMode === "trade"
+        ? 0
+        : Math.max(0, (acquireTarget?.price ?? 0) - tradeValue)
+  const canConfirm =
+    !!acquireTarget &&
+    (paymentMode === "cash" ||
+      (paymentMode === "trade" && !!selectedOwned && tradeValue >= (acquireTarget?.price ?? 0)) ||
+      (paymentMode === "mix" && !!selectedOwned))
+
+  const resetAcquire = () => {
+    setAcquireTarget(null)
+    setPaymentMode("mix")
+    setSelectedOwnedId(null)
+  }
+
+  const fmt = (n: number) => `$${n.toLocaleString()}`
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans overflow-hidden">
       {/* Header */}
@@ -417,13 +477,9 @@ const App = () => {
                   Vendor's Featured Inventory Spotlight
                 </h4>
                 <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { name: "Base Charizard", grade: "PSA 10", price: "24k" },
-                    { name: "Lugia 1st Ed", grade: "BGS 9.5", price: "12k" },
-                    { name: "Mewtwo Gold", grade: "CGC 10", price: "8k" },
-                  ].map((item, i) => (
+                  {featuredInventory.map((item) => (
                     <div
-                      key={i}
+                      key={item.id}
                       className="bg-black/40 border border-border/30 rounded p-1 flex flex-col items-center text-center gap-1"
                     >
                       <div className="w-full aspect-[3/4] bg-white/5 rounded-sm flex items-center justify-center border border-white/10"></div>
@@ -435,9 +491,19 @@ const App = () => {
                           {item.grade}
                         </span>
                         <span className="text-[8px] font-mono">
-                          ${item.price}
+                          {fmt(item.price)}
                         </span>
                       </div>
+                      <button
+                        onClick={() => {
+                          setAcquireTarget(item)
+                          setPaymentMode("mix")
+                          setSelectedOwnedId(ownedCollection[0]?.id ?? null)
+                        }}
+                        className="w-full mt-0.5 bg-primary/90 hover:bg-primary text-primary-foreground text-[7px] font-bold py-1 rounded transition-colors"
+                      >
+                        ACQUIRE
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -537,6 +603,188 @@ const App = () => {
           </div>
         </div>
       </footer>
+
+      {/* Acquire Card Modal */}
+      {acquireTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+          onClick={resetAcquire}
+        >
+          <div
+            className="bg-[#0b0e14] border border-border/60 rounded-xl w-full max-w-md p-5 flex flex-col gap-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-col">
+                <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">
+                  Acquire From VINTAGEVAULT TCG
+                </span>
+                <h3 className="text-lg font-bold text-white tracking-wide">
+                  {acquireTarget.name}
+                </h3>
+                <span className="text-[10px] text-primary font-mono">
+                  {acquireTarget.grade}
+                </span>
+              </div>
+              <button
+                onClick={resetAcquire}
+                className="p-1.5 hover:bg-white/10 rounded-md transition-colors text-muted-foreground hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Price */}
+            <div className="flex items-center justify-between bg-black/40 border border-border/50 rounded-lg px-4 py-3">
+              <span className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
+                Listed Price
+              </span>
+              <span className="text-xl font-bold font-mono text-white">
+                {fmt(acquireTarget.price)}
+              </span>
+            </div>
+
+            {/* Payment Mode */}
+            <div className="flex flex-col gap-2">
+              <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">
+                Payment Method
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => {
+                    setPaymentMode("cash")
+                    setSelectedOwnedId(null)
+                  }}
+                  className={`flex flex-col items-center gap-1 py-2 rounded-lg border text-[10px] font-bold uppercase transition-colors ${
+                    paymentMode === "cash"
+                      ? "bg-primary/20 border-primary text-primary"
+                      : "bg-black/40 border-border/50 text-muted-foreground hover:border-white/20"
+                  }`}
+                >
+                  <Wallet className="w-4 h-4" />
+                  Full Cash
+                </button>
+                <button
+                  onClick={() => setPaymentMode("trade")}
+                  className={`flex flex-col items-center gap-1 py-2 rounded-lg border text-[10px] font-bold uppercase transition-colors ${
+                    paymentMode === "trade"
+                      ? "bg-primary/20 border-primary text-primary"
+                      : "bg-black/40 border-border/50 text-muted-foreground hover:border-white/20"
+                  }`}
+                >
+                  <ArrowLeftRight className="w-4 h-4" />
+                  Trade Card
+                </button>
+                <button
+                  onClick={() => {
+                    setPaymentMode("mix")
+                    if (!selectedOwnedId)
+                      setSelectedOwnedId(ownedCollection[0]?.id ?? null)
+                  }}
+                  className={`flex flex-col items-center gap-1 py-2 rounded-lg border text-[10px] font-bold uppercase transition-colors ${
+                    paymentMode === "mix"
+                      ? "bg-primary/20 border-primary text-primary"
+                      : "bg-black/40 border-border/50 text-muted-foreground hover:border-white/20"
+                  }`}
+                >
+                  <Coins className="w-4 h-4" />
+                  Card + Cash
+                </button>
+              </div>
+            </div>
+
+            {/* Owned Card Selection (trade & mix) */}
+            {(paymentMode === "trade" || paymentMode === "mix") && (
+              <div className="flex flex-col gap-2">
+                <span className="text-[9px] text-muted-foreground uppercase tracking-widest font-mono">
+                  Select A Card You Own To Trade
+                </span>
+                <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1">
+                  {ownedCollection.map((card) => {
+                    const active = selectedOwnedId === card.id
+                    const covers = card.tradeValue >= acquireTarget.price
+                    return (
+                      <button
+                        key={card.id}
+                        onClick={() => setSelectedOwnedId(card.id)}
+                        className={`flex items-center justify-between px-3 py-2 rounded-lg border text-left transition-colors ${
+                          active
+                            ? "bg-primary/15 border-primary"
+                            : "bg-black/40 border-border/50 hover:border-white/20"
+                        }`}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-white">
+                            {card.name}
+                          </span>
+                          <span className="text-[9px] text-primary font-mono">
+                            {card.grade}
+                          </span>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[9px] text-muted-foreground uppercase">
+                            Trade Value
+                          </span>
+                          <span className="text-xs font-mono font-bold text-teal-accent">
+                            {fmt(card.tradeValue)}
+                          </span>
+                          {paymentMode === "trade" && !covers && (
+                            <span className="text-[7px] text-red-400 uppercase">
+                              Below price
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Summary */}
+            <div className="flex flex-col gap-1.5 bg-black/40 border border-border/50 rounded-lg px-4 py-3">
+              <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
+                <span>Trade-in</span>
+                <span className="text-teal-accent">
+                  {paymentMode === "cash" || !selectedOwned
+                    ? fmt(0)
+                    : `- ${fmt(tradeValue)}`}
+                </span>
+              </div>
+              <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
+                <span>Cash Due</span>
+                <span className="text-white font-bold">{fmt(cashDue)}</span>
+              </div>
+              {paymentMode === "mix" && selectedOwned && (
+                <div className="flex items-center gap-1.5 pt-1 text-[9px] text-pink-accent/80">
+                  <Info className="w-3 h-3 shrink-0" />
+                  <span>
+                    Trading your {selectedOwned.name} ({selectedOwned.grade}) +
+                    paying the rest in cash.
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Confirm */}
+            <button
+              disabled={!canConfirm}
+              onClick={() => {
+                // Simulated acquisition confirmation
+                resetAcquire()
+              }}
+              className="w-full bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-primary-foreground text-sm font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              {paymentMode === "cash"
+                ? `Confirm — Pay ${fmt(cashDue)} Cash`
+                : paymentMode === "trade"
+                  ? `Confirm — Trade ${selectedOwned?.name ?? "Card"}`
+                  : `Confirm — Trade + ${fmt(cashDue)} Cash`}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
