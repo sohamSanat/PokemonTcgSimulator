@@ -22,15 +22,12 @@ export const TradingCard: React.FC<{
   const [sellerCards, setSellerCards] = useState<any[]>([])
 
   useEffect(() => {
+    let cancelled = false
+
     // Load user's binders
     const cards = getCollectedCards()
     setUserCards(cards)
 
-    // Build a 250-card seller vault that is an intentional MIX of English & Japanese
-    // cards. The combined pool is overwhelmingly Japanese (thousands of dynamic
-    // catalog cards vs. ~120 curated English singles), so a naive shuffle would
-    // surface almost only Japanese cards. We instead split by language and
-    // interleave ~50/50 so both languages are always represented.
     const shuffle = <T,>(arr: T[]): T[] => {
       const copy = [...arr]
       for (let i = copy.length - 1; i > 0; i--) {
@@ -40,15 +37,44 @@ export const TradingCard: React.FC<{
       return copy
     }
 
+    // scrydex.com serves HTTP 200 card-back PLACEHOLDERS (never a 404) for cards
+    // that don't have a real scan, at two fixed byte sizes:
+    //   186316 → English card-back,  350441 → Japanese card-back
+    // Because these come back as "successful" 200s, an <img> onError never fires —
+    // which is why placeholders leaked into the vault. scrydex is CORS-enabled
+    // (Access-Control-Allow-Origin: *), so we can cheaply validate each URL with a
+    // HEAD request and read Content-Length to know if it's a real card scan.
+    const PLACEHOLDER_BYTES = new Set([186316, 350441])
+    const isRealCardImage = async (url: string): Promise<boolean> => {
+      if (!url) return false
+      // Non-scrydex hosts (pokemontcg / tcgdex) return a real 404 for missing
+      // cards, so their <img> onError handler covers them — assume valid here.
+      if (!url.includes('scrydex.com')) return true
+      try {
+        const r = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(6000) })
+        if (!r.ok) return false
+        const len = Number(r.headers.get('content-length') || 0)
+        return len > 0 && !PLACEHOLDER_BYTES.has(len)
+      } catch {
+        // Network/CORS error: don't hide a potentially-real card
+        return true
+      }
+    }
+
+    // Build an intentional MIX of English & Japanese candidates. The combined pool
+    // is overwhelmingly Japanese (thousands of dynamic catalog cards vs. ~120
+    // curated English singles), so we split by language and interleave ~50/50.
     const pool = getCombinedVendorCardPool(4000)
     const english = shuffle(pool.filter(c => !isJapaneseVendorCard(c)))
     const japanese = shuffle(pool.filter(c => isJapaneseVendorCard(c)))
 
-    const vaultCards: any[] = []
+    const TARGET = 250
+    const candidates: any[] = []
     let ei = 0
     let ji = 0
-    for (let i = 0; i < 250; i++) {
-      // Alternate languages; fall back to the other language if one runs dry
+    // Generate a generous candidate list (more than TARGET) so we can drop any
+    // cards whose image validates as a placeholder and still fill the vault.
+    for (let i = 0; i < TARGET * 3; i++) {
       const preferEnglish = i % 2 === 0
       let src: any
       if (preferEnglish && english.length > 0) {
@@ -58,25 +84,44 @@ export const TradingCard: React.FC<{
       } else if (english.length > 0) {
         src = english[ei % english.length]; ei++
       }
-      if (!src) continue
-      vaultCards.push({
-        ...src,
-        // Unique per-slot id so React keys stay stable even when a card repeats,
-        // while originalId/setId/num are preserved for the image fallback chain.
-        id: `${src.id}-vault-${i}`,
-        originalId: src.originalId || src.id,
-        selected: Math.random() > 0.95 // Randomly highlight a few
-      })
+      if (src) candidates.push(src)
     }
-    setSellerCards(shuffle(vaultCards))
+
+    // Validate candidates in concurrency-limited batches, keeping only real cards,
+    // and progressively populate the vault so it fills in smoothly.
+    const CONCURRENCY = 24
+    const good: any[] = []
+    ;(async () => {
+      for (let i = 0; i < candidates.length && good.length < TARGET; i += CONCURRENCY) {
+        const batch = candidates.slice(i, i + CONCURRENCY)
+        const results = await Promise.all(
+          batch.map(async (c) => ({ c, ok: await isRealCardImage(c.img) }))
+        )
+        if (cancelled) return
+        for (const { c, ok } of results) {
+          if (ok && good.length < TARGET) good.push(c)
+        }
+        setSellerCards(
+          good.map((src, idx) => ({
+            ...src,
+            // Unique per-slot id so React keys stay stable even when a card
+            // repeats, while originalId/setId/num are kept for image fallbacks.
+            id: `${src.id}-vault-${idx}`,
+            originalId: src.originalId || src.id,
+            selected: Math.random() > 0.95 // Randomly highlight a few
+          }))
+        )
+      }
+    })()
+
+    return () => { cancelled = true }
   }, [])
 
-  // ── PLACEHOLDER / BROKEN IMAGE GUARD ────────────────────────────────────────
-  // scrydex.com serves a generic card-back placeholder (HTTP 200) for URLs that
-  // don't resolve to a real card. Mirroring the fix used in the vendor catalogue
-  // (CardShowView), we run every vault image through the shared fallback chain so
-  // broken/placeholder cards resolve to a real scan (or a clean generic backup)
-  // instead of being left as a placeholder image.
+  // ── PLACEHOLDER / BROKEN IMAGE GUARD (onError safety net) ────────────────────
+  // Covers pokemontcg/tcgdex hosts (which 404 on missing cards) and any scrydex
+  // image that slipped past pre-validation. Mirrors the vendor catalogue fix:
+  // runs the shared fallback chain so a broken card resolves to a real scan (or a
+  // clean, guaranteed-valid generic backup) instead of a placeholder card-back.
   const handleVaultImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, card: any) => {
     const img = e.currentTarget
     const isJpn = isJapaneseVendorCard(card)
@@ -86,9 +131,9 @@ export const TradingCard: React.FC<{
       setId = `${String(setId).replace(/_ja$/i, '')}_ja`
     }
     handleCardImageError(img, setId, num, () => {
-      // Final safety net: a clean, guaranteed-valid generic card image
+      // Final safety net: a clean, guaranteed-valid card image (np/47 is a 404).
       img.src = isJpn
-        ? 'https://images.pokemontcg.io/np/47_hires.png'
+        ? 'https://images.scrydex.com/pokemon/swsh12a_ja-205/large'
         : 'https://images.pokemontcg.io/swsh3/19_hires.png'
     })
   }

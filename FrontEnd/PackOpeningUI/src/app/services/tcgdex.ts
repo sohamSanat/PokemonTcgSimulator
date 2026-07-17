@@ -368,7 +368,8 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `https://images.scrydex.com/pokemon/swsh12a_ja-205/large`,
     `https://assets.tcgdex.net/ja/S/S12a/205/high.webp`,
     `https://images.scrydex.com/pokemon/sv2a_ja-201/large`,
-    `https://images.pokemontcg.io/np/47_hires.png`
+    // np/47_hires.png returns HTTP 404 — use a guaranteed-valid card as last resort
+    'https://images.pokemontcg.io/swsh3/19_hires.png'
   ] : [
     'https://images.pokemontcg.io/swsh3/19_hires.png'
   ];
@@ -386,16 +387,18 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
      img.dataset.errorAttempt = nextAttempt.toString();
      const targetUrl = fallbacks[nextAttempt];
      img.src = targetUrl;
-     if (targetUrl.includes('scrydex.com')) {
-       fetch(targetUrl, { signal: AbortSignal.timeout(5000) })
-         .then(r => r.ok ? r.arrayBuffer() : Promise.reject('not_ok'))
-         .then(buf => {
-           if (buf.byteLength === 186316) {
-             handleCardImageError(img, setId, rawNum, onFailed);
-           }
-         })
-         .catch(() => {});
-     }
+       if (targetUrl.includes('scrydex.com')) {
+         fetch(targetUrl, { signal: AbortSignal.timeout(5000) })
+           .then(r => r.ok ? r.arrayBuffer() : Promise.reject('not_ok'))
+           .then(buf => {
+             // scrydex serves HTTP 200 card-back placeholders at fixed byte sizes:
+             // 186316 (English back) and 350441 (Japanese back). Skip both.
+             if (buf.byteLength === 186316 || buf.byteLength === 350441) {
+               handleCardImageError(img, setId, rawNum, onFailed);
+             }
+           })
+           .catch(() => {});
+       }
   } else {
      if (onFailed) onFailed();
   }
