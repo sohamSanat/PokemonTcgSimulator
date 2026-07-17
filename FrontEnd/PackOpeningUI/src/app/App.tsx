@@ -4043,7 +4043,7 @@ export default function App() {
                 Insufficient Cash Fund! 🔒
               </h2>
               <p className="text-sm text-gray-300 font-medium mb-6 leading-relaxed">
-                You don&apos;t have enough daily cash allowance to open this pack! Come back tomorrow for your $40 daily cash refresh!
+                You don&apos;t have enough daily cash allowance to open this pack! Come back tomorrow for your $100 daily cash refresh!
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
