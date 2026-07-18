@@ -6615,5 +6615,35 @@
   "xy evolutions": [
     "/packArts/XY-Generation/XY-Evolutions/1.webp",
     "/packArts/XY-Generation/XY-Evolutions/2.webp"
+  ],
+  "pitch-black": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "pitchblack": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "me05": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "me5": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "pitch black": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
   ]
 }
