@@ -3607,18 +3607,19 @@ export default function App() {
                                 </div>
                               )}
                             </div>
-                            <div>
-                              <div className="flex items-center justify-center gap-1.5">
-                                <h4 className="font-bold text-white text-sm truncate max-w-[130px] group-hover:text-amber-300 transition-colors">
-                                  {set.name}
-                                </h4>
+                            <div className="w-full flex flex-col items-center">
+                              <h4 className="font-bold text-white text-sm truncate w-full px-1 group-hover:text-amber-300 transition-colors" title={set.name}>
+                                {set.name}
+                              </h4>
+                              <div className="flex items-center justify-center gap-1.5 mt-1">
+                                <span className="text-[10px] text-gray-400 font-semibold">
+                                  {set.cardCount?.official || set.cardCount?.total || '???'} Cards
+                                </span>
+                                <span className="text-[10px] text-gray-600">•</span>
                                 <span className="text-[10px] font-mono font-bold text-amber-300/90 whitespace-nowrap">
                                   ${getSetBoosterPrice(set).toFixed(2)}
                                 </span>
                               </div>
-                              <span className="text-[10px] text-gray-400 mt-1 block font-semibold">
-                                {set.cardCount?.official || set.cardCount?.total || '???'} Cards
-                              </span>
                             </div>
                           </div>
                         );
