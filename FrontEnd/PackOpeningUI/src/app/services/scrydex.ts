@@ -189,14 +189,19 @@ const _chasePriceMemo = new Map<string, number>();
 export function getCardMarketPrice(
   setId: string,
   setName: string,
-  card: { id: string; localId?: string; name?: string }
+  card: { id: string; localId?: string; name?: string } & any
 ): number {
   if (!card || (card.name || '').includes('Energy')) return 0.1;
   if (_chasePriceMemo.has(card.id)) return _chasePriceMemo.get(card.id)!;
   const num = card.localId ?? '';
+  
+  const tcgPrices = card.tcgplayer?.prices || card.tcgplayer || card.pricing?.tcgplayer;
+  const englishPrice = tcgPrices?.holofoil?.market ?? tcgPrices?.normal?.market ?? tcgPrices?.reverseHolofoil?.market ?? tcgPrices?.holofoil?.marketPrice ?? tcgPrices?.normal?.marketPrice;
+
   const price =
     (typeof setId === 'string' ? getJapaneseCardRealPrice(setId, num) : undefined) ??
     (setName ? getJapaneseCardRealPrice(setName.toLowerCase(), num) : undefined) ??
+    englishPrice ??
     0;
   _chasePriceMemo.set(card.id, price || 0);
   return price || 0;
@@ -980,9 +985,9 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // 1 SR/SAR/UR guaranteed (~20% chance for 2nd)
       const chase151 = [...specialArtRares, ...ultraRares, ...superRares];
       if (chase151.length > 0) {
-        slotPulls.push({ summary: getFrom(chase151), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        slotPulls.push({ summary: getFrom(chase151, pool, undefined, true), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
         if (Math.random() < 0.20 && chase151.length > 1) {
-          slotPulls.push({ summary: getFrom(chase151), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+          slotPulls.push({ summary: getFrom(chase151, pool, undefined, true), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
         }
       }
       // 3 AR guaranteed
