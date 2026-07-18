@@ -652,68 +652,94 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   const packsPerBox = 36;
   const { pool, currentEra, boxEra } = p;
 
-  const hits: EnglishBoxSlotData[] = [];
-  const specials: EnglishBoxSlotData[] = [];
+  // ---- Per-pack pull-rate model (realistic odds) --------------------------
+  // Previously the box was pre-seeded with a fixed count of guaranteed chase
+  // cards (e.g. 1 gold + 1 SIR + 2 IR + 2 FA + 5 ex per 36 packs). Because a
+  // user only opens a handful of packs, shuffle variance regularly front-loaded
+  // several of those expensive guarantees into the first few packs — the "hits
+  // after hits / hundreds of dollars" bug. Instead, each pack now rolls its hit
+  // slot independently against realistic per-pack odds, so most packs top out at
+  // a Holo Rare and true chase cards stay genuinely rare.
+  interface HitTier { p: number; label: string; pool: TCGDexCardSummary[]; fb: TCGDexCardSummary[][]; }
 
-  const addHit = (pl: TCGDexCardSummary[], label: string, fb: TCGDexCardSummary[][] = [], n = 1) => {
-    for (let i = 0; i < n; i++) {
-      const c = seedPick(pl, fb) || seedPick(p.holoRarePool) || seedPick(pool);
-      if (c) hits.push({ summary: c, defaultRarity: label, isReverseHolo: true });
-    }
-  };
-  const addSpecial = (pl: TCGDexCardSummary[], label: string, fb: TCGDexCardSummary[][] = [], n = 1) => {
-    for (let i = 0; i < n; i++) {
-      const c = seedPick(pl, fb) || seedPick(p.reverseHoloPool) || seedPick(pool);
-      if (c) specials.push({ summary: c, defaultRarity: label, isReverseHolo: true });
-    }
-  };
+  let hitTable: HitTier[];
+  let defaultTier: { label: string; pool: TCGDexCardSummary[]; fb: TCGDexCardSummary[][] };
 
   if (boxEra === 'sv' || boxEra === 'me') {
-    // SV/ME box of 36: ~1 SIR, 2 IR, 2 Full Art, 5 Double Rare, rest Holo Rare
-    addHit(p.goldSecretPool, 'Hyper Rare (Gold)', [p.fullArtPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.sirPool, 'Special Illustration Rare', [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.irPool, 'Illustration Rare', [p.sirPool, p.fullArtPool, p.vPool, p.holoRarePool], 2);
-    addHit(p.fullArtPool, 'Ultra Rare (Full Art)', [p.sirPool, p.irPool, p.vPool, p.holoRarePool], 2);
-    addHit(p.vPool, 'Double Rare (ex)', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 5);
-    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+    hitTable = [
+      { p: 0.008, label: 'Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.025, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.06, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.irPool, p.vPool, p.holoRarePool] },
+      { p: 0.07, label: 'Illustration Rare', pool: p.irPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.18, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else if (boxEra === 'swsh') {
-    // SWSH box of 36: 1 Gold, 1 Rainbow, 2 FA, 3 VMAX/VSTAR, 4 V, rest Holo Rare
-    addHit(p.goldSecretPool, 'Gold Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.rainbowSecretPool, 'Rainbow Rare', [p.goldSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.fullArtPool, 'Full Art', [p.vmaxPool, p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
-    addHit(p.vmaxPool, 'Pokémon VMAX / VSTAR', [p.vPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
-    addHit(p.vPool, 'Pokémon V', [p.vmaxPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 4);
-    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
-    if (p.isTrainerGallerySet || p.isShinyVaultSet) {
-      addSpecial(p.galleryPool, p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', [p.reverseHoloPool, pool], 4);
-    }
-    while (specials.length < packsPerBox) addSpecial(p.reverseHoloPool, 'Reverse Holo', [pool], 1);
+    hitTable = [
+      { p: 0.007, label: 'Gold Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool] },
+      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.goldSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool] },
+      { p: 0.05, label: 'Full Art', pool: p.fullArtPool, fb: [p.vmaxPool, p.vPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.08, label: 'Pokémon VMAX / VSTAR', pool: p.vmaxPool, fb: [p.vPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.14, label: 'Pokémon V', pool: p.vPool, fb: [p.vmaxPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else if (boxEra === 'sm') {
-    // SM box of 36: 1 Secret, 1 Rainbow, 2 FA, 3 GX, rest Holo Rare
-    addHit(p.goldSecretPool, 'Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.rainbowSecretPool, 'Rainbow Rare', [p.goldSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.fullArtPool, 'Full Art', [p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
-    addHit(p.vPool, 'Pokémon-GX', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
-    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
-    if (p.isCosmicEclipse && p.characterRarePool.length > 0) addSpecial(p.characterRarePool, 'Character Rare (CHR)', [p.reverseHoloPool, pool], 3);
-    if (p.prismStarPool.length > 0) addSpecial(p.prismStarPool, 'Prism Star ♢', [p.reverseHoloPool, pool], 3);
-    if (p.galleryPool.length > 0) addSpecial(p.galleryPool, 'Shiny Vault', [p.reverseHoloPool, pool], 4);
-    while (specials.length < packsPerBox) addSpecial(p.reverseHoloPool, 'Reverse Holo', [pool], 1);
+    hitTable = [
+      { p: 0.008, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.goldSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.06, label: 'Full Art', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.12, label: 'Pokémon-GX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else if (boxEra === 'xy') {
-    // XY box of 36: 1 Secret, 2 Full Art EX, 3 EX, rest Holo Rare
-    addHit(p.goldSecretPool, 'Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
-    addHit(p.fullArtPool, 'Full Art EX', [p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
-    addHit(p.vPool, 'Pokémon EX', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
-    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+    hitTable = [
+      { p: 0.01, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.05, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.10, label: 'Pokémon EX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else {
-    // Base / vintage box of 36: 1 Secret, ~12 Holo Rare, rest Non-Holo Rare
-    addHit(p.goldSecretPool, 'Secret Rare', [p.holoRarePool, p.nonHoloRarePool, pool], 1);
-    while (hits.length < Math.min(12, packsPerBox)) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, pool], 1);
-    while (hits.length < packsPerBox) addHit(p.nonHoloRarePool, 'Non-Holo Rare', [p.holoRarePool, pool], 1);
+    // Base / vintage: ~1/200 secret, ~1/3 holo rare, otherwise non-holo rare
+    hitTable = [
+      { p: 0.005, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.holoRarePool, p.nonHoloRarePool, pool] },
+      { p: 0.33, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, pool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.holoRarePool, pool] };
   }
 
-  shuffleInPlace(hits);
-  shuffleInPlace(specials);
+  type PoolPicker = (pl: TCGDexCardSummary[], fb?: TCGDexCardSummary[][]) => TCGDexCardSummary;
+
+  const rollHit = (getFromPool: PoolPicker): EnglishBoxSlotData => {
+    const roll = Math.random();
+    let cum = 0;
+    for (const t of hitTable) {
+      cum += t.p;
+      if (roll < cum) {
+        if (t.pool.length === 0) break; // set has no cards of this tier → degrade to default
+        return { summary: getFromPool(t.pool, t.fb), defaultRarity: t.label, isReverseHolo: true };
+      }
+    }
+    return { summary: getFromPool(defaultTier.pool, defaultTier.fb), defaultRarity: defaultTier.label, isReverseHolo: true };
+  };
+
+  const rollSpecial = (getFromPool: PoolPicker): EnglishBoxSlotData => {
+    if (boxEra === 'swsh') {
+      if ((p.isTrainerGallerySet || p.isShinyVaultSet) && p.galleryPool.length > 0 && Math.random() < 0.12) {
+        return { summary: getFromPool(p.galleryPool, [p.reverseHoloPool, pool]), defaultRarity: p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', isReverseHolo: true };
+      }
+    } else if (boxEra === 'sm') {
+      if (p.isCosmicEclipse && p.characterRarePool.length > 0 && Math.random() < 0.08) {
+        return { summary: getFromPool(p.characterRarePool, [p.reverseHoloPool, pool]), defaultRarity: 'Character Rare (CHR)', isReverseHolo: true };
+      }
+      if (p.prismStarPool.length > 0 && Math.random() < 0.08) {
+        return { summary: getFromPool(p.prismStarPool, [p.reverseHoloPool, pool]), defaultRarity: 'Prism Star ♢', isReverseHolo: true };
+      }
+      if (p.galleryPool.length > 0 && Math.random() < 0.10) {
+        return { summary: getFromPool(p.galleryPool, [p.reverseHoloPool, pool]), defaultRarity: 'Shiny Vault', isReverseHolo: true };
+      }
+    }
+    return { summary: getFromPool(p.reverseHoloPool, [pool]), defaultRarity: 'Reverse Holo', isReverseHolo: true };
+  };
 
   const packs: EnglishBoxPackData[] = [];
   const commonCount = boxEra === 'base' ? 5 : 4;
@@ -781,7 +807,7 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
         slots.push({ summary: t, defaultRarity: 'Trainer / Energy' });
       }
     } else if (hasSpecialSlot) {
-      const sp = specials[idx] || { summary: getFromPool(p.reverseHoloPool, [pool]), defaultRarity: 'Reverse Holo', isReverseHolo: true };
+      const sp = rollSpecial(getFromPool);
       slots.push(sp);
       if (sp.summary) { pickedIds.add(sp.summary.id); pickedNames.add(sp.summary.name); }
     } else {
@@ -789,8 +815,8 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
       slots.push({ summary: rh, isReverseHolo: true, defaultRarity: 'Reverse Holo' });
     }
 
-    // Single guaranteed rare-or-better hit slot
-    const hit = hits[idx] || { summary: getFromPool(p.holoRarePool, [p.nonHoloRarePool, pool]), defaultRarity: 'Holo Rare', isReverseHolo: true };
+    // Rare-or-better hit slot — tier rolled per pack against realistic odds
+    const hit = rollHit(getFromPool);
     slots.push(hit);
     if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
 
@@ -1057,15 +1083,20 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
       };
     }
 
-    // Generate accurate realistic base pricing according to rarity tier immediately
+    // Conservative PLACEHOLDER pricing shown only until real market data warms in
+    // via fetchCardFull(). Kept modest & tier-consistent so it never inflates the
+    // session total; real values override it (usually upward) once loaded.
     let marketPrice = 0.15;
     const r = (slot.defaultRarity || '').toLowerCase();
-    if (r.includes('secret') || r.includes('rainbow') || r.includes('gold')) marketPrice = Number((25 + Math.random() * 85).toFixed(2));
-    else if (r.includes('full art') || r.includes('vmax') || r.includes('vstar')) marketPrice = Number((8 + Math.random() * 32).toFixed(2));
-    else if (r.includes(' v') || r.includes(' ex') || r.includes(' gx')) marketPrice = Number((2 + Math.random() * 12).toFixed(2));
-    else if (r.includes('holo')) marketPrice = Number((0.5 + Math.random() * 2.5).toFixed(2));
-    else if (r.includes('uncommon')) marketPrice = Number((0.15 + Math.random() * 0.35).toFixed(2));
-    else marketPrice = Number((0.05 + Math.random() * 0.20).toFixed(2));
+    if (r.includes('secret') || r.includes('rainbow') || r.includes('gold') || r.includes('hyper') || r.includes('special illustration')) marketPrice = 8 + Math.random() * 22;      // ~$8–30
+    else if (r.includes('illustration')) marketPrice = 4 + Math.random() * 12;                                                                                                          // ~$4–16
+    else if (r.includes('full art') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes(' gx') || r.includes('character super')) marketPrice = 3 + Math.random() * 9; // ~$3–12
+    else if (r.includes('double rare') || r.includes('(ex)') || r.includes(' ex') || r.includes(' v') || r.includes('prism') || r.includes('character')) marketPrice = 1.5 + Math.random() * 4.5;   // ~$1.5–6
+    else if (r.includes('reverse')) marketPrice = 0.25 + Math.random() * 0.75;                                                                                                          // ~$0.25–1
+    else if (r.includes('holo') || r.includes('gallery') || r.includes('shiny vault')) marketPrice = 0.5 + Math.random() * 2;                                                           // ~$0.5–2.5
+    else if (r.includes('uncommon')) marketPrice = 0.1 + Math.random() * 0.2;                                                                                                           // ~$0.1–0.3
+    else marketPrice = 0.03 + Math.random() * 0.09;                                                                                                                                     // ~$0.03–0.12
+    marketPrice = Number(marketPrice.toFixed(2));
 
     // Warm up full card details asynchronously in the background without blocking the user!
     if (!slot.summary.id.startsWith('sve-') && !slot.summary.name.includes('Energy')) {

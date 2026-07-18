@@ -5041,6 +5041,12 @@
   "gaiavolcano": [
     "/packArts/Japanese-XY/Gaia-Volcano/Screenshot 2026-07-17 110548.png"
   ],
+  "Legendary-Kira": [
+    "/packArts/Japanese-XY/Legendary-Kira/Screenshot 2026-07-17 113459.png"
+  ],
+  "legendary-kira": [
+    "/packArts/Japanese-XY/Legendary-Kira/Screenshot 2026-07-17 113459.png"
+  ],
   "legendarykira": [
     "/packArts/Japanese-XY/Legendary-Kira/Screenshot 2026-07-17 113459.png"
   ],
@@ -5294,6 +5300,24 @@
     "/packArts/MegaEvolution-Generation/phantasmal-flames/1.webp",
     "/packArts/MegaEvolution-Generation/phantasmal-flames/2.webp",
     "/packArts/MegaEvolution-Generation/phantasmal-flames/3.webp"
+  ],
+  "Pitch-Black": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "pitch-black": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
+  ],
+  "pitchblack": [
+    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
+    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
   ],
   "sv03.5": [
     "/packArts/ScarletAndViolet-Generation/151/1.webp"
@@ -6615,35 +6639,5 @@
   "xy evolutions": [
     "/packArts/XY-Generation/XY-Evolutions/1.webp",
     "/packArts/XY-Generation/XY-Evolutions/2.webp"
-  ],
-  "pitch-black": [
-    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
-  ],
-  "pitchblack": [
-    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
-  ],
-  "me05": [
-    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
-  ],
-  "me5": [
-    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
-  ],
-  "pitch black": [
-    "/packArts/MegaEvolution-Generation/Pitch-Black/1.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/2.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/3.png",
-    "/packArts/MegaEvolution-Generation/Pitch-Black/4.png"
   ]
 }

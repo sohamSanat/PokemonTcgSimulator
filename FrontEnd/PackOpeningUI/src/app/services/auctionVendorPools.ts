@@ -1,4 +1,4 @@
-import { getCardShowDynamicJapaneseCards } from './scrydex';
+import { getCardShowDynamicJapaneseCards, resolveVendorCardRealPrice } from './scrydex';
 
 export interface AuctionPoolCard {
   name: string;
@@ -216,7 +216,7 @@ export function getCombinedVendorCardPool(dynamicCount: number = 4000): VendorCa
     })
     .map((c: any, i: number): VendorCard => {
       const img = c.img || c.images?.large || c.images?.small;
-      const price = typeof c.price === 'number' ? c.price : (typeof c.rawPrice === 'number' ? c.rawPrice : 45);
+      const price = resolveVendorCardRealPrice(c);
       const id = c.id || `vendor-${i}`;
       const parsed = (c.setId && c.num !== undefined)
         ? { setId: String(c.setId), num: String(c.num) }

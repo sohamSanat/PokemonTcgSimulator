@@ -488,13 +488,13 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
 
   if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
-    return Number((95.00 + normalizedHash * 160.00).toFixed(2));
+    return Number((30.00 + normalizedHash * 60.00).toFixed(2));
   } else if (isSecretOrAlt) {
-    return Number((32.00 + normalizedHash * 55.00).toFixed(2));
+    return Number((15.00 + normalizedHash * 30.00).toFixed(2));
   } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
-    return Number((4.50 + normalizedHash * 14.00).toFixed(2));
+    return Number((2.00 + normalizedHash * 8.00).toFixed(2));
   } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
-    return Number((0.75 + normalizedHash * 3.50).toFixed(2));
+    return Number((0.50 + normalizedHash * 2.50).toFixed(2));
   } else {
     return Number((0.01 + Math.random() * 0.09).toFixed(2));
   }

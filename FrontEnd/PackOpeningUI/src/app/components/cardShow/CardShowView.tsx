@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards } from "../../services/scrydex";
+import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards, resolveVendorCardRealPrice } from "../../services/scrydex";
 import { handleCardImageError } from "../../services/tcgdex";
 import {
   Menu,
@@ -744,6 +744,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           originalId: orig,
           setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') ? orig.split('-')[0] : 'swsh3'),
           num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1'),
+          price: resolveVendorCardRealPrice(c),
         };
       });
     });
