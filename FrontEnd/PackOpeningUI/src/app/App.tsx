@@ -1470,6 +1470,7 @@ const ENGLISH_SERIES_TABS = [
 ];
 
 const JAPANESE_SERIES_TABS = [
+  { id: 'me_ja', name: 'Mega Evolution' },
   { id: 'sv_ja', name: 'Scarlet & Violet' },
   { id: 'swsh_ja', name: 'Sword & Shield' },
   { id: 'sm_ja', name: 'Sun & Moon' },

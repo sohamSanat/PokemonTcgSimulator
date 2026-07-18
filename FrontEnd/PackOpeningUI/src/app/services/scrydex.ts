@@ -358,6 +358,9 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
 
   const filteredSets = allSets.filter(s => {
     const id = s.id;
+    if (seriesId === 'me_ja') {
+      return id.toLowerCase().startsWith('me');
+    }
     if (seriesId === 'sv_ja') {
       if (id.startsWith('SVK') || id.startsWith('SVLS') || id.startsWith('SVLN')) return false;
       const nameLow = (nameMap[id] || s.name || '').toLowerCase();
@@ -403,7 +406,8 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   });
 
   let seriesName = 'Japanese Series';
-  if (seriesId === 'sv_ja') seriesName = 'Scarlet & Violet';
+  if (seriesId === 'me_ja') seriesName = 'Mega Evolution';
+  else if (seriesId === 'sv_ja') seriesName = 'Scarlet & Violet';
   else if (seriesId === 'swsh_ja') seriesName = 'Sword & Shield';
   else if (seriesId === 'sm_ja') seriesName = 'Sun & Moon';
   else if (seriesId === 'xy_ja') seriesName = 'XY Series';
