@@ -206,19 +206,7 @@ const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined
   const normId = id.replace(/[^a-z0-9]/g, '');
   const normName = name.replace(/[^a-z0-9]/g, '');
 
-  // Check live scraped prices from JSON file first
-  if (setPackPrices[id] && typeof setPackPrices[id] === 'number') return setPackPrices[id];
-  if (setPackPrices[normId] && typeof setPackPrices[normId] === 'number') return setPackPrices[normId];
-  if (setPackPrices[name] && typeof setPackPrices[name] === 'number') return setPackPrices[name];
-  if (setPackPrices[normName] && typeof setPackPrices[normName] === 'number') return setPackPrices[normName];
-
-  for (const [key, price] of Object.entries(setPackPrices)) {
-    if (typeof price === 'number' && (key.toLowerCase() === normId || key.toLowerCase() === normName || key.toLowerCase().replace(/[^a-z0-9]/g, '') === normName)) {
-      return price;
-    }
-  }
-
-  // Fallback to hardcoded market prices
+  // Check hardcoded market prices first
   if (SET_BOOSTER_PRICES_USD[id]) return SET_BOOSTER_PRICES_USD[id];
   if (SET_BOOSTER_PRICES_USD[normId]) return SET_BOOSTER_PRICES_USD[normId];
   if (SET_BOOSTER_PRICES_USD[name]) return SET_BOOSTER_PRICES_USD[name];
@@ -226,6 +214,18 @@ const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined
 
   for (const [key, price] of Object.entries(SET_BOOSTER_PRICES_USD)) {
     if (key.toLowerCase() === normId || key.toLowerCase() === normName) {
+      return price;
+    }
+  }
+
+  // Fallback to scraped prices from JSON file
+  if (setPackPrices[id] && typeof setPackPrices[id] === 'number') return setPackPrices[id];
+  if (setPackPrices[normId] && typeof setPackPrices[normId] === 'number') return setPackPrices[normId];
+  if (setPackPrices[name] && typeof setPackPrices[name] === 'number') return setPackPrices[name];
+  if (setPackPrices[normName] && typeof setPackPrices[normName] === 'number') return setPackPrices[normName];
+
+  for (const [key, price] of Object.entries(setPackPrices)) {
+    if (typeof price === 'number' && (key.toLowerCase() === normId || key.toLowerCase() === normName || key.toLowerCase().replace(/[^a-z0-9]/g, '') === normName)) {
       return price;
     }
   }
