@@ -759,7 +759,11 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
       if (!candidates || candidates.length === 0) return null;
       const unpicked = candidates.filter(c => !pickedIds.has(c.id) && !pickedNames.has(c.name) && !c.name.includes('Energy'));
       if (unpicked.length > 0) {
-        const chosen = weighted ? weightedPick(unpicked, set.id, set.name || '') : unpicked[Math.floor(Math.random() * unpicked.length)];
+        const candidatesWithPrices = weighted ? unpicked.map(c => {
+          const cached = cardFullCache.get(c.id);
+          return cached ? { ...c, tcgplayer: cached.tcgplayer, pricing: cached.pricing } : c;
+        }) : unpicked;
+        const chosen = weighted ? weightedPick(candidatesWithPrices, set.id, set.name || '') : unpicked[Math.floor(Math.random() * unpicked.length)];
         if (chosen) {
           pickedIds.add(chosen.id);
           pickedNames.add(chosen.name);
@@ -868,13 +872,13 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
       let svHit: TCGDexCardSummary;
       let svLabel = 'Holo Rare';
       if (svRoll < 0.15) {
-        svHit = getFromPool(fullArtPool, [sirPool, irPool, vPool, holoRarePool], true);
+        svHit = getFromPool(fullArtPool, [sirPool, irPool, vPool, holoRarePool, nonHoloRarePool], true);
         svLabel = 'Ultra Rare (Full Art)';
       } else if (svRoll < 0.40) {
-        svHit = getFromPool(vPool, [fullArtPool, holoRarePool, pool], true);
+        svHit = getFromPool(vPool, [fullArtPool, holoRarePool, nonHoloRarePool, pool], true);
         svLabel = 'Double Rare (ex)';
       } else {
-        svHit = getFromPool(holoRarePool, [vPool, pool], true);
+        svHit = getFromPool(holoRarePool, [nonHoloRarePool, vPool, pool], true);
         svLabel = 'Holo Rare';
       }
       selectedSlots.push({ summary: svHit, defaultRarity: svLabel });
