@@ -1,5 +1,5 @@
 import { PokemonCard } from './tcgdex';
-import { saveCollectedCard } from '../components/binder/types';
+import { saveCollectedCard, getStorageKey, syncToFirestore } from '../components/binder/types';
 import promoCardsData from '../data/promo_cards.json';
 
 // --- Types ---
@@ -25,6 +25,20 @@ const DAILY_CASH_KEY = 'tcg_daily_cash';
 const LAST_RESET_KEY = 'tcg_last_pass_reset';
 const MISSIONS_STATE_KEY = 'tcg_user_missions';
 const EARNED_SET_PACKS_KEY = 'tcg_earned_set_packs'; // Track earned packs from missions
+
+// --- Per-account storage helpers ---
+// All mission state is bound to the signed-in account. When a user is signed in
+// the keys are namespaced by their uid and mirrored to Firestore (see binder/types.ts).
+// When no user is signed in the data falls back to the un-namespaced local key
+// (guest mode), which is migrated into the account on first sign-in.
+function lsKey(base: string): string {
+  return getStorageKey(base);
+}
+
+// Push the latest mission state to Firestore (no-op when not signed in).
+function persistMissions() {
+  syncToFirestore();
+}
 
 // --- Promo Cards ---
 const PROMO_CARDS_POOL = promoCardsData as any[];
@@ -398,19 +412,21 @@ const INITIAL_MISSIONS: Mission[] = [
 function checkDailyReset() {
   if (typeof window === 'undefined') return;
   const today = new Date().toISOString().slice(0, 10);
-  const lastReset = localStorage.getItem(LAST_RESET_KEY);
+  const lastReset = localStorage.getItem(lsKey(LAST_RESET_KEY));
   if (lastReset !== today) {
-    localStorage.setItem(LAST_RESET_KEY, today);
+    localStorage.setItem(lsKey(LAST_RESET_KEY), today);
     // Give 5 English and 5 Japanese free packs daily
-    localStorage.setItem(DAILY_ENGLISH_FREE_KEY, '5');
-    localStorage.setItem(DAILY_JAPANESE_FREE_KEY, '5');
+    localStorage.setItem(lsKey(DAILY_ENGLISH_FREE_KEY), '5');
+    localStorage.setItem(lsKey(DAILY_JAPANESE_FREE_KEY), '5');
     // Give $80 daily cash allowance
-    localStorage.setItem(DAILY_CASH_KEY, '80');
+    localStorage.setItem(lsKey(DAILY_CASH_KEY), '80');
 
     // Reset daily missions progress
     const missions = getMissions();
     const updated = missions.map(m => m.type === 'daily' ? { ...m, progress: 0, claimed: false } : m);
-    localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(updated));
+    localStorage.setItem(lsKey(MISSIONS_STATE_KEY), JSON.stringify(updated));
+    // Mirror the reset to the account's Firestore document.
+    persistMissions();
   }
 }
 
@@ -418,8 +434,8 @@ function checkDailyReset() {
 export function getDailyFreePacks(): { english: number; japanese: number } {
   if (typeof window === 'undefined') return { english: 5, japanese: 5 };
   checkDailyReset();
-  const english = parseInt(localStorage.getItem(DAILY_ENGLISH_FREE_KEY) || '5', 10);
-  const japanese = parseInt(localStorage.getItem(DAILY_JAPANESE_FREE_KEY) || '5', 10);
+  const english = parseInt(localStorage.getItem(lsKey(DAILY_ENGLISH_FREE_KEY)) || '5', 10);
+  const japanese = parseInt(localStorage.getItem(lsKey(DAILY_JAPANESE_FREE_KEY)) || '5', 10);
   return {
     english: isNaN(english) ? 5 : english,
     japanese: isNaN(japanese) ? 5 : japanese
@@ -430,7 +446,7 @@ export function getDailyFreePacks(): { english: number; japanese: number } {
 export function getDailyCash(): number {
   if (typeof window === 'undefined') return 80;
   checkDailyReset();
-  const cash = parseFloat(localStorage.getItem(DAILY_CASH_KEY) || '80');
+  const cash = parseFloat(localStorage.getItem(lsKey(DAILY_CASH_KEY)) || '80');
   return isNaN(cash) ? 80 : cash;
 }
 
@@ -450,7 +466,7 @@ export function useDailyCash(amount: number, netReturn: number = 0): [boolean, n
     remainingAmount -= fromDailyCash;
     if (fromDailyCash > 0) {
       const nextDailyCash = Math.max(0, Number((currentDailyCash - fromDailyCash).toFixed(2)));
-      localStorage.setItem(DAILY_CASH_KEY, nextDailyCash.toString());
+      localStorage.setItem(lsKey(DAILY_CASH_KEY), nextDailyCash.toString());
       window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: nextDailyCash }));
     }
   }
@@ -465,6 +481,7 @@ export function useDailyCash(amount: number, netReturn: number = 0): [boolean, n
     return [false, 0];
   }
 
+  persistMissions();
   return [true, deductFromNetReturn];
 }
 
@@ -473,7 +490,8 @@ export function addDailyCash(amount: number) {
   if (typeof window === 'undefined') return;
   const current = getDailyCash();
   const next = Number((current + amount).toFixed(2));
-  localStorage.setItem(DAILY_CASH_KEY, next.toString());
+  localStorage.setItem(lsKey(DAILY_CASH_KEY), next.toString());
+  persistMissions();
   window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: next }));
 }
 
@@ -481,10 +499,11 @@ export function addDailyCash(amount: number) {
 export function useDailyFreePack(language: 'en' | 'ja'): boolean {
   if (typeof window === 'undefined') return true;
   const key = language === 'en' ? DAILY_ENGLISH_FREE_KEY : DAILY_JAPANESE_FREE_KEY;
-  const current = parseInt(localStorage.getItem(key) || '0', 10);
+  const current = parseInt(localStorage.getItem(lsKey(key)) || '0', 10);
   if (current <= 0) return false;
   const next = current - 1;
-  localStorage.setItem(key, String(next));
+  localStorage.setItem(lsKey(key), String(next));
+  persistMissions();
   window.dispatchEvent(new CustomEvent('daily_packs_updated', {
     detail: getDailyFreePacks()
   }));
@@ -501,7 +520,7 @@ export interface EarnedSetPack {
 
 export function getEarnedSetPacks(): EarnedSetPack[] {
   if (typeof window === 'undefined') return [];
-  const saved = localStorage.getItem(EARNED_SET_PACKS_KEY);
+  const saved = localStorage.getItem(lsKey(EARNED_SET_PACKS_KEY));
   if (!saved) return [];
   try {
     return JSON.parse(saved) as EarnedSetPack[];
@@ -527,7 +546,8 @@ export function addEarnedSetPacks(packs: EarnedSetPack[]) {
       updated.push(newPack);
     }
   });
-  localStorage.setItem(EARNED_SET_PACKS_KEY, JSON.stringify(updated));
+  localStorage.setItem(lsKey(EARNED_SET_PACKS_KEY), JSON.stringify(updated));
+  persistMissions();
   window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
 }
 
@@ -538,7 +558,8 @@ export function useEarnedSetPack(setId: string, language: 'en' | 'ja'): boolean 
   if (packIndex === -1) return false;
   current[packIndex].count -= 1;
   const updated = current.filter(p => p.count > 0);
-  localStorage.setItem(EARNED_SET_PACKS_KEY, JSON.stringify(updated));
+  localStorage.setItem(lsKey(EARNED_SET_PACKS_KEY), JSON.stringify(updated));
+  persistMissions();
   window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
   return true;
 }
@@ -547,9 +568,9 @@ export function useEarnedSetPack(setId: string, language: 'en' | 'ja'): boolean 
 export function getMissions(): Mission[] {
   if (typeof window === 'undefined') return INITIAL_MISSIONS;
   checkDailyReset();
-  const saved = localStorage.getItem(MISSIONS_STATE_KEY);
+  const saved = localStorage.getItem(lsKey(MISSIONS_STATE_KEY));
   if (!saved) {
-    localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(INITIAL_MISSIONS));
+    localStorage.setItem(lsKey(MISSIONS_STATE_KEY), JSON.stringify(INITIAL_MISSIONS));
     return INITIAL_MISSIONS;
   }
   try {
@@ -581,7 +602,8 @@ export function trackMissionProgress(
   });
 
   if (changed) {
-    localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(updated));
+    localStorage.setItem(lsKey(MISSIONS_STATE_KEY), JSON.stringify(updated));
+    persistMissions();
     window.dispatchEvent(new CustomEvent('missions_updated', { detail: { missions: updated } }));
   }
 }
@@ -622,7 +644,8 @@ export function claimMissionReward(missionId: string): {
 
   // 3. Mark claimed
   missions[targetIndex].claimed = true;
-  localStorage.setItem(MISSIONS_STATE_KEY, JSON.stringify(missions));
+  localStorage.setItem(lsKey(MISSIONS_STATE_KEY), JSON.stringify(missions));
+  persistMissions();
   window.dispatchEvent(new CustomEvent('missions_updated', { detail: { missions } }));
 
   return {
@@ -630,6 +653,100 @@ export function claimMissionReward(missionId: string): {
     rewardSetPacks: mission.rewardSetPacks,
     rewardCard: mission.rewardCard
   };
+}
+
+// --- Firestore sync payload ---
+// Returns the current mission state so it can be mirrored into the user's
+// Firestore document (bound to their account).
+export interface MissionsSyncPayload {
+  lastPassReset?: string;
+  dailyEnglishFree?: number;
+  dailyJapaneseFree?: number;
+  dailyCash?: number;
+  state?: Mission[];
+  earnedSetPacks?: EarnedSetPack[];
+}
+
+export function collectMissionsForSync(): MissionsSyncPayload {
+  if (typeof window === 'undefined') return {};
+  const lastPassReset = localStorage.getItem(lsKey(LAST_RESET_KEY));
+  const dailyEnglishFree = localStorage.getItem(lsKey(DAILY_ENGLISH_FREE_KEY));
+  const dailyJapaneseFree = localStorage.getItem(lsKey(DAILY_JAPANESE_FREE_KEY));
+  const dailyCash = localStorage.getItem(lsKey(DAILY_CASH_KEY));
+  const stateRaw = localStorage.getItem(lsKey(MISSIONS_STATE_KEY));
+  const earnedRaw = localStorage.getItem(lsKey(EARNED_SET_PACKS_KEY));
+
+  return {
+    lastPassReset: lastPassReset ?? undefined,
+    dailyEnglishFree: dailyEnglishFree !== null ? Number(dailyEnglishFree) : undefined,
+    dailyJapaneseFree: dailyJapaneseFree !== null ? Number(dailyJapaneseFree) : undefined,
+    dailyCash: dailyCash !== null ? Number(dailyCash) : undefined,
+    state: stateRaw ? (JSON.parse(stateRaw) as Mission[]) : undefined,
+    earnedSetPacks: earnedRaw ? (JSON.parse(earnedRaw) as EarnedSetPack[]) : undefined
+  };
+}
+
+// Writes Firestore mission state back into the per-account local cache and
+// notifies subscribers. Used by listenToFirestore on every snapshot. Only
+// writes/dispatching when the remote value actually differs, so routine
+// snapshots (e.g. from a binder save) don't trigger spurious re-renders.
+export function restoreMissionsFromSync(data: MissionsSyncPayload | undefined): boolean {
+  if (typeof window === 'undefined' || !data) return false;
+  let changed = false;
+
+  const writeIfDifferent = (key: string, value: string | null) => {
+    const current = localStorage.getItem(lsKey(key));
+    if (current !== value) {
+      if (value === null) localStorage.removeItem(lsKey(key));
+      else localStorage.setItem(lsKey(key), value);
+      changed = true;
+    }
+  };
+
+  writeIfDifferent(LAST_RESET_KEY, data.lastPassReset !== undefined ? data.lastPassReset : null);
+  writeIfDifferent(DAILY_ENGLISH_FREE_KEY, data.dailyEnglishFree !== undefined ? String(data.dailyEnglishFree) : null);
+  writeIfDifferent(DAILY_JAPANESE_FREE_KEY, data.dailyJapaneseFree !== undefined ? String(data.dailyJapaneseFree) : null);
+  writeIfDifferent(DAILY_CASH_KEY, data.dailyCash !== undefined ? String(data.dailyCash) : null);
+  writeIfDifferent(MISSIONS_STATE_KEY, data.state ? JSON.stringify(data.state) : null);
+  writeIfDifferent(EARNED_SET_PACKS_KEY, data.earnedSetPacks ? JSON.stringify(data.earnedSetPacks) : null);
+
+  if (changed) {
+    window.dispatchEvent(new CustomEvent('missions_updated', { detail: {} }));
+    window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: getDailyCash() }));
+    window.dispatchEvent(new CustomEvent('daily_packs_updated', { detail: getDailyFreePacks() }));
+    window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: getEarnedSetPacks() }));
+  }
+  return changed;
+}
+
+// Migrates guest (un-namespaced) mission data into the signed-in account and
+// returns the payload to persist. Returns null when there is nothing to migrate.
+export function buildMissionsPayloadFromGuest(): MissionsSyncPayload | null {
+  if (typeof window === 'undefined') return null;
+  const lastPassReset = localStorage.getItem(LAST_RESET_KEY);
+  const dailyEnglishFree = localStorage.getItem(DAILY_ENGLISH_FREE_KEY);
+  const dailyJapaneseFree = localStorage.getItem(DAILY_JAPANESE_FREE_KEY);
+  const dailyCash = localStorage.getItem(DAILY_CASH_KEY);
+  const stateRaw = localStorage.getItem(MISSIONS_STATE_KEY);
+  const earnedRaw = localStorage.getItem(EARNED_SET_PACKS_KEY);
+
+  if (!lastPassReset && !dailyEnglishFree && !dailyJapaneseFree && !dailyCash && !stateRaw && !earnedRaw) {
+    return null;
+  }
+
+  const payload: MissionsSyncPayload = {};
+  if (lastPassReset !== null) payload.lastPassReset = lastPassReset;
+  if (dailyEnglishFree !== null) payload.dailyEnglishFree = Number(dailyEnglishFree);
+  if (dailyJapaneseFree !== null) payload.dailyJapaneseFree = Number(dailyJapaneseFree);
+  if (dailyCash !== null) payload.dailyCash = Number(dailyCash);
+  if (stateRaw) payload.state = JSON.parse(stateRaw) as Mission[];
+  if (earnedRaw) payload.earnedSetPacks = JSON.parse(earnedRaw) as EarnedSetPack[];
+
+  // Consume the guest keys so they are never re-migrated into a different account.
+  [LAST_RESET_KEY, DAILY_ENGLISH_FREE_KEY, DAILY_JAPANESE_FREE_KEY, DAILY_CASH_KEY, MISSIONS_STATE_KEY, EARNED_SET_PACKS_KEY]
+    .forEach(k => localStorage.removeItem(k));
+
+  return payload;
 }
 
 // --- Compatibility for old code (we'll remove these later) ---

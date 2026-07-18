@@ -1,6 +1,6 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
-import { trackMissionProgress } from '../../services/missions';
+import { trackMissionProgress, collectMissionsForSync, restoreMissionsFromSync, buildMissionsPayloadFromGuest } from '../../services/missions';
 
 export interface BulkCard {
   id: string;
@@ -72,6 +72,7 @@ export async function syncToFirestore() {
       cash,
       netTotal,
       netSpent,
+      missions: collectMissionsForSync(),
       lastUpdated: new Date().toISOString()
     }, { merge: true });
   } catch (e) {
@@ -137,6 +138,23 @@ export function listenToFirestore(uid: string | null) {
         mergeGuestData('tcg_cash', data?.cash);
         mergeGuestData('tcg_session_total', data?.netTotal);
         mergeGuestData('tcg_session_spent', data?.netSpent);
+
+        // Missions, tasks & rewards are bound to the account (mirrored in the
+        // `missions` sub-object of the user document).
+        if (data?.missions) {
+          if (restoreMissionsFromSync(data.missions)) {
+            changed = true;
+          }
+        } else {
+          // Firestore empty but guest/local cache has mission data: migrate it
+          // ONCE into THIS account, then re-sync so it is persisted per-account.
+          const guestMissions = buildMissionsPayloadFromGuest();
+          if (guestMissions) {
+            restoreMissionsFromSync(guestMissions);
+            changed = true;
+            needsSync = true;
+          }
+        }
 
         if (changed) {
           window.dispatchEvent(new Event('storage'));
