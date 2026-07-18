@@ -164,8 +164,58 @@ export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: stri
     if (jaCardPricesCache[`${sPrefix}-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}-${num}`];
     if (jaCardPricesCache[`${sPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}_ja-${num}`];
   }
-  
+
   return undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Market-value-driven chase rarity
+// Expensive cards (chase cards) are drawn less often, mirroring real booster
+// packs: the higher a card's market value, the rarer it should be to pull.
+// A soft inverse-price curve plus a floor keeps even the priciest chase card
+// attainable instead of impossible.
+// ---------------------------------------------------------------------------
+const CHASE_PRICE_ALPHA = 0.6;   // 0 = uniform, 1 = strict inverse price. 0.6 keeps chase cards rare but reachable.
+const CHASE_PRICE_FLOOR = 0.03;  // minimum weight so the most expensive card is never impossible
+
+const _chasePriceMemo = new Map<string, number>();
+
+export function getCardMarketPrice(
+  setId: string,
+  setName: string,
+  card: { id: string; localId?: string; name?: string }
+): number {
+  if (!card || (card.name || '').includes('Energy')) return 0.1;
+  if (_chasePriceMemo.has(card.id)) return _chasePriceMemo.get(card.id)!;
+  const num = card.localId ?? '';
+  const price =
+    (typeof setId === 'string' ? getJapaneseCardRealPrice(setId, num) : undefined) ??
+    (setName ? getJapaneseCardRealPrice(setName.toLowerCase(), num) : undefined) ??
+    0;
+  _chasePriceMemo.set(card.id, price || 0);
+  return price || 0;
+}
+
+export function priceRarityWeight(price: number): number {
+  if (!price || price <= 0) return 1;
+  return Math.max(1 / Math.pow(price, CHASE_PRICE_ALPHA), CHASE_PRICE_FLOOR);
+}
+
+export function weightedPick<T extends { id: string; localId?: string; name?: string }>(
+  candidates: T[],
+  setId: string,
+  setName: string
+): T {
+  if (candidates.length <= 1) return candidates[0];
+  const weights = candidates.map((c) => priceRarityWeight(getCardMarketPrice(setId, setName, c)));
+  const total = weights.reduce((a, b) => a + b, 0);
+  if (total <= 0) return candidates[Math.floor(Math.random() * candidates.length)];
+  let r = Math.random() * total;
+  for (let i = 0; i < candidates.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return candidates[i];
+  }
+  return candidates[candidates.length - 1];
 }
 
 export function getMaxCardNumForJapaneseSet(setId: string): number {
@@ -330,6 +380,13 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
       symbol: defaultSymbol,
       cardCount: s.cardCount || { total: 100, official: 100 }
     };
+  });
+
+  summaries.sort((a, b) => {
+    const numA = parseInt((a.id.match(/\d+/) || ['0'])[0], 10);
+    const numB = parseInt((b.id.match(/\d+/) || ['0'])[0], 10);
+    if (numA !== numB) return numB - numA;
+    return b.id.localeCompare(a.id);
   });
 
   let seriesName = 'Japanese Series';
@@ -782,7 +839,8 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
   const getFrom = (
     p: TCGDexCardSummary[], 
     fallback: TCGDexCardSummary[] = pool,
-    usedIds?: Set<string>
+    usedIds?: Set<string>,
+    weighted: boolean = false
   ): TCGDexCardSummary => {
     // Filter out already used cards if we have a usedIds set
     let candidates = usedIds ? p.filter(card => !usedIds.has(card.id)) : [...p];
@@ -801,7 +859,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       candidates = [...p];
     }
     
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return weighted ? weightedPick(candidates, set.id, set.name || '') : candidates[Math.floor(Math.random() * candidates.length)];
   };
 
   // Check for "God Pack Exception" (~0.5% to 1% chance in High Class/premium sets)
@@ -821,25 +879,25 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // 1) SR, SAR, or UR: 1 Guaranteed. ~20% chance the box has a second one.
       const svChasePool = [...specialArtRares, ...ultraRares, ...superRares];
       if (svChasePool.length > 0) {
-        slotPulls.push({ summary: getFrom(svChasePool), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+        slotPulls.push({ summary: getFrom(svChasePool, pool, undefined, true), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
         if (Math.random() < 0.20 && svChasePool.length > 1) {
-          slotPulls.push({ summary: getFrom(svChasePool), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
+          slotPulls.push({ summary: getFrom(svChasePool, pool, undefined, true), defaultRarity: 'Secret Hit (SR/SAR/UR)' });
         }
       }
       // 2) ACE SPEC: 1 Guaranteed (only in sets that feature them)
       if (aceSpecs.length > 0) {
-        slotPulls.push({ summary: getFrom(aceSpecs), defaultRarity: 'ACE SPEC' });
+        slotPulls.push({ summary: getFrom(aceSpecs, pool, undefined, true), defaultRarity: 'ACE SPEC' });
       }
       // 3) AR (Art Rare): 3 Guaranteed
       if (artRares.length > 0) {
         for (let i = 0; i < 3; i++) {
-          slotPulls.push({ summary: getFrom(artRares), defaultRarity: 'AR (Art Rare)' });
+          slotPulls.push({ summary: getFrom(artRares, pool, undefined, true), defaultRarity: 'AR (Art Rare)' });
         }
       }
       // 4) RR (Double Rare): 4 Guaranteed
       if (doubleRares.length > 0) {
         for (let i = 0; i < 4; i++) {
-          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+          slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
         }
       }
       // 5) R (Holo Rare): ~20 or 21 fills remaining Slot 5s up to 30
@@ -850,28 +908,28 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // 1) SR, HR, or UR: 1 Guaranteed
       const swshSecretPool = [...ultraRares, ...hyperRares, ...superRares];
       if (swshSecretPool.length > 0) {
-        slotPulls.push({ summary: getFrom(swshSecretPool), defaultRarity: 'Secret Hit (SR/HR/UR)' });
+        slotPulls.push({ summary: getFrom(swshSecretPool, pool, undefined, true), defaultRarity: 'Secret Hit (SR/HR/UR)' });
       }
       // 2) RRR (Triple Rare): 2 Guaranteed
       if (tripleRares.length > 0) {
         for (let i = 0; i < 2; i++) {
-          slotPulls.push({ summary: getFrom(tripleRares), defaultRarity: 'RRR (Triple Rare)' });
+          slotPulls.push({ summary: getFrom(tripleRares, pool, undefined, true), defaultRarity: 'RRR (Triple Rare)' });
         }
       }
       // 3) RR (Double Rare): 4 to 5 Guaranteed
       const rrCount = Math.random() < 0.5 ? 4 : 5;
       if (doubleRares.length > 0) {
         for (let i = 0; i < rrCount; i++) {
-          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+          slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
         }
       }
       // Note: Trainer Gallery Subsets (3 CHR + 1 CSR guaranteed)
       if (characterSuperRares.length > 0) {
-        slotPulls.push({ summary: getFrom(characterSuperRares), defaultRarity: 'CSR (Character Super Rare)' });
+        slotPulls.push({ summary: getFrom(characterSuperRares, pool, undefined, true), defaultRarity: 'CSR (Character Super Rare)' });
       }
       if (characterRares.length > 0) {
         for (let i = 0; i < 3; i++) {
-          slotPulls.push({ summary: getFrom(characterRares), defaultRarity: 'CHR (Character Rare)' });
+          slotPulls.push({ summary: getFrom(characterRares, pool, undefined, true), defaultRarity: 'CHR (Character Rare)' });
         }
       }
       // 4) R (Holo Rare): ~22 fills remaining Slot 5s up to 30
@@ -882,13 +940,13 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // 1) SR, HR, or UR: 1 Guaranteed
       const smSecretPool = [...ultraRares, ...hyperRares, ...superRares];
       if (smSecretPool.length > 0) {
-        slotPulls.push({ summary: getFrom(smSecretPool), defaultRarity: 'Secret Hit (SR/HR/UR)' });
+        slotPulls.push({ summary: getFrom(smSecretPool, pool, undefined, true), defaultRarity: 'Secret Hit (SR/HR/UR)' });
       }
       // 2) RR (Double Rare): 3 to 4 Guaranteed
       const rrCount = Math.random() < 0.5 ? 3 : 4;
       if (doubleRares.length > 0) {
         for (let i = 0; i < rrCount; i++) {
-          slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+          slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
         }
       }
       // 3) R (Holo Rare): ~25 fills remaining Slot 5s up to 30
@@ -898,10 +956,10 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
     } else {
       // Classic / Older Eras
       const secretPool = [...ultraRares, ...superRares];
-      if (secretPool.length > 0) slotPulls.push({ summary: getFrom(secretPool), defaultRarity: 'Secret Hit (SR/UR)' });
+      if (secretPool.length > 0) slotPulls.push({ summary: getFrom(secretPool, pool, undefined, true), defaultRarity: 'Secret Hit (SR/UR)' });
       const exCount = Math.random() < 0.5 ? 3 : 4;
       if (doubleRares.length > 0) {
-        for (let i = 0; i < exCount; i++) slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'Double Rare / EX' });
+        for (let i = 0; i < exCount; i++) slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'Double Rare / EX' });
       }
       while (slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
@@ -921,12 +979,12 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       }
       // 3 AR guaranteed
       if (artRares.length > 0) {
-        for (let i = 0; i < 3; i++) slotPulls.push({ summary: getFrom(artRares), defaultRarity: 'AR (Art Rare)' });
+        for (let i = 0; i < 3; i++) slotPulls.push({ summary: getFrom(artRares, pool, undefined, true), defaultRarity: 'AR (Art Rare)' });
       }
       // 4 to 5 RR guaranteed
       const rrCount = Math.random() < 0.5 ? 4 : 5;
       if (doubleRares.length > 0) {
-        for (let i = 0; i < rrCount; i++) slotPulls.push({ summary: getFrom(doubleRares), defaultRarity: 'RR (Double Rare)' });
+        for (let i = 0; i < rrCount; i++) slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
       }
       while (slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
@@ -935,12 +993,12 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       // Other High Class 10-pack boxes (Shiny Treasure ex, VSTAR Universe, VMAX Climax, etc.)
       const highChase = [...specialArtRares, ...ultraRares, ...hyperRares, ...superRares, ...shinySuperRares];
       if (highChase.length > 0) {
-        slotPulls.push({ summary: getFrom(highChase), defaultRarity: 'Secret Hit (SAR/SSR/UR/SR)' });
+        slotPulls.push({ summary: getFrom(highChase, pool, undefined, true), defaultRarity: 'Secret Hit (SAR/SSR/UR/SR)' });
       }
       const arPool = [...artRares, ...characterSuperRares, ...characterRares, ...shinyRares];
       const arCount = 1 + Math.floor(Math.random() * 3);
       if (arPool.length > 0) {
-        for (let i = 0; i < arCount; i++) slotPulls.push({ summary: getFrom(arPool), defaultRarity: 'Illustration Hit (AR/CHR/S)' });
+        for (let i = 0; i < arCount; i++) slotPulls.push({ summary: getFrom(arPool, pool, undefined, true), defaultRarity: 'Illustration Hit (AR/CHR/S)' });
       }
       while (slotPulls.length < packCountPerBox) {
         const hitPool = [...tripleRares, ...doubleRares, ...rares];
@@ -986,7 +1044,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       ];
       const slots: JapaneseBoxSlotData[] = [];
       for (let s = 0; s < cardsPerPack; s++) {
-        const c = getFrom(godPool, rares, usedIds);
+        const c = getFrom(godPool, rares, usedIds, true);
         usedIds.add(c.id);
         slots.push({
           summary: c,

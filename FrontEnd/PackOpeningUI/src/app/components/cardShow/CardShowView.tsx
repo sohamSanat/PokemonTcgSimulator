@@ -41,7 +41,6 @@ import {
   updateCardSlabStatus,
   getCash,
   spendCash,
-  addCash,
   removeCollectedCard,
   type Card,
 } from '../binder/types';
@@ -50,12 +49,14 @@ interface CardShowViewProps {
   initialShowAuction?: boolean;
   onBackToPacks?: () => void;
   onInspectCard?: (card: any) => void;
+  onAddNetReturn?: (amount: number) => void;
 }
 
 export const CardShowView: React.FC<CardShowViewProps> = ({
   initialShowAuction = false,
   onBackToPacks,
   onInspectCard,
+  onAddNetReturn,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -1936,7 +1937,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         </section>
       </main>
 
-      <TradeModal target={tradeTarget} vendorName={selectedVendor?.name} onClose={() => setTradeTarget(null)} />
+      <TradeModal target={tradeTarget} vendorName={selectedVendor?.name} onClose={() => setTradeTarget(null)} onAddNetReturn={onAddNetReturn} />
 
     </div>
     </>
@@ -1944,10 +1945,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 };
 
 // ── VENDOR "BUY · TRADE OR CASH" PURCHASE MODAL ───────────────────────────────
-const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => void }> = ({
+const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => void; onAddNetReturn?: (amount: number) => void }> = ({
   target,
   vendorName,
   onClose,
+  onAddNetReturn,
 }) => {
   const open = Boolean(target);
   const price = target?.price || 0;
@@ -2012,7 +2014,7 @@ const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => vo
     if (!canComplete) return;
     spendCash(cashPaid);
     selected.forEach((id) => removeCollectedCard(id));
-    if (change > 0) addCash(change);
+    if (change > 0 && onAddNetReturn) onAddNetReturn(change);
     const newCard = saveCollectedCard(
       {
         value: price,
@@ -2203,7 +2205,7 @@ const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => vo
                 <p className="text-sm font-mono font-black text-teal-300">${tradeTowardPrice.toLocaleString()}</p>
               </div>
               <div>
-                <p className="text-[9px] font-mono uppercase text-[#64748b]">{remaining > 0 ? "Remaining" : "Change"}</p>
+                <p className="text-[9px] font-mono uppercase text-[#64748b]">{remaining > 0 ? "Remaining" : "Change → Net Returns"}</p>
                 <p className={`text-sm font-mono font-black ${remaining > 0 ? "text-rose-400" : "text-amber-300"}`}>
                   ${Math.max(remaining, change).toLocaleString()}
                 </p>

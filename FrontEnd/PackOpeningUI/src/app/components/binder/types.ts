@@ -277,6 +277,52 @@ export function addCash(amount: number): number {
   return next;
 }
 
+// ── Player profile (showcase + bio, shared via link/text) ───────────────────
+export interface UserProfile {
+  displayName: string;
+  bio: string;
+  showcaseCardIds: string[];
+  updatedAt?: string;
+}
+
+export function getProfile(forceUid?: string | null): UserProfile {
+  const fallback: UserProfile = {
+    displayName: auth?.currentUser?.displayName || auth?.currentUser?.email?.split('@')[0] || 'Trainer',
+    bio: '',
+    showcaseCardIds: [],
+  };
+  try {
+    const data = localStorage.getItem(getStorageKey('tcg_profile'));
+    if (!data) return fallback;
+    const parsed = JSON.parse(data);
+    return {
+      displayName: parsed.displayName || fallback.displayName,
+      bio: parsed.bio || '',
+      showcaseCardIds: Array.isArray(parsed.showcaseCardIds) ? parsed.showcaseCardIds : [],
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+export async function saveProfile(profile: UserProfile, forceUid?: string | null): Promise<void> {
+  const uid = forceUid || auth?.currentUser?.uid;
+  const payload = { ...profile, updatedAt: new Date().toISOString() };
+  try {
+    localStorage.setItem(getStorageKey('tcg_profile'), JSON.stringify(payload));
+  } catch { }
+  if (uid) {
+    try {
+      await setDoc(doc(db, 'users', uid), { profile: payload }, { merge: true });
+    } catch (e) {
+      console.error('Failed to save profile to Firestore', e);
+    }
+  }
+  try {
+    window.dispatchEvent(new Event('storage'));
+  } catch { }
+}
+
 // ── Net returns (real earning power used by the auction wallet) ──────────────
 // Net return = value of pulled cards minus money spent on packs. This is what
 // the user has *actually* earned, so the auction uses it instead of an absurd

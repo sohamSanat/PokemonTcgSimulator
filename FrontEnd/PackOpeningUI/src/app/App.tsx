@@ -21,6 +21,7 @@ import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
+import { ProfileView } from './components/profile/ProfileView';
 import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 
@@ -1653,7 +1654,7 @@ export default function App() {
   }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
-  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions'>('pack');
+  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
@@ -2314,6 +2315,8 @@ export default function App() {
 
       {/* Premium Leather-Bound Header */}
       <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-4 md:px-6 flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+        {/* Mobile Header Background Overlay to prevent scroll bleeding */}
+        <div className={`absolute inset-0 bg-[#14141c] z-[65] lg:hidden transition-opacity duration-300 pointer-events-none border-b border-white/10 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} />
 
         {/* Mobile Hamburger Row & Desktop Logo */}
         <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
@@ -2452,13 +2455,22 @@ export default function App() {
             </button>
 
             {currentUser ? (
-              <button
-                onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
-                className="px-4 lg:px-3 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
-              >
-                <LogOut className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
-                <span className="truncate max-w-[120px] lg:hidden xl:inline">{currentUser.email?.split('@')[0] || 'User'}</span>
-              </button>
+              <div className="flex items-center gap-2 w-full lg:w-auto">
+                <button
+                  onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
+                  className={`flex-1 lg:flex-none px-4 lg:px-3 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
+                >
+                  <UserCircle className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
+                  <span className="truncate max-w-[120px] lg:hidden xl:inline">{currentUser.email?.split('@')[0] || 'User'}</span>
+                </button>
+                <button
+                  onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
+                  className="px-3 lg:px-2 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
@@ -2595,6 +2607,7 @@ export default function App() {
           <CardShowView
             initialShowAuction={activeTab === 'auctions'}
             onBackToPacks={() => setActiveTab('pack')}
+            onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
             onInspectCard={(binderCard) => {
               sound.playModalOpen();
               setInspectedViewMode('art');
@@ -2661,6 +2674,13 @@ export default function App() {
             }}
           />
         </div>
+      ) : activeTab === 'profile' ? (
+        <ProfileView
+          currentUser={currentUser}
+          netReturn={sessionTotal - sessionSpent}
+          packCount={packCount}
+          onBackToPacks={() => setActiveTab('pack')}
+        />
       ) : (
         <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
@@ -3498,9 +3518,14 @@ export default function App() {
                               )}
                             </div>
                             <div>
-                              <h4 className="font-bold text-white text-sm truncate max-w-[150px] group-hover:text-amber-300 transition-colors">
-                                {set.name}
-                              </h4>
+                              <div className="flex items-center justify-center gap-1.5">
+                                <h4 className="font-bold text-white text-sm truncate max-w-[130px] group-hover:text-amber-300 transition-colors">
+                                  {set.name}
+                                </h4>
+                                <span className="text-[10px] font-mono font-bold text-amber-300/90 whitespace-nowrap">
+                                  ${getSetBoosterPrice(set).toFixed(2)}
+                                </span>
+                              </div>
                               <span className="text-[10px] text-gray-400 mt-1 block font-semibold">
                                 {set.cardCount?.official || set.cardCount?.total || '???'} Cards
                               </span>
