@@ -1185,7 +1185,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       for (let s = 9; s < cardsPerPack; s++) {
         const card = getFrom([...rares, ...uncommons], pool, usedIds);
         usedIds.add(card.id);
-        slots.push({ summary: card, defaultRarity: 'Reverse Holo / Energy', isReverseHolo: true });
+        slots.push({ summary: card, defaultRarity: 'Energy / Uncommon' });
       }
       packs.push({ slots, isGodPack: false });
     }

@@ -571,6 +571,235 @@ export async function fetchBasicEnergyCard(era: EnergyEra = 'sv'): Promise<TCGDe
 
 const rarityPoolCache = new Map<string, any[]>();
 
+// ===================== English Booster Box =====================
+// Real booster boxes ship with a guaranteed hit distribution across the whole
+// box. We seed an entire box once per set, then consume one pack per open so
+// the user experiences authentic box-level variance (instead of an independent
+// re-roll every pack that can produce impossible streaks).
+export interface EnglishBoxSlotData {
+  summary: TCGDexCardSummary;
+  isReverseHolo?: boolean;
+  defaultRarity: string;
+}
+export interface EnglishBoxPackData {
+  slots: EnglishBoxSlotData[];
+}
+interface EnglishBoxCacheEntry {
+  index: number;
+  packs: EnglishBoxPackData[];
+}
+
+const englishBoxCache = new Map<string, EnglishBoxCacheEntry>();
+
+export function resetEnglishBox(setId: string): void {
+  englishBoxCache.delete(setId);
+}
+export function getEnglishBoxStatus(setId: string): { totalPacks: number; openedPacks: number; remainingPacks: number; era: string } | null {
+  const b = englishBoxCache.get(setId);
+  if (!b) return null;
+  return { totalPacks: b.packs.length, openedPacks: b.index, remainingPacks: b.packs.length - b.index, era: '' };
+}
+
+interface EnglishBoxParams {
+  set: TCGDexSet;
+  pool: TCGDexCardSummary[];
+  currentEra: EnergyEra;
+  boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'base';
+  commonPool: TCGDexCardSummary[];
+  uncommonPool: TCGDexCardSummary[];
+  nonHoloRarePool: TCGDexCardSummary[];
+  holoRarePool: TCGDexCardSummary[];
+  vPool: TCGDexCardSummary[];
+  fullArtPool: TCGDexCardSummary[];
+  vmaxPool: TCGDexCardSummary[];
+  rainbowSecretPool: TCGDexCardSummary[];
+  goldSecretPool: TCGDexCardSummary[];
+  irPool: TCGDexCardSummary[];
+  sirPool: TCGDexCardSummary[];
+  prismStarPool: TCGDexCardSummary[];
+  characterRarePool: TCGDexCardSummary[];
+  galleryPool: TCGDexCardSummary[];
+  reverseHoloPool: TCGDexCardSummary[];
+  isCosmicEclipse: boolean;
+  isShinyVaultSet: boolean;
+  isTrainerGallerySet: boolean;
+  isCrownZenith: boolean;
+}
+
+const pickUniform = <T,>(arr?: T[] | null): T | null =>
+  arr && arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : null;
+
+function seedPick(pool: TCGDexCardSummary[], fallbacks: TCGDexCardSummary[][] = []): TCGDexCardSummary | null {
+  let c = pickUniform(pool);
+  if (c) return c;
+  for (const fb of fallbacks) {
+    c = pickUniform(fb);
+    if (c) return c;
+  }
+  return pickUniform(pool.length ? pool : fallbacks.flat());
+}
+
+function shuffleInPlace<T>(arr: T[]): void {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// Builds a full booster box: seeds the hit/special slots with guaranteed
+// per-box counts, then assembles each pack with fixed structure.
+export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBoxPackData[]> {
+  const packsPerBox = 36;
+  const { pool, currentEra, boxEra } = p;
+
+  const hits: EnglishBoxSlotData[] = [];
+  const specials: EnglishBoxSlotData[] = [];
+
+  const addHit = (pl: TCGDexCardSummary[], label: string, fb: TCGDexCardSummary[][] = [], n = 1) => {
+    for (let i = 0; i < n; i++) {
+      const c = seedPick(pl, fb) || seedPick(p.holoRarePool) || seedPick(pool);
+      if (c) hits.push({ summary: c, defaultRarity: label, isReverseHolo: true });
+    }
+  };
+  const addSpecial = (pl: TCGDexCardSummary[], label: string, fb: TCGDexCardSummary[][] = [], n = 1) => {
+    for (let i = 0; i < n; i++) {
+      const c = seedPick(pl, fb) || seedPick(p.reverseHoloPool) || seedPick(pool);
+      if (c) specials.push({ summary: c, defaultRarity: label, isReverseHolo: true });
+    }
+  };
+
+  if (boxEra === 'sv' || boxEra === 'me') {
+    // SV/ME box of 36: ~1 SIR, 2 IR, 2 Full Art, 5 Double Rare, rest Holo Rare
+    addHit(p.goldSecretPool, 'Hyper Rare (Gold)', [p.fullArtPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.sirPool, 'Special Illustration Rare', [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.irPool, 'Illustration Rare', [p.sirPool, p.fullArtPool, p.vPool, p.holoRarePool], 2);
+    addHit(p.fullArtPool, 'Ultra Rare (Full Art)', [p.sirPool, p.irPool, p.vPool, p.holoRarePool], 2);
+    addHit(p.vPool, 'Double Rare (ex)', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 5);
+    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+  } else if (boxEra === 'swsh') {
+    // SWSH box of 36: 1 Gold, 1 Rainbow, 2 FA, 3 VMAX/VSTAR, 4 V, rest Holo Rare
+    addHit(p.goldSecretPool, 'Gold Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.rainbowSecretPool, 'Rainbow Rare', [p.goldSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.fullArtPool, 'Full Art', [p.vmaxPool, p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
+    addHit(p.vmaxPool, 'Pokémon VMAX / VSTAR', [p.vPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
+    addHit(p.vPool, 'Pokémon V', [p.vmaxPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 4);
+    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+    if (p.isTrainerGallerySet || p.isShinyVaultSet) {
+      addSpecial(p.galleryPool, p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', [p.reverseHoloPool, pool], 4);
+    }
+    while (specials.length < packsPerBox) addSpecial(p.reverseHoloPool, 'Reverse Holo', [pool], 1);
+  } else if (boxEra === 'sm') {
+    // SM box of 36: 1 Secret, 1 Rainbow, 2 FA, 3 GX, rest Holo Rare
+    addHit(p.goldSecretPool, 'Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.rainbowSecretPool, 'Rainbow Rare', [p.goldSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.fullArtPool, 'Full Art', [p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
+    addHit(p.vPool, 'Pokémon-GX', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
+    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+    if (p.isCosmicEclipse && p.characterRarePool.length > 0) addSpecial(p.characterRarePool, 'Character Rare (CHR)', [p.reverseHoloPool, pool], 3);
+    if (p.prismStarPool.length > 0) addSpecial(p.prismStarPool, 'Prism Star ♢', [p.reverseHoloPool, pool], 3);
+    if (p.galleryPool.length > 0) addSpecial(p.galleryPool, 'Shiny Vault', [p.reverseHoloPool, pool], 4);
+    while (specials.length < packsPerBox) addSpecial(p.reverseHoloPool, 'Reverse Holo', [pool], 1);
+  } else if (boxEra === 'xy') {
+    // XY box of 36: 1 Secret, 2 Full Art EX, 3 EX, rest Holo Rare
+    addHit(p.goldSecretPool, 'Secret Rare', [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool], 1);
+    addHit(p.fullArtPool, 'Full Art EX', [p.vPool, p.holoRarePool, p.nonHoloRarePool], 2);
+    addHit(p.vPool, 'Pokémon EX', [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool], 3);
+    while (hits.length < packsPerBox) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, p.vPool, pool], 1);
+  } else {
+    // Base / vintage box of 36: 1 Secret, ~12 Holo Rare, rest Non-Holo Rare
+    addHit(p.goldSecretPool, 'Secret Rare', [p.holoRarePool, p.nonHoloRarePool, pool], 1);
+    while (hits.length < Math.min(12, packsPerBox)) addHit(p.holoRarePool, 'Holo Rare', [p.nonHoloRarePool, pool], 1);
+    while (hits.length < packsPerBox) addHit(p.nonHoloRarePool, 'Non-Holo Rare', [p.holoRarePool, pool], 1);
+  }
+
+  shuffleInPlace(hits);
+  shuffleInPlace(specials);
+
+  const packs: EnglishBoxPackData[] = [];
+  const commonCount = boxEra === 'base' ? 5 : 4;
+  const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh';
+
+  for (let idx = 0; idx < packsPerBox; idx++) {
+    const pickedIds = new Set<string>();
+    const pickedNames = new Set<string>();
+
+    const getFromPool = (pl: TCGDexCardSummary[], fallbacks: TCGDexCardSummary[][] = []): TCGDexCardSummary => {
+      const pickUnique = (cands: TCGDexCardSummary[]): TCGDexCardSummary | null => {
+        if (!cands || cands.length === 0) return null;
+        const unpicked = cands.filter(c => !pickedIds.has(c.id) && !pickedNames.has(c.name) && !c.name.includes('Energy'));
+        if (unpicked.length > 0) return unpicked[Math.floor(Math.random() * unpicked.length)];
+        return null;
+      };
+      const primary = pickUnique(pl);
+      if (primary) { pickedIds.add(primary.id); pickedNames.add(primary.name); return primary; }
+      for (const fb of fallbacks) {
+        const f = pickUnique(fb);
+        if (f) { pickedIds.add(f.id); pickedNames.add(f.name); return f; }
+      }
+      const remaining = pool.filter(c => !pickedIds.has(c.id) && !pickedNames.has(c.name));
+      if (remaining.length > 0) {
+        const c = remaining[Math.floor(Math.random() * remaining.length)];
+        pickedIds.add(c.id); pickedNames.add(c.name); return c;
+      }
+      const base = pool[Math.floor(Math.random() * pool.length)] || { id: `${p.set.id}-fb`, localId: '1', name: 'Pokémon Card', image: `https://assets.tcgdex.net/en/${p.set.id}/1` };
+      const uid = `${base.id}-alt-${pickedIds.size + 1}`;
+      const un = `${base.name} (Alt #${pickedIds.size + 1})`;
+      pickedIds.add(uid); pickedNames.add(un);
+      return { ...base, id: uid, name: un } as TCGDexCardSummary;
+    };
+
+    const slots: EnglishBoxSlotData[] = [];
+
+    // Slot 1: Basic Energy (with occasional reverse / textured foil)
+    const energy = await fetchBasicEnergyCard(currentEra);
+    if ((boxEra === 'sv' || boxEra === 'me') && Math.random() < 0.15) {
+      slots.push({ summary: energy, isReverseHolo: true, defaultRarity: 'Reverse Holo Energy' });
+    } else if (p.isCrownZenith && Math.random() < 0.20) {
+      slots.push({ summary: energy, isReverseHolo: true, defaultRarity: 'Textured Foil Energy' });
+    } else {
+      slots.push({ summary: energy, defaultRarity: 'Basic Energy' });
+    }
+    pickedIds.add(energy.id); pickedNames.add(energy.name);
+
+    // Commons
+    for (let i = 0; i < commonCount; i++) {
+      slots.push({ summary: getFromPool(p.commonPool, [[...p.uncommonPool, ...pool]]), defaultRarity: 'Common' });
+    }
+    // Uncommons
+    for (let i = 0; i < 3; i++) {
+      slots.push({ summary: getFromPool(p.uncommonPool, [p.commonPool, pool]), defaultRarity: 'Uncommon' });
+    }
+
+    if (boxEra === 'base') {
+      const trainerPool = pool.filter(c => c.name.includes('Energy') || c.name.includes('Trainer') || c.name.includes('Professor') || c.name.includes('Bill') || c.name.includes('Potion'));
+      if (Math.random() < 0.35 || trainerPool.length === 0) {
+        const e2 = await fetchBasicEnergyCard('base');
+        slots.push({ summary: e2, defaultRarity: 'Basic Energy' });
+        pickedIds.add(e2.id);
+      } else {
+        const t = getFromPool(trainerPool, [p.uncommonPool, p.commonPool, pool]);
+        slots.push({ summary: t, defaultRarity: 'Trainer / Energy' });
+      }
+    } else if (hasSpecialSlot) {
+      const sp = specials[idx] || { summary: getFromPool(p.reverseHoloPool, [pool]), defaultRarity: 'Reverse Holo', isReverseHolo: true };
+      slots.push(sp);
+      if (sp.summary) { pickedIds.add(sp.summary.id); pickedNames.add(sp.summary.name); }
+    } else {
+      const rh = getFromPool(p.reverseHoloPool, [pool]);
+      slots.push({ summary: rh, isReverseHolo: true, defaultRarity: 'Reverse Holo' });
+    }
+
+    // Single guaranteed rare-or-better hit slot
+    const hit = hits[idx] || { summary: getFromPool(p.holoRarePool, [p.nonHoloRarePool, pool]), defaultRarity: 'Holo Rare', isReverseHolo: true };
+    slots.push(hit);
+    if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
+
+    packs.push({ slots });
+  }
+
+  return packs;
+}
+
 export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<PokemonCard[]> {
   const pool = (set.cards || []).filter(c => Boolean(c.image) && !c.name.includes('Energy'));
   if (pool.length === 0) {
@@ -704,20 +933,22 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
         }
       }
 
-      // Distinguish into the exact 7 tiers
-      if (secretRareIds.has(card.id) || isSecretNumber) {
-        if (card.name.includes('Gold') || card.name.includes('Energy') || card.name.includes('Patch') || card.name.includes('Parasol') || num >= officialCount + 9) {
+      // Distinguish into the exact 7 tiers (prefer the TCGDex rarity field,
+      // fall back to name heuristics so mislabeled cards still land correctly)
+      const rarityField = (card.rarity || '').toLowerCase();
+      if (secretRareIds.has(card.id) || isSecretNumber || rarityField.includes('secret') || rarityField.includes('gold') || rarityField.includes('hyper') || rarityField.includes('rainbow')) {
+        if (card.name.includes('Gold') || card.name.includes('Energy') || card.name.includes('Patch') || card.name.includes('Parasol') || rarityField.includes('gold') || rarityField.includes('hyper') || num >= officialCount + 9) {
           goldSecretPool.push(card);
         } else {
           rainbowSecretPool.push(card);
         }
-      } else if (card.name.includes('VMAX') || card.name.includes('VSTAR')) {
+      } else if (card.name.includes('VMAX') || card.name.includes('VSTAR') || rarityField.includes('vmax') || rarityField.includes('vstar')) {
         vmaxPool.push(card);
-      } else if (ultraRareIds.has(card.id) || (num > officialCount - 15 && !card.name.includes(' V'))) {
+      } else if (ultraRareIds.has(card.id) || rarityField.includes('ultra rare') || (num > officialCount - 15 && !card.name.includes(' V'))) {
         fullArtPool.push(card);
-      } else if (card.name.includes(' V') || card.name.includes(' ex') || card.name.includes(' GX') || card.name.includes(' EX')) {
+      } else if (card.name.includes(' V') || card.name.includes(' ex') || card.name.includes(' GX') || card.name.includes(' EX') || rarityField.includes('double rare')) {
         vPool.push(card);
-      } else if (holoRareIds.has(card.id)) {
+      } else if (holoRareIds.has(card.id) || rarityField.includes('rare holo') || rarityField.includes('holo rare')) {
         holoRarePool.push(card);
       } else {
         nonHoloRarePool.push(card);
@@ -751,59 +982,6 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     }
   }
 
-  const pickedIds = new Set<string>();
-  const pickedNames = new Set<string>();
-
-  const getFromPool = (p: TCGDexCardSummary[], fallbacks: TCGDexCardSummary[][], weighted: boolean = false): TCGDexCardSummary => {
-    const pickUnique = (candidates: TCGDexCardSummary[]): TCGDexCardSummary | null => {
-      if (!candidates || candidates.length === 0) return null;
-      const unpicked = candidates.filter(c => !pickedIds.has(c.id) && !pickedNames.has(c.name) && !c.name.includes('Energy'));
-      if (unpicked.length > 0) {
-        const candidatesWithPrices = weighted ? unpicked.map(c => {
-          const cached = cardFullCache.get(c.id);
-          return cached ? { ...c, tcgplayer: cached.tcgplayer, pricing: cached.pricing } : c;
-        }) : unpicked;
-        const chosen = weighted ? weightedPick(candidatesWithPrices, set.id, set.name || '') : unpicked[Math.floor(Math.random() * unpicked.length)];
-        if (chosen) {
-          pickedIds.add(chosen.id);
-          pickedNames.add(chosen.name);
-          return chosen;
-        }
-      }
-      return null;
-    };
-
-    const primaryPick = pickUnique(p);
-    if (primaryPick) return primaryPick;
-
-    for (const fb of fallbacks) {
-      const fbPick = pickUnique(fb);
-      if (fbPick) return fbPick;
-    }
-
-    const remainingInSet = pool.filter(c => !pickedIds.has(c.id) && !pickedNames.has(c.name));
-    if (remainingInSet.length > 0) {
-      const chosen = remainingInSet[Math.floor(Math.random() * remainingInSet.length)];
-      if (chosen) {
-        pickedIds.add(chosen.id);
-        pickedNames.add(chosen.name);
-        return chosen;
-      }
-    }
-
-    // If every unique card in pool was somehow picked, create a unique virtual variant so no duplicate card or ID ever repeats
-    const fallbackBase = pool[Math.floor(Math.random() * pool.length)] || { id: `${set.id}-fb`, localId: '1', name: 'Pokémon Card', image: `https://assets.tcgdex.net/en/sv/${set.id}/1` };
-    const uniqueId = `${fallbackBase.id}-alt-${pickedIds.size + 1}`;
-    const uniqueName = `${fallbackBase.name} (Alt #${pickedIds.size + 1})`;
-    pickedIds.add(uniqueId);
-    pickedNames.add(uniqueName);
-    return {
-      ...fallbackBase,
-      id: uniqueId,
-      name: uniqueName
-    };
-  };
-
   // Reverse Holo slot can draw any Common, Uncommon, Non-Holo Rare, or Holo Rare
   const reverseHoloPool = [...commonPool, ...uncommonPool, ...nonHoloRarePool, ...holoRarePool];
 
@@ -818,275 +996,45 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   const inlineGallery = pool.filter(c => (c.localId || '').startsWith('TG') || (c.localId || '').startsWith('GG') || (c.localId || '').startsWith('SV') || (c.id || '').includes('-tg') || (c.id || '').includes('-gg') || (c.id || '').includes('-sv') || (c.rarity || '').toLowerCase().includes('shiny') || (c.rarity || '').toLowerCase().includes('classic collection'));
   const galleryPool = isShinyVaultSet ? pool : [...fetchedGallery, ...inlineGallery];
 
-  const selectedSlots: { summary: TCGDexCardSummary; isReverseHolo?: boolean; defaultRarity: string }[] = [];
+  // ---- Box-seeded booster box: build the whole box once per set, then
+  //      consume one pack per open so the user experiences authentic
+  //      box-level hit distribution & variance (no impossible streaks). ----
+  const boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'base' =
+    isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBaseEra ? 'base' : 'swsh';
 
-  if (isSVEra || isMEEra) {
-    // --- Scarlet & Violet or Mega Evolution Series ---
-    // Total Cards per Pack: 11
-    const isGodPack = isSV151 && Math.random() < 0.005;
-
-    // Slot 1: Basic Energy (1 card)
-    const basicEnergy = await fetchBasicEnergyCard(currentEra);
-    if (Math.random() < 0.15) {
-      selectedSlots.push({ summary: basicEnergy, isReverseHolo: true, defaultRarity: 'Reverse Holo Energy' });
-    } else {
-      selectedSlots.push({ summary: basicEnergy, defaultRarity: 'Basic Energy' });
-    }
-
-    // Slot 2-5: Common (4 cards)
-    for (let i = 0; i < 4; i++) {
-      selectedSlots.push({ summary: getFromPool(commonPool, [[...uncommonPool, ...pool]]), defaultRarity: 'Common' });
-    }
-
-    // Slot 5-7: Uncommon (3 cards)
-    for (let i = 0; i < 3; i++) {
-      selectedSlots.push({ summary: getFromPool(uncommonPool, [commonPool, pool]), defaultRarity: 'Uncommon' });
-    }
-
-    if (isGodPack) {
-      // Demi-God Pack: Replace 1st Reverse Holo, 2nd Reverse Holo+, and Rare slot with 3-stage IR/SIR hit!
-      selectedSlots.push({ summary: getFromPool(irPool, [fullArtPool, pool], true), defaultRarity: 'Illustration Rare (Demi-God Stage 1)' });
-      selectedSlots.push({ summary: getFromPool(irPool, [fullArtPool, pool], true), defaultRarity: 'Illustration Rare (Demi-God Stage 2)' });
-      selectedSlots.push({ summary: getFromPool(sirPool, [vPool, fullArtPool, pool], true), defaultRarity: 'Special Illustration Rare (Demi-God Stage 3)' });
-    } else {
-      // Slot 8: Reverse Holo (1 card)
-      selectedSlots.push({ summary: getFromPool([...commonPool, ...uncommonPool], [pool]), isReverseHolo: true, defaultRarity: 'Reverse Holo' });
-
-      // Slot 9: Reverse Holo+ (Reverse Holo, Illustration Rare, or Special Illustration Rare) (1 card)
-      const irHitChance = Math.random();
-      const sirRate = isPrismatic ? 0.08 : 0.031;
-      const irRate = isPrismatic ? 0.35 : 0.114;
-      
-      if (irHitChance < sirRate && sirPool.length > 0) {
-        selectedSlots.push({ summary: getFromPool(sirPool, [irPool, fullArtPool, pool], true), defaultRarity: 'Special Illustration Rare' });
-      } else if (irHitChance < irRate && irPool.length > 0) {
-        selectedSlots.push({ summary: getFromPool(irPool, [sirPool, fullArtPool, pool], true), defaultRarity: 'Illustration Rare' });
-      } else {
-        selectedSlots.push({ summary: getFromPool([...commonPool, ...uncommonPool], [pool]), isReverseHolo: true, defaultRarity: 'Reverse Holo' });
-      }
-
-      // Slot 10: Rare or better (Holo Rare, Double Rare, Ultra Rare, etc.) (1 card)
-      const svRoll = Math.random();
-      let svHit: TCGDexCardSummary;
-      let svLabel = 'Holo Rare';
-      
-      if (svRoll < 0.018 && goldSecretPool.length > 0) {
-        svHit = getFromPool(goldSecretPool, [fullArtPool, vPool, holoRarePool, nonHoloRarePool], true);
-        svLabel = 'Hyper Rare (Gold)';
-      } else if (svRoll < 0.084) {
-        svHit = getFromPool(fullArtPool, [sirPool, irPool, vPool, holoRarePool, nonHoloRarePool], true);
-        svLabel = 'Ultra Rare (Full Art)';
-      } else if (svRoll < 0.25) {
-        svHit = getFromPool(vPool, [fullArtPool, holoRarePool, nonHoloRarePool, pool], true);
-        svLabel = 'Double Rare (ex)';
-      } else {
-        svHit = getFromPool(holoRarePool, [nonHoloRarePool, vPool, pool], true);
-        svLabel = 'Holo Rare';
-      }
-      selectedSlots.push({ summary: svHit, defaultRarity: svLabel });
-    }
-  } else if (isSMEra) {
-    // --- Sun & Moon Series ---
-    // Total Cards per Pack: 11
-    // Slot 1: Basic Energy (1 card)
-    const basicEnergy = await fetchBasicEnergyCard('sm');
-    selectedSlots.push({ summary: basicEnergy, defaultRarity: 'Basic Energy' });
-
-    // Slot 2-6: Common (5 cards)
-    for (let i = 0; i < 5; i++) {
-      selectedSlots.push({ summary: getFromPool(commonPool, [[...uncommonPool, ...pool]]), defaultRarity: 'Common' });
-    }
-
-    // Slot 6-8: Uncommon (3 cards)
-    for (let i = 0; i < 3; i++) {
-      selectedSlots.push({ summary: getFromPool(uncommonPool, [commonPool, pool]), defaultRarity: 'Uncommon' });
-    }
-
-    // Slot 9: Reverse Holo (OR Prism Star / Character Rare / Shiny Vault) (1 card)
-    if (isCosmicEclipse && characterRarePool.length > 0 && Math.random() < 0.16) {
-      selectedSlots.push({ summary: getFromPool(characterRarePool, [reverseHoloPool, pool], true), isReverseHolo: false, defaultRarity: 'Character Rare (CHR)' });
-    } else if (isPrismStarSet && prismStarPool.length > 0 && Math.random() < 0.083) {
-      selectedSlots.push({ summary: getFromPool(prismStarPool, [reverseHoloPool, pool], true), isReverseHolo: false, defaultRarity: 'Prism Star ♢' });
-    } else if (galleryPool.length > 0 && Math.random() < (isShinyVaultSet ? 0.25 : 0.125)) {
-      selectedSlots.push({ summary: getFromPool(galleryPool, [reverseHoloPool, pool], true), isReverseHolo: false, defaultRarity: 'Shiny Vault' });
-    } else {
-      selectedSlots.push({ summary: getFromPool(reverseHoloPool, [pool]), isReverseHolo: true, defaultRarity: 'Reverse Holo' });
-    }
-
-    // Slot 10: Rare or better (Regular Rare, Holo Rare, GX, Full Art, Secret Rare, etc.) (1 card)
-    const smRoll = Math.random();
-    let smHit: TCGDexCardSummary;
-    let smLabel = 'Non-Holo Rare';
-
-    if (smRoll < 0.012) {
-      smHit = getFromPool(goldSecretPool, [rainbowSecretPool, fullArtPool, vPool, holoRarePool], true);
-      smLabel = 'Secret Rare';
-    } else if (smRoll < 0.025) {
-      smHit = getFromPool(rainbowSecretPool, [goldSecretPool, fullArtPool, vPool, holoRarePool], true);
-      smLabel = 'Rainbow Rare';
-    } else if (smRoll < 0.05) {
-      smHit = getFromPool(fullArtPool, [vPool, holoRarePool, nonHoloRarePool], true);
-      smLabel = 'Full Art';
-    } else if (smRoll < 0.20) {
-      smHit = getFromPool(vPool, [fullArtPool, holoRarePool, nonHoloRarePool], true);
-      smLabel = (smHit?.name || '').includes('TAG TEAM') ? 'TAG TEAM GX' : 'Pokémon-GX';
-    } else if (smRoll < 0.36) {
-      smHit = getFromPool(holoRarePool, [nonHoloRarePool, vPool, pool], true);
-      smLabel = 'Holo Rare';
-    } else {
-      smHit = getFromPool(nonHoloRarePool, [holoRarePool, pool], true);
-      smLabel = 'Non-Holo Rare';
-    }
-    selectedSlots.push({ summary: smHit, defaultRarity: smLabel });
-  } else if (isXYEra) {
-    // --- XY Series ---
-    // Total Cards per Pack: 10
-    // Slot 1: Basic Energy (XY Era) (1 card)
-    const basicEnergy = await fetchBasicEnergyCard('xy');
-    selectedSlots.push({ summary: basicEnergy, defaultRarity: 'Basic Energy' });
-
-    // Slot 2-5: Common (4 cards)
-    for (let i = 0; i < 4; i++) {
-      selectedSlots.push({ summary: getFromPool(commonPool, [[...uncommonPool, ...pool]]), defaultRarity: 'Common' });
-    }
-
-    // Slot 6-8: Uncommon (3 cards)
-    for (let i = 0; i < 3; i++) {
-      selectedSlots.push({ summary: getFromPool(uncommonPool, [commonPool, pool]), defaultRarity: 'Uncommon' });
-    }
-
-    // Slot 9: Reverse Holo (OR Pokémon BREAK) (1 card)
-    if (isBreakSet && breakPool.length > 0 && Math.random() < 0.055) {
-      selectedSlots.push({ summary: getFromPool(breakPool, [reverseHoloPool, pool], true), isReverseHolo: false, defaultRarity: 'Pokémon BREAK' });
-    } else {
-      selectedSlots.push({ summary: getFromPool(reverseHoloPool, [pool]), isReverseHolo: true, defaultRarity: 'Reverse Holo' });
-    }
-
-    // Slot 10: Rare or better (Regular Rare, Holo Rare, EX, Mega EX, Full Art, Secret Rare, etc.) (1 card)
-    const xyRoll = Math.random();
-    let xyHit: TCGDexCardSummary;
-    let xyLabel = 'Non-Holo Rare';
-
-    if (xyRoll < 0.01) {
-      xyHit = getFromPool(goldSecretPool, [rainbowSecretPool, fullArtPool, vPool, holoRarePool], true);
-      xyLabel = 'Secret Rare';
-    } else if (xyRoll < 0.035) {
-      xyHit = getFromPool(fullArtPool, [vPool, holoRarePool, nonHoloRarePool], true);
-      xyLabel = 'Full Art EX';
-    } else if (xyRoll < 0.12) {
-      xyHit = getFromPool(vPool, [fullArtPool, holoRarePool, nonHoloRarePool], true);
-      xyLabel = (xyHit?.name || '').startsWith('M ') || (xyHit?.name || '').includes('Mega') ? 'Mega Evolution EX' : 'Pokémon EX';
-    } else if (xyRoll < 0.33) {
-      xyHit = getFromPool(holoRarePool, [nonHoloRarePool, vPool, pool], true);
-      xyLabel = 'Holo Rare';
-    } else {
-      xyHit = getFromPool(nonHoloRarePool, [holoRarePool, pool], true);
-      xyLabel = 'Non-Holo Rare';
-    }
-    selectedSlots.push({ summary: xyHit, defaultRarity: xyLabel });
-  } else if (isBaseEra) {
-    // --- Original Base / Vintage WOTC Series ---
-    // Total Cards per Pack: 11
-    // Slot 1: Basic Energy (1 card)
-    const baseEnergy = await fetchBasicEnergyCard('base');
-    selectedSlots.push({ summary: baseEnergy, defaultRarity: 'Basic Energy' });
-
-    // Slot 2-6: Common (5 cards)
-    for (let i = 0; i < 5; i++) {
-      selectedSlots.push({ summary: getFromPool(commonPool, [[...uncommonPool, ...pool]]), defaultRarity: 'Common' });
-    }
-
-    // Slot 7-9: Uncommon (3 cards)
-    for (let i = 0; i < 3; i++) {
-      selectedSlots.push({ summary: getFromPool(uncommonPool, [commonPool, pool]), defaultRarity: 'Uncommon' });
-    }
-
-    // Slot 10: Trainer / Energy (1 card)
-    const trainerPool = pool.filter(c => c.name.includes('Energy') || c.name.includes('Trainer') || c.name.includes('Professor') || c.name.includes('Bill') || c.name.includes('Potion'));
-    if (Math.random() < 0.35 || trainerPool.length === 0) {
-      const extraEnergy = await fetchBasicEnergyCard('base');
-      selectedSlots.push({ summary: extraEnergy, defaultRarity: 'Basic Energy' });
-    } else {
-      selectedSlots.push({ summary: getFromPool(trainerPool, [uncommonPool, commonPool, pool]), defaultRarity: 'Trainer / Energy' });
-    }
-
-    // Slot 11: Rare (Holo Rare ~33%, Non-Holo Rare ~66%, Secret Rare ~1%) (1 card)
-    const baseRoll = Math.random();
-    let baseHit: TCGDexCardSummary;
-    let baseLabel = 'Non-Holo Rare';
-
-    if (baseRoll < 0.015 && goldSecretPool.length > 0) {
-      baseHit = getFromPool(goldSecretPool, [holoRarePool, nonHoloRarePool, pool], true);
-      baseLabel = 'Secret Rare';
-    } else if (baseRoll < 0.34 && holoRarePool.length > 0) {
-      baseHit = getFromPool(holoRarePool, [nonHoloRarePool, pool], true);
-      baseLabel = 'Holo Rare';
-    } else {
-      baseHit = getFromPool(nonHoloRarePool, [holoRarePool, pool], true);
-      baseLabel = 'Non-Holo Rare';
-    }
-    selectedSlots.push({ summary: baseHit, defaultRarity: baseLabel });
-  } else {
-    // --- Sword & Shield Series / Mainline Structure ---
-    // Total Cards per Pack: 11
-    // Slot 1: Basic Energy (1 card)
-    const basicEnergy = await fetchBasicEnergyCard('swsh');
-    if (isCrownZenith && Math.random() < 0.20) {
-      selectedSlots.push({ summary: basicEnergy, isReverseHolo: true, defaultRarity: 'Textured Foil Energy' });
-    } else {
-      selectedSlots.push({ summary: basicEnergy, defaultRarity: 'Basic Energy' });
-    }
-
-    // Slot 2-6: Common (5 cards)
-    for (let i = 0; i < 5; i++) {
-      selectedSlots.push({ summary: getFromPool(commonPool, [[...uncommonPool, ...pool]]), defaultRarity: 'Common' });
-    }
-
-    // Slot 6-8: Uncommon (3 cards)
-    for (let i = 0; i < 3; i++) {
-      selectedSlots.push({ summary: getFromPool(uncommonPool, [commonPool, pool]), defaultRarity: 'Uncommon' });
-    }
-
-    // Slot 9: Reverse Holo (OR Subset card e.g., Trainer Gallery, Shiny Vault, Galarian Gallery) (1 card)
-    if (isCrownZenith && galleryPool.length > 0 && Math.random() < 0.25) {
-      selectedSlots.push({ summary: getFromPool(galleryPool, [reverseHoloPool, pool], true), isReverseHolo: false, defaultRarity: 'Galarian Gallery' });
-    } else if ((isTrainerGallerySet || isShinyVaultSet) && galleryPool.length > 0 && Math.random() < (isShinyVaultSet ? 0.25 : 0.125)) {
-      const hit = getFromPool(galleryPool, [reverseHoloPool, pool], true);
-      const isShiny = isShinyVaultSet || (hit.localId || '').startsWith('SV') || (hit.id || '').includes('-sv') || (hit.rarity || '').toLowerCase().includes('shiny');
-      selectedSlots.push({ summary: hit, isReverseHolo: false, defaultRarity: isShiny ? 'Shiny Vault' : 'Trainer Gallery' });
-    } else {
-      selectedSlots.push({ summary: getFromPool(reverseHoloPool, [pool]), isReverseHolo: true, defaultRarity: 'Reverse Holo' });
-    }
-
-    // Slot 10: Rare or better (Regular Rare, Holo Rare, V, VMAX, VSTAR, Full Art, Secret Rare, etc.) (1 card)
-    const roll = Math.random();
-    let rareHit: TCGDexCardSummary;
-    let rareRarityLabel = 'Non-Holo Rare';
-
-    if (roll < 0.010) {
-      rareHit = getFromPool(goldSecretPool, [rainbowSecretPool, fullArtPool, vmaxPool, vPool, holoRarePool], true);
-      rareRarityLabel = 'Gold Secret Rare';
-    } else if (roll < 0.024) {
-      rareHit = getFromPool(rainbowSecretPool, [goldSecretPool, fullArtPool, vmaxPool, vPool, holoRarePool], true);
-      rareRarityLabel = 'Rainbow Rare';
-    } else if (roll < 0.049) {
-      rareHit = getFromPool(fullArtPool, [vmaxPool, vPool, holoRarePool, nonHoloRarePool], true);
-      rareRarityLabel = 'Full Art';
-    } else if (roll < 0.089) {
-      rareHit = getFromPool(vmaxPool, [vPool, fullArtPool, holoRarePool, nonHoloRarePool], true);
-      rareRarityLabel = (rareHit?.name || '').includes('VSTAR') ? 'Pokémon VSTAR' : 'Pokémon VMAX';
-    } else if (roll < 0.214) {
-      rareHit = getFromPool(vPool, [vmaxPool, fullArtPool, holoRarePool, nonHoloRarePool], true);
-      rareRarityLabel = 'Pokémon V';
-    } else if (roll < 0.374) {
-      rareHit = getFromPool(holoRarePool, [nonHoloRarePool, vPool, pool], true);
-      rareRarityLabel = 'Holo Rare';
-    } else {
-      rareHit = getFromPool(nonHoloRarePool, [holoRarePool, pool], true);
-      rareRarityLabel = 'Non-Holo Rare';
-    }
-    selectedSlots.push({ summary: rareHit, defaultRarity: rareRarityLabel });
+  const boxKey = set.id;
+  let boxEntry = englishBoxCache.get(boxKey);
+  if (!boxEntry || boxEntry.index >= boxEntry.packs.length) {
+    const packs = await buildEnglishPacks({
+      set,
+      pool,
+      currentEra,
+      boxEra,
+      commonPool,
+      uncommonPool,
+      nonHoloRarePool,
+      holoRarePool,
+      vPool,
+      fullArtPool,
+      vmaxPool,
+      rainbowSecretPool,
+      goldSecretPool,
+      irPool,
+      sirPool,
+      prismStarPool,
+      characterRarePool,
+      galleryPool,
+      reverseHoloPool,
+      isCosmicEclipse,
+      isShinyVaultSet,
+      isTrainerGallerySet,
+      isCrownZenith,
+    });
+    boxEntry = { index: 0, packs };
+    englishBoxCache.set(boxKey, boxEntry);
   }
+
+  const selectedSlots: EnglishBoxSlotData[] = boxEntry.packs[boxEntry.index++].slots;
 
   // Synchronously format pack cards in 0ms so pack opening never blocks on network queries!
   const cards: PokemonCard[] = selectedSlots.map((slot, idx) => {
