@@ -1,45 +1,5 @@
 [
   {
-    "id": "me01",
-    "name": "メガシンカ",
-    "cardCount": {
-      "total": 100,
-      "official": 100
-    }
-  },
-  {
-    "id": "me02",
-    "name": "幻影の炎",
-    "cardCount": {
-      "total": 100,
-      "official": 100
-    }
-  },
-  {
-    "id": "me02.5",
-    "name": "アセンデッドヒーローズ",
-    "cardCount": {
-      "total": 100,
-      "official": 100
-    }
-  },
-  {
-    "id": "me03",
-    "name": "パーフェクトオーダー",
-    "cardCount": {
-      "total": 100,
-      "official": 100
-    }
-  },
-  {
-    "id": "me04",
-    "name": "カオスライジング",
-    "cardCount": {
-      "total": 100,
-      "official": 100
-    }
-  },
-  {
     "id": "PMCG1",
     "name": "拡張パック",
     "cardCount": {

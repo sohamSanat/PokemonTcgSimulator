@@ -300,7 +300,10 @@ export function getJapaneseSetDefaultLogo(setId: string): string {
     if (num > 12) num = 12;
     return `https://images.scrydex.com/pokemon/swsh${num}_ja-logo/logo`;
   }
-  if (rawId.startsWith('XY') || rawId.startsWith('CP') || rawId.startsWith('M')) {
+  if (rawId.match(/^M\d/)) {
+    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
+  }
+  if (rawId.startsWith('XY') || rawId.startsWith('CP')) {
     const numMatch = rawId.match(/^XY(\d+)/i);
     let num = numMatch ? parseInt(numMatch[1], 10) : 2;
     if (num === 1 || num === 5 || num === 12 || isNaN(num)) num = 2;
@@ -335,7 +338,10 @@ export function getJapaneseSetDefaultSymbol(setId: string): string {
     if (num > 12) num = 12;
     return `https://images.scrydex.com/pokemon/swsh${num}_ja-symbol/symbol`;
   }
-  if (rawId.startsWith('XY') || rawId.startsWith('CP') || rawId.startsWith('M')) {
+  if (rawId.match(/^M\d/)) {
+    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
+  }
+  if (rawId.startsWith('XY') || rawId.startsWith('CP')) {
     const numMatch = rawId.match(/^XY(\d+)/i);
     let num = numMatch ? parseInt(numMatch[1], 10) : 2;
     if (num === 1 || num === 5 || num === 12 || isNaN(num)) num = 2;
@@ -359,7 +365,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   const filteredSets = allSets.filter(s => {
     const id = s.id;
     if (seriesId === 'me_ja') {
-      return id.toLowerCase().startsWith('me');
+      return !!id.match(/^M\d/);
     }
     if (seriesId === 'sv_ja') {
       if (id.startsWith('SVK') || id.startsWith('SVLS') || id.startsWith('SVLN')) return false;
@@ -374,7 +380,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
       return id.startsWith('SM') || id.startsWith('SMP');
     }
     if (seriesId === 'xy_ja') {
-      return id.startsWith('XY') || id.startsWith('CP') || id.startsWith('M');
+      return id.startsWith('XY') || id.startsWith('CP');
     }
     if (seriesId === 'bw_ja') {
       return id.startsWith('BW') || id.startsWith('CS') || id.startsWith('CSA');
