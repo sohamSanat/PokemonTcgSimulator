@@ -913,9 +913,15 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
           slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
         }
       }
-      // 5) R (Holo Rare): ~20 or 21 fills remaining Slot 5s up to 30
-      while (slotPulls.length < packCountPerBox) {
+      // 5) R (Holo Rare): ~12 Guaranteed
+      let rCount = 12;
+      while (rCount > 0 && slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+        rCount--;
+      }
+      // 6) Uncommon: Fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
       }
     } else if (era === 'swsh') {
       // 1) SR, HR, or UR: 1 Guaranteed
@@ -945,9 +951,15 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
           slotPulls.push({ summary: getFrom(characterRares, pool, undefined, true), defaultRarity: 'CHR (Character Rare)' });
         }
       }
-      // 4) R (Holo Rare): ~22 fills remaining Slot 5s up to 30
-      while (slotPulls.length < packCountPerBox) {
+      // 4) R (Holo Rare): ~8 Guaranteed
+      let rCount = 8;
+      while (rCount > 0 && slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+        rCount--;
+      }
+      // 5) Uncommon: Fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
       }
     } else if (era === 'sm') {
       // 1) SR, HR, or UR: 1 Guaranteed
@@ -962,9 +974,15 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
           slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'RR (Double Rare)' });
         }
       }
-      // 3) R (Holo Rare): ~25 fills remaining Slot 5s up to 30
-      while (slotPulls.length < packCountPerBox) {
+      // 3) R (Holo Rare): ~11 Guaranteed
+      let rCount = 11;
+      while (rCount > 0 && slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+        rCount--;
+      }
+      // 4) Uncommon: Fills remaining Slot 5s up to 30
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
       }
     } else {
       // Classic / Older Eras
@@ -974,8 +992,13 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       if (doubleRares.length > 0) {
         for (let i = 0; i < exCount; i++) slotPulls.push({ summary: getFrom(doubleRares, pool, undefined, true), defaultRarity: 'Double Rare / EX' });
       }
-      while (slotPulls.length < packCountPerBox) {
+      let rCount = packCountPerBox === 30 ? 11 : 6;
+      while (rCount > 0 && slotPulls.length < packCountPerBox) {
         slotPulls.push({ summary: getFrom(rares), defaultRarity: 'R (Holo Rare)' });
+        rCount--;
+      }
+      while (slotPulls.length < packCountPerBox) {
+        slotPulls.push({ summary: getFrom(uncommons), defaultRarity: 'Uncommon' });
       }
     }
   } else {
@@ -1099,7 +1122,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       usedIds.add(card4.id);
       slots.push({ summary: card4, defaultRarity: 'Uncommon' });
       
-      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: seededHit.defaultRarity !== 'Uncommon' });
       
       packs.push({ slots, isGodPack: false });
     } else if (config.rawId === 'sv2a') {
