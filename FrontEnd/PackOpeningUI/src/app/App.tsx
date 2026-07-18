@@ -1591,12 +1591,23 @@ export default function App() {
         } catch { }
       }
       previousUserRef.current = currentUser?.uid;
+      // Reset the "loaded from Firebase" flag + last-synced stats for the new
+      // user. Otherwise the save effect below would treat the PREVIOUS user's
+      // in-memory stats as if they belonged to the new user and persist them
+      // (both to localStorage and Firestore), leaking Account A's revenue into
+      // Account B during the transition render.
+      lastSyncedStatsRef.current = { sessionTotal: -1, packCount: -1, sessionSpent: -1 };
+      setHasLoadedFromFirebase(false);
     }
   }, [currentUser?.uid]);
 
   // Listen for Firebase Stats sync
   useEffect(() => {
     if (!currentUser) return;
+    // Start unloaded for this user so the save effect below cannot write the
+    // previous user's stats into this user's Firestore document before we've
+    // received this user's actual snapshot.
+    setHasLoadedFromFirebase(false);
     const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
       console.log('App.tsx: Received snapshot from Firebase', docSnap.exists() ? docSnap.data() : 'NOT EXISTS');
       setHasLoadedFromFirebase(true);
@@ -1627,12 +1638,17 @@ export default function App() {
 
   // Save stats to LocalStorage (as fallback) and Firebase
   useEffect(() => {
+    // NEVER persist while logged out. When currentUser is null, getStorageKey
+    // falls back to the non-namespaced GUEST key, which would leak the previous
+    // account's stats into the shared guest slot and later into a brand-new
+    // account via the guest->account migration. Wait until a real user is set.
+    if (!currentUser) return;
     try {
-      localStorage.setItem(getStorageKey('tcg_session_total', currentUser?.uid), sessionTotal.toString());
-      localStorage.setItem(getStorageKey('tcg_session_pack_count', currentUser?.uid), packCount.toString());
-      localStorage.setItem(getStorageKey('tcg_session_spent', currentUser?.uid), sessionSpent.toString());
+      localStorage.setItem(getStorageKey('tcg_session_total', currentUser.uid), sessionTotal.toString());
+      localStorage.setItem(getStorageKey('tcg_session_pack_count', currentUser.uid), packCount.toString());
+      localStorage.setItem(getStorageKey('tcg_session_spent', currentUser.uid), sessionSpent.toString());
 
-      if (currentUser && hasLoadedFromFirebase) {
+      if (hasLoadedFromFirebase) {
         // Only write if the current state differs from what we just received from Firebase
         const isFromFirebase =
           sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
