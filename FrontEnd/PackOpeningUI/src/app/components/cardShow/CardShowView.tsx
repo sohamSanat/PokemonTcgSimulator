@@ -49,6 +49,7 @@ interface CardShowViewProps {
   onBackToPacks?: () => void;
   onInspectCard?: (card: any) => void;
   onAddNetReturn?: (amount: number) => void;
+  onSpendNetReturn?: (amount: number) => void;
 }
 
 // ── CLEAN FLOOR ROSTER ────────────────────────────────────────────────────────
@@ -263,6 +264,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   onBackToPacks,
   onInspectCard,
   onAddNetReturn,
+  onSpendNetReturn,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -821,7 +823,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   });
 
   if (showAuctionDashboard) {
-    return <AuctionDashboard onBack={() => setShowAuctionDashboard(false)} />;
+    return <AuctionDashboard onBack={() => setShowAuctionDashboard(false)} onSpendNetReturn={onSpendNetReturn} />;
   }
 
   return (

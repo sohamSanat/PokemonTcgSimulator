@@ -62,10 +62,16 @@ export async function syncToFirestore() {
     const cards = getCollectedCards();
     const binders = getBinders();
     const catalogues = getCatalogues();
+    const cash = getCash();
+    const netTotal = parseFloat(localStorage.getItem(getStorageKey('tcg_session_total')) || '0') || 0;
+    const netSpent = parseFloat(localStorage.getItem(getStorageKey('tcg_session_spent')) || '0') || 0;
     await setDoc(doc(db, 'users', auth.currentUser.uid), {
       cards,
       binders,
       catalogues,
+      cash,
+      netTotal,
+      netSpent,
       lastUpdated: new Date().toISOString()
     }, { merge: true });
   } catch (e) {
@@ -106,7 +112,7 @@ export function listenToFirestore(uid: string | null) {
           const uidKey = getStorageKey(baseKey, uid);
           const currentUidStr = localStorage.getItem(uidKey);
 
-          // If Firebase has data, use it
+          // If Firebase has data, use it (per-account, isolated by uid)
           if (firebaseData) {
             const fbStr = JSON.stringify(firebaseData);
             if (currentUidStr !== fbStr) {
@@ -114,9 +120,12 @@ export function listenToFirestore(uid: string | null) {
               changed = true;
             }
           }
-          // If Firebase is empty, but guest has data, migrate guest data!
+          // If Firebase is empty but guest/local cache has data, migrate it ONCE
+          // into THIS account, then CONSUME the guest key so it is never
+          // re-migrated into a *different* account later (blank-slate guarantee).
           else if (guestDataStr && guestDataStr !== '[]' && guestDataStr !== '{}') {
             localStorage.setItem(uidKey, guestDataStr);
+            localStorage.removeItem(baseKey);
             changed = true;
             needsSync = true;
           }
@@ -125,6 +134,9 @@ export function listenToFirestore(uid: string | null) {
         mergeGuestData('tcg_my_collection', data?.cards);
         mergeGuestData('tcg_binders', data?.binders);
         mergeGuestData('tcg_catalogues', data?.catalogues);
+        mergeGuestData('tcg_cash', data?.cash);
+        mergeGuestData('tcg_session_total', data?.netTotal);
+        mergeGuestData('tcg_session_spent', data?.netSpent);
 
         if (changed) {
           window.dispatchEvent(new Event('storage'));
@@ -327,13 +339,12 @@ export async function saveProfile(profile: UserProfile, forceUid?: string | null
 // Net return = value of pulled cards minus money spent on packs. This is what
 // the user has *actually* earned, so the auction uses it instead of an absurd
 // default play-money balance. Floored at 0 (you can't bid on credit).
-const SESSION_TOTAL_KEY = 'tcg_session_total';
-const SESSION_SPENT_KEY = 'tcg_session_spent';
-
+// These keys are namespaced per-account (see getStorageKey) so a user's
+// earnings NEVER carry over to a different account.
 export function getNetReturn(): number {
   try {
-    const total = parseFloat(localStorage.getItem(SESSION_TOTAL_KEY) || '0');
-    const spent = parseFloat(localStorage.getItem(SESSION_SPENT_KEY) || '0');
+    const total = parseFloat(localStorage.getItem(getStorageKey('tcg_session_total')) || '0');
+    const spent = parseFloat(localStorage.getItem(getStorageKey('tcg_session_spent')) || '0');
     const net = (isFinite(total) ? total : 0) - (isFinite(spent) ? spent : 0);
     return Math.max(0, +net.toFixed(2));
   } catch {
@@ -342,11 +353,13 @@ export function getNetReturn(): number {
 }
 
 // Pay for an auction win by reducing the user's net return (raise sessionSpent).
+// Both keys are namespaced per-account so earnings never leak across accounts.
 export function spendFromNetReturn(amount: number): void {
   try {
-    const spent = parseFloat(localStorage.getItem(SESSION_SPENT_KEY) || '0') || 0;
+    const spent = parseFloat(localStorage.getItem(getStorageKey('tcg_session_spent')) || '0') || 0;
     const next = Math.max(0, spent + Math.max(0, amount));
-    localStorage.setItem(SESSION_SPENT_KEY, next.toString());
+    localStorage.setItem(getStorageKey('tcg_session_spent'), next.toString());
+    syncToFirestore();
     window.dispatchEvent(new Event('storage'));
   } catch { }
 }

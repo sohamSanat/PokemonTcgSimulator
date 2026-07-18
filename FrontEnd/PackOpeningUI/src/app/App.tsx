@@ -10,7 +10,7 @@ import { sound } from './services/sound';
 import { generateVendorReply } from './services/geminiVendorChat';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
-import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, type CatalogueStore, type Binder, type Card } from './components/binder/types';
+import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, getStorageKey, type CatalogueStore, type Binder, type Card } from './components/binder/types';
 import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
@@ -1551,19 +1551,19 @@ export default function App() {
 
   const [sessionTotal, setSessionTotal] = useState(() => {
     try {
-      const saved = localStorage.getItem('tcg_session_total');
+      const saved = localStorage.getItem(getStorageKey('tcg_session_total', currentUser?.uid));
       return saved !== null ? Number(saved) : 0;
     } catch { return 0; }
   });
   const [packCount, setPackCount] = useState(() => {
     try {
-      const saved = localStorage.getItem('tcg_session_pack_count');
+      const saved = localStorage.getItem(getStorageKey('tcg_session_pack_count', currentUser?.uid));
       return saved !== null ? Number(saved) : 0;
     } catch { return 0; }
   });
   const [sessionSpent, setSessionSpent] = useState(() => {
     try {
-      const saved = localStorage.getItem('tcg_session_spent');
+      const saved = localStorage.getItem(getStorageKey('tcg_session_spent', currentUser?.uid));
       return saved !== null ? Number(saved) : 0;
     } catch { return 0; }
   });
@@ -1605,9 +1605,9 @@ export default function App() {
   // Save stats to LocalStorage (as fallback) and Firebase
   useEffect(() => {
     try {
-      localStorage.setItem('tcg_session_total', sessionTotal.toString());
-      localStorage.setItem('tcg_session_pack_count', packCount.toString());
-      localStorage.setItem('tcg_session_spent', sessionSpent.toString());
+      localStorage.setItem(getStorageKey('tcg_session_total', currentUser?.uid), sessionTotal.toString());
+      localStorage.setItem(getStorageKey('tcg_session_pack_count', currentUser?.uid), packCount.toString());
+      localStorage.setItem(getStorageKey('tcg_session_spent', currentUser?.uid), sessionSpent.toString());
 
       if (currentUser && hasLoadedFromFirebase) {
         // Only write if the current state differs from what we just received from Firebase
@@ -2290,9 +2290,9 @@ export default function App() {
   const handleResetStats = () => {
     sound.playButtonClick();
     try {
-      localStorage.removeItem('tcg_session_total');
-      localStorage.removeItem('tcg_session_pack_count');
-      localStorage.removeItem('tcg_session_spent');
+      localStorage.removeItem(getStorageKey('tcg_session_total', currentUser?.uid));
+      localStorage.removeItem(getStorageKey('tcg_session_pack_count', currentUser?.uid));
+      localStorage.removeItem(getStorageKey('tcg_session_spent', currentUser?.uid));
     } catch { }
     setSessionTotal(0);
     setPackCount(0);
@@ -2608,6 +2608,7 @@ export default function App() {
             initialShowAuction={activeTab === 'auctions'}
             onBackToPacks={() => setActiveTab('pack')}
             onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
+            onSpendNetReturn={(amt) => setSessionSpent((s) => Number((s + amt).toFixed(2)))}
             onInspectCard={(binderCard) => {
               sound.playModalOpen();
               setInspectedViewMode('art');

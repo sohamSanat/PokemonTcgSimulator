@@ -919,7 +919,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
     </div>
   );
 };
-export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?: (amount: number) => void }> = ({ onBack, onSpendNetReturn }) => {
   const [viewMode, setViewMode] = useState<'both' | 'expensive_only' | 'normal_only'>('both');
   const [pools] = useState<{ expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] }>(() => {
     const raw = getVendorAuctionPools();
@@ -1024,6 +1024,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) =
     if (walletRef.current >= price) {
       spendFromNetReturn(price);
       setWalletBalance((b) => Math.max(0, b - price));
+      onSpendNetReturn?.(price);
       const c = res.won!.card;
       const saved = saveCollectedCard({
         value: c.price,
