@@ -18,7 +18,8 @@ export let jaTopCardsCache: any[] | null = null;
 export async function loadJapaneseMetadata() {
   if (!jaTopCardsCache) {
     try {
-      const res = await fetch('/ja-top-cards.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}ja-top-cards.json`);
       if (res.ok) {
         const rawCache = await res.json();
         const seenJaIds = new Set<string>();
@@ -60,7 +61,8 @@ export async function loadJapaneseMetadata() {
   }
   if (!jaSetsCache) {
     try {
-      const res = await fetch('/ja-sets.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}ja-sets.json`);
       if (res.ok) jaSetsCache = await res.json();
     } catch (e) {
       console.error('Failed to load /ja-sets.json:', e);
@@ -68,7 +70,8 @@ export async function loadJapaneseMetadata() {
   }
   if (!jaEnNamesCache) {
     try {
-      const res = await fetch('/ja-en-names.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}ja-en-names.json`);
       if (res.ok) jaEnNamesCache = await res.json();
     } catch (e) {
       console.error('Failed to load /ja-en-names.json:', e);
@@ -76,7 +79,8 @@ export async function loadJapaneseMetadata() {
   }
   if (!jaCardNamesCache || Object.keys(jaCardNamesCache).length === 0) {
     try {
-      const res = await fetch('/ja-card-names.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}ja-card-names.json`);
       if (res.ok) {
         const data = await res.json();
         if (Object.keys(data).length > 0) {
@@ -89,7 +93,8 @@ export async function loadJapaneseMetadata() {
   }
   if (!pokeSpeciesDictCache || Object.keys(pokeSpeciesDictCache).length === 0) {
     try {
-      const res = await fetch('/pokemon-ja-en-dict.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}pokemon-ja-en-dict.json`);
       if (res.ok) {
         const data = await res.json();
         if (Object.keys(data).length > 0) {
@@ -102,7 +107,8 @@ export async function loadJapaneseMetadata() {
   }
   if (!jaCardPricesCache || Object.keys(jaCardPricesCache).length === 0) {
     try {
-      const res = await fetch('/ja-card-prices.json');
+      const base = import.meta.env.BASE_URL || '/';
+      const res = await fetch(`${base}ja-card-prices.json`);
       if (res.ok) {
         const data = await res.json();
         if (Object.keys(data).length > 0) {
@@ -266,16 +272,17 @@ export function getMaxCardNumForJapaneseSet(setId: string): number {
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
   const rawId = setId.replace(/_ja$/i, '').toUpperCase();
-  if (rawId === 'SV2A') return '/setLogos/sv2a_ja.png';
+  const base = import.meta.env.BASE_URL || '/';
+  if (rawId === 'SV2A') return `${base}setLogos/sv2a_ja.png`;
   if (rawId.startsWith('SV') || rawId.startsWith('SVK')) {
     return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
   }
-  if (rawId === 'SMP2') return '/setLogos/det1.png';
-  if (rawId === 'SM1+') return '/setLogos/sm1.png';
-  if (rawId === 'SM2+') return '/setLogos/sm2.png';
-  if (rawId === 'SM3+') return 'https://images.pokemontcg.io/sm35/logo.png';
-  if (rawId === 'SM4+') return '/setLogos/sm4.png';
-  if (rawId === 'SM5+') return '/setLogos/sm5.png';
+  if (rawId === 'SMP2') return `${base}setLogos/det1.png`;
+  if (rawId === 'SM1+') return `${base}setLogos/sm1.png`;
+  if (rawId === 'SM2+') return `${base}setLogos/sm2.png`;
+  if (rawId === 'SM3+') return `${base}setLogos/sm3.png`;
+  if (rawId === 'SM4+') return `${base}setLogos/sm4.png`;
+  if (rawId === 'SM5+') return `${base}setLogos/sm5.png`;
   if (rawId.startsWith('SM') || rawId.startsWith('SMP')) {
     return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId.toLowerCase())}_ja-logo/logo`;
   }
@@ -306,7 +313,8 @@ export function getJapaneseSetDefaultLogo(setId: string): string {
 
 export function getJapaneseSetDefaultSymbol(setId: string): string {
   const rawId = setId.replace(/_ja$/i, '').toUpperCase();
-  if (rawId === 'SV2A') return '/setLogos/sv2a_ja.png';
+  const base = import.meta.env.BASE_URL || '/';
+  if (rawId === 'SV2A') return `${base}setLogos/sv2a_ja.png`;
   if (rawId.startsWith('SV') || rawId.startsWith('SVK')) {
     return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
   }

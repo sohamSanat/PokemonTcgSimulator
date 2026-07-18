@@ -1454,7 +1454,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
               </motion.div>
             </motion.div>
           )}
-        </AnimatePresence>
+      </AnimatePresence>
       </motion.div>
     </motion.div>
   );
@@ -1718,6 +1718,10 @@ export default function App() {
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
   const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
   const [showInsufficientCashModal, setShowInsufficientCashModal] = useState<boolean>(false);
+  const [showPriceGateModal, setShowPriceGateModal] = useState<boolean>(false);
+  const [priceGateCost, setPriceGateCost] = useState<number>(0);
+  const [pendingOpenKind, setPendingOpenKind] = useState<'tear' | 'reset'>('tear');
+  const openKindRef = useRef<'tear' | 'reset'>('tear');
   const [matchId, setMatchId] = useState<string>('');
   const [binderAddedIds, setBinderAddedIds] = useState<Set<string | number>>(new Set());
   const [binderSelectModal, setBinderSelectModal] = useState<{ cards: CardData[]; setName: string; isMove?: boolean } | null>(null);
@@ -1770,12 +1774,13 @@ export default function App() {
   const [tearProgress, setTearProgress] = useState<number>(0);
 
   useEffect(() => {
-    fetch('/packArts/manifest.json?v=3')
+    const base = import.meta.env.BASE_URL || '/';
+    fetch(`${base}packArts/manifest.json?v=3`)
       .then(res => res.ok ? res.json() : {})
       .then(data => setPackArtsManifest(data))
       .catch(() => { });
 
-    fetch('/setLogos/manifest.json?v=3')
+    fetch(`${base}setLogos/manifest.json?v=3`)
       .then(res => res.ok ? res.json() : {})
       .then(data => setSetLogosManifest(data))
       .catch(() => { });
@@ -1953,8 +1958,9 @@ export default function App() {
     if (next) sound.playButtonClick();
   };
 
-  const handleTearPack = () => {
+  const handleTearPack = (skipGate: boolean = false) => {
     if (packStage !== 'unopened') return;
+    openKindRef.current = 'tear';
 
     const setPrice = getSetBoosterPrice(currentSet);
     const isFreeEligible = setPrice <= 20;
@@ -1985,6 +1991,13 @@ export default function App() {
           wasPaidPack = false; // Used daily cash/net return, not paid
         }
       }
+    } else if (!skipGate) {
+      // Pack costs more than $20, so it isn't covered by the free daily allowance.
+      // Show a price-gate popup that lets the user pay to open it.
+      setPriceGateCost(setPrice);
+      setPendingOpenKind(openKindRef.current);
+      setShowPriceGateModal(true);
+      return;
     } else {
       // Not eligible for free packs, check daily cash + net return
       [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
@@ -2261,8 +2274,9 @@ export default function App() {
     });
   };
 
-  const handleResetPack = async () => {
+  const handleResetPack = async (skipGate: boolean = false) => {
     if (!currentSet) return;
+    openKindRef.current = 'reset';
     const setPrice = getSetBoosterPrice(currentSet);
     const isFreeEligible = setPrice <= 20;
     const setLanguage = selectedLanguage; // 'en' or 'ja'
@@ -2292,6 +2306,13 @@ export default function App() {
           wasPaidPack = false; // Used daily cash/net return, not paid
         }
       }
+    } else if (!skipGate) {
+      // Pack costs more than $20, so it isn't covered by the free daily allowance.
+      // Show a price-gate popup that lets the user pay to open it.
+      setPriceGateCost(setPrice);
+      setPendingOpenKind(openKindRef.current);
+      setShowPriceGateModal(true);
+      return;
     } else {
       // Not eligible for free packs, check daily cash + net return
       [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
@@ -2342,6 +2363,16 @@ export default function App() {
       }
     } else {
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet));
+    }
+  };
+
+  const confirmPayPack = () => {
+    const kind = pendingOpenKind;
+    setShowPriceGateModal(false);
+    if (kind === 'reset') {
+      void handleResetPack(true);
+    } else {
+      handleTearPack(true);
     }
   };
 
@@ -2907,7 +2938,7 @@ export default function App() {
                   Reset Stats
                 </button>
                 <button
-                  onClick={handleResetPack}
+                  onClick={() => { void handleResetPack(); }}
                   disabled={isLoadingPack}
                   className="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] hover:shadow-[0_6px_30px_rgba(245,158,11,0.8)] hover:from-amber-400 hover:to-orange-400 transition-all border border-amber-300/50 cursor-pointer active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shrink-0"
                 >
@@ -3650,6 +3681,58 @@ export default function App() {
             } : undefined}
             isAddedToBinder={inspectedCard ? binderAddedIds.has(inspectedCard.id as number) : false}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Price Gate Modal for packs over the $20 daily allowance */}
+      <AnimatePresence>
+        {showPriceGateModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPriceGateModal(false)}
+            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#1c1c2e] via-[#141422] to-[#0e0e18] border border-amber-500/50 shadow-[0_0_50px_rgba(245,158,11,0.3)] p-6 text-center relative overflow-hidden"
+            >
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 border-2 border-white flex items-center justify-center text-white mx-auto mb-4 shadow-[0_0_25px_rgba(245,158,11,0.6)] animate-pulse">
+                <Coins className="w-8 h-8" />
+              </div>
+
+              <h2 className="text-2xl font-black text-white tracking-tight mb-3">
+                Pack exceeds $20 allowance
+              </h2>
+              <p className="text-sm text-gray-300 font-medium mb-3 leading-relaxed">
+                This pack is not covered by the daily allowance as its price is more than 20 dollars
+              </p>
+              <p className="text-sm text-gray-400 font-medium mb-6 leading-relaxed">
+                Pay ${priceGateCost.toFixed(2)} to open
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setShowPriceGateModal(false)}
+                  className="flex-1 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-gray-300 font-bold text-xs uppercase transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={confirmPayPack}
+                  className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.5)] transition-all cursor-pointer"
+                >
+                  Pay ${priceGateCost.toFixed(2)} to open
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
