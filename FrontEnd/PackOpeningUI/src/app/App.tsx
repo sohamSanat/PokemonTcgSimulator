@@ -225,12 +225,23 @@ const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined
   if (setPackPrices[normName] && typeof setPackPrices[normName] === 'number') return setPackPrices[normName];
 
   for (const [key, price] of Object.entries(setPackPrices)) {
-    if (typeof price === 'number' && (key.toLowerCase() === normId || key.toLowerCase() === normName || key.toLowerCase().replace(/[^a-z0-9]/g, '') === normName)) {
-      return price;
+    if (typeof price === 'number') {
+      const normKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (key.toLowerCase() === normId || key.toLowerCase() === normName || normKey === normName || normKey === normId) {
+        return price;
+      }
     }
   }
 
   // 3. Dynamic fallback estimation based on set age / series if unknown set
+  if (id.includes('_ja') || id.includes('ja')) {
+    if (id.startsWith('sv')) return 2.49;
+    if (id.startsWith('s') || id.startsWith('swsh')) return 3.49;
+    if (id.startsWith('sm')) return 5.99;
+    if (id.startsWith('xy') || id.startsWith('bw')) return 9.99;
+    return 4.99; // default vintage/unknown japanese
+  }
+
   if (id.startsWith('me')) return 5.99;
   if (id.startsWith('swsh')) return 10.99;
   if (id.startsWith('sv')) return 6.99;
