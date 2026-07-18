@@ -1570,6 +1570,29 @@ export default function App() {
 
   const lastSyncedStatsRef = useRef({ sessionTotal: -1, packCount: -1, sessionSpent: -1 });
   const [hasLoadedFromFirebase, setHasLoadedFromFirebase] = useState(false);
+  const previousUserRef = useRef<string | undefined | null>(currentUser?.uid);
+
+  // When switching users, load target user stats to prevent leaking previous user's stats.
+  // We ONLY do this if we had a previous user. If we came from a guest (prevUid == null),
+  // we keep the state to allow Firebase migration to pick up the guest stats.
+  useEffect(() => {
+    const prevUid = previousUserRef.current;
+    if (prevUid !== currentUser?.uid) {
+      if (prevUid != null) {
+        try {
+          const savedTotal = localStorage.getItem(getStorageKey('tcg_session_total', currentUser?.uid));
+          setSessionTotal(savedTotal !== null ? Number(savedTotal) : 0);
+          
+          const savedCount = localStorage.getItem(getStorageKey('tcg_session_pack_count', currentUser?.uid));
+          setPackCount(savedCount !== null ? Number(savedCount) : 0);
+
+          const savedSpent = localStorage.getItem(getStorageKey('tcg_session_spent', currentUser?.uid));
+          setSessionSpent(savedSpent !== null ? Number(savedSpent) : 0);
+        } catch { }
+      }
+      previousUserRef.current = currentUser?.uid;
+    }
+  }, [currentUser?.uid]);
 
   // Listen for Firebase Stats sync
   useEffect(() => {
