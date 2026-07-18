@@ -382,9 +382,6 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
     if (seriesId === 'xy_ja') {
       return id.startsWith('XY') || id.startsWith('CP');
     }
-    if (seriesId === 'bw_ja') {
-      return id.startsWith('BW') || id.startsWith('CS') || id.startsWith('CSA');
-    }
     if (seriesId === 'classic_ja') {
       return id.startsWith('PMCG') || id.startsWith('neo') || id.startsWith('VS') || id.startsWith('web') || id.startsWith('E') || id.startsWith('ADV') || id.startsWith('PCG') || id.startsWith('DP') || id.startsWith('L') || id.startsWith('LL');
     }
@@ -417,7 +414,6 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   else if (seriesId === 'swsh_ja') seriesName = 'Sword & Shield';
   else if (seriesId === 'sm_ja') seriesName = 'Sun & Moon';
   else if (seriesId === 'xy_ja') seriesName = 'XY Series';
-  else if (seriesId === 'bw_ja') seriesName = 'Black & White';
   else if (seriesId === 'classic_ja') seriesName = 'Original / Base / Classic';
 
   return {

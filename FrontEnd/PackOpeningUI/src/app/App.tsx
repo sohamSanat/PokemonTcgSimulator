@@ -1475,7 +1475,6 @@ const JAPANESE_SERIES_TABS = [
   { id: 'swsh_ja', name: 'Sword & Shield' },
   { id: 'sm_ja', name: 'Sun & Moon' },
   { id: 'xy_ja', name: 'XY Series' },
-  { id: 'bw_ja', name: 'Black & White' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
 ];
 
