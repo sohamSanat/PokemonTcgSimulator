@@ -380,14 +380,6 @@
     }
   },
   {
-    "id": "CP2",
-    "name": "伝説キラコレクション",
-    "cardCount": {
-      "total": 27,
-      "official": 27
-    }
-  },
-  {
     "id": "XY8b",
     "name": "赤い閃光",
     "cardCount": {
@@ -449,22 +441,6 @@
     "cardCount": {
       "total": 54,
       "official": 54
-    }
-  },
-  {
-    "id": "CP5",
-    "name": "冷酷の反逆者",
-    "cardCount": {
-      "total": 36,
-      "official": 36
-    }
-  },
-  {
-    "id": "CP6",
-    "name": "ポケットモンスターカードゲーム 拡張パック 20th Anniversary",
-    "cardCount": {
-      "total": 87,
-      "official": 87
     }
   },
   {
