@@ -367,7 +367,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       if (cardContainer) {
         cardContainer.style.display = '';
       }
-      img.src = isJpnCard ? 'https://images.pokemontcg.io/np/47_hires.png' : 'https://images.pokemontcg.io/swsh3/19_hires.png';
+      img.src = 'https://images.pokemontcg.io/swsh3/19_hires.png';
       onCardRenderComplete(targetId);
     });
   };
@@ -581,7 +581,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     ],
     vintageJpn: [
       { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "base1_ja-4", img: "https://images.pokemontcg.io/base1/4_hires.png" },
-      { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.pokemontcg.io/np/47_hires.png" },
+      { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.pokemontcg.io/np/30_hires.png" },
       { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "neo2_ja-30", img: "https://images.pokemontcg.io/np/30_hires.png" },
       { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "fo1_ja-5", img: "https://images.pokemontcg.io/fo1/5_hires.png" },
       { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "vs_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
@@ -1028,6 +1028,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       <img
                         src={card.img}
                         alt={card.name}
+                        crossOrigin="anonymous"
                         className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
                         onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                         onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}

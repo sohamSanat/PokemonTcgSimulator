@@ -982,7 +982,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
           const res = await fetch(imgUrl, { signal: AbortSignal.timeout(3000) });
           if (res.ok) {
             const buf = await res.arrayBuffer();
-            if (buf.byteLength === 186316) {
+            if (buf.byteLength === 186316 || buf.byteLength === 350441) {
               return false; // It's the placeholder cardback!
             }
           } else {
