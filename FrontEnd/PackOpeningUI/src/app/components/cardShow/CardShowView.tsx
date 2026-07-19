@@ -365,9 +365,9 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     handleCardImageError(img, setId, num, () => {
       const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
       if (cardContainer) {
-        cardContainer.style.display = '';
+        cardContainer.style.display = 'none';
       }
-      img.src = 'https://images.pokemontcg.io/swsh3/19_hires.png';
+      setBrokenOriginalIds(prev => prev.includes(origStr) ? prev : [...prev, origStr]);
       onCardRenderComplete(targetId);
     });
   };
@@ -791,6 +791,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   // Advance sequential batch as soon as all currently visible cards have rendered (or after safety timeout)
   useEffect(() => {
     const filtered = activeVendorCards.filter((c) => {
+      if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
       const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
       if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
       if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
@@ -808,7 +809,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     if (allBatchDone) {
       setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 6));
     }
-  }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter]);
+  }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter, brokenOriginalIds]);
 
   // IntersectionObserver: immediately load any card container that scrolls into the user's viewport
   useEffect(() => {
@@ -835,6 +836,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   }, [activeVendorCards, visibleBatchLimit, searchQuery, selectedFilter]);
 
   const filteredCards = activeVendorCards.filter((c) => {
+    if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
     if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
