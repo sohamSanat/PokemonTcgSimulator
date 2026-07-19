@@ -338,7 +338,10 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   const swshScrydexId = isSwshCleanId ? `swsh${cleanId.slice(1)}` : cleanId;
 
   // Define comprehensive fallback chain of specific card scans for both modern and vintage sets
-  const specificFallbacks = isJapaneseSet ? [
+  // For Japanese sets we append the English-set equivalent (same localId) at the end: the
+  // "_ja" scans generated for SWSH/SV/SM ids (e.g. swsh7_ja-215) do not exist on
+  // Scrydex and return a placeholder card-back, so we must fall back to the real EN card.
+  const specificFallbacks = (isJapaneseSet ? [
     `${validAsset}/high.webp`,
     `${validAsset}/high.png`,
     `${validAsset}.png`,
@@ -364,7 +367,13 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
     `https://images.scrydex.com/pokemon/${setId}-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}-${num}/large`,
     `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/high.png`
-  ];
+  ]).concat(isJapaneseSet ? [
+    // Graceful degradation: if every Japanese scan is missing, show the real
+    // English-set card (same localId) rather than a placeholder card-back.
+    `https://images.scrydex.com/pokemon/${cleanId}-${num}/large`,
+    `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
+    `https://images.pokemontcg.io/${cleanId}/${num}.png`
+  ] : []);
 
   // Generic fallback cards for Pack Opening view to avoid blank frames
   const genericBackups = isJapaneseSet ? [

@@ -397,12 +397,32 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           targetId,
           isJpn
         );
-      } else {
-        onCardRenderComplete(targetId);
+        return;
       }
     } catch {
-      onCardRenderComplete(targetId);
+      // canvas tainted by CORS — fall through to byte-size check below
     }
+    // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
+    // 350441 = Japanese) for missing cards. The pixel check above only catches the
+    // blue Japanese back, so verify the byte size for Scrydex URLs before declaring done.
+    if (img.src.includes('scrydex.com')) {
+      fetch(img.src, { signal: AbortSignal.timeout(5000) })
+        .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
+        .then((buf) => {
+          if (buf.byteLength === 186316 || buf.byteLength === 350441) {
+            handleCardShowImageError(
+              { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+              targetId,
+              isJpn
+            );
+          } else {
+            onCardRenderComplete(targetId);
+          }
+        })
+        .catch(() => onCardRenderComplete(targetId));
+      return;
+    }
+    onCardRenderComplete(targetId);
   };
 
 
