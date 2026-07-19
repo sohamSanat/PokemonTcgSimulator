@@ -403,13 +403,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // canvas tainted by CORS — fall through to byte-size check below
     }
     // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
-    // 350441 = Japanese) for missing cards. The pixel check above only catches the
-    // blue Japanese back, so verify the byte size for Scrydex URLs before declaring done.
-    if (img.src.includes('scrydex.com')) {
+    // 350441 = Japanese) for missing cards. pokemontcg.io returns a 968937 byte placeholder.
+    // The pixel check above only catches the blue Japanese back, so verify the byte size here.
+    if (img.src.includes('scrydex.com') || img.src.includes('pokemontcg.io')) {
       fetch(img.src, { signal: AbortSignal.timeout(5000) })
         .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
         .then((buf) => {
-          if (buf.byteLength === 186316 || buf.byteLength === 350441) {
+          if (buf.byteLength === 186316 || buf.byteLength === 350441 || buf.byteLength === 968937) {
             handleCardShowImageError(
               { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
               targetId,
@@ -601,8 +601,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     ],
     vintageJpn: [
       { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "base1_ja-4", img: "https://images.pokemontcg.io/base1/4_hires.png" },
-      { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.pokemontcg.io/np/30_hires.png" },
-      { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "neo2_ja-30", img: "https://images.pokemontcg.io/np/30_hires.png" },
+      { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.scrydex.com/pokemon/coro_ja-1/large" },
+      { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "neo2_ja-30", img: "https://images.scrydex.com/pokemon/neo2_ja-30/large" },
       { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "fo1_ja-5", img: "https://images.pokemontcg.io/fo1/5_hires.png" },
       { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "vs_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
       { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "skyridge_ja-146", img: "https://images.pokemontcg.io/ecard3/146_hires.png" },
