@@ -403,13 +403,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       // canvas tainted by CORS — fall through to byte-size check below
     }
     // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
-    // 350441 = Japanese) for missing cards. pokemontcg.io returns a 968937 byte placeholder.
-    // The pixel check above only catches the blue Japanese back, so verify the byte size here.
-    if (img.src.includes('scrydex.com') || img.src.includes('pokemontcg.io')) {
+    // 350441 = Japanese) for missing cards. The pixel check above only catches the
+    // blue Japanese back, so verify the byte size for Scrydex URLs before declaring done.
+    if (img.src.includes('scrydex.com')) {
       fetch(img.src, { signal: AbortSignal.timeout(5000) })
         .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
         .then((buf) => {
-          if (buf.byteLength === 186316 || buf.byteLength === 350441 || buf.byteLength === 968937) {
+          if (buf.byteLength === 186316 || buf.byteLength === 350441) {
             handleCardShowImageError(
               { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
               targetId,
@@ -419,7 +419,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
             onCardRenderComplete(targetId);
           }
         })
-        .catch(() => onCardRenderComplete(targetId));
+        .catch(() => {
+          // If fetch fails or times out, assume it's broken to avoid leaving placeholders
+          handleCardShowImageError(
+            { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+            targetId,
+            isJpn
+          );
+        });
       return;
     }
     onCardRenderComplete(targetId);
@@ -1050,7 +1057,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       <img
                         src={card.img}
                         alt={card.name}
-                        crossOrigin="anonymous"
                         className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
                         onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                         onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}

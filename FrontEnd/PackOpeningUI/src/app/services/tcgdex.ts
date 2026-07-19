@@ -399,18 +399,20 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
      img.dataset.errorAttempt = nextAttempt.toString();
      const targetUrl = fallbacks[nextAttempt];
      img.src = targetUrl;
-       if (targetUrl.includes('scrydex.com') || targetUrl.includes('pokemontcg.io')) {
+       if (targetUrl.includes('scrydex.com')) {
          fetch(targetUrl, { signal: AbortSignal.timeout(5000) })
            .then(r => r.ok ? r.arrayBuffer() : Promise.reject('not_ok'))
            .then(buf => {
              // scrydex serves HTTP 200 card-back placeholders at fixed byte sizes:
              // 186316 (English back) and 350441 (Japanese back).
-             // pokemontcg.io serves a 968937 byte English back as a placeholder.
-             if (buf.byteLength === 186316 || buf.byteLength === 350441 || buf.byteLength === 968937) {
+             if (buf.byteLength === 186316 || buf.byteLength === 350441) {
                handleCardImageError(img, setId, rawNum, onFailed);
              }
            })
-           .catch(() => {});
+           .catch(() => {
+             // If fetch fails or times out, assume placeholder/broken to prevent stalling
+             handleCardImageError(img, setId, rawNum, onFailed);
+           });
        }
   } else {
      if (onFailed) onFailed();
