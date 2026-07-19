@@ -281,7 +281,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [tradeTarget, setTradeTarget] = useState<any>(null);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
-  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(12);
+  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(6);
   const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
   const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
 
@@ -758,13 +758,19 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
       map[vendor.name] = cards.slice(0, 110).map((c, i) => {
         const orig = c.originalId || c.id || `${vendor.booth}-${i}`;
+        
+        // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
+        // taking into account grades and caching. We use c.price directly if available.
+        // If it's missing, we fallback to resolveVendorCardRealPrice.
+        const finalPrice = typeof c.price === 'number' ? c.price : resolveVendorCardRealPrice(c);
+
         return {
           ...c,
           id: c.id || `${vendor.booth}-${i}`,
           originalId: orig,
           setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') ? orig.split('-')[0] : 'swsh3'),
           num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1'),
-          price: resolveVendorCardRealPrice(c),
+          price: finalPrice,
         };
       });
     });
@@ -778,7 +784,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
   // Reset sequential visible batch limit when active vendor pool or search filters change
   useEffect(() => {
-    setVisibleBatchLimit(12);
+    setVisibleBatchLimit(6);
     setCompletedCardIds(new Set());
   }, [activeVendorCards, searchQuery, selectedFilter]);
 
@@ -800,12 +806,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => completedCardIds.has(c.id));
 
     if (allBatchDone) {
-      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 12));
-    } else {
-      const timer = setTimeout(() => {
-        setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 12));
-      }, 1200);
-      return () => clearTimeout(timer);
+      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 6));
     }
   }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter]);
 
