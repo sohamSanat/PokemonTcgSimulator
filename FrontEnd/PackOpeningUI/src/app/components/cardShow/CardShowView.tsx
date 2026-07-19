@@ -731,11 +731,12 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       const tryAdd = (c: any): boolean => {
         const key = c.originalId || c.id;
         if (!key || used.has(key)) return false;
+        if (brokenOriginalIds.includes(key)) return false;
         used.add(key);
         cards.push({
           ...c,
-          originalId: c.originalId || c.id,
-          id: `${vendor.booth}-${cards.length}`,
+          originalId: key,
+          id: `${vendor.booth}-${key}`,
         });
         return true;
       };
@@ -756,8 +757,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         k++;
       }
 
-      map[vendor.name] = cards.slice(0, 110).map((c, i) => {
-        const orig = c.originalId || c.id || `${vendor.booth}-${i}`;
+      map[vendor.name] = cards.slice(0, 110).map((c) => {
+        const orig = c.originalId;
         
         // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
         // taking into account grades and caching. We use c.price directly if available.
@@ -766,8 +767,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
         return {
           ...c,
-          id: c.id || `${vendor.booth}-${i}`,
-          originalId: orig,
           setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') ? orig.split('-')[0] : 'swsh3'),
           num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1'),
           price: finalPrice,
@@ -776,7 +775,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     });
 
     return map;
-  }, [metadataLoaded, pools]);
+  }, [metadataLoaded, pools, brokenOriginalIds]);
 
   const activeVendorCards = useMemo(() => {
     return vendorCardMap[selectedVendor?.name] || [];
@@ -1025,7 +1024,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
             >
               {filteredCards.map((card, i) => (
                 <div
-                  key={i}
+                  key={card.id}
                   onClick={() => {
                     if (onInspectCard) {
                       onInspectCard({
@@ -1475,7 +1474,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                   <div className="grid grid-cols-3 gap-1.5">
                     {activeVendorCards.filter(item => !brokenOriginalIds.includes(item.originalId || item.id)).slice(0, 3).map((item, i) => (
                       <div
-                        key={i}
+                        key={item.id || `grail-${i}`}
                         onClick={() => {
                           if (onInspectCard) {
                             onInspectCard({
