@@ -1507,6 +1507,8 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
           const grade = rawPrice > 120 ? "PSA 10" : rawPrice > 40 ? "PSA 9" : "Raw NM";
           const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.5).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.5).toFixed(2)) : rawPrice;
 
+          const cleanScrydexKey = key.replace(/_ja_ja/g, '_ja').replace(/-(?:0+)([0-9]+)$/, '-$1');
+
           results.push({
             id: cardId,
             setId: prefix,
@@ -1516,7 +1518,7 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
             grade: grade,
             price: displayPrice,
             change: `+${(Math.random() * 12 + 1.5).toFixed(1)}%`,
-            img: `https://images.scrydex.com/pokemon/${key}/large`
+            img: `https://images.scrydex.com/pokemon/${cleanScrydexKey}/large`
           });
         }
       }

@@ -261,7 +261,8 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   if (isJpn) {
     const isSwshCleanId = cleanSetId.startsWith('s') && !cleanSetId.startsWith('sv') && !cleanSetId.startsWith('sm') && !cleanSetId.startsWith('sn');
     const scrydexId = isSwshCleanId ? `swsh${cleanSetId.slice(1)}` : cleanSetId;
-    return `https://images.scrydex.com/pokemon/${scrydexId}_ja-${numStr}/large`;
+    const cleanNum = numStr.replace(/^0+([1-9])/, '$1');
+    return `https://images.scrydex.com/pokemon/${scrydexId}_ja-${cleanNum}/large`;
   }
 
   let seriesPrefix = 'swsh';
