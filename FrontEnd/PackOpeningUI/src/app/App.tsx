@@ -1112,7 +1112,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                         : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-400/50'
                       }`}
                   >
-                    <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
+                    <Coins className="w-4 h-4" /> Buy · Trade or Cash (${negotiatedPrice.toLocaleString()})
                   </button>
                 </div>
               )}
@@ -1207,7 +1207,7 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                           : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
                         }`}
                     >
-                      <ShoppingCart className="w-4 h-4" /> Buy now at ${negotiatedPrice.toLocaleString()}
+                      <Coins className="w-4 h-4" /> Buy · Trade or Cash (${negotiatedPrice.toLocaleString()})
                     </button>
                     <button
                       onClick={() => { sound.playButtonClick(); setShowSellerChat(true); }}
@@ -1542,8 +1542,8 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                         : 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] border border-emerald-400/50'
                       }`}
                   >
-                    <ShoppingCart className="w-4 h-4" />
-                    <span>Buy now at ${negotiatedPrice.toLocaleString()}</span>
+                    <Coins className="w-4 h-4" />
+                    <span>Buy · Trade or Cash (${negotiatedPrice.toLocaleString()})</span>
                   </button>
                 </div>
 
