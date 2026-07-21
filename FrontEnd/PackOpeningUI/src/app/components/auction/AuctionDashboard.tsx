@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X, Eye, Users } from 'lucide-react';
+import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X, Eye, Users, Package } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { getVendorAuctionPools, type AuctionPoolCard } from '../../services/auctionVendorPools';
@@ -343,6 +343,8 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 }) => {
   const [rotationX, setRotationX] = useState(0);
   const [rotationY, setRotationY] = useState(0);
+  const [loadedImg, setLoadedImg] = useState<string>('');
+  const isImageReady = Boolean(currentCard?.img && loadedImg === currentCard.img);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -571,7 +573,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             <img 
               src={currentCard.img} 
               alt={currentCard.name} 
-              className="w-full h-full object-cover" 
+              className={cn("w-full h-full object-cover transition-opacity duration-300", isImageReady ? "opacity-100" : "opacity-0")} 
               crossOrigin="anonymous"
               onLoad={(e) => {
                 const img = e.currentTarget;
@@ -585,19 +587,36 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
                     const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
                     const isCardBack = r < 50 && g < 75 && b > 90;
                     if (isCardBack) {
+                      setLoadedImg('');
                       if (onImageError) onImageError();
                       else onNextLot();
+                      return;
                     }
                   }
                 } catch (err) {
                   // Fallback: ignore
                 }
+                setLoadedImg(currentCard.img);
               }}
               onError={() => {
+                setLoadedImg('');
                 if (onImageError) onImageError();
                 else onNextLot();
               }}
             />
+            {!isImageReady && (
+              <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-lg z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
+                <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
+                  <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
+                </div>
+                <span className="text-[9px] font-mono font-bold text-[#38bdf8] tracking-wider uppercase leading-tight">
+                  Retrieving card
+                </span>
+                <span className="text-[8px] font-mono text-[#94a3b8] tracking-tight uppercase">
+                  from binder...
+                </span>
+              </div>
+            )}
           </motion.div>
 
           {/* Price & Market Value Breakdown */}
@@ -783,7 +802,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             <img 
               src={currentCard.img} 
               alt={currentCard.name} 
-              className="w-full h-full object-cover" 
+              className={cn("w-full h-full object-cover transition-opacity duration-300", isImageReady ? "opacity-100" : "opacity-0")} 
               crossOrigin="anonymous"
               onLoad={(e) => {
                 const img = e.currentTarget;
@@ -797,19 +816,36 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
                     const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
                     const isCardBack = r < 50 && g < 75 && b > 90;
                     if (isCardBack) {
+                      setLoadedImg('');
                       if (onImageError) onImageError();
                       else onNextLot();
+                      return;
                     }
                   }
                 } catch (err) {
                   // Fallback: ignore
                 }
+                setLoadedImg(currentCard.img);
               }}
               onError={() => {
+                setLoadedImg('');
                 if (onImageError) onImageError();
                 else onNextLot();
               }}
             />
+            {!isImageReady && (
+              <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-xl z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
+                <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
+                  <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
+                </div>
+                <span className="text-[9px] font-mono font-bold text-[#38bdf8] tracking-wider uppercase leading-tight">
+                  Retrieving card
+                </span>
+                <span className="text-[8px] font-mono text-[#94a3b8] tracking-tight uppercase">
+                  from binder...
+                </span>
+              </div>
+            )}
           </motion.div>
         </div>
 

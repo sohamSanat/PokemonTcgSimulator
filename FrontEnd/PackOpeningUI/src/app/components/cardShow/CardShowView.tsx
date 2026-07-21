@@ -1178,13 +1178,28 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                 >
                   <div className="w-full relative p-2 bg-black/40 rounded-t-xl min-h-[160px] flex items-center justify-center">
                     {(i < visibleBatchLimit || intersectingCardIds.has(card.id)) ? (
-                      <img
-                        src={card.img}
-                        alt={card.name}
-                        className="w-full h-auto block rounded-md filter drop-shadow-xl transition-transform duration-300 group-hover:scale-[1.02]"
-                        onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                        onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                      />
+                      <>
+                        <img
+                          src={card.img}
+                          alt={card.name}
+                          className={`w-full h-auto block rounded-md filter drop-shadow-xl transition-all duration-300 group-hover:scale-[1.02] ${completedCardIds.has(card.id) ? 'opacity-100' : 'opacity-0'}`}
+                          onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+                          onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+                        />
+                        {!completedCardIds.has(card.id) && (
+                          <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
+                            <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
+                              <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
+                            </div>
+                            <span className="text-[9px] font-mono font-bold text-[#38bdf8] tracking-wider uppercase leading-tight">
+                              Retrieving card
+                            </span>
+                            <span className="text-[8px] font-mono text-[#94a3b8] tracking-tight uppercase">
+                              from binder...
+                            </span>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="w-full aspect-[3/4] bg-gradient-to-tr from-[#111418] to-[#1e293b] rounded-md animate-pulse flex flex-col items-center justify-center border border-white/5 gap-1.5 p-2">
                         <Package className="w-5 h-5 text-[#38bdf8]/40 animate-bounce" />
@@ -1626,13 +1641,21 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       >
                         <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
                           {item.img ? (
-                            <img
-                              src={item.img}
-                              alt={item.name}
-                              className="w-full h-full object-cover"
-                              onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
-                              onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
-                            />
+                            <>
+                              <img
+                                src={item.img}
+                                alt={item.name}
+                                className={`w-full h-full object-cover transition-opacity duration-300 ${completedCardIds.has(item.id) ? 'opacity-100' : 'opacity-0'}`}
+                                onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
+                                onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
+                              />
+                              {!completedCardIds.has(item.id) && (
+                                <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
+                                  <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce mb-0.5" />
+                                  <span className="text-[7px] font-mono text-[#38bdf8] font-bold leading-tight">Retrieving...</span>
+                                </div>
+                              )}
+                            </>
                           ) : (
                             <Award className="w-3.5 h-3.5 text-amber-400" />
                           )}
