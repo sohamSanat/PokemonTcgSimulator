@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards, resolveVendorCardRealPrice } from "../../services/scrydex";
-import { handleCardImageError } from "../../services/tcgdex";
+import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards, resolveVendorCardRealPrice, cacheEnglishPrice } from "../../services/scrydex";
+import { handleCardImageError, fetchCardFull } from "../../services/tcgdex";
 import {
   Menu,
   Search,
@@ -108,26 +108,12 @@ const VENDORS: VendorDef[] = [
     discountScore: 75,
   },
   {
-    id: "alpha",
-    name: "ALPHA GRAILS",
-    booth: "5A",
-    type: "vendor",
-    category: "slab",
-    x: 320, y: 45, w: 85, h: 80,
-    color: "#38bdf8",
-    rating: "4.9 / 5",
-    activeListings: "4,200+ Items",
-    completedTrans: "19,500+",
-    specialties: ["WOTC Sealed", "1st Ed Base", "Trophy Cards"],
-    discountScore: 82,
-  },
-  {
     id: "modernalt",
     name: "MODERN ALT ART VAULT",
     booth: "16",
     type: "vendor",
     category: "modern",
-    x: 425, y: 45, w: 85, h: 80,
+    x: 320, y: 45, w: 85, h: 80,
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "2,400+ Singles",
@@ -141,13 +127,27 @@ const VENDORS: VendorDef[] = [
     booth: "46",
     type: "vendor",
     category: "japanese",
-    x: 530, y: 45, w: 85, h: 80,
+    x: 425, y: 45, w: 85, h: 80,
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "3,800+ Items",
     completedTrans: "18,400+",
     specialties: ["Shiny Treasure EX", "VSTAR Universe", "Terastal Festival EX"],
     discountScore: 78,
+  },
+  {
+    id: "brodes",
+    name: "BRODES TCG SYNDICATE",
+    booth: "15",
+    type: "vendor",
+    category: "modern",
+    x: 530, y: 45, w: 85, h: 80,
+    color: "#38bdf8",
+    rating: "4.8 / 5",
+    activeListings: "1,900+ Items",
+    completedTrans: "9,300+",
+    specialties: ["Japanese S&V Master Sets", "Promo Cards", "High Grade Slabs"],
+    discountScore: 76,
   },
   {
     id: "goldstar",
@@ -164,54 +164,12 @@ const VENDORS: VendorDef[] = [
     discountScore: 76,
   },
   {
-    id: "carbanda",
-    name: "CARBANDA VINTAGE TCG",
-    booth: "7B",
-    type: "vendor",
-    category: "vintage",
-    x: 320, y: 145, w: 85, h: 80,
-    color: "#f472b6",
-    rating: "4.9 / 5",
-    activeListings: "2,200+ Cards",
-    completedTrans: "12,100+",
-    specialties: ["Shadowless Holos", "Skyridge Crystal Types", "Aquapolis Holos"],
-    discountScore: 84,
-  },
-  {
-    id: "brodes",
-    name: "BRODES TCG SYNDICATE",
-    booth: "15",
-    type: "vendor",
-    category: "modern",
-    x: 425, y: 145, w: 85, h: 80,
-    color: "#38bdf8",
-    rating: "4.8 / 5",
-    activeListings: "1,900+ Items",
-    completedTrans: "9,300+",
-    specialties: ["Japanese S&V Master Sets", "Promo Cards", "High Grade Slabs"],
-    discountScore: 76,
-  },
-  {
-    id: "specs",
-    name: "SPECS GRADED GRAILS",
-    booth: "8C",
-    type: "vendor",
-    category: "slab",
-    x: 530, y: 145, w: 85, h: 80,
-    color: "#38bdf8",
-    rating: "4.9 / 5",
-    activeListings: "3,100+ Items",
-    completedTrans: "16,200+",
-    specialties: ["BGS 10 Gold Labels", "1st Ed Neo Destiny", "Trophy Kangaskhan"],
-    discountScore: 82,
-  },
-  {
     id: "uds",
     name: "UDS COLLECTIBLES & SLABS",
     booth: "8B",
     type: "vendor",
     category: "modern",
-    x: 215, y: 245, w: 85, h: 80,
+    x: 320, y: 145, w: 85, h: 80,
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "2,100+ Slabs",
@@ -224,22 +182,36 @@ const VENDORS: VendorDef[] = [
     name: "WIKRATS POKÉMON EMPORIUM",
     booth: "8A",
     type: "vendor",
-    category: "vintage",
-    x: 320, y: 245, w: 85, h: 80,
+    category: "modern",
+    x: 425, y: 145, w: 85, h: 80,
     color: "#38bdf8",
     rating: "4.7 / 5",
     activeListings: "1,350+ Items",
     completedTrans: "6,400+",
-    specialties: ["WOTC Holos", "EX Era Delta Species", "Level X Cards"],
+    specialties: ["Modern Alt Arts", "S&V ex Singles", "Promo Cards"],
     discountScore: 68,
+  },
+  {
+    id: "trainertower",
+    name: "TRAINER TOWER JAPAN",
+    booth: "5D",
+    type: "vendor",
+    category: "japanese",
+    x: 530, y: 145, w: 85, h: 80,
+    color: "#38bdf8",
+    rating: "4.8 / 5",
+    activeListings: "2,100+ Items",
+    completedTrans: "9,800+",
+    specialties: ["Japanese SARs", "Pokemon Center Exclusives", "Terastal Festival"],
+    discountScore: 74,
   },
   {
     id: "neodestiny",
     name: "NEO DESTINY SPECIALIST",
     booth: "8D",
     type: "vendor",
-    category: "vintage",
-    x: 425, y: 245, w: 85, h: 80,
+    category: "japanese",
+    x: 215, y: 245, w: 85, h: 80,
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "1,420+ Items",
@@ -248,18 +220,102 @@ const VENDORS: VendorDef[] = [
     discountScore: 82,
   },
   {
-    id: "paldean",
-    name: "PALDEAN PROMOS TCG BOOTH",
-    booth: "5D",
+    id: "specs",
+    name: "SPECS GRADED GRAILS",
+    booth: "8C",
+    type: "vendor",
+    category: "modern",
+    x: 320, y: 245, w: 85, h: 80,
+    color: "#38bdf8",
+    rating: "4.9 / 5",
+    activeListings: "3,100+ Items",
+    completedTrans: "16,200+",
+    specialties: ["PSA 10 Modern", "BGS 9.5+", "CGC Pristine"],
+    discountScore: 82,
+  },
+  {
+    id: "aqua",
+    name: "AQUA TCG BOOTH",
+    booth: "9A",
+    type: "vendor",
+    category: "modern",
+    x: 425, y: 245, w: 85, h: 80,
+    color: "#2dd4bf",
+    rating: "4.7 / 5",
+    activeListings: "1,800+ Items",
+    completedTrans: "7,200+",
+    specialties: ["Water-type Collection", "Theme Deck Singles", "Budget Playsets"],
+    discountScore: 65,
+  },
+  {
+    id: "battlebond",
+    name: "BATTLE BOND COLLECTIBLES",
+    booth: "9B",
     type: "vendor",
     category: "modern",
     x: 530, y: 245, w: 85, h: 80,
+    color: "#38bdf8",
+    rating: "4.8 / 5",
+    activeListings: "2,300+ Items",
+    completedTrans: "10,100+",
+    specialties: ["Trainer Gallery", "Radiant Cards", "VSTAR/VMAX Singles"],
+    discountScore: 72,
+  },
+  {
+    id: "mysticgrails",
+    name: "MYSTIC GRAILS JAPAN",
+    booth: "7C",
+    type: "vendor",
+    category: "japanese",
+    x: 215, y: 345, w: 85, h: 80,
+    color: "#c084fc",
+    rating: "4.9 / 5",
+    activeListings: "2,600+ Items",
+    completedTrans: "14,500+",
+    specialties: ["Japanese AR/SAR Hits", "Pokemon Center Stamp", "Vending Series"],
+    discountScore: 80,
+  },
+  {
+    id: "carbanda",
+    name: "CARBANDA TCG",
+    booth: "7B",
+    type: "vendor",
+    category: "modern",
+    x: 320, y: 345, w: 85, h: 80,
+    color: "#f472b6",
+    rating: "4.9 / 5",
+    activeListings: "2,200+ Cards",
+    completedTrans: "12,100+",
+    specialties: ["Modern ex Singles", "Art Rares", "Reverse Holo Playsets"],
+    discountScore: 84,
+  },
+  {
+    id: "pokecenter",
+    name: "POKEMON CENTER OSAKA",
+    booth: "10A",
+    type: "vendor",
+    category: "japanese",
+    x: 425, y: 345, w: 85, h: 80,
     color: "#f472b6",
     rating: "4.8 / 5",
-    activeListings: "2,100+ Items",
-    completedTrans: "9,800+",
-    specialties: ["Crown Zenith GGs", "Scarlet & Violet Promos", "Modern Alt Arts"],
-    discountScore: 74,
+    activeListings: "3,000+ Items",
+    completedTrans: "20,100+",
+    specialties: ["PC Stamp Promos", "Japanese ETB Singles", "431 Stamp Cards"],
+    discountScore: 86,
+  },
+  {
+    id: "alphagrails",
+    name: "ALPHA GRAILS TCG",
+    booth: "5A",
+    type: "vendor",
+    category: "modern",
+    x: 530, y: 345, w: 85, h: 80,
+    color: "#38bdf8",
+    rating: "4.9 / 5",
+    activeListings: "3,200+ Items",
+    completedTrans: "19,500+",
+    specialties: ["Modern Secret Rares", "Gold Cards", "Hyper Rares"],
+    discountScore: 82,
   },
 ];
 
@@ -288,6 +344,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(30);
   const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
   const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
+  const [enPriceOverrides, setEnPriceOverrides] = useState<Record<string, number>>({});
 
   const onCardRenderComplete = (cardId?: string) => {
     if (!cardId) return;
@@ -718,23 +775,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const getThemePool = (category?: string): any[] => {
     switch (category) {
       case "vintage": return [...pools.vintageEng, ...pools.vintageJpn];
-      case "modern": return [...pools.modernAlt, ...pools.tagTeams, ...pools.rawBinderSingles];
+      case "modern": return [...pools.modernAlt, ...pools.tagTeams, ...pools.rawBinderSingles, ...pools.jpnModern];
       case "japanese": return [...pools.jpnModern, ...pools.vintageJpn];
-      case "slab": return [...pools.goldStarsEx, ...pools.vintageEng];
       case "goldstar": return [...pools.goldStarsEx];
-      default: return [...pools.rawBinderSingles];
+      default: return [...pools.rawBinderSingles, ...pools.modernAlt];
     }
   };
 
   // ── DISJOINT VENDOR CATALOG PARTITION ───────────────────────────────────────
   // Build ONE global partition so every vendor receives a fully disjoint set of
-  // 110 cards (no card ever appears in two vendor catalogs). A shared `usedIds`
-  // set guarantees uniqueness; a per-vendor window into the 4000-card Japanese
+  // 300 cards (no card ever appears in two vendor catalogs). A shared `usedIds`
+  // set guarantees uniqueness; a per-vendor window into the 30000-card Japanese
   // pool supplies the bulk and keeps the sets from ever overlapping.
   const vendorCardMap = useMemo(() => {
     const map: Record<string, any[]> = {};
     const used = new Set<string>();
-    const dynamicJpnPool = getCardShowDynamicJapaneseCards(4000);
+    const dynamicJpnPool = getCardShowDynamicJapaneseCards(30000);
 
     VENDORS.filter(v => v.type === 'vendor').forEach((vendor, vi) => {
       const cards: any[] = [];
@@ -756,19 +812,19 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       getThemePool(vendor.category).forEach(c => tryAdd(c));
 
       // 2. A large, per-vendor disjoint window into the Japanese pool (the bulk)
-      const windowStart = vi * 100;
-      for (let i = 0; i < 100 && windowStart + i < dynamicJpnPool.length; i++) {
+      const windowStart = vi * 500;
+      for (let i = 0; i < 500 && windowStart + i < dynamicJpnPool.length; i++) {
         tryAdd(dynamicJpnPool[windowStart + i]);
       }
 
       // 3. Top up (and guarantee uniqueness) from the rest of the Japanese pool
       let k = 0;
-      while (cards.length < 110 && k < dynamicJpnPool.length) {
+      while (cards.length < 300 && k < dynamicJpnPool.length) {
         tryAdd(dynamicJpnPool[k]);
         k++;
       }
 
-      map[vendor.name] = cards.slice(0, 110).map((c) => {
+      map[vendor.name] = cards.slice(0, 300).map((c) => {
         const orig = c.originalId;
         
         // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
@@ -788,9 +844,65 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     return map;
   }, [metadataLoaded, pools, brokenOriginalIds]);
 
+  // Async English price fetching — populates runtime cache + triggers override re-render
+  useEffect(() => {
+    const allCards = Object.values(vendorCardMap).flat();
+    const toFetch: { id: string; setId: string; num: string }[] = [];
+    const seen = new Set<string>();
+    for (const c of allCards) {
+      const orig = c.originalId || c.id || '';
+      if (seen.has(orig)) continue;
+      seen.add(orig);
+      const setStr = c.setId || '';
+      const numStr = c.num || '';
+      if (setStr && numStr && !orig.toLowerCase().includes('_ja') && !orig.startsWith('bgt-')) {
+        toFetch.push({ id: orig, setId: setStr, num: numStr });
+      }
+    }
+    if (toFetch.length === 0) return;
+    let cancelled = false;
+    const overrides: Record<string, number> = {};
+    const BATCH_SIZE = 5;
+    const fetchOne = async (cardId: string, setId: string, num: string) => {
+      if (cancelled) return;
+      try {
+        const full = await fetchCardFull(cardId);
+        const tcg = full?.pricing?.tcgplayer;
+        let p = tcg?.holofoil?.market ?? tcg?.normal?.market ?? null;
+        if (p == null || p <= 0) {
+          const src = ['tcgplayer', 'cardmarket', 'ebay'].find(s => full?.pricing?.[s]);
+          if (src) {
+            const srcP = full!.pricing![src as keyof typeof full.pricing] as any;
+            p = srcP?.market ?? srcP?.low ?? null;
+          }
+        }
+        if (p != null && p > 0) {
+          cacheEnglishPrice(cardId, p);
+          cacheEnglishPrice(`${setId}-${num}`, p);
+          overrides[cardId] = Number(p.toFixed(2));
+        }
+      } catch {}
+    };
+    (async () => {
+      for (let i = 0; i < toFetch.length && !cancelled; i += BATCH_SIZE) {
+        const batch = toFetch.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(({ id, setId, num }) => fetchOne(id, setId, num)));
+      }
+      if (!cancelled && Object.keys(overrides).length > 0) setEnPriceOverrides(prev => ({ ...prev, ...overrides }));
+    })();
+    return () => { cancelled = true; };
+  }, [vendorCardMap]);
+
   const activeVendorCards = useMemo(() => {
-    return vendorCardMap[selectedVendor?.name] || [];
-  }, [selectedVendor?.name, vendorCardMap]);
+    const cards = vendorCardMap[selectedVendor?.name] || [];
+    if (Object.keys(enPriceOverrides).length === 0) return cards;
+    return cards.map(c => {
+      const overrideKey = c.originalId || c.id || '';
+      const override = enPriceOverrides[overrideKey];
+      if (override != null) return { ...c, price: override };
+      return c;
+    });
+  }, [selectedVendor?.name, vendorCardMap, enPriceOverrides]);
 
   // Reset sequential visible batch limit when active vendor pool or search filters change
   useEffect(() => {
