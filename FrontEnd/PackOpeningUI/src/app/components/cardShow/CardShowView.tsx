@@ -44,6 +44,10 @@ import {
   type Card,
 } from '../binder/types';
 
+// Module-level cache of scrydex URLs confirmed as placeholder card-backs.
+// Persists across React re-renders so a bad URL is never attempted again.
+const _knownBadScrydexUrls = new Set<string>();
+
 interface CardShowViewProps {
   initialShowAuction?: boolean;
   onBackToPacks?: () => void;
@@ -375,52 +379,51 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
     const img = e.currentTarget;
     const targetId = cardId || img.dataset.imgId;
-    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) {
+    const src = img.src;
+
+    // If this URL was previously confirmed as a placeholder, reject it immediately.
+    if (_knownBadScrydexUrls.has(src)) {
+      handleCardShowImageError(
+        { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+        targetId,
+        isJpn
+      );
+      return;
+    }
+
+    if (!src.includes('pokemontcg.io') && !src.includes('scrydex.com') && !src.includes('tcgdex')) {
       onCardRenderComplete(targetId);
       return;
     }
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = 8;
-      canvas.height = 8;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        onCardRenderComplete(targetId);
-        return;
-      }
-      ctx.drawImage(img, 0, 0, 8, 8);
-      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
-      const isCardBack = r < 50 && g < 75 && b > 90;
-      if (isCardBack) {
-        handleCardShowImageError(
-          { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-          targetId,
-          isJpn
-        );
-        return;
-      }
-    } catch {
-      // canvas tainted by CORS — fall through to byte-size check below
-    }
+
     // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
-    // 350441 = Japanese) for missing cards. The pixel check above only catches the
-    // blue Japanese back, so verify the byte size for Scrydex URLs before declaring done.
-    if (img.src.includes('scrydex.com')) {
-      fetch(img.src, { signal: AbortSignal.timeout(5000) })
+    // 350441 = Japanese) for missing cards. We must verify via fetch since all scrydex
+    // images are cross-origin and the CORS canvas check always throws.
+    if (src.includes('scrydex.com')) {
+      // Hide the image immediately so the user never sees a placeholder flash while
+      // we wait for the async byte-size verification.
+      img.style.visibility = 'hidden';
+
+      fetch(src, { signal: AbortSignal.timeout(5000) })
         .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
         .then((buf) => {
           if (buf.byteLength === 186316 || buf.byteLength === 350441) {
+            // Permanently cache this bad URL so future renders skip it instantly.
+            _knownBadScrydexUrls.add(src);
             handleCardShowImageError(
               { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
               targetId,
               isJpn
             );
           } else {
+            // Confirmed real card art — make it visible.
+            img.style.visibility = 'visible';
             onCardRenderComplete(targetId);
           }
         })
         .catch(() => {
-          // If fetch fails or times out, assume it's broken to avoid leaving placeholders
+          // Fetch failed or timed out — treat as broken.
+          _knownBadScrydexUrls.add(src);
           handleCardShowImageError(
             { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
             targetId,
@@ -429,6 +432,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         });
       return;
     }
+
     onCardRenderComplete(targetId);
   };
 
