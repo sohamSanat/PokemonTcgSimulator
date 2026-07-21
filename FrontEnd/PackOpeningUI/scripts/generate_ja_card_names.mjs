@@ -125,7 +125,7 @@ async function generateCardNames() {
         const dataEn = await resEn.json();
         if (Array.isArray(dataEn?.cards)) {
           for (const c of dataEn.cards) {
-            if (c.localId && c.name && !setNamesMap.has(parseInt(c.localId, 10).toString())) {
+            if (c.localId && c.name) {
               setNamesMap.set(parseInt(c.localId, 10).toString(), c.name);
             }
           }

@@ -715,7 +715,7 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
       const dataEn = await resEn.json();
       if (Array.isArray(dataEn?.cards)) {
         for (const c of dataEn.cards) {
-          if (c.localId && c.name && !resolvedCardNamesMap.has(parseInt(c.localId, 10).toString())) {
+          if (c.localId && c.name) {
             resolvedCardNamesMap.set(parseInt(c.localId, 10).toString(), c.name);
           }
         }
