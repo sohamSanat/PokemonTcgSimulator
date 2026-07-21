@@ -1,6 +1,9 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { trackMissionProgress, collectMissionsForSync, restoreMissionsFromSync, buildMissionsPayloadFromGuest } from '../../services/missions';
+import promoCardsData from '../../data/promo_cards.json';
+
+const PROMO_CARDS_POOL = promoCardsData as any[];
 
 export interface BulkCard {
   id: string;
@@ -246,7 +249,26 @@ export function getCollectedCards(): Card[] {
       !c.setName.includes('Official PSA') &&
       c.binderId !== 'psa-demo-vault'
     );
-    if (cleaned.length !== parsed.length) {
+
+    let repaired = false;
+    for (const c of cleaned) {
+      if (!c.imageUrl || c.imageUrl.trim() === '') {
+        const promo = PROMO_CARDS_POOL.find(p => p.id === c.setNumber || (c.id && c.id.includes(p.id)) || (p.name && c.name && p.name.toLowerCase() === c.name.toLowerCase()));
+        if (promo?.images?.large || promo?.images?.small) {
+          c.imageUrl = promo.images.large || promo.images.small;
+          repaired = true;
+        } else {
+          const parts = c.id.split('-');
+          if (parts.length >= 2) {
+            const series = parts[0].replace(/[0-9]+$/, '');
+            c.imageUrl = `https://assets.tcgdex.net/en/${series}/${parts[0]}/${parts[1]}/high.webp`;
+            repaired = true;
+          }
+        }
+      }
+    }
+
+    if (repaired || cleaned.length !== parsed.length) {
       localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cleaned));
     }
     return cleaned;
@@ -384,7 +406,8 @@ export function spendFromNetReturn(amount: number): void {
 
 export function saveCollectedCard(cardData: any, setName: string, binderId: string = 'my-collection'): Card {
   const cards = getCollectedCards();
-  const basePrice = cardData.value || 0.50;
+  const poke = cardData.pokemon || cardData;
+  const basePrice = cardData.currentPrice || cardData.value || poke.value || 0.50;
   const trend = (Math.random() - 0.45) * 2;
   const points: PricePoint[] = [];
   let price = basePrice * (1 - trend * 0.3);
@@ -395,28 +418,30 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
 
   const typesList = ['Fire', 'Water', 'Grass', 'Psychic', 'Lightning', 'Fighting', 'Dragon', 'Colorless'];
   let type = 'Colorless';
-  if (cardData.pokemon?.types && cardData.pokemon.types.length > 0) {
-    type = cardData.pokemon.types[0];
+  if (poke.types && poke.types.length > 0) {
+    type = poke.types[0];
   } else {
     for (const t of typesList) {
-      if (cardData.pokemon?.name?.includes(t)) type = t;
+      if (poke.name && String(poke.name).includes(t)) type = t;
     }
   }
 
-  const setNumber = cardData.pokemon?.localId || cardData.pokemon?.id?.split('-')[1] || '001';
+  const cardIdStr = String(poke.id || cardData.id || 'card');
+  const setNumber = poke.localId || poke.setNumber || (cardIdStr.includes('-') ? cardIdStr.split('-')[1] : '001');
+  const imageUrl = cardData.imageUrl || poke.imageUrl || poke.images?.large || poke.images?.small || cardData.img || '';
 
   const newCard: Card = {
-    id: `${cardData.pokemon?.id || 'card'}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-    name: cardData.pokemon?.name || 'Pokemon Card',
+    id: `${cardIdStr}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    name: poke.name || cardData.name || 'Pokemon Card',
     setName: setName || 'Unknown Set',
     setNumber: setNumber,
-    rarity: cardData.pokemon?.rarity || 'Common',
+    rarity: poke.rarity || cardData.rarity || 'Common',
     type: type,
     currentPrice: basePrice,
     priceChange: Number((trend * 5 + (Math.random() * 4 - 2)).toFixed(1)),
     priceHistory: points,
-    holofoil: cardData.pokemon?.isReverseHolo || (cardData.pokemon?.rarity && cardData.pokemon.rarity.toLowerCase().includes('rare')) || false,
-    imageUrl: cardData.pokemon?.images?.large || cardData.pokemon?.images?.small || '',
+    holofoil: poke.isReverseHolo || (poke.rarity && String(poke.rarity).toLowerCase().includes('rare')) || false,
+    imageUrl: imageUrl,
     favorite: false,
     binderId: binderId || 'my-collection'
   };

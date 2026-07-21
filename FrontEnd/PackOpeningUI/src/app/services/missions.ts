@@ -46,8 +46,11 @@ const PROMO_CARDS_POOL = promoCardsData as any[];
 function getRandomRewardCard(promoTitle: string) {
   if (!PROMO_CARDS_POOL || PROMO_CARDS_POOL.length === 0) return undefined;
   const card = PROMO_CARDS_POOL[Math.floor(Math.random() * PROMO_CARDS_POOL.length)];
+  const imgUrl = card.images?.large || card.images?.small || card.imageUrl || '';
   return {
     ...card,
+    imageUrl: imgUrl,
+    images: card.images || { large: imgUrl, small: imgUrl },
     isVendorCatalog: false,
     promoTitle
   };
@@ -633,11 +636,19 @@ export function claimMissionReward(missionId: string): {
 
   // 2. Add promo reward card to binder if included
   if (mission.rewardCard) {
+    const promoCard = mission.rewardCard;
+    const imgUrl = promoCard.imageUrl || promoCard.images?.large || promoCard.images?.small || '';
     saveCollectedCard({
-      ...mission.rewardCard,
-      value: mission.rewardCard.value || 150,
-      currentPrice: mission.rewardCard.value || 150,
-      isVendorCatalog: false
+      ...promoCard,
+      value: promoCard.value || 150,
+      currentPrice: promoCard.value || 150,
+      imageUrl: imgUrl,
+      isVendorCatalog: false,
+      pokemon: {
+        ...promoCard,
+        imageUrl: imgUrl,
+        images: promoCard.images || { large: imgUrl, small: imgUrl }
+      }
     }, 'Mission Rewards', 'my-collection');
     window.dispatchEvent(new Event('storage'));
   }

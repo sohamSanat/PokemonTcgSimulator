@@ -2040,7 +2040,7 @@ export const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: (
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-[500] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-3xl max-h-[92vh] bg-[#0b0e13] border border-[#1e293b] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e293b] bg-[#0e1117] shrink-0">

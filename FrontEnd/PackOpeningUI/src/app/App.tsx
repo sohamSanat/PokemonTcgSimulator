@@ -851,6 +851,9 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
       localStorage.setItem(`tcg_vendor_purchases_${vendorName}`, String(nextCount));
     } catch {}
     if (onOpenTradeModal) {
+      // Open the trade window (stacks above the chat at z-500).
+      // Close the chat + card modal only AFTER the trade target is set so
+      // the user can see the full TradeModal before anything dismisses.
       onOpenTradeModal({
         id: card.id,
         name: poke.name,
@@ -859,11 +862,17 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
         grade: (poke as any).slabGrade || (card as any).slabGrade || 'PSA 10',
         vendorName: vendorName
       });
+      // Dismiss the chat + card inspect modal after a brief delay so the
+      // TradeModal (z-500) is already visible before we close these panels.
+      setTimeout(() => {
+        setShowSellerChat(false);
+        onClose();
+      }, 80);
     } else if (onBuyFromVendor) {
       onBuyFromVendor(card, negotiatedPrice);
+      setShowSellerChat(false);
+      onClose();
     }
-    setShowSellerChat(false);
-    onClose();
   };
 
   const handlePitchCustomOffer = async (offerVal?: number) => {
@@ -3832,7 +3841,8 @@ export default function App() {
             initialViewMode={inspectedViewMode}
             onOpenTradeModal={(targetCard) => {
               setTradeTarget(targetCard);
-              setInspectedCard(null);
+              // inspectedCard is cleared by handleBuyFromVendorAction's delayed onClose()
+              // so we don't clear it here to avoid a flash of blank background.
             }}
             onUpdatePrice={(newPrice, newPoke) => {
               if (inspectedCard?.isVendorCatalog || inspectedCard?.pokemon?.isVendorCatalog) return;
@@ -3879,7 +3889,7 @@ export default function App() {
       <TradeModal
         target={tradeTarget}
         vendorName={tradeTarget?.vendorName}
-        onClose={() => setTradeTarget(null)}
+        onClose={() => { setTradeTarget(null); setInspectedCard(null); }}
         onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
       />
 
