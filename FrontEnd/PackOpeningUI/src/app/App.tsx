@@ -813,10 +813,22 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
 
   const [showSellerChat, setShowSellerChat] = useState(false);
   const [chatInput, setChatInput] = useState('');
+  const [vendorAnnoyance, setVendorAnnoyance] = useState<number>(0);
+  const [customOfferInput, setCustomOfferInput] = useState<string>('');
+  const [showHaggleModal, setShowHaggleModal] = useState<boolean>(false);
+  const [userVendorPurchases, setUserVendorPurchases] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem(`tcg_vendor_purchases_${vendorName}`);
+      return stored ? parseInt(stored, 10) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'vendor' | 'user'; text: string; time: string }>>([
     {
       sender: 'vendor',
-      text: `Welcome to ${vendorBooth} (${vendorName})! I've got this ${poke.name} locked in at $${vendorPrice.toLocaleString()}. Any condition questions or looking to make a quick deal? 🔥`,
+      text: `Welcome to ${vendorBooth} (${vendorName})! I've got this ${poke.name} locked in at $${vendorPrice.toLocaleString()}. Any condition questions or looking to pitch a deal? 🔥`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -833,11 +845,86 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
   const handleBuyFromVendorAction = () => {
     sound.playButtonClick();
     sound.playLegendaryFanfare();
+    try {
+      const nextCount = userVendorPurchases + 1;
+      setUserVendorPurchases(nextCount);
+      localStorage.setItem(`tcg_vendor_purchases_${vendorName}`, String(nextCount));
+    } catch {}
     if (onBuyFromVendor) {
       onBuyFromVendor(card, negotiatedPrice);
     }
     setShowSellerChat(false);
     onClose();
+  };
+
+  const handlePitchCustomOffer = async (offerVal?: number) => {
+    const rawVal = offerVal ?? parseFloat(customOfferInput);
+    if (isNaN(rawVal) || rawVal <= 0 || isVendorTyping) return;
+    
+    const offerAmount = Math.round(rawVal * 100) / 100;
+    setCustomOfferInput('');
+    setShowHaggleModal(false);
+    
+    const offerMsg = `🤝 I'd like to pitch a custom offer for this ${poke.name}: $${offerAmount.toLocaleString()}!`;
+    setChatMessages(prev => [...prev, {
+      sender: 'user',
+      text: offerMsg,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }]);
+
+    sound.playButtonClick();
+    setIsVendorTyping(true);
+    trackMissionProgress('vendor_chat', 1);
+
+    setTimeout(() => {
+      const askingPrice = negotiatedPrice;
+      const offerRatio = offerAmount / askingPrice;
+      const loyaltyBonus = Math.min(0.15, userVendorPurchases * 0.05);
+      const effectiveRatio = offerRatio + loyaltyBonus;
+      const annoyancePenalty = (vendorAnnoyance / 100) * 0.15;
+      const score = effectiveRatio - annoyancePenalty;
+
+      let accepted = false;
+      let replyText = "";
+      let newAnnoyance = vendorAnnoyance;
+
+      if (vendorAnnoyance >= 85 && offerRatio < 0.95) {
+        newAnnoyance = Math.min(100, vendorAnnoyance + 10);
+        replyText = `Look, I'm already extremely frustrated today. $${askingPrice.toLocaleString()} is the absolute final non-negotiable price for this ${poke.name}. 🛑`;
+      } else if (offerRatio >= 0.95 || score >= 0.88) {
+        accepted = true;
+        newAnnoyance = Math.max(0, vendorAnnoyance - 10);
+        if (userVendorPurchases > 0) {
+          replyText = `Deal! Since you're a loyal customer at our booth (${userVendorPurchases} card${userVendorPurchases > 1 ? 's' : ''} bought), I'll accept $${offerAmount.toLocaleString()} for the ${poke.name}! OFFER: $${offerAmount.toLocaleString()} 🤝🔥`;
+        } else {
+          replyText = `That's a fair offer! $${offerAmount.toLocaleString()} works for me. The ${poke.name} is yours! OFFER: $${offerAmount.toLocaleString()} 🤝🔥`;
+        }
+      } else if (offerRatio >= 0.72 || score >= 0.70) {
+        newAnnoyance = Math.min(100, vendorAnnoyance + 18);
+        const counterVal = Math.round(((askingPrice + offerAmount) / 2) * 100) / 100;
+        replyText = `$${offerAmount.toLocaleString()} is a bit too steep of a discount for a ${poke.name}. How about we meet in the middle at OFFER: $${counterVal.toLocaleString()}? 😤`;
+      } else {
+        newAnnoyance = Math.min(100, vendorAnnoyance + 35);
+        replyText = `Are you kidding me?! $${offerAmount.toLocaleString()} on a $${askingPrice.toLocaleString()} card? You're lowballing my booth! 🤬 The price stays at $${askingPrice.toLocaleString()}.`;
+      }
+
+      setVendorAnnoyance(newAnnoyance);
+
+      if (accepted) {
+        setNegotiatedPrice(offerAmount);
+        setIsPriceUpdated(true);
+        sound.playCoinClink();
+        setTimeout(() => setIsPriceUpdated(false), 3000);
+      }
+
+      setChatMessages(prev => [...prev, {
+        sender: 'vendor',
+        text: replyText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+      sound.playCardCollect();
+      setIsVendorTyping(false);
+    }, 600);
   };
 
   const handleSendChatMessage = async () => {
@@ -1340,6 +1427,37 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                   </button>
                 </div>
 
+                {/* ── VENDOR ANNOYANCE METER & LOYALTY BAR ───────────────────── */}
+                <div className="bg-[#0b1120] px-4 py-2 border-b border-white/10 flex items-center justify-between gap-3 text-xs font-mono">
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">Vendor Patience:</span>
+                    <div className="flex-1 h-2.5 bg-gray-900 rounded-full overflow-hidden border border-white/10 relative">
+                      <div
+                        className={`h-full transition-all duration-500 ${
+                          vendorAnnoyance < 30
+                            ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]'
+                            : vendorAnnoyance < 60
+                            ? 'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]'
+                            : vendorAnnoyance < 85
+                            ? 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]'
+                            : 'bg-red-600 animate-pulse shadow-[0_0_15px_rgba(220,38,38,1)]'
+                        }`}
+                        style={{ width: `${vendorAnnoyance}%` }}
+                      />
+                    </div>
+                    <span className={`text-[10px] font-bold shrink-0 ${
+                      vendorAnnoyance < 30 ? 'text-emerald-400' : vendorAnnoyance < 60 ? 'text-yellow-400' : vendorAnnoyance < 85 ? 'text-orange-400' : 'text-red-400'
+                    }`}>
+                      {vendorAnnoyance < 30 ? '🟢 Happy' : vendorAnnoyance < 60 ? '🟡 Skeptical' : vendorAnnoyance < 85 ? '🟠 Irritated' : '🔴 Fuming!'} ({vendorAnnoyance}%)
+                    </span>
+                  </div>
+                  {userVendorPurchases > 0 && (
+                    <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded border border-purple-500/40 font-bold shrink-0">
+                      🏆 {userVendorPurchases} Card{userVendorPurchases > 1 ? 's' : ''} Bought
+                    </span>
+                  )}
+                </div>
+
                 {/* Chat Card Preview Pill */}
                 <div className="bg-[#111827] px-4 py-2 border-b border-white/5 flex items-center justify-between text-xs font-mono relative overflow-hidden">
                   <span className="text-gray-300 truncate font-bold flex items-center gap-1.5">
@@ -1428,6 +1546,64 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
                     <span>Buy now at ${negotiatedPrice.toLocaleString()}</span>
                   </button>
                 </div>
+
+                {/* ── QUICK HAGGLE ACTION BAR ───────────────────── */}
+                <div className="px-3 py-2 bg-[#090d16] border-t border-white/10 flex items-center justify-between gap-1.5 flex-wrap">
+                  <span className="text-[10px] font-mono text-gray-400 font-bold flex items-center gap-1">
+                    🤝 Pitch Offer:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      disabled={isVendorTyping}
+                      onClick={() => handlePitchCustomOffer(Math.round(negotiatedPrice * 0.95 * 100) / 100)}
+                      className="px-2 py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/40 text-[10px] font-mono font-bold transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      -5% (${(negotiatedPrice * 0.95).toFixed(0)})
+                    </button>
+                    <button
+                      disabled={isVendorTyping}
+                      onClick={() => handlePitchCustomOffer(Math.round(negotiatedPrice * 0.90 * 100) / 100)}
+                      className="px-2 py-1 rounded bg-yellow-500/15 hover:bg-yellow-500/30 text-yellow-300 border border-yellow-500/40 text-[10px] font-mono font-bold transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      -10% (${(negotiatedPrice * 0.90).toFixed(0)})
+                    </button>
+                    <button
+                      disabled={isVendorTyping}
+                      onClick={() => handlePitchCustomOffer(Math.round(negotiatedPrice * 0.85 * 100) / 100)}
+                      className="px-2 py-1 rounded bg-orange-500/15 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-[10px] font-mono font-bold transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      -15% (${(negotiatedPrice * 0.85).toFixed(0)})
+                    </button>
+                    <button
+                      disabled={isVendorTyping}
+                      onClick={() => setShowHaggleModal(!showHaggleModal)}
+                      className="px-2.5 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/35 text-cyan-300 border border-cyan-500/50 text-[10px] font-mono font-black transition-all cursor-pointer flex items-center gap-1 disabled:opacity-50"
+                    >
+                      <span>Custom $</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Custom Offer Input Drawer */}
+                {showHaggleModal && (
+                  <div className="p-3 bg-[#0d1629] border-t border-cyan-500/40 flex items-center gap-2 animate-fadeIn">
+                    <span className="text-xs font-mono text-cyan-400 font-bold">$</span>
+                    <input
+                      type="number"
+                      value={customOfferInput}
+                      onChange={(e) => setCustomOfferInput(e.target.value)}
+                      placeholder={`Enter offer price (Asking: $${negotiatedPrice})...`}
+                      className="flex-1 bg-[#162238] border border-cyan-500/40 rounded-lg px-3 py-1.5 text-xs font-mono text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400"
+                      onKeyDown={(e) => e.key === 'Enter' && handlePitchCustomOffer()}
+                    />
+                    <button
+                      onClick={() => handlePitchCustomOffer()}
+                      className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-md"
+                    >
+                      Submit Pitch 🤝
+                    </button>
+                  </div>
+                )}
 
                 {/* Input Bar */}
                 <div className="p-3 bg-[#0f172a] border-t border-white/10 flex items-center gap-2">
