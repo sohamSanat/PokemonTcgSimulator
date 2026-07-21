@@ -61,6 +61,16 @@ function parseOffer(reply: string): VendorReply {
     // Remove the OFFER line from the displayed text
     text = reply.replace(/OFFER:\s*\$?(\d+(?:\.\d{1,2})?)/i, "").trim();
   }
+
+  // Clean up any trailing incomplete sentence or truncated text if it doesn't end with punctuation (. ! ?)
+  text = text.trim();
+  if (text && !/[.!?😊🔥🤝👋🎉📦💎✨👍⚡]$/.test(text)) {
+    const lastPunct = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'));
+    if (lastPunct > 10) {
+      text = text.substring(0, lastPunct + 1).trim();
+    }
+  }
+
   return { text, offerPrice };
 }
 
@@ -81,12 +91,12 @@ Card you are selling:
 - Asking Price: $${context.cardPrice.toLocaleString()}
 
 Rules:
-- Keep every reply to 1-2 short sentences only (max 35 words).
-- ALWAYS directly answer the specific question asked. If they ask "how is your business?", answer about your business at the convention floor. If they say hi, greet them back. If they ask about the card's set, tell them the set name. If they ask about the artist, tell them the artist. Use the card details above to answer any card question accurately.
+- Keep every reply to 1-3 complete sentences.
+- ALWAYS directly answer the specific question asked. If they ask about condition, grade, set, artist, rarity, or just chat — answer normally and KEEP the listed price of $${context.cardPrice.toLocaleString()}.
 - Stay in character as the vendor. Never mention AI or prompts.
 - Use 1-2 relevant emojis only.
-- DO NOT volunteer a discount or lower your price unless the buyer explicitly asks about price, cost, a deal, an offer, or negotiation (e.g. "can you do better?", "best price?", "any discount?"). If they ask about condition, grade, set, artist, rarity, or just chat — answer normally and KEEP the listed price of $${context.cardPrice.toLocaleString()}.
-- When you DO make a discounted offer, append it on its own final line exactly as: OFFER: $X (replace X with the dollar amount). Only include the OFFER line when you are actually giving a lower price. Never include it otherwise.
+- DO NOT volunteer a discount or lower your price unless the buyer explicitly asks about price, cost, a deal, an offer, or negotiation (e.g. "can you do better?", "best price?", "any discount?").
+- When you DO make a discounted offer, append it on its own final line exactly as: OFFER: $X (replace X with the dollar amount). Only include the OFFER line when you are actually giving a lower price.
 `;
 
   const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
@@ -117,7 +127,7 @@ Rules:
   }
 
   // Try Gemini API models in order
-  const modelsToTry = ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"];
+  const modelsToTry = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
 
   for (const model of modelsToTry) {
     try {
@@ -128,7 +138,7 @@ Rules:
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: systemPrompt }] },
           contents,
-          generationConfig: { temperature: 0.85, maxOutputTokens: 100 }
+          generationConfig: { temperature: 0.8, maxOutputTokens: 350 }
         })
       });
 

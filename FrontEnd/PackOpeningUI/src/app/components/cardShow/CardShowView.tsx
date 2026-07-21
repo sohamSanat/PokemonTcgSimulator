@@ -75,6 +75,7 @@ interface VendorDef {
   y: number;
   w: number;
   h: number;
+  shape?: "mega-island" | "chamfered" | "arched" | "diamond" | "tower" | "wide-pavilion" | "compact";
   color: string;
   rating: string;
   activeListings: string;
@@ -90,6 +91,7 @@ const VENDORS: VendorDef[] = [
     booth: "Zone 1",
     type: "auction",
     x: 40, y: 45, w: 160, h: 280,
+    shape: "mega-island",
     color: "#ef4444",
     rating: "5.0 / 5",
     activeListings: "125 Grails Live",
@@ -103,7 +105,8 @@ const VENDORS: VendorDef[] = [
     booth: "5B",
     type: "vendor",
     category: "vintage",
-    x: 215, y: 45, w: 85, h: 80,
+    x: 215, y: 42, w: 92, h: 86,
+    shape: "arched",
     color: "#2dd4bf",
     rating: "4.8 / 5",
     activeListings: "3,450+ Items",
@@ -117,7 +120,8 @@ const VENDORS: VendorDef[] = [
     booth: "16",
     type: "vendor",
     category: "modern",
-    x: 320, y: 45, w: 85, h: 80,
+    x: 320, y: 44, w: 78, h: 90,
+    shape: "chamfered",
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "2,400+ Singles",
@@ -131,7 +135,8 @@ const VENDORS: VendorDef[] = [
     booth: "46",
     type: "vendor",
     category: "japanese",
-    x: 425, y: 45, w: 85, h: 80,
+    x: 412, y: 38, w: 106, h: 94,
+    shape: "mega-island",
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "3,800+ Items",
@@ -145,7 +150,8 @@ const VENDORS: VendorDef[] = [
     booth: "15",
     type: "vendor",
     category: "modern",
-    x: 530, y: 45, w: 85, h: 80,
+    x: 530, y: 48, w: 74, h: 76,
+    shape: "compact",
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "1,900+ Items",
@@ -159,7 +165,8 @@ const VENDORS: VendorDef[] = [
     booth: "6B",
     type: "vendor",
     category: "goldstar",
-    x: 215, y: 145, w: 85, h: 80,
+    x: 210, y: 142, w: 94, h: 84,
+    shape: "diamond",
     color: "#f472b6",
     rating: "4.8 / 5",
     activeListings: "1,120+ Items",
@@ -173,7 +180,8 @@ const VENDORS: VendorDef[] = [
     booth: "8B",
     type: "vendor",
     category: "modern",
-    x: 320, y: 145, w: 85, h: 80,
+    x: 320, y: 140, w: 78, h: 92,
+    shape: "tower",
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "2,100+ Slabs",
@@ -187,7 +195,8 @@ const VENDORS: VendorDef[] = [
     booth: "8A",
     type: "vendor",
     category: "modern",
-    x: 425, y: 145, w: 85, h: 80,
+    x: 412, y: 148, w: 90, h: 76,
+    shape: "wide-pavilion",
     color: "#38bdf8",
     rating: "4.7 / 5",
     activeListings: "1,350+ Items",
@@ -201,7 +210,8 @@ const VENDORS: VendorDef[] = [
     booth: "5D",
     type: "vendor",
     category: "japanese",
-    x: 530, y: 145, w: 85, h: 80,
+    x: 516, y: 138, w: 90, h: 92,
+    shape: "mega-island",
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "2,100+ Items",
@@ -215,7 +225,8 @@ const VENDORS: VendorDef[] = [
     booth: "8D",
     type: "vendor",
     category: "japanese",
-    x: 215, y: 245, w: 85, h: 80,
+    x: 215, y: 242, w: 82, h: 88,
+    shape: "arched",
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "1,420+ Items",
@@ -229,7 +240,8 @@ const VENDORS: VendorDef[] = [
     booth: "8C",
     type: "vendor",
     category: "modern",
-    x: 320, y: 245, w: 85, h: 80,
+    x: 308, y: 246, w: 96, h: 78,
+    shape: "wide-pavilion",
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "3,100+ Items",
@@ -243,7 +255,8 @@ const VENDORS: VendorDef[] = [
     booth: "9A",
     type: "vendor",
     category: "modern",
-    x: 425, y: 245, w: 85, h: 80,
+    x: 418, y: 246, w: 80, h: 84,
+    shape: "chamfered",
     color: "#2dd4bf",
     rating: "4.7 / 5",
     activeListings: "1,800+ Items",
@@ -257,7 +270,8 @@ const VENDORS: VendorDef[] = [
     booth: "9B",
     type: "vendor",
     category: "modern",
-    x: 530, y: 245, w: 85, h: 80,
+    x: 512, y: 245, w: 90, h: 82,
+    shape: "compact",
     color: "#38bdf8",
     rating: "4.8 / 5",
     activeListings: "2,300+ Items",
@@ -271,7 +285,8 @@ const VENDORS: VendorDef[] = [
     booth: "7C",
     type: "vendor",
     category: "japanese",
-    x: 215, y: 345, w: 85, h: 80,
+    x: 210, y: 338, w: 94, h: 88,
+    shape: "diamond",
     color: "#c084fc",
     rating: "4.9 / 5",
     activeListings: "2,600+ Items",
@@ -285,7 +300,8 @@ const VENDORS: VendorDef[] = [
     booth: "7B",
     type: "vendor",
     category: "modern",
-    x: 320, y: 345, w: 85, h: 80,
+    x: 318, y: 344, w: 80, h: 82,
+    shape: "compact",
     color: "#f472b6",
     rating: "4.9 / 5",
     activeListings: "2,200+ Cards",
@@ -299,7 +315,8 @@ const VENDORS: VendorDef[] = [
     booth: "10A",
     type: "vendor",
     category: "japanese",
-    x: 425, y: 345, w: 85, h: 80,
+    x: 410, y: 336, w: 104, h: 92,
+    shape: "mega-island",
     color: "#f472b6",
     rating: "4.8 / 5",
     activeListings: "3,000+ Items",
@@ -313,7 +330,8 @@ const VENDORS: VendorDef[] = [
     booth: "5A",
     type: "vendor",
     category: "modern",
-    x: 530, y: 345, w: 85, h: 80,
+    x: 526, y: 342, w: 80, h: 84,
+    shape: "chamfered",
     color: "#38bdf8",
     rating: "4.9 / 5",
     activeListings: "3,200+ Items",
@@ -1493,10 +1511,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       </g>
                     ))}
 
-                    {/* VENDOR BOOTHS (generated architectural grid) */}
+                    {/* VENDOR BOOTHS (generated architectural grid with custom shapes & sizes) */}
                     {VENDORS.filter(v => v.type === 'vendor').map((v) => {
                       const isSelected = selectedVendor?.name === v.name;
                       const cat = v.category || "modern";
+                      const boothShape = v.shape || "compact";
 
                       let headerGrad = "url(#gradModern)";
                       let headerTitle = "✨ ALT ART & SIR";
@@ -1525,30 +1544,100 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                           {/* Selection Outer Pulsing Halo */}
                           {isSelected && (
                             <rect
-                              x={v.x - 3} y={v.y - 3} width={v.w + 6} height={v.h + 6} rx="6"
-                              fill="none" stroke={v.color} strokeWidth="1.8" strokeDasharray="5,3"
+                              x={v.x - 4} y={v.y - 4} width={v.w + 8} height={v.h + 8} rx="8"
+                              fill="none" stroke={v.color} strokeWidth="2" strokeDasharray="5,3"
                               className="animate-pulse"
                             />
                           )}
 
-                          {/* Main Booth Body Container */}
-                          <rect
-                            x={v.x} y={v.y} width={v.w} height={v.h} rx="4"
-                            fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.2 : 1}
-                            className="cursor-pointer transition-all hover:stroke-white"
-                            style={{
-                              filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined,
-                            }}
-                            onMouseEnter={() => handleBoothHover(v)}
-                            onMouseLeave={handleBoothLeave}
-                            onClick={() => handleBoothSelect(v)}
-                          />
+                          {/* ── UNIQUE SHAPE GEOMETRY RENDERING ─────────────────────── */}
+                          {boothShape === "mega-island" && (
+                            <>
+                              {/* Island Outer Canopy Shadow */}
+                              <rect x={v.x - 2} y={v.y - 2} width={v.w + 4} height={v.h + 4} rx="6" fill="#0f172a" stroke={v.color} strokeWidth="0.8" opacity="0.6" />
+                              {/* Main Body */}
+                              <rect
+                                x={v.x} y={v.y} width={v.w} height={v.h} rx="5"
+                                fill="#070d17" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.5}
+                                className="cursor-pointer transition-all hover:stroke-white"
+                                style={{ filter: isSelected ? `drop-shadow(0 0 12px ${v.color})` : undefined }}
+                                onMouseEnter={() => handleBoothHover(v)}
+                                onMouseLeave={handleBoothLeave}
+                                onClick={() => handleBoothSelect(v)}
+                              />
+                              {/* 4 Corner Island Pillars */}
+                              <rect x={v.x + 2} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+                              <rect x={v.x + v.w - 7} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+                              <rect x={v.x + 2} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+                              <rect x={v.x + v.w - 7} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+                            </>
+                          )}
+
+                          {boothShape === "chamfered" && (
+                            <polygon
+                              points={`${v.x + 9},${v.y} ${v.x + v.w - 9},${v.y} ${v.x + v.w},${v.y + 9} ${v.x + v.w},${v.y + v.h - 9} ${v.x + v.w - 9},${v.y + v.h} ${v.x + 9},${v.y + v.h} ${v.x},${v.y + v.h - 9} ${v.x},${v.y + 9}`}
+                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+                              className="cursor-pointer transition-all hover:stroke-white"
+                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+                              onMouseEnter={() => handleBoothHover(v)}
+                              onMouseLeave={handleBoothLeave}
+                              onClick={() => handleBoothSelect(v)}
+                            />
+                          )}
+
+                          {boothShape === "arched" && (
+                            <path
+                              d={`M ${v.x} ${v.y + 10} Q ${v.x + v.w / 2} ${v.y - 5} ${v.x + v.w} ${v.y + 10} L ${v.x + v.w} ${v.y + v.h - 5} Q ${v.x + v.w / 2} ${v.y + v.h + 4} ${v.x} ${v.y + v.h - 5} Z`}
+                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+                              className="cursor-pointer transition-all hover:stroke-white"
+                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+                              onMouseEnter={() => handleBoothHover(v)}
+                              onMouseLeave={handleBoothLeave}
+                              onClick={() => handleBoothSelect(v)}
+                            />
+                          )}
+
+                          {boothShape === "diamond" && (
+                            <polygon
+                              points={`${v.x + 12},${v.y} ${v.x + v.w - 12},${v.y} ${v.x + v.w},${v.y + 12} ${v.x + v.w - 6},${v.y + v.h} ${v.x + 6},${v.y + v.h} ${v.x},${v.y + 12}`}
+                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+                              className="cursor-pointer transition-all hover:stroke-white"
+                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+                              onMouseEnter={() => handleBoothHover(v)}
+                              onMouseLeave={handleBoothLeave}
+                              onClick={() => handleBoothSelect(v)}
+                            />
+                          )}
+
+                          {(boothShape === "tower" || boothShape === "wide-pavilion" || boothShape === "compact") && (
+                            <rect
+                              x={v.x} y={v.y} width={v.w} height={v.h} rx={boothShape === "tower" ? "2" : "4"}
+                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.2 : 1}
+                              className="cursor-pointer transition-all hover:stroke-white"
+                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+                              onMouseEnter={() => handleBoothHover(v)}
+                              onMouseLeave={handleBoothLeave}
+                              onClick={() => handleBoothSelect(v)}
+                            />
+                          )}
+
+                          {/* Tower Vertical Beams */}
+                          {boothShape === "tower" && (
+                            <>
+                              <line x1={v.x + 3} y1={v.y + 16} x2={v.x + 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
+                              <line x1={v.x + v.w - 3} y1={v.y + 16} x2={v.x + v.w - 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
+                            </>
+                          )}
 
                           {/* Architectural Corner Brackets */}
-                          <path d={`M ${v.x} ${v.y + 8} L ${v.x} ${v.y} L ${v.x + 8} ${v.y}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                          <path d={`M ${v.x + v.w - 8} ${v.y} L ${v.x + v.w} ${v.y} L ${v.x + v.w} ${v.y + 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                          <path d={`M ${v.x} ${v.y + v.h - 8} L ${v.x} ${v.y + v.h} L ${v.x + 8} ${v.y + v.h}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                          <path d={`M ${v.x + v.w - 8} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h - 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                          {boothShape !== "chamfered" && boothShape !== "arched" && boothShape !== "diamond" && (
+                            <>
+                              <path d={`M ${v.x} ${v.y + 8} L ${v.x} ${v.y} L ${v.x + 8} ${v.y}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                              <path d={`M ${v.x + v.w - 8} ${v.y} L ${v.x + v.w} ${v.y} L ${v.x + v.w} ${v.y + 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                              <path d={`M ${v.x} ${v.y + v.h - 8} L ${v.x} ${v.y + v.h} L ${v.x + 8} ${v.y + v.h}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                              <path d={`M ${v.x + v.w - 8} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h - 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                            </>
+                          )}
 
                           {/* Category Top Banner */}
                           <rect x={v.x} y={v.y} width={v.w} height="15" rx="3" fill={headerGrad} />
