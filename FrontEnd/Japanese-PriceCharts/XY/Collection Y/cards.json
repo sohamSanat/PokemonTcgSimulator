@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "set_name": "Collection Y",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/collection-y/xy1y_ja",
+    "release_date": "2013/12/13",
+    "scraped_at": "2026-07-15T12:38:47.052967",
+    "elapsed_seconds": 23.22,
+    "total_cards_scraped": 47
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Kakuna #2",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Beedrill #3",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Illumise #6",
+      "current_value": "$2.68",
+      "price_numeric": 2.68
+    },
+    {
+      "name": "Chespin #7",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Quilladin #8",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Chesnaught #9",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Pansear #10",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Simisear #11",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Fletchinder #12",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Talonflame #13",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Blastoise-EX #14",
+      "current_value": "$10.67",
+      "price_numeric": 10.67
+    },
+    {
+      "name": "M Blastoise-EX #15",
+      "current_value": "$56.29",
+      "price_numeric": 56.29
+    },
+    {
+      "name": "Shellder #16",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Cloyster #17",
+      "current_value": "$2.90",
+      "price_numeric": 2.9
+    },
+    {
+      "name": "Lapras #18",
+      "current_value": "$5.16",
+      "price_numeric": 5.16
+    },
+    {
+      "name": "Voltorb #21",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Electrode #22",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Emolga-EX #23",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Venipede #24",
+      "current_value": "$2.10",
+      "price_numeric": 2.1
+    },
+    {
+      "name": "Scolipede #26",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Pumpkaboo #27",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Gourgeist #28",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Diglett #29",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Rhyhorn #31",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Rhydon #32",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Solrock #34",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Inkay #35",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Malamar #36",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Yveltal-EX #37",
+      "current_value": "$6.01",
+      "price_numeric": 6.01
+    },
+    {
+      "name": "Honedge #38",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Doublade #39",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Aegislash #41",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Jigglypuff #42",
+      "current_value": "$9.67",
+      "price_numeric": 9.67
+    },
+    {
+      "name": "Wigglytuff #43",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Spritzee #44",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Aromatisse #45",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Skitty #48",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Bidoof #50",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Bibarel #51",
+      "current_value": "$3.29",
+      "price_numeric": 3.29
+    },
+    {
+      "name": "Fletchling #52",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Furfrou #53",
+      "current_value": "$4.49",
+      "price_numeric": 4.49
+    },
+    {
+      "name": "Professor's Letter #55",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Red Card #56",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Blastoise-EX #61",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Emolga-EX #62",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Yveltal-EX #63",
+      "current_value": "$35.00",
+      "price_numeric": 35
+    }
+  ]
+}

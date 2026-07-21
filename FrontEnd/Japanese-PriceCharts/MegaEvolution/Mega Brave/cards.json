@@ -1,0 +1,472 @@
+{
+  "metadata": {
+    "set_name": "Mega Brave",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/mega-brave/m1l_ja",
+    "release_date": "2025/08/01",
+    "scraped_at": "2026-07-15T11:32:34.688130",
+    "elapsed_seconds": 16.67,
+    "total_cards_scraped": 92
+  },
+  "cards": [
+    {
+      "name": "Bulbasaur #1",
+      "current_value": "$0.18",
+      "price_numeric": 0.18
+    },
+    {
+      "name": "Ivysaur #2",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Mega Venusaur ex #3",
+      "current_value": "$0.60",
+      "price_numeric": 0.6
+    },
+    {
+      "name": "Exeggcute #4",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Exeggutor #5",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Celebi #6",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Seedot #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Nuzleaf #8",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Shiftry #9",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Vulpix #10",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Ninetales #11",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Numel #12",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Mega Camerupt ex #13",
+      "current_value": "$0.29",
+      "price_numeric": 0.29
+    },
+    {
+      "name": "Volcanion #14",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Scorbunny #15",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Raboot #16",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Cinderace #17",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Corphish #18",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Gimmighoul #19",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Sandshrew #20",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Sandslash #21",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Onix #22",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Tyrogue #23",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Makuhita #24",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Hariyama #25",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Lunatone #26",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Solrock #27",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Riolu #28",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Mega Lucario ex #29",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Croagunk #30",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Toxicroak #31",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Marshadow #32",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Stonjourner #33",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Nacli #34",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Naclstack #35",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Garganacl #36",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Crawdaunt #37",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Mega Absol ex #38",
+      "current_value": "$0.44",
+      "price_numeric": 0.44
+    },
+    {
+      "name": "Spiritomb #39",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Yveltal #40",
+      "current_value": "$0.21",
+      "price_numeric": 0.21
+    },
+    {
+      "name": "Nickit #41",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Thievul #42",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Shroodle #43",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Grafaiai #44",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Steelix #45",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Mega Mawile ex #46",
+      "current_value": "$0.42",
+      "price_numeric": 0.42
+    },
+    {
+      "name": "Dialga #47",
+      "current_value": "$0.31",
+      "price_numeric": 0.31
+    },
+    {
+      "name": "Tinkatink #48",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Tinkatuff #49",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Tinkaton #50",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Gholdengo #51",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Spearow #52",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Fearow #53",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Miltank #54",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Yungoos #55",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Gumshoos #56",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Iron X Defense #57",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Premium Power Pro #58",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Fight Gong #59",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Repel #60",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Lt. Surge's Deal #61",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Lillie's Determination #62",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Dangerous Ruins #63",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Bulbasaur #64",
+      "current_value": "$12.55",
+      "price_numeric": 12.55
+    },
+    {
+      "name": "Ivysaur #65",
+      "current_value": "$8.20",
+      "price_numeric": 8.2
+    },
+    {
+      "name": "Exeggutor #66",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Vulpix #67",
+      "current_value": "$6.06",
+      "price_numeric": 6.06
+    },
+    {
+      "name": "Riolu #68",
+      "current_value": "$4.77",
+      "price_numeric": 4.77
+    },
+    {
+      "name": "Marshadow #69",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Garganacl #70",
+      "current_value": "$1.27",
+      "price_numeric": 1.27
+    },
+    {
+      "name": "Spiritomb #71",
+      "current_value": "$2.04",
+      "price_numeric": 2.04
+    },
+    {
+      "name": "Shroodle #72",
+      "current_value": "$1.82",
+      "price_numeric": 1.82
+    },
+    {
+      "name": "Steelix #73",
+      "current_value": "$2.51",
+      "price_numeric": 2.51
+    },
+    {
+      "name": "Spearow #74",
+      "current_value": "$2.26",
+      "price_numeric": 2.26
+    },
+    {
+      "name": "Gumshoos #75",
+      "current_value": "$2.13",
+      "price_numeric": 2.13
+    },
+    {
+      "name": "Mega Venusaur ex #76",
+      "current_value": "$9.88",
+      "price_numeric": 9.88
+    },
+    {
+      "name": "Mega Camerupt ex #77",
+      "current_value": "$2.05",
+      "price_numeric": 2.05
+    },
+    {
+      "name": "Mega Lucario ex #78",
+      "current_value": "$10.10",
+      "price_numeric": 10.1
+    },
+    {
+      "name": "Mega Absol ex #79",
+      "current_value": "$3.53",
+      "price_numeric": 3.53
+    },
+    {
+      "name": "Mega Mawile ex #80",
+      "current_value": "$2.88",
+      "price_numeric": 2.88
+    },
+    {
+      "name": "Premium Power Pro #81",
+      "current_value": "$0.52",
+      "price_numeric": 0.52
+    },
+    {
+      "name": "Fight Gong #82",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Night Stretcher #83",
+      "current_value": "$0.67",
+      "price_numeric": 0.67
+    },
+    {
+      "name": "Air Balloon #84",
+      "current_value": "$0.55",
+      "price_numeric": 0.55
+    },
+    {
+      "name": "Lt. Surge's Deal #85",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Lillie's Determination #86",
+      "current_value": "$26.49",
+      "price_numeric": 26.49
+    },
+    {
+      "name": "Mega Venusaur ex #87",
+      "current_value": "$73.34",
+      "price_numeric": 73.34
+    },
+    {
+      "name": "Mega Lucario ex #88",
+      "current_value": "$96.06",
+      "price_numeric": 96.06
+    },
+    {
+      "name": "Mega Absol ex #89",
+      "current_value": "$31.88",
+      "price_numeric": 31.88
+    },
+    {
+      "name": "Lt. Surge's Deal #90",
+      "current_value": "$5.20",
+      "price_numeric": 5.2
+    },
+    {
+      "name": "Lillie's Determination #91",
+      "current_value": "$155.20",
+      "price_numeric": 155.2
+    },
+    {
+      "name": "Mega Lucario ex #92",
+      "current_value": "$263.12",
+      "price_numeric": 263.12
+    }
+  ]
+}

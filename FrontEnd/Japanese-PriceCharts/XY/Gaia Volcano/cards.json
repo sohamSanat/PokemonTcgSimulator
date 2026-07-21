@@ -1,0 +1,252 @@
+{
+  "metadata": {
+    "set_name": "Gaia Volcano",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/gaia-volcano/xy5g_ja",
+    "release_date": "2014/12/13",
+    "scraped_at": "2026-07-15T12:36:51.982320",
+    "elapsed_seconds": 23.14,
+    "total_cards_scraped": 48
+  },
+  "cards": [
+    {
+      "name": "Tangela #1",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Tangrowth #2",
+      "current_value": "$5.01",
+      "price_numeric": 5.01
+    },
+    {
+      "name": "Grovyle #4",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Sceptile #5",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Sceptile #6",
+      "current_value": "$7.26",
+      "price_numeric": 7.26
+    },
+    {
+      "name": "Breloom #8",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Volbeat #9",
+      "current_value": "$11.00",
+      "price_numeric": 11
+    },
+    {
+      "name": "Illumise #10",
+      "current_value": "$1.60",
+      "price_numeric": 1.6
+    },
+    {
+      "name": "Trevenant-EX #11",
+      "current_value": "$3.74",
+      "price_numeric": 3.74
+    },
+    {
+      "name": "Vulpix #12",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Ninetales #13",
+      "current_value": "$5.46",
+      "price_numeric": 5.46
+    },
+    {
+      "name": "Slugma #14",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Magcargo #16",
+      "current_value": "$5.55",
+      "price_numeric": 5.55
+    },
+    {
+      "name": "Torchic #17",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Torchic #18",
+      "current_value": "$6.46",
+      "price_numeric": 6.46
+    },
+    {
+      "name": "Combusken #19",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Blaziken #20",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Camerupt-EX #21",
+      "current_value": "$3.24",
+      "price_numeric": 3.24
+    },
+    {
+      "name": "Electrike #23",
+      "current_value": "$3.85",
+      "price_numeric": 3.85
+    },
+    {
+      "name": "Nidoran ♀ #25",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Nidorina #26",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Nidoqueen #28",
+      "current_value": "$8.01",
+      "price_numeric": 8.01
+    },
+    {
+      "name": "Rhyhorn #29",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Rhyperior #32",
+      "current_value": "$4.73",
+      "price_numeric": 4.73
+    },
+    {
+      "name": "Nosepass #33",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Trapinch #37",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Groudon-EX #39",
+      "current_value": "$13.80",
+      "price_numeric": 13.8
+    },
+    {
+      "name": "Primal Groudon-EX #40",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Hippopotas #41",
+      "current_value": "$2.24",
+      "price_numeric": 2.24
+    },
+    {
+      "name": "Drilbur #43",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Diggersby #44",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Aggron-EX #45",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "M Aggron-EX #46",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Excadrill #49",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Honedge #50",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Doublade #51",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Aegislash #52",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Vibrava #53",
+      "current_value": "$1.48",
+      "price_numeric": 1.48
+    },
+    {
+      "name": "Flygon #54",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Zigzagoon #55",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Acro Bike #60",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Groudon Spirit Link #64",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Aggron Spirit Link #65",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Teammates #66",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Trevenant-EX #71",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Camerupt-EX #72",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Groudon-EX #73",
+      "current_value": "$261.25",
+      "price_numeric": 261.25
+    },
+    {
+      "name": "Maxie's Hidden Ball Trick #78",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "set_name": "Magma Gang VS Aqua Gang: Double Crisis",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/magma-gang-vs-aqua-gang-double-crisis/cp1_ja",
+    "release_date": "2015/01/30",
+    "scraped_at": "2026-07-15T12:35:07.300126",
+    "elapsed_seconds": 27.12,
+    "total_cards_scraped": 27
+  },
+  "cards": [
+    {
+      "name": "Team Magma's Numel #1",
+      "current_value": "$6.24",
+      "price_numeric": 6.24
+    },
+    {
+      "name": "Team Magma's Camerupt #2",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "Team Aqua's Spheal #3",
+      "current_value": "$13.66",
+      "price_numeric": 13.66
+    },
+    {
+      "name": "Team Aqua's Sealeo #4",
+      "current_value": "$2.08",
+      "price_numeric": 2.08
+    },
+    {
+      "name": "Team Aqua's Walrein #5",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Team Aqua's Grimer #7",
+      "current_value": "$6.32",
+      "price_numeric": 6.32
+    },
+    {
+      "name": "Team Aqua's Muk #8",
+      "current_value": "$12.99",
+      "price_numeric": 12.99
+    },
+    {
+      "name": "Team Magma's Baltoy #10",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Team Magma's Aron #12",
+      "current_value": "$7.19",
+      "price_numeric": 7.19
+    },
+    {
+      "name": "Team Magma's Lairon #13",
+      "current_value": "$4.74",
+      "price_numeric": 4.74
+    },
+    {
+      "name": "Team Magma's Aggron #14",
+      "current_value": "$11.99",
+      "price_numeric": 11.99
+    },
+    {
+      "name": "Team Aqua's Poochyena #16",
+      "current_value": "$3.87",
+      "price_numeric": 3.87
+    },
+    {
+      "name": "Team Magma's Poochyena #17",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Team Aqua's Mightyena #18",
+      "current_value": "$5.43",
+      "price_numeric": 5.43
+    },
+    {
+      "name": "Team Magma's Mightyena #19",
+      "current_value": "$6.49",
+      "price_numeric": 6.49
+    },
+    {
+      "name": "Team Aqua's Carvanha #20",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Team Aqua's Sharpedo #21",
+      "current_value": "$12.01",
+      "price_numeric": 12.01
+    },
+    {
+      "name": "Team Magma's Zangoose #22",
+      "current_value": "$6.24",
+      "price_numeric": 6.24
+    },
+    {
+      "name": "Team Aqua's Great Ball #23",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Team Magma's Great Ball #24",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Aqua Diffuser #25",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Team Aqua Admin #27",
+      "current_value": "$3.75",
+      "price_numeric": 3.75
+    },
+    {
+      "name": "Team Magma Admin #29",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Team Magma Grunt #30",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Team Aqua's Secret Base #31",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Team Magma's Secret Base #32",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Double Aqua Energy #33",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    }
+  ]
+}

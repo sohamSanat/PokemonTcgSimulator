@@ -1234,5 +1234,69 @@
       "total": 190,
       "official": 190
     }
+  },
+  {
+    "id": "xy1x",
+    "name": "Collection X",
+    "cardCount": {
+      "total": 51,
+      "official": 51
+    }
+  },
+  {
+    "id": "xy1y",
+    "name": "Collection Y",
+    "cardCount": {
+      "total": 47,
+      "official": 47
+    }
+  },
+  {
+    "id": "xy5g",
+    "name": "Gaia Volcano",
+    "cardCount": {
+      "total": 48,
+      "official": 48
+    }
+  },
+  {
+    "id": "xy5t",
+    "name": "Tidal Storm",
+    "cardCount": {
+      "total": 50,
+      "official": 50
+    }
+  },
+  {
+    "id": "xy8r",
+    "name": "Red Flash",
+    "cardCount": {
+      "total": 49,
+      "official": 49
+    }
+  },
+  {
+    "id": "xy11f",
+    "name": "Explosive Fighter",
+    "cardCount": {
+      "total": 46,
+      "official": 46
+    }
+  },
+  {
+    "id": "xy11c",
+    "name": "Cruel Traitor",
+    "cardCount": {
+      "total": 47,
+      "official": 47
+    }
+  },
+  {
+    "id": "cp2",
+    "name": "Legendary Shine",
+    "cardCount": {
+      "total": 54,
+      "official": 54
+    }
   }
 ]

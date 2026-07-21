@@ -1,0 +1,362 @@
+{
+  "metadata": {
+    "set_name": "Emerald Break",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/emerald-break/xy6_ja",
+    "release_date": "2015/03/14",
+    "scraped_at": "2026-07-15T12:34:30.758215",
+    "elapsed_seconds": 25.68,
+    "total_cards_scraped": 70
+  },
+  "cards": [
+    {
+      "name": "Exeggcute #1",
+      "current_value": "$2.45",
+      "price_numeric": 2.45
+    },
+    {
+      "name": "Exeggutor #2",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Wurmple #3",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Beautifly #5",
+      "current_value": "$2.09",
+      "price_numeric": 2.09
+    },
+    {
+      "name": "Cascoon #6",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Dustox #8",
+      "current_value": "$3.04",
+      "price_numeric": 3.04
+    },
+    {
+      "name": "Ninjask #10",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Shedinja #11",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Tropius #12",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Articuno #15",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Articuno #16",
+      "current_value": "$4.16",
+      "price_numeric": 4.16
+    },
+    {
+      "name": "Wingull #17",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Pelipper #18",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Electrode #20",
+      "current_value": "$14.66",
+      "price_numeric": 14.66
+    },
+    {
+      "name": "Zapdos #21",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Thundurus-EX #22",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Natu #24",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Shuppet #26",
+      "current_value": "$1.36",
+      "price_numeric": 1.36
+    },
+    {
+      "name": "Banette #27",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Banette #28",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Deoxys #29",
+      "current_value": "$19.87",
+      "price_numeric": 19.87
+    },
+    {
+      "name": "Gallade-EX #30",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "M Gallade-EX #31",
+      "current_value": "$23.11",
+      "price_numeric": 23.11
+    },
+    {
+      "name": "Gligar #32",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Gliscor #33",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Absol #34",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Jirachi #35",
+      "current_value": "$15.06",
+      "price_numeric": 15.06
+    },
+    {
+      "name": "Togepi #36",
+      "current_value": "$2.53",
+      "price_numeric": 2.53
+    },
+    {
+      "name": "Togetic #37",
+      "current_value": "$2.15",
+      "price_numeric": 2.15
+    },
+    {
+      "name": "Togekiss #38",
+      "current_value": "$2.65",
+      "price_numeric": 2.65
+    },
+    {
+      "name": "Togekiss #39",
+      "current_value": "$4.18",
+      "price_numeric": 4.18
+    },
+    {
+      "name": "Dratini #40",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Dragonair #41",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Dragonite #42",
+      "current_value": "$11.24",
+      "price_numeric": 11.24
+    },
+    {
+      "name": "Dragonite #43",
+      "current_value": "$26.40",
+      "price_numeric": 26.4
+    },
+    {
+      "name": "Altaria #44",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Bagon #45",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Shelgon #46",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Salamence #47",
+      "current_value": "$5.15",
+      "price_numeric": 5.15
+    },
+    {
+      "name": "Latios-EX #48",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "M Latios-EX #49",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Reshiram #51",
+      "current_value": "$5.16",
+      "price_numeric": 5.16
+    },
+    {
+      "name": "Spearow #52",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Dunsparce #54",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Skarmory #55",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Taillow #56",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Swellow #57",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Swellow #58",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Swablu #59",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Altaria #60",
+      "current_value": "$3.14",
+      "price_numeric": 3.14
+    },
+    {
+      "name": "Rayquaza-EX #61",
+      "current_value": "$21.64",
+      "price_numeric": 21.64
+    },
+    {
+      "name": "M Rayquaza-EX #62",
+      "current_value": "$65.00",
+      "price_numeric": 65
+    },
+    {
+      "name": "Shaymin-EX #63",
+      "current_value": "$8.81",
+      "price_numeric": 8.81
+    },
+    {
+      "name": "Pidove #64",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Unfezant #67",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Fletchling #68",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Trainers' Mail #70",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Gallade Spirit Link #73",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Latios Spirit Link #74",
+      "current_value": "$1.18",
+      "price_numeric": 1.18
+    },
+    {
+      "name": "Winona #75",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Wally #76",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Double Dragon Energy #78",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Thundurus-EX #79",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Gallade-EX #80",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "M Gallade-EX #81",
+      "current_value": "$139.99",
+      "price_numeric": 139.99
+    },
+    {
+      "name": "Latios-EX #82",
+      "current_value": "$160.00",
+      "price_numeric": 160
+    },
+    {
+      "name": "Hydreigon-EX #84",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Winona #88",
+      "current_value": "$150.00",
+      "price_numeric": 150
+    },
+    {
+      "name": "Energy Switch #90",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "VS Seeker #91",
+      "current_value": "$48.99",
+      "price_numeric": 48.99
+    }
+  ]
+}

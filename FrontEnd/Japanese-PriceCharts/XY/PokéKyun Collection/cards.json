@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "set_name": "PokéKyun Collection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/pokkyun-collection/cp3_ja",
+    "release_date": "2016/01/29",
+    "scraped_at": "2026-07-15T12:31:33.408978",
+    "elapsed_seconds": 16.69,
+    "total_cards_scraped": 32
+  },
+  "cards": [
+    {
+      "name": "Chikorita #1",
+      "current_value": "$30.32",
+      "price_numeric": 30.32
+    },
+    {
+      "name": "Shroomish #2",
+      "current_value": "$14.69",
+      "price_numeric": 14.69
+    },
+    {
+      "name": "Charmander #3",
+      "current_value": "$36.26",
+      "price_numeric": 36.26
+    },
+    {
+      "name": "Charmeleon #4",
+      "current_value": "$29.49",
+      "price_numeric": 29.49
+    },
+    {
+      "name": "Charizard #5",
+      "current_value": "$104.16",
+      "price_numeric": 104.16
+    },
+    {
+      "name": "Flareon-EX #6",
+      "current_value": "$105.00",
+      "price_numeric": 105
+    },
+    {
+      "name": "Flareon-EX #7",
+      "current_value": "$140.00",
+      "price_numeric": 140
+    },
+    {
+      "name": "Snorunt #8",
+      "current_value": "$18.80",
+      "price_numeric": 18.8
+    },
+    {
+      "name": "Froslass #9",
+      "current_value": "$22.25",
+      "price_numeric": 22.25
+    },
+    {
+      "name": "Pikachu #10",
+      "current_value": "$200.00",
+      "price_numeric": 200
+    },
+    {
+      "name": "Raichu #11",
+      "current_value": "$50.70",
+      "price_numeric": 50.7
+    },
+    {
+      "name": "Dedenne #12",
+      "current_value": "$47.16",
+      "price_numeric": 47.16
+    },
+    {
+      "name": "Wobbuffet #13",
+      "current_value": "$27.93",
+      "price_numeric": 27.93
+    },
+    {
+      "name": "Gulpin #14",
+      "current_value": "$29.14",
+      "price_numeric": 29.14
+    },
+    {
+      "name": "Jirachi #15",
+      "current_value": "$45.88",
+      "price_numeric": 45.88
+    },
+    {
+      "name": "Espurr #16",
+      "current_value": "$66.10",
+      "price_numeric": 66.1
+    },
+    {
+      "name": "Meowstic #17",
+      "current_value": "$23.32",
+      "price_numeric": 23.32
+    },
+    {
+      "name": "Yveltal #18",
+      "current_value": "$27.52",
+      "price_numeric": 27.52
+    },
+    {
+      "name": "Gardevoir-EX #19",
+      "current_value": "$300.00",
+      "price_numeric": 300
+    },
+    {
+      "name": "M Gardevoir-EX #20",
+      "current_value": "$400.00",
+      "price_numeric": 400
+    },
+    {
+      "name": "Flabébé #21",
+      "current_value": "$15.46",
+      "price_numeric": 15.46
+    },
+    {
+      "name": "Floette #22",
+      "current_value": "$14.20",
+      "price_numeric": 14.2
+    },
+    {
+      "name": "Swirlix #23",
+      "current_value": "$21.00",
+      "price_numeric": 21
+    },
+    {
+      "name": "Slurpuff #24",
+      "current_value": "$19.87",
+      "price_numeric": 19.87
+    },
+    {
+      "name": "Sylveon-EX #25",
+      "current_value": "$99.99",
+      "price_numeric": 99.99
+    },
+    {
+      "name": "Sylveon-EX #26",
+      "current_value": "$450.00",
+      "price_numeric": 450
+    },
+    {
+      "name": "Diancie #27",
+      "current_value": "$22.49",
+      "price_numeric": 22.49
+    },
+    {
+      "name": "Swablu #28",
+      "current_value": "$17.83",
+      "price_numeric": 17.83
+    },
+    {
+      "name": "Altaria #29",
+      "current_value": "$44.06",
+      "price_numeric": 44.06
+    },
+    {
+      "name": "Fletchling #30",
+      "current_value": "$19.04",
+      "price_numeric": 19.04
+    },
+    {
+      "name": "Floral Crown #31",
+      "current_value": "$8.82",
+      "price_numeric": 8.82
+    },
+    {
+      "name": "Wally #32",
+      "current_value": "$27.56",
+      "price_numeric": 27.56
+    }
+  ]
+}

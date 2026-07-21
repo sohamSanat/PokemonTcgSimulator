@@ -1,0 +1,342 @@
+{
+  "metadata": {
+    "set_name": "Awakening Psychic King",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/awakening-psychic-king/xy10_ja",
+    "release_date": "2016/03/18",
+    "scraped_at": "2026-07-15T12:31:08.321700",
+    "elapsed_seconds": 18.15,
+    "total_cards_scraped": 66
+  },
+  "cards": [
+    {
+      "name": "Shuckle #1",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Burmy #2",
+      "current_value": "$1.70",
+      "price_numeric": 1.7
+    },
+    {
+      "name": "Wormadam #3",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Mothim #4",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Snivy #5",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Servine #6",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Serperior #7",
+      "current_value": "$2.39",
+      "price_numeric": 2.39
+    },
+    {
+      "name": "Moltres #8",
+      "current_value": "$10.58",
+      "price_numeric": 10.58
+    },
+    {
+      "name": "Fennekin #9",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Delphox #11",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Delphox BREAK #12",
+      "current_value": "$14.00",
+      "price_numeric": 14
+    },
+    {
+      "name": "Seel #13",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Dewgong #14",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Omanyte #15",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Omastar #16",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Omastar BREAK #17",
+      "current_value": "$5.14",
+      "price_numeric": 5.14
+    },
+    {
+      "name": "Glaceon-EX #18",
+      "current_value": "$49.10",
+      "price_numeric": 49.1
+    },
+    {
+      "name": "Binacle #20",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Rotom #22",
+      "current_value": "$2.51",
+      "price_numeric": 2.51
+    },
+    {
+      "name": "Alakazam-EX #23",
+      "current_value": "$10.51",
+      "price_numeric": 10.51
+    },
+    {
+      "name": "M Alakazam-EX #24",
+      "current_value": "$35.64",
+      "price_numeric": 35.64
+    },
+    {
+      "name": "Koffing #25",
+      "current_value": "$1.86",
+      "price_numeric": 1.86
+    },
+    {
+      "name": "Weezing #26",
+      "current_value": "$3.24",
+      "price_numeric": 3.24
+    },
+    {
+      "name": "Mew #27",
+      "current_value": "$22.51",
+      "price_numeric": 22.51
+    },
+    {
+      "name": "Spoink #28",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Grumpig #29",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Solosis #30",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Duosion #31",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Reuniclus #32",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Kabuto #33",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Kabutops #34",
+      "current_value": "$7.47",
+      "price_numeric": 7.47
+    },
+    {
+      "name": "Larvitar #35",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Pupitar #36",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Wormadam #37",
+      "current_value": "$1.70",
+      "price_numeric": 1.7
+    },
+    {
+      "name": "Riolu #38",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Carbink #39",
+      "current_value": "$2.90",
+      "price_numeric": 2.9
+    },
+    {
+      "name": "Zygarde #40",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Zygarde #41",
+      "current_value": "$2.56",
+      "price_numeric": 2.56
+    },
+    {
+      "name": "Umbreon-EX #42",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Tyranitar #43",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Mandibuzz #45",
+      "current_value": "$0.30",
+      "price_numeric": 0.3
+    },
+    {
+      "name": "Wormadam #46",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Bronzong #48",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Bronzong BREAK #49",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Lucario #50",
+      "current_value": "$8.69",
+      "price_numeric": 8.69
+    },
+    {
+      "name": "Jigglypuff #52",
+      "current_value": "$1.96",
+      "price_numeric": 1.96
+    },
+    {
+      "name": "Wigglytuff #53",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "M Altaria-EX #54",
+      "current_value": "$24.50",
+      "price_numeric": 24.5
+    },
+    {
+      "name": "Kingdra-EX #55",
+      "current_value": "$8.49",
+      "price_numeric": 8.49
+    },
+    {
+      "name": "Aerodactyl #56",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Snorlax #57",
+      "current_value": "$22.74",
+      "price_numeric": 22.74
+    },
+    {
+      "name": "Lugia #58",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Lugia BREAK #59",
+      "current_value": "$30.00",
+      "price_numeric": 30
+    },
+    {
+      "name": "Loudred #61",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Altaria-EX #63",
+      "current_value": "$6.51",
+      "price_numeric": 6.51
+    },
+    {
+      "name": "Cinccino #65",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Fossil Excavation Kit #66",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Devolution Spray #67",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Helix Fossil Omanyte #69",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Dome Fossil Kabuto #70",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Bent Spoon #73",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Altaria Spirit Link #74",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Alakazam Spirit Link #75",
+      "current_value": "$2.27",
+      "price_numeric": 2.27
+    },
+    {
+      "name": "N #76",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Team Rocket's Handiwork #77",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Chaos Tower #78",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    }
+  ]
+}

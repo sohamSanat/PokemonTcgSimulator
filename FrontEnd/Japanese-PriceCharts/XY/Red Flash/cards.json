@@ -1,0 +1,257 @@
+{
+  "metadata": {
+    "set_name": "Red Flash",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/red-flash/xy8r_ja",
+    "release_date": "2015/09/26",
+    "scraped_at": "2026-07-15T12:32:24.069508",
+    "elapsed_seconds": 16.62,
+    "total_cards_scraped": 49
+  },
+  "cards": [
+    {
+      "name": "Chespin #3",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Quilladin #4",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Chesnaught #5",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Chesnaught BREAK #6",
+      "current_value": "$3.68",
+      "price_numeric": 3.68
+    },
+    {
+      "name": "Skiddo #7",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Houndoom-EX #9",
+      "current_value": "$5.48",
+      "price_numeric": 5.48
+    },
+    {
+      "name": "M Houndoom-EX #10",
+      "current_value": "$49.99",
+      "price_numeric": 49.99
+    },
+    {
+      "name": "Pansear #11",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Goldeen #13",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Seaking #14",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Staryu #15",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Starmie #16",
+      "current_value": "$1.07",
+      "price_numeric": 1.07
+    },
+    {
+      "name": "Remoraid #17",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Piplup #18",
+      "current_value": "$2.71",
+      "price_numeric": 2.71
+    },
+    {
+      "name": "Prinplup #19",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Empoleon #20",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Abomasnow #22",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Magnemite #23",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Magneton #24",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Magnezone #25",
+      "current_value": "$2.25",
+      "price_numeric": 2.25
+    },
+    {
+      "name": "Raikou #26",
+      "current_value": "$4.66",
+      "price_numeric": 4.66
+    },
+    {
+      "name": "Mewtwo-EX #27",
+      "current_value": "$6.88",
+      "price_numeric": 6.88
+    },
+    {
+      "name": "M Mewtwo-EX #28",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Misdreavus #29",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Mismagius #30",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Ralts #31",
+      "current_value": "$2.10",
+      "price_numeric": 2.1
+    },
+    {
+      "name": "Kirlia #32",
+      "current_value": "$3.16",
+      "price_numeric": 3.16
+    },
+    {
+      "name": "Cresselia #33",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Cubone #34",
+      "current_value": "$6.44",
+      "price_numeric": 6.44
+    },
+    {
+      "name": "Marowak #35",
+      "current_value": "$1.69",
+      "price_numeric": 1.69
+    },
+    {
+      "name": "Marowak BREAK #36",
+      "current_value": "$10.10",
+      "price_numeric": 10.1
+    },
+    {
+      "name": "Swinub #37",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Mamoswine #39",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Gallade #40",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Zorua #41",
+      "current_value": "$5.15",
+      "price_numeric": 5.15
+    },
+    {
+      "name": "Yveltal #42",
+      "current_value": "$7.48",
+      "price_numeric": 7.48
+    },
+    {
+      "name": "Bronzong #44",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Mr. Mime #45",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Spritzee #46",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Aromatisse #47",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Axew #48",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Doduo #49",
+      "current_value": "$1.08",
+      "price_numeric": 1.08
+    },
+    {
+      "name": "Dodrio #50",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Starly #51",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Houndoom Spirit Link #56",
+      "current_value": "$3.62",
+      "price_numeric": 3.62
+    },
+    {
+      "name": "Mewtwo Spirit Link #57",
+      "current_value": "$5.33",
+      "price_numeric": 5.33
+    },
+    {
+      "name": "Giovanni's Scheme #58",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "M Houndoom-EX #61",
+      "current_value": "$140.00",
+      "price_numeric": 140
+    },
+    {
+      "name": "Giovanni's Scheme #64",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    }
+  ]
+}

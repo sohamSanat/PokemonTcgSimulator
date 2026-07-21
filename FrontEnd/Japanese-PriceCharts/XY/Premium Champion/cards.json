@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "set_name": "Premium Champion Pack",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/premium-champion-pack/cp4_ja",
+    "release_date": "2016/04/16",
+    "scraped_at": "2026-07-15T12:30:39.610814",
+    "elapsed_seconds": 22.28,
+    "total_cards_scraped": 95
+  },
+  "cards": [
+    {
+      "name": "Beedrill-EX #1",
+      "current_value": "$8.92",
+      "price_numeric": 8.92
+    },
+    {
+      "name": "M Beedrill-EX #2",
+      "current_value": "$41.37",
+      "price_numeric": 41.37
+    },
+    {
+      "name": "Spinarak #4",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Sceptile-EX #6",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "M Sceptile-EX #7",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Shedinja #9",
+      "current_value": "$5.22",
+      "price_numeric": 5.22
+    },
+    {
+      "name": "Combee #10",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Vespiquen #11",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Chespin #12",
+      "current_value": "$4.66",
+      "price_numeric": 4.66
+    },
+    {
+      "name": "Quilladin #13",
+      "current_value": "$5.31",
+      "price_numeric": 5.31
+    },
+    {
+      "name": "Chesnaught #14",
+      "current_value": "$7.95",
+      "price_numeric": 7.95
+    },
+    {
+      "name": "Chesnaught BREAK #15",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Entei #16",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Fennekin #17",
+      "current_value": "$2.62",
+      "price_numeric": 2.62
+    },
+    {
+      "name": "Delphox #19",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Litleo #20",
+      "current_value": "$2.77",
+      "price_numeric": 2.77
+    },
+    {
+      "name": "Pyroar #22",
+      "current_value": "$4.72",
+      "price_numeric": 4.72
+    },
+    {
+      "name": "Remoraid #24",
+      "current_value": "$2.98",
+      "price_numeric": 2.98
+    },
+    {
+      "name": "Mudkip #26",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Marshtomp #27",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Swampert #28",
+      "current_value": "$31.37",
+      "price_numeric": 31.37
+    },
+    {
+      "name": "Regice #29",
+      "current_value": "$4.03",
+      "price_numeric": 4.03
+    },
+    {
+      "name": "Seismitoad-EX #30",
+      "current_value": "$6.34",
+      "price_numeric": 6.34
+    },
+    {
+      "name": "Cubchoo #31",
+      "current_value": "$4.54",
+      "price_numeric": 4.54
+    },
+    {
+      "name": "Beartic #32",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Froakie #33",
+      "current_value": "$2.23",
+      "price_numeric": 2.23
+    },
+    {
+      "name": "Frogadier #34",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Greninja #35",
+      "current_value": "$12.29",
+      "price_numeric": 12.29
+    },
+    {
+      "name": "Pikachu #36",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Raichu #37",
+      "current_value": "$4.20",
+      "price_numeric": 4.2
+    },
+    {
+      "name": "Magnemite #38",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Magneton #39",
+      "current_value": "$5.61",
+      "price_numeric": 5.61
+    },
+    {
+      "name": "Magnezone #40",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Zapdos #41",
+      "current_value": "$2.82",
+      "price_numeric": 2.82
+    },
+    {
+      "name": "Manectric-EX #42",
+      "current_value": "$3.15",
+      "price_numeric": 3.15
+    },
+    {
+      "name": "M Manectric-EX #43",
+      "current_value": "$18.00",
+      "price_numeric": 18
+    },
+    {
+      "name": "Joltik #44",
+      "current_value": "$6.81",
+      "price_numeric": 6.81
+    },
+    {
+      "name": "Zubat #45",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Golbat #46",
+      "current_value": "$3.75",
+      "price_numeric": 3.75
+    },
+    {
+      "name": "Gengar-EX #48",
+      "current_value": "$75.00",
+      "price_numeric": 75
+    },
+    {
+      "name": "Mewtwo-EX #50",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Unown #53",
+      "current_value": "$3.59",
+      "price_numeric": 3.59
+    },
+    {
+      "name": "Wobbuffet #54",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Wobbuffet BREAK #55",
+      "current_value": "$39.99",
+      "price_numeric": 39.99
+    },
+    {
+      "name": "Deoxys #56",
+      "current_value": "$18.19",
+      "price_numeric": 18.19
+    },
+    {
+      "name": "Litwick #57",
+      "current_value": "$4.92",
+      "price_numeric": 4.92
+    },
+    {
+      "name": "Lampent #58",
+      "current_value": "$3.56",
+      "price_numeric": 3.56
+    },
+    {
+      "name": "Chandelure #59",
+      "current_value": "$4.79",
+      "price_numeric": 4.79
+    },
+    {
+      "name": "Phantump #60",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Trevenant #61",
+      "current_value": "$6.76",
+      "price_numeric": 6.76
+    },
+    {
+      "name": "Pumpkaboo #62",
+      "current_value": "$6.07",
+      "price_numeric": 6.07
+    },
+    {
+      "name": "Gourgeist #63",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Hoopa-EX #64",
+      "current_value": "$9.09",
+      "price_numeric": 9.09
+    },
+    {
+      "name": "Machop #65",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Machoke #66",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Machamp #67",
+      "current_value": "$4.77",
+      "price_numeric": 4.77
+    },
+    {
+      "name": "Cubone #68",
+      "current_value": "$19.00",
+      "price_numeric": 19
+    },
+    {
+      "name": "Marowak #69",
+      "current_value": "$3.23",
+      "price_numeric": 3.23
+    },
+    {
+      "name": "Meditite #70",
+      "current_value": "$2.98",
+      "price_numeric": 2.98
+    },
+    {
+      "name": "Medicham #71",
+      "current_value": "$5.43",
+      "price_numeric": 5.43
+    },
+    {
+      "name": "Groudon-EX #72",
+      "current_value": "$34.94",
+      "price_numeric": 34.94
+    },
+    {
+      "name": "Primal Groudon-EX #73",
+      "current_value": "$69.99",
+      "price_numeric": 69.99
+    },
+    {
+      "name": "Lucario-EX #74",
+      "current_value": "$12.13",
+      "price_numeric": 12.13
+    },
+    {
+      "name": "M Lucario-EX #75",
+      "current_value": "$70.00",
+      "price_numeric": 70
+    },
+    {
+      "name": "Hawlucha #76",
+      "current_value": "$4.84",
+      "price_numeric": 4.84
+    },
+    {
+      "name": "Absol #77",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Yveltal #78",
+      "current_value": "$7.30",
+      "price_numeric": 7.3
+    },
+    {
+      "name": "Yveltal-EX #79",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Togepi #83",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Togetic #84",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Togekiss #85",
+      "current_value": "$7.22",
+      "price_numeric": 7.22
+    },
+    {
+      "name": "Florges-EX #86",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Aromatisse #88",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Giratina-EX #91",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Noivern #92",
+      "current_value": "$4.44",
+      "price_numeric": 4.44
+    },
+    {
+      "name": "Kangaskhan-EX #93",
+      "current_value": "$5.29",
+      "price_numeric": 5.29
+    },
+    {
+      "name": "M Kangaskhan-EX #94",
+      "current_value": "$22.00",
+      "price_numeric": 22
+    },
+    {
+      "name": "Miltank #95",
+      "current_value": "$5.04",
+      "price_numeric": 5.04
+    },
+    {
+      "name": "Rayquaza-EX #96",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "M Rayquaza-EX #97",
+      "current_value": "$59.00",
+      "price_numeric": 59
+    },
+    {
+      "name": "Shaymin-EX #98",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Noibat #99",
+      "current_value": "$4.43",
+      "price_numeric": 4.43
+    },
+    {
+      "name": "Battle Compressor #104",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Groudon Spirit Link #110",
+      "current_value": "$10.50",
+      "price_numeric": 10.5
+    },
+    {
+      "name": "Gengar Spirit Link #111",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Beedrill Spirit Link #113",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Rayquaza Spirit Link #116",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Korrina #120",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Teammates #123",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Professor Sycamore #124",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Water Energy #134",
+      "current_value": "$55.00",
+      "price_numeric": 55
+    },
+    {
+      "name": "Lightning Energy #135",
+      "current_value": "$55.00",
+      "price_numeric": 55
+    },
+    {
+      "name": "Psychic Energy #136",
+      "current_value": "$100.64",
+      "price_numeric": 100.64
+    },
+    {
+      "name": "Fighting Energy #137",
+      "current_value": "$43.00",
+      "price_numeric": 43
+    },
+    {
+      "name": "Fairy Energy #140",
+      "current_value": "$15.50",
+      "price_numeric": 15.5
+    }
+  ]
+}

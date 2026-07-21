@@ -1,0 +1,382 @@
+{
+  "metadata": {
+    "set_name": "Bandit Ring",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/bandit-ring/xy7_ja",
+    "release_date": "2015/06/20",
+    "scraped_at": "2026-07-15T12:33:55.100186",
+    "elapsed_seconds": 22.78,
+    "total_cards_scraped": 74
+  },
+  "cards": [
+    {
+      "name": "Oddish #1",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Gloom #2",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Vileplume #3",
+      "current_value": "$3.45",
+      "price_numeric": 3.45
+    },
+    {
+      "name": "Bellossom #4",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Spinarak #5",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Sceptile-EX #7",
+      "current_value": "$8.25",
+      "price_numeric": 8.25
+    },
+    {
+      "name": "M Sceptile-EX #8",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Combee #9",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Vespiquen #10",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Vespiquen #11",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Flareon #13",
+      "current_value": "$5.39",
+      "price_numeric": 5.39
+    },
+    {
+      "name": "Entei #14",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Entei #15",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Larvesta #16",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Volcarona #17",
+      "current_value": "$2.36",
+      "price_numeric": 2.36
+    },
+    {
+      "name": "Volcarona #18",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Magikarp #19",
+      "current_value": "$3.87",
+      "price_numeric": 3.87
+    },
+    {
+      "name": "Gyarados #20",
+      "current_value": "$3.57",
+      "price_numeric": 3.57
+    },
+    {
+      "name": "Gyarados #21",
+      "current_value": "$83.73",
+      "price_numeric": 83.73
+    },
+    {
+      "name": "Vaporeon #22",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Regice #24",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Kyurem-EX #25",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Jolteon #26",
+      "current_value": "$6.94",
+      "price_numeric": 6.94
+    },
+    {
+      "name": "Ampharos-EX #27",
+      "current_value": "$4.35",
+      "price_numeric": 4.35
+    },
+    {
+      "name": "M Ampharos-EX #28",
+      "current_value": "$30.00",
+      "price_numeric": 30
+    },
+    {
+      "name": "Rotom #29",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Unown #30",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Baltoy #31",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Baltoy #32",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Golett #34",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Golurk #35",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Hoopa-EX #36",
+      "current_value": "$3.83",
+      "price_numeric": 3.83
+    },
+    {
+      "name": "Machamp-EX #37",
+      "current_value": "$5.48",
+      "price_numeric": 5.48
+    },
+    {
+      "name": "Wooper #38",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Quagsire #39",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Golurk #41",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Tyranitar-EX #42",
+      "current_value": "$16.63",
+      "price_numeric": 16.63
+    },
+    {
+      "name": "M Tyranitar-EX #43",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Sableye #44",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Inkay #45",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Beldum #47",
+      "current_value": "$4.53",
+      "price_numeric": 4.53
+    },
+    {
+      "name": "Metang #48",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Metagross #49",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Metagross #50",
+      "current_value": "$8.40",
+      "price_numeric": 8.4
+    },
+    {
+      "name": "Registeel #51",
+      "current_value": "$2.07",
+      "price_numeric": 2.07
+    },
+    {
+      "name": "Ralts #52",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Kirlia #53",
+      "current_value": "$4.15",
+      "price_numeric": 4.15
+    },
+    {
+      "name": "Gardevoir #54",
+      "current_value": "$19.95",
+      "price_numeric": 19.95
+    },
+    {
+      "name": "Cottonee #55",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Whimsicott #56",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Giratina-EX #57",
+      "current_value": "$18.95",
+      "price_numeric": 18.95
+    },
+    {
+      "name": "Goomy #58",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Sliggoo #59",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Goodra #60",
+      "current_value": "$3.93",
+      "price_numeric": 3.93
+    },
+    {
+      "name": "Meowth #61",
+      "current_value": "$2.18",
+      "price_numeric": 2.18
+    },
+    {
+      "name": "Persian #62",
+      "current_value": "$1.65",
+      "price_numeric": 1.65
+    },
+    {
+      "name": "Eevee #63",
+      "current_value": "$4.55",
+      "price_numeric": 4.55
+    },
+    {
+      "name": "Porygon #64",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Porygon2 #65",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Porygon-Z #66",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Porygon-Z #67",
+      "current_value": "$9.32",
+      "price_numeric": 9.32
+    },
+    {
+      "name": "Lugia-EX #68",
+      "current_value": "$20.99",
+      "price_numeric": 20.99
+    },
+    {
+      "name": "Ampharos Spirit Link #74",
+      "current_value": "$1.92",
+      "price_numeric": 1.92
+    },
+    {
+      "name": "Tyranitar Spirit Link #75",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Hex Maniac #77",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Flash Energy #80",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Sceptile-EX #82",
+      "current_value": "$39.99",
+      "price_numeric": 39.99
+    },
+    {
+      "name": "M Sceptile-EX #83",
+      "current_value": "$200.00",
+      "price_numeric": 200
+    },
+    {
+      "name": "M Ampharos-EX #86",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Hoopa-EX #87",
+      "current_value": "$86.50",
+      "price_numeric": 86.5
+    },
+    {
+      "name": "Lugia-EX #92",
+      "current_value": "$49.99",
+      "price_numeric": 49.99
+    },
+    {
+      "name": "Primal Groudon-EX #94",
+      "current_value": "$154.90",
+      "price_numeric": 154.9
+    },
+    {
+      "name": "M Rayquaza-EX #95",
+      "current_value": "$449.99",
+      "price_numeric": 449.99
+    },
+    {
+      "name": "Energy Retrieval #96",
+      "current_value": "$29.50",
+      "price_numeric": 29.5
+    }
+  ]
+}

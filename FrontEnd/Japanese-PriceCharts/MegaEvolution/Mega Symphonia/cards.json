@@ -1,0 +1,467 @@
+{
+  "metadata": {
+    "set_name": "Mega Symphonia",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/mega-symphonia/m1s_ja",
+    "release_date": "2025/08/01",
+    "scraped_at": "2026-07-15T11:32:09.578131",
+    "elapsed_seconds": 21.99,
+    "total_cards_scraped": 91
+  },
+  "cards": [
+    {
+      "name": "Tangela #1",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Tangrowth #2",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Chikorita #3",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Bayleef #4",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Meganium #5",
+      "current_value": "$0.23",
+      "price_numeric": 0.23
+    },
+    {
+      "name": "Shuckle #6",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Nincada #7",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Ninjask #8",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Dhelmise #9",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Litleo #10",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Pyroar #11",
+      "current_value": "$0.05",
+      "price_numeric": 0.05
+    },
+    {
+      "name": "Sizzlipede #12",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Centiskorch #13",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Chi-Yu #14",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Mantine #15",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Kyogre #16",
+      "current_value": "$0.24",
+      "price_numeric": 0.24
+    },
+    {
+      "name": "Snover #17",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Mega Abomasnow ex #18",
+      "current_value": "$0.28",
+      "price_numeric": 0.28
+    },
+    {
+      "name": "Clauncher #19",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Clawitzer #20",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Sobble #21",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Drizzile #22",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Inteleon #23",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Snom #24",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Frosmoth #25",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Eiscue #26",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Magnemite #27",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Magneton #28",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Magnezone #29",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Electrike #31",
+      "current_value": "$0.07",
+      "price_numeric": 0.07
+    },
+    {
+      "name": "Mega Manectric ex #32",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Pachirisu #33",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Helioptile #34",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Heliolisk #35",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Abra #36",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Kadabra #37",
+      "current_value": "$0.12",
+      "price_numeric": 0.12
+    },
+    {
+      "name": "Alakazam #38",
+      "current_value": "$0.40",
+      "price_numeric": 0.4
+    },
+    {
+      "name": "Jynx #39",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Ralts #40",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Kirlia #41",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Mega Gardevoir ex #42",
+      "current_value": "$0.34",
+      "price_numeric": 0.34
+    },
+    {
+      "name": "Shedinja #43",
+      "current_value": "$0.11",
+      "price_numeric": 0.11
+    },
+    {
+      "name": "Spoink #44",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Grumpig #45",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Xerneas #46",
+      "current_value": "$0.20",
+      "price_numeric": 0.2
+    },
+    {
+      "name": "Greavard #47",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Houndstone #48",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Mega Latias ex #49",
+      "current_value": "$0.47",
+      "price_numeric": 0.47
+    },
+    {
+      "name": "Latios #50",
+      "current_value": "$0.10",
+      "price_numeric": 0.1
+    },
+    {
+      "name": "Mega Kangaskhan ex #51",
+      "current_value": "$0.36",
+      "price_numeric": 0.36
+    },
+    {
+      "name": "Delibird #52",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Buneary #53",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Lopunny #54",
+      "current_value": "$0.09",
+      "price_numeric": 0.09
+    },
+    {
+      "name": "Stufful #55",
+      "current_value": "$0.14",
+      "price_numeric": 0.14
+    },
+    {
+      "name": "Bewear #56",
+      "current_value": "$0.16",
+      "price_numeric": 0.16
+    },
+    {
+      "name": "Suspicious Watch #57",
+      "current_value": "$0.03",
+      "price_numeric": 0.03
+    },
+    {
+      "name": "Mega Signal #58",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Acerola's Mischief #59",
+      "current_value": "$0.06",
+      "price_numeric": 0.06
+    },
+    {
+      "name": "Wally's Compassion #60",
+      "current_value": "$0.13",
+      "price_numeric": 0.13
+    },
+    {
+      "name": "Vitality Forest #61",
+      "current_value": "$0.15",
+      "price_numeric": 0.15
+    },
+    {
+      "name": "Surfing Beach #62",
+      "current_value": "$0.17",
+      "price_numeric": 0.17
+    },
+    {
+      "name": "Mystery Garden #63",
+      "current_value": "$0.08",
+      "price_numeric": 0.08
+    },
+    {
+      "name": "Shuckle #64",
+      "current_value": "$3.79",
+      "price_numeric": 3.79
+    },
+    {
+      "name": "Ninjask #65",
+      "current_value": "$2.42",
+      "price_numeric": 2.42
+    },
+    {
+      "name": "Litleo #66",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Snover #67",
+      "current_value": "$1.62",
+      "price_numeric": 1.62
+    },
+    {
+      "name": "Clawitzer #68",
+      "current_value": "$1.78",
+      "price_numeric": 1.78
+    },
+    {
+      "name": "Inteleon #69",
+      "current_value": "$1.68",
+      "price_numeric": 1.68
+    },
+    {
+      "name": "Helioptile #70",
+      "current_value": "$2.21",
+      "price_numeric": 2.21
+    },
+    {
+      "name": "Alakazam #71",
+      "current_value": "$4.92",
+      "price_numeric": 4.92
+    },
+    {
+      "name": "Shedinja #72",
+      "current_value": "$2.35",
+      "price_numeric": 2.35
+    },
+    {
+      "name": "Houndstone #73",
+      "current_value": "$1.77",
+      "price_numeric": 1.77
+    },
+    {
+      "name": "Delibird #74",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Stufful #75",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Mega Abomasnow ex #76",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Mega Manectric ex #77",
+      "current_value": "$1.81",
+      "price_numeric": 1.81
+    },
+    {
+      "name": "Mega Gardevoir ex #78",
+      "current_value": "$4.52",
+      "price_numeric": 4.52
+    },
+    {
+      "name": "Mega Latias ex #79",
+      "current_value": "$4.22",
+      "price_numeric": 4.22
+    },
+    {
+      "name": "Mega Kangaskhan ex #80",
+      "current_value": "$3.18",
+      "price_numeric": 3.18
+    },
+    {
+      "name": "Buddy-Buddy Poffin #81",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Rare Candy #82",
+      "current_value": "$0.83",
+      "price_numeric": 0.83
+    },
+    {
+      "name": "Mega Signal #83",
+      "current_value": "$0.41",
+      "price_numeric": 0.41
+    },
+    {
+      "name": "Acerola's Mischief #84",
+      "current_value": "$4.18",
+      "price_numeric": 4.18
+    },
+    {
+      "name": "Wally's Compassion #85",
+      "current_value": "$1.12",
+      "price_numeric": 1.12
+    },
+    {
+      "name": "Mystery Garden #86",
+      "current_value": "$0.61",
+      "price_numeric": 0.61
+    },
+    {
+      "name": "Mega Gardevoir ex #87",
+      "current_value": "$136.38",
+      "price_numeric": 136.38
+    },
+    {
+      "name": "Mega Latias ex #88",
+      "current_value": "$43.01",
+      "price_numeric": 43.01
+    },
+    {
+      "name": "Mega Kangaskhan ex #89",
+      "current_value": "$30.51",
+      "price_numeric": 30.51
+    },
+    {
+      "name": "Acerola's Mischief #90",
+      "current_value": "$29.71",
+      "price_numeric": 29.71
+    },
+    {
+      "name": "Wally's Compassion #91",
+      "current_value": "$13.37",
+      "price_numeric": 13.37
+    },
+    {
+      "name": "Mega Gardevoir ex #92",
+      "current_value": "$266.46",
+      "price_numeric": 266.46
+    }
+  ]
+}

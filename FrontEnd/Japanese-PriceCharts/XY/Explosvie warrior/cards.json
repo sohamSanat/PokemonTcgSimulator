@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "set_name": "Fever-Burst Fighter",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/fever-burst-fighter/xy11f_ja",
+    "release_date": "2016/06/17",
+    "scraped_at": "2026-07-15T12:30:03.669983",
+    "elapsed_seconds": 17.03,
+    "total_cards_scraped": 46
+  },
+  "cards": [
+    {
+      "name": "Seedot #1",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Shiftry #3",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Foongus #4",
+      "current_value": "$0.96",
+      "price_numeric": 0.96
+    },
+    {
+      "name": "Ponyta #6",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Rapidash #7",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Litleo #8",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Pyroar #9",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Pyroar BREAK #10",
+      "current_value": "$8.99",
+      "price_numeric": 8.99
+    },
+    {
+      "name": "Volcanion #11",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Volcanion-EX #12",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Shellos #13",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Gastrodon #14",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Oshawott #15",
+      "current_value": "$2.83",
+      "price_numeric": 2.83
+    },
+    {
+      "name": "Dewott #16",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Samurott #17",
+      "current_value": "$3.20",
+      "price_numeric": 3.2
+    },
+    {
+      "name": "Clauncher #18",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Clawitzer #19",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Clawitzer BREAK #20",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Joltik #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Galvantula #22",
+      "current_value": "$2.93",
+      "price_numeric": 2.93
+    },
+    {
+      "name": "Drifloon #23",
+      "current_value": "$0.73",
+      "price_numeric": 0.73
+    },
+    {
+      "name": "Litwick #25",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Lampent #26",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Chandelure #27",
+      "current_value": "$9.87",
+      "price_numeric": 9.87
+    },
+    {
+      "name": "Nosepass #28",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Probopass #29",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Croagunk #30",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Toxicroak #31",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Steelix-EX #32",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "M Steelix-EX #33",
+      "current_value": "$15.55",
+      "price_numeric": 15.55
+    },
+    {
+      "name": "Shieldon #34",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Bastiodon #35",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Klefki #40",
+      "current_value": "$3.16",
+      "price_numeric": 3.16
+    },
+    {
+      "name": "Xerneas #41",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Xerneas BREAK #42",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Druddigon #43",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Aipom #44",
+      "current_value": "$1.96",
+      "price_numeric": 1.96
+    },
+    {
+      "name": "Ambipom #45",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Fletchling #46",
+      "current_value": "$0.72",
+      "price_numeric": 0.72
+    },
+    {
+      "name": "Fletchinder #47",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Talonflame #48",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Steelix Spirit Link #52",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Volcanion-EX #55",
+      "current_value": "$27.50",
+      "price_numeric": 27.5
+    },
+    {
+      "name": "Steelix-EX #56",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "M Steelix-EX #57",
+      "current_value": "$75.00",
+      "price_numeric": 75
+    },
+    {
+      "name": "Volcanion-EX #59",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    }
+  ]
+}

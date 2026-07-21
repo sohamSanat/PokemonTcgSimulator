@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "set_name": "Blue Shock",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/blue-shock/xy8b_ja",
+    "release_date": "2015/09/26",
+    "scraped_at": "2026-07-15T12:32:53.834286",
+    "elapsed_seconds": 19.28,
+    "total_cards_scraped": 46
+  },
+  "cards": [
+    {
+      "name": "Cacnea #2",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Chespin #5",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Scatterbug #6",
+      "current_value": "$1.84",
+      "price_numeric": 1.84
+    },
+    {
+      "name": "Spewpa #7",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Vivillon #8",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Cyndaquil #9",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Quilava #10",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Typhlosion #11",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Octillery #13",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Glalie-EX #14",
+      "current_value": "$2.03",
+      "price_numeric": 2.03
+    },
+    {
+      "name": "M Glalie-EX #15",
+      "current_value": "$13.65",
+      "price_numeric": 13.65
+    },
+    {
+      "name": "Panpour #16",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Vanillite #18",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Vanillish #19",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Vanilluxe #20",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Gastly #22",
+      "current_value": "$2.61",
+      "price_numeric": 2.61
+    },
+    {
+      "name": "Haunter #23",
+      "current_value": "$3.76",
+      "price_numeric": 3.76
+    },
+    {
+      "name": "Gengar #24",
+      "current_value": "$95.00",
+      "price_numeric": 95
+    },
+    {
+      "name": "Mewtwo-EX #25",
+      "current_value": "$8.03",
+      "price_numeric": 8.03
+    },
+    {
+      "name": "M Mewtwo-EX #26",
+      "current_value": "$14.00",
+      "price_numeric": 14
+    },
+    {
+      "name": "Swoobat #28",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Elgyem #29",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Beheeyem #30",
+      "current_value": "$3.63",
+      "price_numeric": 3.63
+    },
+    {
+      "name": "Sandshrew #31",
+      "current_value": "$5.47",
+      "price_numeric": 5.47
+    },
+    {
+      "name": "Sandslash #32",
+      "current_value": "$4.37",
+      "price_numeric": 4.37
+    },
+    {
+      "name": "Cacturne #34",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Zorua #35",
+      "current_value": "$3.88",
+      "price_numeric": 3.88
+    },
+    {
+      "name": "Zoroark #36",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Zoroark BREAK #37",
+      "current_value": "$4.86",
+      "price_numeric": 4.86
+    },
+    {
+      "name": "Snubbull #38",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Granbull #39",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Flabébé #40",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Floette #41",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Florges #42",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Florges BREAK #43",
+      "current_value": "$6.14",
+      "price_numeric": 6.14
+    },
+    {
+      "name": "Xerneas #44",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Axew #45",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Haxorus #47",
+      "current_value": "$9.98",
+      "price_numeric": 9.98
+    },
+    {
+      "name": "Doduo #48",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Hoothoot #49",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Teddiursa #51",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Smeargle #53",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Mewtwo Spirit Link #56",
+      "current_value": "$2.33",
+      "price_numeric": 2.33
+    },
+    {
+      "name": "Glalie-EX #60",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "M Glalie-EX #61",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Brigette #64",
+      "current_value": "$121.25",
+      "price_numeric": 121.25
+    }
+  ]
+}

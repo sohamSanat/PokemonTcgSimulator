@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "set_name": "Rage of the Broken Heavens",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/rage-of-the-broken-heavens/xy9_ja",
+    "release_date": "2015/12/11",
+    "scraped_at": "2026-07-15T12:31:59.476797",
+    "elapsed_seconds": 18.77,
+    "total_cards_scraped": 72
+  },
+  "cards": [
+    {
+      "name": "Chikorita #1",
+      "current_value": "$3.17",
+      "price_numeric": 3.17
+    },
+    {
+      "name": "Bayleef #2",
+      "current_value": "$1.91",
+      "price_numeric": 1.91
+    },
+    {
+      "name": "Meganium #3",
+      "current_value": "$5.73",
+      "price_numeric": 5.73
+    },
+    {
+      "name": "Petilil #7",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Lilligant #8",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Numel #10",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Slowpoke #13",
+      "current_value": "$3.40",
+      "price_numeric": 3.4
+    },
+    {
+      "name": "Slowbro #14",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Slowking #15",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "Cloyster #17",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Gyarados-EX #18",
+      "current_value": "$29.00",
+      "price_numeric": 29
+    },
+    {
+      "name": "M Gyarados-EX #19",
+      "current_value": "$59.99",
+      "price_numeric": 59.99
+    },
+    {
+      "name": "Suicune #20",
+      "current_value": "$14.01",
+      "price_numeric": 14.01
+    },
+    {
+      "name": "Manaphy-EX #21",
+      "current_value": "$3.32",
+      "price_numeric": 3.32
+    },
+    {
+      "name": "Tympole #22",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Seismitoad #24",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Ducklett #25",
+      "current_value": "$23.00",
+      "price_numeric": 23
+    },
+    {
+      "name": "Froakie #27",
+      "current_value": "$2.19",
+      "price_numeric": 2.19
+    },
+    {
+      "name": "Frogadier #28",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Greninja #29",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Greninja BREAK #30",
+      "current_value": "$20.16",
+      "price_numeric": 20.16
+    },
+    {
+      "name": "Blitzle #31",
+      "current_value": "$4.79",
+      "price_numeric": 4.79
+    },
+    {
+      "name": "Zebstrika #32",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Drowzee #33",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Hypno #34",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Espeon-EX #35",
+      "current_value": "$22.63",
+      "price_numeric": 22.63
+    },
+    {
+      "name": "Drapion #37",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Trubbish #39",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Garbodor #40",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Honedge #41",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Doublade #42",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Aegislash #43",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Skrelp #44",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Trevenant #46",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Trevenant BREAK #47",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Sudowoodo #48",
+      "current_value": "$2.25",
+      "price_numeric": 2.25
+    },
+    {
+      "name": "Gible #49",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Gabite #50",
+      "current_value": "$5.21",
+      "price_numeric": 5.21
+    },
+    {
+      "name": "Garchomp #51",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Pancham #52",
+      "current_value": "$1.91",
+      "price_numeric": 1.91
+    },
+    {
+      "name": "Nuzleaf #53",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Shiftry #54",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Darkrai-EX #55",
+      "current_value": "$10.30",
+      "price_numeric": 10.3
+    },
+    {
+      "name": "Pangoro #56",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Scizor-EX #57",
+      "current_value": "$8.94",
+      "price_numeric": 8.94
+    },
+    {
+      "name": "M Scizor-EX #58",
+      "current_value": "$32.49",
+      "price_numeric": 32.49
+    },
+    {
+      "name": "Ferroseed #59",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Clefairy #61",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Clefable #62",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Dragalge #63",
+      "current_value": "$3.29",
+      "price_numeric": 3.29
+    },
+    {
+      "name": "Rattata #64",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Raticate #65",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Raticate BREAK #66",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Ho-Oh-EX #68",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Glameow #69",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Purugly #70",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Max Elixir #72",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Fighting Fury Belt #74",
+      "current_value": "$13.00",
+      "price_numeric": 13
+    },
+    {
+      "name": "Gyarados Spirit Link #75",
+      "current_value": "$129.53",
+      "price_numeric": 129.53
+    },
+    {
+      "name": "Scizor Spirit Link #76",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Delinquent #77",
+      "current_value": "$62.20",
+      "price_numeric": 62.2
+    },
+    {
+      "name": "Psychics Third Eye #78",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Reverse Valley #79",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Gyarados-EX #81",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "M Gyarados-EX #82",
+      "current_value": "$854.68",
+      "price_numeric": 854.68
+    },
+    {
+      "name": "Manaphy-EX #83",
+      "current_value": "$196.68",
+      "price_numeric": 196.68
+    },
+    {
+      "name": "Espeon-EX #84",
+      "current_value": "$799.08",
+      "price_numeric": 799.08
+    },
+    {
+      "name": "Darkrai-EX #85",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Scizor-EX #86",
+      "current_value": "$276.97",
+      "price_numeric": 276.97
+    },
+    {
+      "name": "M Scizor-EX #87",
+      "current_value": "$199.99",
+      "price_numeric": 199.99
+    },
+    {
+      "name": "Ho-Oh-EX #88",
+      "current_value": "$647.99",
+      "price_numeric": 647.99
+    },
+    {
+      "name": "Gyarados-EX #89",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    }
+  ]
+}
