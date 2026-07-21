@@ -281,7 +281,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
   const [tradeTarget, setTradeTarget] = useState<any>(null);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
-  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(6);
+  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(30);
   const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
   const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
 
@@ -362,14 +362,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       setId = `${setId.replace(/_ja$/i, '')}_ja`;
     }
 
-    handleCardImageError(img, setId, num, () => {
-      const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
-      if (cardContainer) {
-        cardContainer.style.display = 'none';
-      }
-      setBrokenOriginalIds(prev => prev.includes(origStr) ? prev : [...prev, origStr]);
-      onCardRenderComplete(targetId);
-    });
+    // Bypass the mutative fallback loop in tcgdex.ts which conflicts with React re-renders.
+    // Instantly mark this card as broken and replace it with a new one from the pool.
+    const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
+    if (cardContainer) {
+      cardContainer.style.display = 'none';
+    }
+    setBrokenOriginalIds(prev => prev.includes(origStr) ? prev : [...prev, origStr]);
+    onCardRenderComplete(targetId);
   };
 
   const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
@@ -790,7 +790,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
   // Reset sequential visible batch limit when active vendor pool or search filters change
   useEffect(() => {
-    setVisibleBatchLimit(6);
+    setVisibleBatchLimit(30);
     setCompletedCardIds(new Set());
   }, [activeVendorCards, searchQuery, selectedFilter]);
 
@@ -813,7 +813,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => completedCardIds.has(c.id));
 
     if (allBatchDone) {
-      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 6));
+      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 30));
     }
   }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter, brokenOriginalIds]);
 
@@ -833,7 +833,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           }
         }
       });
-    }, { rootMargin: '120px' });
+    }, { rootMargin: '800px' });
 
     const elements = document.querySelectorAll('[data-card-container]');
     elements.forEach(el => observer.observe(el));

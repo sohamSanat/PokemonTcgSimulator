@@ -966,38 +966,34 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
   if (!isHighClass) {
     if (era === 'sv') {
       jHitTable = [
-        { p: 0.035, label: 'Secret Hit (SR/SAR/UR)', pool: [...specialArtRares, ...ultraRares, ...superRares] },
+        { p: 0.07, label: 'Secret Hit (SR/SAR/UR)', pool: [...specialArtRares, ...ultraRares, ...superRares] },
         ...(aceSpecs.length > 0 ? [{ p: 0.04, label: 'ACE SPEC', pool: aceSpecs }] : []),
         { p: 0.09, label: 'AR (Art Rare)', pool: artRares },
-        { p: 0.15, label: 'RR (Double Rare)', pool: doubleRares },
-        { p: 0.40, label: 'R (Holo Rare)', pool: rares },
+        { p: 0.14, label: 'RR (Double Rare)', pool: doubleRares },
       ];
-      jDefault = { label: 'Uncommon', pool: uncommons };
+      jDefault = { label: 'R (Holo Rare)', pool: rares };
     } else if (era === 'swsh') {
       jHitTable = [
-        { p: 0.03, label: 'Secret Hit (SR/HR/UR)', pool: [...ultraRares, ...hyperRares, ...superRares] },
+        { p: 0.06, label: 'Secret Hit (SR/HR/UR)', pool: [...ultraRares, ...hyperRares, ...superRares] },
         { p: 0.05, label: 'RRR (Triple Rare)', pool: tripleRares },
-        { p: 0.15, label: 'RR (Double Rare)', pool: doubleRares },
+        { p: 0.14, label: 'RR (Double Rare)', pool: doubleRares },
         { p: 0.02, label: 'CSR (Character Super Rare)', pool: characterSuperRares },
         { p: 0.06, label: 'CHR (Character Rare)', pool: characterRares },
-        { p: 0.40, label: 'R (Holo Rare)', pool: rares },
       ];
-      jDefault = { label: 'Uncommon', pool: uncommons };
+      jDefault = { label: 'R (Holo Rare)', pool: rares };
     } else if (era === 'sm') {
       jHitTable = [
-        { p: 0.03, label: 'Secret Hit (SR/HR/UR)', pool: [...ultraRares, ...hyperRares, ...superRares] },
+        { p: 0.05, label: 'Secret Hit (SR/HR/UR)', pool: [...ultraRares, ...hyperRares, ...superRares] },
         { p: 0.12, label: 'RR (Double Rare)', pool: doubleRares },
-        { p: 0.42, label: 'R (Holo Rare)', pool: rares },
       ];
-      jDefault = { label: 'Uncommon', pool: uncommons };
+      jDefault = { label: 'R (Holo Rare)', pool: rares };
     } else {
       // Classic / older eras
       jHitTable = [
-        { p: 0.025, label: 'Secret Hit (SR/UR)', pool: [...ultraRares, ...superRares] },
+        { p: 0.04, label: 'Secret Hit (SR/UR)', pool: [...ultraRares, ...superRares] },
         { p: 0.12, label: 'Double Rare / EX', pool: doubleRares },
-        { p: 0.40, label: 'R (Holo Rare)', pool: rares },
       ];
-      jDefault = { label: 'Uncommon', pool: uncommons };
+      jDefault = { label: 'R (Holo Rare)', pool: rares };
     }
   } else {
     // HIGH CLASS / SPECIALTY BOXES — chase-denser by real design, but still rolled per pack
@@ -1099,7 +1095,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       usedIds.add(card4.id);
       slots.push({ summary: card4, defaultRarity: 'Uncommon' });
       
-      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: seededHit.defaultRarity !== 'Uncommon' });
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: false });
       
       packs.push({ slots, isGodPack: false });
     } else if (config.rawId === 'sv2a') {
@@ -1122,11 +1118,11 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       usedIds.add(card4.id);
       slots.push({ summary: card4, defaultRarity: 'Uncommon' });
       
-      const card5 = getFrom([...commons, ...uncommons], pool, usedIds);
+      const card5 = getFrom(commons, pool, usedIds);
       usedIds.add(card5.id);
       slots.push({ summary: card5, defaultRarity: isMasterBall ? 'Master Ball Reverse Holo' : 'Poké Ball Reverse Holo', isReverseHolo: true });
       
-      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: false });
       
       const card7 = getFrom([...rares, ...uncommons], pool, usedIds);
       usedIds.add(card7.id);
@@ -1157,7 +1153,7 @@ export function generateJapaneseBox(set: TCGDexSet): JapaneseBoxState {
       usedIds.add(card8.id);
       slots.push({ summary: card8, defaultRarity: 'Double Rare / ex / V', isReverseHolo: true });
       // Slot 9: The Box Seeded Hit
-      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: true });
+      slots.push({ summary: seededHit.summary, defaultRarity: seededHit.defaultRarity, isReverseHolo: false });
       // Slots 10+
       for (let s = 9; s < cardsPerPack; s++) {
         const card = getFrom([...rares, ...uncommons], pool, usedIds);

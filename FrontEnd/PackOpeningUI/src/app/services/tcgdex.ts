@@ -632,6 +632,7 @@ interface EnglishBoxParams {
   characterRarePool: TCGDexCardSummary[];
   galleryPool: TCGDexCardSummary[];
   reverseHoloPool: TCGDexCardSummary[];
+  breakPool: TCGDexCardSummary[];
   isCosmicEclipse: boolean;
   isShinyVaultSet: boolean;
   isTrainerGallerySet: boolean;
@@ -680,10 +681,10 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   if (boxEra === 'sv' || boxEra === 'me') {
     hitTable = [
       { p: 0.008, label: 'Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.025, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.03, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool] },
       { p: 0.06, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.irPool, p.vPool, p.holoRarePool] },
-      { p: 0.07, label: 'Illustration Rare', pool: p.irPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.18, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.10, label: 'Illustration Rare', pool: p.irPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.17, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
     ];
     defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else if (boxEra === 'swsh') {
@@ -707,7 +708,8 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
     hitTable = [
       { p: 0.01, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
       { p: 0.05, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.10, label: 'Pokémon EX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.08, label: 'Pokémon EX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.04, label: 'Pokémon BREAK', pool: p.breakPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
     ];
     defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
   } else {
@@ -728,10 +730,10 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
       cum += t.p;
       if (roll < cum) {
         if (t.pool.length === 0) break; // set has no cards of this tier → degrade to default
-        return { summary: getFromPool(t.pool, t.fb), defaultRarity: t.label, isReverseHolo: true };
+        return { summary: getFromPool(t.pool, t.fb), defaultRarity: t.label };
       }
     }
-    return { summary: getFromPool(defaultTier.pool, defaultTier.fb), defaultRarity: defaultTier.label, isReverseHolo: true };
+    return { summary: getFromPool(defaultTier.pool, defaultTier.fb), defaultRarity: defaultTier.label };
   };
 
   const rollSpecial = (getFromPool: PoolPicker): EnglishBoxSlotData => {
@@ -1063,6 +1065,7 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
       characterRarePool,
       galleryPool,
       reverseHoloPool,
+      breakPool,
       isCosmicEclipse,
       isShinyVaultSet,
       isTrainerGallerySet,
