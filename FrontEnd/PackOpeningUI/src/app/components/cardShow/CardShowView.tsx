@@ -819,7 +819,6 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       const tryAdd = (c: any): boolean => {
         const key = c.originalId || c.id;
         if (!key || used.has(key)) return false;
-        if (brokenOriginalIds.includes(key)) return false;
         used.add(key);
         cards.push({
           ...c,
@@ -871,7 +870,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     });
 
     return map;
-  }, [metadataLoaded, pools, brokenOriginalIds]);
+  }, [metadataLoaded, pools]);
 
   // Async English price fetching — populates runtime cache + triggers override re-render
   useEffect(() => {
