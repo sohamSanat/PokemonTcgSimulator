@@ -230,7 +230,7 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     // Bulletproof fallback so pack opening never gets stuck on "Drawing Live Cards..."
     const fallbackSet: TCGDexSet = {
       id: setId,
-      name: setId === 'swsh3' ? 'Darkness Ablaze' : setId.toUpperCase(),
+      name: setId === 'swsh3' ? 'Darkness Ablaze' : setId === 'me02.5' ? 'Ascended Heroes' : setId.toUpperCase(),
       logo: `https://assets.tcgdex.net/en/${setId.toLowerCase().startsWith('me') ? 'me' : setId.toLowerCase().startsWith('sv') ? 'sv' : setId.toLowerCase().startsWith('sm') ? 'sm' : setId.toLowerCase().startsWith('xy') ? 'xy' : setId.toLowerCase().startsWith('base') ? 'base' : 'swsh'}/${setId}/logo`,
       cardCount: { total: 189, official: 189 },
       cards: Array.from({ length: 189 }, (_, i) => {

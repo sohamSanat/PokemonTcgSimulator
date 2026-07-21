@@ -42,15 +42,12 @@ interface CardData {
   vendorRating?: string;
 }
 
-const DARKNESS_ABLAZE_PACK_ARTS = [
-  '/packArts/SwordAndShield-Generation/DarknessAblaze/img1.webp',
-  '/packArts/SwordAndShield-Generation/DarknessAblaze/img2.webp',
-  '/packArts/SwordAndShield-Generation/DarknessAblaze/img3.webp',
-  '/packArts/SwordAndShield-Generation/DarknessAblaze/img4.webp',
+const DEFAULT_PACK_ARTS = [
+  '/packArts/MegaEvolution-Generation/Ascended-heroes/1.webp',
 ];
 
 const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<string, string[]> = {}): string[] => {
-  if (!manifest || Object.keys(manifest).length === 0) return DARKNESS_ABLAZE_PACK_ARTS;
+  if (!manifest || Object.keys(manifest).length === 0) return DEFAULT_PACK_ARTS;
 
   // 1. Check exact or lowercase setId
   if (manifest[setId]) return manifest[setId];
@@ -75,7 +72,7 @@ const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<str
     }
   }
 
-  return DARKNESS_ABLAZE_PACK_ARTS;
+  return DEFAULT_PACK_ARTS;
 };
 
 const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> = {}, lang: string = 'en'): string | null => {
@@ -1767,7 +1764,7 @@ export default function App() {
   useEffect(() => { packStageRef.current = packStage; }, [packStage]);
   const currentSetRef = useRef(currentSet);
   useEffect(() => { currentSetRef.current = currentSet; }, [currentSet]);
-  const [currentPackArts, setCurrentPackArts] = useState<string[]>(DARKNESS_ABLAZE_PACK_ARTS);
+  const [currentPackArts, setCurrentPackArts] = useState<string[]>(DEFAULT_PACK_ARTS);
   const [packArtsManifest, setPackArtsManifest] = useState<Record<string, string[]>>({});
   const [setLogosManifest, setSetLogosManifest] = useState<Record<string, string>>({});
   const [packArtIndex, setPackArtIndex] = useState<number>(0);
@@ -2055,7 +2052,7 @@ export default function App() {
         const setDetails = await fetchSingleJapaneseSet(setId);
         setCurrentSet(setDetails);
         const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
-        if (refinedArts !== DARKNESS_ABLAZE_PACK_ARTS || setArts === DARKNESS_ABLAZE_PACK_ARTS) {
+        if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generateJapanesePackFromSet(setDetails);
@@ -2065,7 +2062,7 @@ export default function App() {
         const setDetails = await fetchSetDetails(setId);
         setCurrentSet(setDetails);
         const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
-        if (refinedArts !== DARKNESS_ABLAZE_PACK_ARTS || setArts === DARKNESS_ABLAZE_PACK_ARTS) {
+        if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generatePackFromSet(setDetails);
@@ -2089,7 +2086,7 @@ export default function App() {
   useEffect(() => {
     if (!hasLoadedInitialSetRef.current) {
       hasLoadedInitialSetRef.current = true;
-      loadSetAndGeneratePack('swsh3');
+      loadSetAndGeneratePack('me02.5');
     }
   }, [loadSetAndGeneratePack]);
 

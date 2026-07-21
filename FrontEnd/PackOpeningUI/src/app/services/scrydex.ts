@@ -1444,10 +1444,7 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
 
     const getRegularSetImgUrl = (cleanSet: string, num: string) => {
       const low = cleanSet.toLowerCase();
-      if (low.startsWith('base') || low.startsWith('neo') || low.startsWith('fo') || low.startsWith('ju') || low.startsWith('gc') || low.startsWith('gh')) {
-        return `https://images.pokemontcg.io/${low.replace(/1$|2$|3$|4$/, '')}/${num}_hires.png`;
-      }
-      return `https://images.scrydex.com/pokemon/${low}-${num}/large`;
+      return `https://images.scrydex.com/pokemon/${low}_ja-${num}/large`;
     };
 
     for (const item of masterRegularSetPool) {
@@ -1474,9 +1471,10 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
       }
     }
 
-    if (jaCardPricesCache && Object.keys(jaCardPricesCache).length > 0) {
-      const keys = Object.keys(jaCardPricesCache);
-      const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && jaCardPricesCache![k] > 2.0 && !k.includes('logo'));
+    if (jaCardNamesCache && Object.keys(jaCardNamesCache).length > 0) {
+      const keys = Object.keys(jaCardNamesCache);
+      const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && !k.includes('logo'));
+      
       const step = Math.max(1, Math.floor(validKeys.length / Math.max(1, count - results.length)));
       
       for (let i = 0; i < validKeys.length && results.length < count; i += step) {
@@ -1484,28 +1482,35 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
         const [prefix, numStr] = key.split('-');
         const cleanSet = prefix.replace(/_ja_ja$/i, '').replace(/_ja$/i, '').toLowerCase();
         const num = numStr || '1';
-        const cardId = `${cleanSet}_ja-${num}`;
+        const cardId = key;
         
         if (!addedIds.has(cardId)) {
           addedIds.add(cardId);
-          const price = jaCardPricesCache[key];
-          const rawName = jaCardNamesCache?.[key] || jaCardNamesCache?.[key.replace(/_ja_ja-/i, '_ja-')] || `Japanese Card #${num}`;
-          const translated = translateJapaneseName(rawName);
-          const exactName = translated.toLowerCase().includes('japanese') ? translated : `Japanese ${translated} (${cleanSet.toUpperCase()})`;
-          const rawPrice = Number(price.toFixed(2));
+          
+          let rawPrice = 0.50;
+          if (jaCardPricesCache && jaCardPricesCache[key]) {
+            rawPrice = jaCardPricesCache[key];
+          } else if (jaCardPricesCache && jaCardPricesCache[`${cleanSet}-${numStr}`]) {
+            rawPrice = jaCardPricesCache[`${cleanSet}-${numStr}`];
+          } else {
+             rawPrice = Number((Math.random() * 25 + 0.5).toFixed(2));
+          }
+          
+          const rawName = jaCardNamesCache[key];
+          const exactName = rawName.toLowerCase().includes('japanese') ? rawName : `Japanese ${rawName} (${cleanSet.toUpperCase()})`;
           const grade = rawPrice > 120 ? "PSA 10" : rawPrice > 40 ? "PSA 9" : "Raw NM";
           const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.5).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.5).toFixed(2)) : rawPrice;
 
           results.push({
             id: cardId,
-            setId: `${cleanSet}_ja`,
+            setId: prefix,
             num: num,
             name: exactName,
             rawPrice: rawPrice,
             grade: grade,
             price: displayPrice,
             change: `+${(Math.random() * 12 + 1.5).toFixed(1)}%`,
-            img: getRegularSetImgUrl(cleanSet, num)
+            img: `https://images.scrydex.com/pokemon/${key}/large`
           });
         }
       }
