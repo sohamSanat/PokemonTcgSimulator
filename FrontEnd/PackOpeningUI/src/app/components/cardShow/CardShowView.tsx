@@ -1946,7 +1946,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 export default CardShowView;
 
 // ── VENDOR "BUY · TRADE OR CASH" PURCHASE MODAL ───────────────────────────────
-const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => void; onAddNetReturn?: (amount: number) => void }> = ({
+export const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: () => void; onAddNetReturn?: (amount: number) => void }> = ({
   target,
   vendorName,
   onClose,

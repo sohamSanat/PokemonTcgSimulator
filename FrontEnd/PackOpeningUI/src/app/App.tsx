@@ -19,7 +19,7 @@ import PSAGradingLab from './components/psa/PSAGradingLab';
 import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
-import CardShowView from './components/cardShow/CardShowView';
+import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
 import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
@@ -758,7 +758,7 @@ const Card = React.memo(({
   );
 });
 
-const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice, onMoveToBinder, onBuyFromVendor }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void; onMoveToBinder?: (c: CardData) => void; onBuyFromVendor?: (c: CardData, buyPrice: number) => void }) => {
+const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBinder, initialViewMode = 'market', onUpdatePrice, onMoveToBinder, onBuyFromVendor, onOpenTradeModal }: { card: CardData; onClose: () => void; onAddToBinder?: (c: CardData) => void; isAddedToBinder?: boolean; initialViewMode?: 'market' | 'art'; onUpdatePrice?: (newPrice: number, newPoke: PokemonCard) => void; onMoveToBinder?: (c: CardData) => void; onBuyFromVendor?: (c: CardData, buyPrice: number) => void; onOpenTradeModal?: (target: any) => void }) => {
   const poke = card.pokemon;
   const [liveCardFull, setLiveCardFull] = useState<TCGDexCardFull | null>(() => cardFullCache.get(poke.id) || null);
 
@@ -850,7 +850,16 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
       setUserVendorPurchases(nextCount);
       localStorage.setItem(`tcg_vendor_purchases_${vendorName}`, String(nextCount));
     } catch {}
-    if (onBuyFromVendor) {
+    if (onOpenTradeModal) {
+      onOpenTradeModal({
+        id: card.id,
+        name: poke.name,
+        img: (poke as any).imageUrl || poke.images?.large || poke.images?.small || (card as any).imageUrl || '',
+        price: negotiatedPrice,
+        grade: (poke as any).slabGrade || (card as any).slabGrade || 'PSA 10',
+        vendorName: vendorName
+      });
+    } else if (onBuyFromVendor) {
       onBuyFromVendor(card, negotiatedPrice);
     }
     setShowSellerChat(false);
@@ -1867,6 +1876,7 @@ export default function App() {
   const [cards, setCards] = useState<CardData[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
+  const [tradeTarget, setTradeTarget] = useState<any>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
   const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
   const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(false);
@@ -3820,6 +3830,10 @@ export default function App() {
             card={inspectedCard}
             onClose={() => setInspectedCard(null)}
             initialViewMode={inspectedViewMode}
+            onOpenTradeModal={(targetCard) => {
+              setTradeTarget(targetCard);
+              setInspectedCard(null);
+            }}
             onUpdatePrice={(newPrice, newPoke) => {
               if (inspectedCard?.isVendorCatalog || inspectedCard?.pokemon?.isVendorCatalog) return;
               setInspectedCard(prev => prev ? { ...prev, value: newPrice, pokemon: newPoke } : null);
@@ -3860,6 +3874,14 @@ export default function App() {
           />
         )}
       </AnimatePresence>
+
+      {/* Vendor "Buy · Trade or Cash" Modal */}
+      <TradeModal
+        target={tradeTarget}
+        vendorName={tradeTarget?.vendorName}
+        onClose={() => setTradeTarget(null)}
+        onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
+      />
 
       {/* Price Gate Modal for packs over the $20 daily allowance */}
       <AnimatePresence>
