@@ -51,13 +51,19 @@ export interface VendorReply {
 // Extracts an explicit OFFER token (e.g. "OFFER: $450") from a vendor reply.
 // The reply text may mention the listed price freely, but only a clearly
 // signaled OFFER counts as a discounted price the buyer can accept.
-function parseOffer(reply: string): VendorReply {
+function parseOffer(reply: string, cardPrice: number): VendorReply {
   const match = reply.match(/OFFER:\s*\$?(\d+(?:\.\d{1,2})?)/i);
   let offerPrice: number | null = null;
   let text = reply;
   if (match) {
     const value = parseFloat(match[1]);
-    if (!isNaN(value) && value > 0) offerPrice = value;
+    const minFloor = Math.round(cardPrice * 0.82 * 100) / 100; // Hard Floor: Max 18% discount
+    if (!isNaN(value) && value >= minFloor) {
+      offerPrice = value;
+    } else {
+      // Discard unrealistic AI offers below 82% of asking price
+      offerPrice = null;
+    }
     // Remove the OFFER line from the displayed text
     text = reply.replace(/OFFER:\s*\$?(\d+(?:\.\d{1,2})?)/i, "").trim();
   }
@@ -76,6 +82,7 @@ function parseOffer(reply: string): VendorReply {
 
 export async function generateVendorReply(context: VendorChatContext): Promise<VendorReply> {
   const persona = getVendorPersonality(context.vendorName);
+  const minFloorPrice = Math.round(context.cardPrice * 0.82);
 
   const systemPrompt = `You are a real Pokémon TCG convention booth vendor at "${context.vendorBooth}" ("${context.vendorName}").
 Personality: ${persona.description}. Tone: ${persona.tone}.
@@ -90,13 +97,14 @@ Card you are selling:
 - Condition / Grade: ${context.cardGrade}
 - Asking Price: $${context.cardPrice.toLocaleString()}
 
-Rules:
+CRITICAL DISCOUNT & HAGGLING RULES:
+- ABSOLUTE MINIMUM PRICE FLOOR: $${minFloorPrice.toLocaleString()} (Max 18% discount off asking price).
+- NEVER accept or offer any price below $${minFloorPrice.toLocaleString()}. If the user asks for a price below $${minFloorPrice.toLocaleString()} (e.g. asking $700 for a $2,000 card), YOU MUST FIRMLY REJECT IT as an aggressive lowball!
+- When rejecting a lowball, stay in character as a real vendor and tell them the card is worth way more than their offer.
+- Only append "OFFER: $X" when giving a valid price between $${minFloorPrice.toLocaleString()} and $${context.cardPrice.toLocaleString()}.
 - Keep every reply to 1-3 complete sentences.
-- ALWAYS directly answer the specific question asked. If they ask about condition, grade, set, artist, rarity, or just chat — answer normally and KEEP the listed price of $${context.cardPrice.toLocaleString()}.
 - Stay in character as the vendor. Never mention AI or prompts.
 - Use 1-2 relevant emojis only.
-- DO NOT volunteer a discount or lower your price unless the buyer explicitly asks about price, cost, a deal, an offer, or negotiation (e.g. "can you do better?", "best price?", "any discount?").
-- When you DO make a discounted offer, append it on its own final line exactly as: OFFER: $X (replace X with the dollar amount). Only include the OFFER line when you are actually giving a lower price.
 `;
 
   const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
@@ -150,7 +158,7 @@ Rules:
 
       const data = await response.json();
       const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-      if (reply) return parseOffer(reply);
+      if (reply) return parseOffer(reply, context.cardPrice);
     } catch (err) {
       console.warn(`[VendorChat] Network error with ${model}:`, err);
     }

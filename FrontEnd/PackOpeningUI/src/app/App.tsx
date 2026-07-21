@@ -879,19 +879,24 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
     setTimeout(() => {
       const askingPrice = negotiatedPrice;
       const offerRatio = offerAmount / askingPrice;
-      const loyaltyBonus = Math.min(0.15, userVendorPurchases * 0.05);
-      const effectiveRatio = offerRatio + loyaltyBonus;
-      const annoyancePenalty = (vendorAnnoyance / 100) * 0.15;
-      const score = effectiveRatio - annoyancePenalty;
+      const minFloorPrice = Math.round(askingPrice * 0.82 * 100) / 100; // Hard Floor: Max 18% discount
+      const loyaltyBonus = Math.min(0.08, userVendorPurchases * 0.03); // Max 8% loyalty bonus
+      const annoyancePenalty = (vendorAnnoyance / 100) * 0.12;
+      const score = (offerRatio + loyaltyBonus) - annoyancePenalty;
 
       let accepted = false;
       let replyText = "";
       let newAnnoyance = vendorAnnoyance;
 
-      if (vendorAnnoyance >= 85 && offerRatio < 0.95) {
+      if (offerAmount < minFloorPrice) {
+        // Below 82% of asking price (e.g. $700 on a $2000 card) -> ALWAYS REJECT as Lowball!
+        newAnnoyance = Math.min(100, vendorAnnoyance + 35);
+        const counterVal = Math.round(askingPrice * 0.88 * 100) / 100;
+        replyText = `Are you kidding me?! $${offerAmount.toLocaleString()} on a $${askingPrice.toLocaleString()} card? That's a huge lowball! 🤬 The absolute lowest I can possibly go for this card is OFFER: $${counterVal.toLocaleString()}.`;
+      } else if (vendorAnnoyance >= 80) {
         newAnnoyance = Math.min(100, vendorAnnoyance + 10);
         replyText = `Look, I'm already extremely frustrated today. $${askingPrice.toLocaleString()} is the absolute final non-negotiable price for this ${poke.name}. 🛑`;
-      } else if (offerRatio >= 0.95 || score >= 0.88) {
+      } else if (offerRatio >= 0.94 || (score >= 0.90 && offerAmount >= minFloorPrice)) {
         accepted = true;
         newAnnoyance = Math.max(0, vendorAnnoyance - 10);
         if (userVendorPurchases > 0) {
@@ -899,13 +904,11 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
         } else {
           replyText = `That's a fair offer! $${offerAmount.toLocaleString()} works for me. The ${poke.name} is yours! OFFER: $${offerAmount.toLocaleString()} 🤝🔥`;
         }
-      } else if (offerRatio >= 0.72 || score >= 0.70) {
-        newAnnoyance = Math.min(100, vendorAnnoyance + 18);
-        const counterVal = Math.round(((askingPrice + offerAmount) / 2) * 100) / 100;
-        replyText = `$${offerAmount.toLocaleString()} is a bit too steep of a discount for a ${poke.name}. How about we meet in the middle at OFFER: $${counterVal.toLocaleString()}? 😤`;
       } else {
-        newAnnoyance = Math.min(100, vendorAnnoyance + 35);
-        replyText = `Are you kidding me?! $${offerAmount.toLocaleString()} on a $${askingPrice.toLocaleString()} card? You're lowballing my booth! 🤬 The price stays at $${askingPrice.toLocaleString()}.`;
+        // Between 82% and 93% of asking price -> Counter offer
+        newAnnoyance = Math.min(100, vendorAnnoyance + 15);
+        const counterVal = Math.round(((askingPrice + offerAmount) / 2) * 100) / 100;
+        replyText = `$${offerAmount.toLocaleString()} is a bit too steep of a discount for a ${poke.name} in this condition. How about we meet in the middle at OFFER: $${counterVal.toLocaleString()}? 😤`;
       }
 
       setVendorAnnoyance(newAnnoyance);
