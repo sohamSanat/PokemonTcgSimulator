@@ -554,38 +554,75 @@ const JA_TO_EN_DICTIONARY: Record<string, string> = {
   // Trainers / Items / Eeveelutions / Popular SV Gen 9
   'エリカの招待': "Erika's Invitation", 'サカキのカリスマ': "Giovanni's Charisma", 'ナナミの手助け': "Daisy's Help", 'マサキの転送': "Bill's Transfer", 'サイクリングロード': "Cycling Road", '安全ゴーグル': "Protective Goggles", '大きなふうせん': "Big Air Balloon", 'ガチガチバンド': "Rigid Band", 'たべのこし': "Leftovers", 'ポケモンいれかえ': "Switch", '基本超エネルギー': "Basic Psychic Energy",
   'ナンジャモ': "Iono", 'ミモザ': "Miriam", 'キハダ': "Dendra", 'チリ': "Rika", 'ポピー': "Poppy", 'オモダカ': "Geeta", 'ベル': "Bianca", 'ベルのまごころ': "Bianca's Devotion", 'ゼイユ': "Carmine", 'スグリ': "Kieran", 'タロ': "Lacey", 'カキツバタ': "Drayton", 'ブライア': "Briar", 'ボスの指令': "Boss's Orders", 'ネストボール': "Nest Ball", 'ハイパーボール': "Ultra Ball", 'ペパー': "Arven", 'ジャッジマン': "Judge", '博士の研究': "Professor's Research", 'すごいつりざお': "Super Rod", 'なかよしポフィン': "Buddy-Buddy Poffin", 'プライムキャッチャー': "Prime Catcher", 'マキシマムベルト': "Maximum Belt", 'ヒーローマント': "Hero's Cape",
-  'ニャオハ': "Sprigatito", 'ニャローテ': "Floragato", 'マスカーニャ': "Meowscarada", 'ホゲータ': "Fuecoco", 'アチゲータ': "Crocalor", 'ラウドボーン': "Skeledirge", 'クワッス': "Quaxly", 'ウェルカモ': "Quaxwell", 'ウェーニバル': "Quaquaval", 'コライドン': "Koraidon", 'ミライドン': "Miraidon", 'テラパゴス': "Terapagos", 'オーガポン': "Ogerpon", 'ルカリオ': "Lucario", 'レックウザ': "Rayquaza", 'ブラッキー': "Umbreon", 'ニンフィア': "Sylveon", 'グレイシア': "Glaceon", 'リーフィア': "Leafeon", 'エーフィ': "Espeon"
+  'ニャオハ': "Sprigatito", 'ニャローテ': "Floragato", 'マスカーニャ': "Meowscarada", 'ホゲータ': "Fuecoco", 'アチゲータ': "Crocalor", 'ラウドボーン': "Skeledirge", 'クワッス': "Quaxly", 'ウェルカモ': "Quaxwell", 'ウェーニバル': "Quaquaval", 'コライドン': "Koraidon", 'ミライドン': "Miraidon", 'テラパゴス': "Terapagos", 'オーガポン': "Ogerpon", 'ルカリオ': "Lucario", 'レックウザ': "Rayquaza", 'ブラッキー': "Umbreon", 'ニンフィア': "Sylveon", 'グレイシア': "Glaceon", 'リーフィア': "Leafeon", 'エーフィ': "Espeon",
+  'リザードンX': "Charizard X", 'リザードンY': "Charizard Y", 'ミュウツーX': "Mewtwo X", 'ミュウツーY': "Mewtwo Y"
 };
+
+const REGIONAL_PREFIXES = [
+  { ja: 'パルデアの', en: 'Paldean ' },
+  { ja: 'パルデア', en: 'Paldean ' },
+  { ja: 'ヒスイの', en: 'Hisuian ' },
+  { ja: 'ヒスイ', en: 'Hisuian ' },
+  { ja: 'アローラの', en: 'Alolan ' },
+  { ja: 'アローラ', en: 'Alolan ' },
+  { ja: 'ガラルの', en: 'Galarian ' },
+  { ja: 'ガラル', en: 'Galarian ' },
+  { ja: 'かがくのチカラ', en: 'Power of Science ' },
+  { ja: 'かがやく', en: 'Radiant ' },
+  { ja: 'メガ', en: 'Mega ' },
+  { ja: 'M', en: 'Mega ' }
+];
 
 export function translateJapaneseName(jaName: string): string {
   if (!jaName) return jaName;
-  if (JA_TO_EN_DICTIONARY[jaName]) return JA_TO_EN_DICTIONARY[jaName];
-  if (pokeSpeciesDictCache && pokeSpeciesDictCache[jaName]) return pokeSpeciesDictCache[jaName];
+  let cleaned = jaName.trim();
 
-  const suffixMatch = jaName.match(/^(.*?)(ex|VMAX|VSTAR|V|GX|STAR|SAR|SR|UR|AR)$/i);
+  if (JA_TO_EN_DICTIONARY[cleaned]) return JA_TO_EN_DICTIONARY[cleaned];
+  if (pokeSpeciesDictCache && pokeSpeciesDictCache[cleaned]) return pokeSpeciesDictCache[cleaned];
+
+  const suffixMatch = cleaned.match(/^(.*?)(ex|VMAX|VSTAR|V|GX|STAR|SAR|SR|UR|AR|BREAK)$/i);
+  let baseJa = cleaned;
+  let suffixEn = '';
   if (suffixMatch) {
-    const baseJa = suffixMatch[1].trim();
-    const suffix = suffixMatch[2];
+    baseJa = suffixMatch[1].trim();
+    suffixEn = ' ' + suffixMatch[2];
     const baseEn = JA_TO_EN_DICTIONARY[baseJa] || (pokeSpeciesDictCache && pokeSpeciesDictCache[baseJa]);
     if (baseEn) {
-      return `${baseEn} ${suffix}`;
+      return `${baseEn}${suffixEn}`.trim();
     }
   }
 
-  for (const [jaKey, enVal] of Object.entries(JA_TO_EN_DICTIONARY)) {
-    if (jaName.startsWith(jaKey)) {
-      const rest = jaName.slice(jaKey.length).trim();
-      return rest ? `${enVal} ${rest}` : enVal;
+  let prefixEn = '';
+  for (const reg of REGIONAL_PREFIXES) {
+    if (baseJa.startsWith(reg.ja)) {
+      prefixEn = reg.en;
+      baseJa = baseJa.slice(reg.ja.length).trim();
+      break;
     }
   }
+
+  const exactBaseEn = JA_TO_EN_DICTIONARY[baseJa] || (pokeSpeciesDictCache && pokeSpeciesDictCache[baseJa]);
+  if (exactBaseEn) {
+    return `${prefixEn}${exactBaseEn}${suffixEn}`.trim();
+  }
+
   if (pokeSpeciesDictCache) {
-    for (const [jaKey, enVal] of Object.entries(pokeSpeciesDictCache)) {
-      if (jaKey.length >= 2 && jaName.includes(jaKey)) {
-        return jaName.split(jaKey).join(enVal);
+    const keysSorted = Object.keys(pokeSpeciesDictCache).sort((a, b) => b.length - a.length);
+    for (const k of keysSorted) {
+      if (k.length >= 2 && baseJa.includes(k)) {
+        baseJa = baseJa.split(k).join(pokeSpeciesDictCache[k]);
       }
     }
   }
-  return jaName;
+
+  const dictKeysSorted = Object.keys(JA_TO_EN_DICTIONARY).sort((a, b) => b.length - a.length);
+  for (const jaKey of dictKeysSorted) {
+    if (jaKey.length >= 2 && baseJa.includes(jaKey)) {
+      baseJa = baseJa.split(jaKey).join(JA_TO_EN_DICTIONARY[jaKey]);
+    }
+  }
+
+  return `${prefixEn}${baseJa}${suffixEn}`.trim();
 }
 
 export function getJapaneseCardRarity(localId: string, officialCount: number, totalCards: number, name: string = ''): string {

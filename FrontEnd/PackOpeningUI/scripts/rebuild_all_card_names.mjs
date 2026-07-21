@@ -109,7 +109,11 @@ const MASTER_TERMS = {
   '基本超エネルギー': "Basic Psychic Energy",
   '基本闘エネルギー': "Basic Fighting Energy",
   '基本悪エネルギー': "Basic Darkness Energy",
-  '基本鋼エネルギー': "Basic Metal Energy"
+  '基本鋼エネルギー': "Basic Metal Energy",
+  'リザードンX': "Charizard X",
+  'リザードンY': "Charizard Y",
+  'ミュウツーX': "Mewtwo X",
+  'ミュウツーY': "Mewtwo Y"
 };
 
 const REGIONAL_PREFIXES = [
@@ -122,7 +126,9 @@ const REGIONAL_PREFIXES = [
   { ja: 'ガラルの', en: 'Galarian ' },
   { ja: 'ガラル', en: 'Galarian ' },
   { ja: 'かがくのチカラ', en: 'Power of Science ' },
-  { ja: 'かがやく', en: 'Radiant ' }
+  { ja: 'かがやく', en: 'Radiant ' },
+  { ja: 'メガ', en: 'Mega ' },
+  { ja: 'M', en: 'Mega ' }
 ];
 
 async function run() {
