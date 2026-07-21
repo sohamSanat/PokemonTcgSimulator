@@ -1473,7 +1473,13 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
 
     if (jaCardNamesCache && Object.keys(jaCardNamesCache).length > 0) {
       const keys = Object.keys(jaCardNamesCache);
-      const validKeys = keys.filter(k => (k.includes('_ja-') || k.includes('_ja_ja-')) && !k.includes('logo'));
+      // Filter out vintage sets which typically lack Scrydex images, causing endless placeholder loops.
+      // We limit to modern sets (starts with 's' for Sun/Moon and Sword/Shield, 'sv' for Scarlet/Violet).
+      const validKeys = keys.filter(k => 
+        (k.includes('_ja-') || k.includes('_ja_ja-')) && 
+        !k.includes('logo') && 
+        (k.startsWith('s') || k.startsWith('sv'))
+      );
       
       const step = Math.max(1, Math.floor(validKeys.length / Math.max(1, count - results.length)));
       

@@ -259,28 +259,9 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   let numStr = `${rawNum}`.trim();
 
   if (isJpn) {
-    let jSeries = 'S';
-    let jSet = cleanSetId.toUpperCase();
-    const cleanLow = cleanSetId.toLowerCase();
-    if (cleanLow === 'sv3pt5' || cleanLow === 'sv2a') {
-      jSeries = 'SV';
-      jSet = 'SV2a';
-    } else if (cleanSetId.startsWith('sv')) {
-      jSeries = 'SV';
-      jSet = cleanSetId.replace(/^sv/i, 'SV');
-    } else if (cleanSetId.startsWith('sm')) {
-      jSeries = 'SM';
-      jSet = cleanSetId.replace(/^sm/i, 'SM');
-    } else if (cleanSetId.startsWith('xy')) {
-      jSeries = 'XY';
-      jSet = cleanSetId.replace(/^xy/i, 'XY');
-    } else if (cleanSetId.startsWith('s') || cleanSetId.startsWith('swsh')) {
-      jSeries = 'S';
-      jSet = cleanSetId.replace(/^swsh/i, 's').replace(/^s/i, 'S');
-    } else if (cleanSetId.startsWith('base') || cleanSetId.startsWith('neo') || cleanSetId.startsWith('fo')) {
-      return `https://images.pokemontcg.io/${cleanSetId}/${numStr}_hires.png`;
-    }
-    return `https://assets.tcgdex.net/ja/${jSeries}/${jSet}/${numStr}`;
+    const isSwshCleanId = cleanSetId.startsWith('s') && !cleanSetId.startsWith('sv') && !cleanSetId.startsWith('sm') && !cleanSetId.startsWith('sn');
+    const scrydexId = isSwshCleanId ? `swsh${cleanSetId.slice(1)}` : cleanSetId;
+    return `https://images.scrydex.com/pokemon/${scrydexId}_ja-${numStr}/large`;
   }
 
   let seriesPrefix = 'swsh';
@@ -342,14 +323,8 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   // "_ja" scans generated for SWSH/SV/SM ids (e.g. swsh7_ja-215) do not exist on
   // Scrydex and return a placeholder card-back, so we must fall back to the real EN card.
   const specificFallbacks = (isJapaneseSet ? [
-    `${validAsset}/high.webp`,
-    `${validAsset}/high.png`,
-    `${validAsset}.png`,
-    // Primary: correct Scrydex URL (swsh prefix for SWSH sets, as-is for SM/SV)
     `https://images.scrydex.com/pokemon/${swshScrydexId}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
-    `${cleanAsset}/high.webp`,
-    `${cleanAsset}/high.png`,
     `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}_hires.png`,
     `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}.png`,
     `https://images.pokemontcg.io/${cleanId}/${num}_hires.png`,
