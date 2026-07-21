@@ -1406,6 +1406,26 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                         <feGaussianBlur stdDeviation="8" result="blur" />
                         <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                       </filter>
+                      <linearGradient id="gradVintage" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#d97706" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#059669" stopOpacity="0.9" />
+                      </linearGradient>
+                      <linearGradient id="gradJapanese" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#db2777" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
+                      </linearGradient>
+                      <linearGradient id="gradModern" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#0284c7" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.9" />
+                      </linearGradient>
+                      <linearGradient id="gradGoldstar" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#e11d48" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#d97706" stopOpacity="0.9" />
+                      </linearGradient>
+                      <linearGradient id="gradSlab" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#0f766e" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
+                      </linearGradient>
                     </defs>
 
                     {/* MAIN GRID LINES */}
@@ -1473,35 +1493,104 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                       </g>
                     ))}
 
-                    {/* VENDOR BOOTHS (generated grid) */}
+                    {/* VENDOR BOOTHS (generated architectural grid) */}
                     {VENDORS.filter(v => v.type === 'vendor').map((v) => {
                       const isSelected = selectedVendor?.name === v.name;
+                      const cat = v.category || "modern";
+
+                      let headerGrad = "url(#gradModern)";
+                      let headerTitle = "✨ ALT ART & SIR";
+                      let catThemeColor = "#38bdf8";
+
+                      if (cat === "vintage") {
+                        headerGrad = "url(#gradVintage)";
+                        headerTitle = "🏛️ VINTAGE VAULT";
+                        catThemeColor = "#fbbf24";
+                      } else if (cat === "japanese") {
+                        headerGrad = "url(#gradJapanese)";
+                        headerTitle = "⚡ JPN HUB [日本]";
+                        catThemeColor = "#f472b6";
+                      } else if (cat === "goldstar") {
+                        headerGrad = "url(#gradGoldstar)";
+                        headerTitle = "⭐ CROWN GRAILS";
+                        catThemeColor = "#f43f5e";
+                      } else if (cat === "slab") {
+                        headerGrad = "url(#gradSlab)";
+                        headerTitle = "💎 PSA 10 SLABS";
+                        catThemeColor = "#2dd4bf";
+                      }
+
                       return (
                         <g key={v.id}>
+                          {/* Selection Outer Pulsing Halo */}
+                          {isSelected && (
+                            <rect
+                              x={v.x - 3} y={v.y - 3} width={v.w + 6} height={v.h + 6} rx="6"
+                              fill="none" stroke={v.color} strokeWidth="1.8" strokeDasharray="5,3"
+                              className="animate-pulse"
+                            />
+                          )}
+
+                          {/* Main Booth Body Container */}
                           <rect
-                            x={v.x} y={v.y} width={v.w} height={v.h} rx="3"
-                            fill="#0c1824" stroke={isSelected ? v.color : "#1e3a5f"} strokeWidth={isSelected ? 2 : 1}
-                            className="cursor-pointer transition-all"
+                            x={v.x} y={v.y} width={v.w} height={v.h} rx="4"
+                            fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.2 : 1}
+                            className="cursor-pointer transition-all hover:stroke-white"
                             style={{
-                              filter: isSelected ? `drop-shadow(0 0 6px ${v.color})` : undefined,
+                              filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined,
                             }}
                             onMouseEnter={() => handleBoothHover(v)}
                             onMouseLeave={handleBoothLeave}
                             onClick={() => handleBoothSelect(v)}
                           />
-                          <circle cx={v.x + 13} cy={v.y + 13} r="9" fill={v.color} fillOpacity="0.18" stroke={v.color} strokeWidth="1" />
-                          <text x={v.x + 13} y={v.y + 17} textAnchor="middle" fill={v.color} fontSize="9" fontFamily="monospace" fontWeight="900">{v.booth}</text>
-                          <text x={v.x + v.w / 2} y={v.y + 44} textAnchor="middle" fill="#cbd5e1" fontSize="6.5" fontFamily="monospace" fontWeight="bold">
-                            {v.name.length > 18 ? v.name.slice(0, 17) + "…" : v.name}
+
+                          {/* Architectural Corner Brackets */}
+                          <path d={`M ${v.x} ${v.y + 8} L ${v.x} ${v.y} L ${v.x + 8} ${v.y}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                          <path d={`M ${v.x + v.w - 8} ${v.y} L ${v.x + v.w} ${v.y} L ${v.x + v.w} ${v.y + 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                          <path d={`M ${v.x} ${v.y + v.h - 8} L ${v.x} ${v.y + v.h} L ${v.x + 8} ${v.y + v.h}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+                          <path d={`M ${v.x + v.w - 8} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h - 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+
+                          {/* Category Top Banner */}
+                          <rect x={v.x} y={v.y} width={v.w} height="15" rx="3" fill={headerGrad} />
+                          <text x={v.x + 6} y={v.y + 10.5} fill="#ffffff" fontSize="5.5" fontFamily="monospace" fontWeight="900" letterSpacing="0.3">{headerTitle}</text>
+                          
+                          {/* Active Pulse LED */}
+                          <circle cx={v.x + v.w - 7} cy={v.y + 7.5} r="2" fill="#22c55e">
+                            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite" />
+                          </circle>
+
+                          {/* Booth Number Pill */}
+                          <rect x={v.x + 6} y={v.y + 18} width="22" height="11" rx="2" fill="rgba(0,0,0,0.7)" stroke={v.color} strokeWidth="0.8" />
+                          <text x={v.x + 17} y={v.y + 26} textAnchor="middle" fill={v.color} fontSize="6.5" fontFamily="monospace" fontWeight="900">{v.booth}</text>
+
+                          {/* Vendor Title */}
+                          <text x={v.x + 32} y={v.y + 26} fill="#f1f5f9" fontSize="6.2" fontFamily="monospace" fontWeight="bold">
+                            {v.name.length > 13 ? v.name.slice(0, 12) + "…" : v.name}
                           </text>
-                          <text x={v.x + v.w / 2} y={v.y + 56} textAnchor="middle" fill="#475569" fontSize="5" fontFamily="monospace">
-                            {v.specialties[0]}
+
+                          {/* Specialty Pill 1 */}
+                          <text x={v.x + 6} y={v.y + 42} fill="#94a3b8" fontSize="4.8" fontFamily="monospace">
+                            • {v.specialties[0]?.slice(0, 20)}
                           </text>
-                          <text x={v.x + v.w / 2} y={v.y + 66} textAnchor="middle" fill="#475569" fontSize="5" fontFamily="monospace">
-                            {v.specialties[1]}
+
+                          {/* Glass Display Case Counter */}
+                          <rect x={v.x + 5} y={v.y + v.h - 22} width={v.w - 10} height="16" rx="2" fill="rgba(15, 23, 42, 0.85)" stroke={v.color} strokeWidth="0.6" />
+                          
+                          {/* Cards inside glass counter */}
+                          <rect x={v.x + 9} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
+                          <rect x={v.x + 17} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill="#f8fafc" opacity="0.9" />
+                          <rect x={v.x + 25} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
+
+                          {/* Counter text */}
+                          <text x={v.x + 35} y={v.y + v.h - 11} fill="#e2e8f0" fontSize="4.8" fontFamily="monospace" fontWeight="bold">
+                            {v.specialties[1]?.slice(0, 11)}
                           </text>
+
+                          {/* Selected Indicator */}
                           {isSelected && (
-                            <text x={v.x + v.w / 2} y={v.y + 76} textAnchor="middle" fill={v.color} fontSize="5" fontFamily="monospace" fontWeight="bold">● SELECTED</text>
+                            <text x={v.x + v.w / 2} y={v.y + v.h - 2} textAnchor="middle" fill={v.color} fontSize="5" fontFamily="monospace" fontWeight="900">
+                              ● SELECTED
+                            </text>
                           )}
                         </g>
                       );
