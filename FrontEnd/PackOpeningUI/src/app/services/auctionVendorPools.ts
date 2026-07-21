@@ -234,6 +234,32 @@ export function getCombinedVendorCardPool(dynamicCount: number = 4000): VendorCa
     });
 }
 
+function interleavePools(cards: AuctionPoolCard[]): AuctionPoolCard[] {
+  const eng = cards.filter(c => !isJapaneseVendorCard(c));
+  const jpn = cards.filter(c => isJapaneseVendorCard(c));
+
+  if (eng.length === 0) return jpn;
+  if (jpn.length === 0) return eng;
+
+  const result: AuctionPoolCard[] = [];
+  let eIdx = 0;
+  let jIdx = 0;
+
+  // Interleave 1 English, 1 Japanese continuously
+  const total = Math.max(eng.length, jpn.length) * 2;
+  for (let i = 0; i < total; i++) {
+    if (i % 2 === 0) {
+      result.push(eng[eIdx % eng.length]);
+      eIdx++;
+    } else {
+      result.push(jpn[jIdx % jpn.length]);
+      jIdx++;
+    }
+  }
+
+  return result;
+}
+
 export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal: AuctionPoolCard[] } {
   const allCombined = getCombinedVendorCardPool(4000)
     .map((c, i): AuctionPoolCard => ({
@@ -246,11 +272,14 @@ export function getVendorAuctionPools(): { expensive: AuctionPoolCard[]; normal:
       grade: c.grade
     }));
 
-  const expensive = allCombined.filter(c => c.price >= 100 && c.img);
-  const normal = allCombined.filter(c => c.price <= 400 && c.price >= 5 && c.img);
+  const expensiveFiltered = allCombined.filter(c => c.price >= 100 && c.img);
+  const normalFiltered = allCombined.filter(c => c.price <= 400 && c.price >= 5 && c.img);
+
+  const expensivePool = expensiveFiltered.length > 0 ? expensiveFiltered : allCombined;
+  const normalPool = normalFiltered.length > 0 ? normalFiltered : allCombined;
 
   return {
-    expensive: expensive.length > 0 ? expensive : allCombined,
-    normal: normal.length > 0 ? normal : allCombined
+    expensive: interleavePools(expensivePool),
+    normal: interleavePools(normalPool)
   };
 }

@@ -457,15 +457,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // 350441 = Japanese) for missing cards. We must verify via fetch since all scrydex
     // images are cross-origin and the CORS canvas check always throws.
     if (src.includes('scrydex.com')) {
-      // Hide the image immediately so the user never sees a placeholder flash while
-      // we wait for the async byte-size verification.
+      // Hide the image while we verify whether it is a placeholder card-back
       img.style.visibility = 'hidden';
 
-      fetch(src, { signal: AbortSignal.timeout(5000) })
+      fetch(src, { signal: AbortSignal.timeout(15000) })
         .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
         .then((buf) => {
           if (buf.byteLength === 186316 || buf.byteLength === 350441) {
-            // Permanently cache this bad URL so future renders skip it instantly.
+            // PROVEN PLACEHOLDER: Only replace card when it is mathematically confirmed to be a card-back placeholder
             _knownBadScrydexUrls.add(src);
             handleCardShowImageError(
               { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
@@ -479,13 +478,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           }
         })
         .catch(() => {
-          // Fetch failed or timed out — treat as broken.
-          _knownBadScrydexUrls.add(src);
-          handleCardShowImageError(
-            { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-            targetId,
-            isJpn
-          );
+          // If network fetch timed out or failed to inspect bytes, DO NOT discard the card!
+          // Treat it as real card art that is loading slowly over the network.
+          img.style.visibility = 'visible';
+          onCardRenderComplete(targetId);
         });
       return;
     }
