@@ -824,7 +824,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
         k++;
       }
 
-      map[vendor.name] = cards.slice(0, 300).map((c) => {
+      let mappedCards = cards.slice(0, 300).map((c) => {
         const orig = c.originalId;
         
         // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
@@ -839,6 +839,14 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           price: finalPrice,
         };
       });
+
+      // Shuffle the cards so they don't appear in sorted price order
+      for (let i = mappedCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [mappedCards[i], mappedCards[j]] = [mappedCards[j], mappedCards[i]];
+      }
+
+      map[vendor.name] = mappedCards;
     });
 
     return map;
