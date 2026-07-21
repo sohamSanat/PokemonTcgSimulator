@@ -48,6 +48,10 @@ import {
 // Persists across React re-renders so a bad URL is never attempted again.
 const _knownBadScrydexUrls = new Set<string>();
 
+// Module-level cache of card IDs / image URLs confirmed as valid, fully loaded card art.
+// Persists across React re-renders, vendor changes, and scrolling.
+const _confirmedLoadedCardIds = new Set<string>();
+
 interface CardShowViewProps {
   initialShowAuction?: boolean;
   onBackToPacks?: () => void;
@@ -348,12 +352,22 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
   const onCardRenderComplete = (cardId?: string) => {
     if (!cardId) return;
+    _confirmedLoadedCardIds.add(cardId);
     setCompletedCardIds(prev => {
       if (prev.has(cardId)) return prev;
       const next = new Set(prev);
       next.add(cardId);
       return next;
     });
+  };
+
+  const isCardCompleted = (id: string, originalId?: string, imgUrl?: string) => {
+    return (
+      completedCardIds.has(id) ||
+      _confirmedLoadedCardIds.has(id) ||
+      Boolean(originalId && (completedCardIds.has(originalId) || _confirmedLoadedCardIds.has(originalId))) ||
+      Boolean(imgUrl && _confirmedLoadedCardIds.has(imgUrl))
+    );
   };
 
   useEffect(() => {
@@ -457,6 +471,13 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     // 350441 = Japanese) for missing cards. We must verify via fetch since all scrydex
     // images are cross-origin and the CORS canvas check always throws.
     if (src.includes('scrydex.com')) {
+      // If this card/URL has already been verified and confirmed, don't run fetch again
+      if ((targetId && _confirmedLoadedCardIds.has(targetId)) || _confirmedLoadedCardIds.has(src)) {
+        img.style.visibility = 'visible';
+        if (targetId) onCardRenderComplete(targetId);
+        return;
+      }
+
       // Hide the image while we verify whether it is a placeholder card-back
       img.style.visibility = 'hidden';
 
@@ -474,6 +495,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           } else {
             // Confirmed real card art — make it visible.
             img.style.visibility = 'visible';
+            if (targetId) _confirmedLoadedCardIds.add(targetId);
+            _confirmedLoadedCardIds.add(src);
             onCardRenderComplete(targetId);
           }
         })
@@ -481,6 +504,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
           // If network fetch timed out or failed to inspect bytes, DO NOT discard the card!
           // Treat it as real card art that is loading slowly over the network.
           img.style.visibility = 'visible';
+          if (targetId) _confirmedLoadedCardIds.add(targetId);
+          _confirmedLoadedCardIds.add(src);
           onCardRenderComplete(targetId);
         });
       return;
@@ -908,11 +933,10 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     });
   }, [selectedVendor?.name, vendorCardMap, enPriceOverrides]);
 
-  // Reset sequential visible batch limit when active vendor pool or search filters change
+  // Reset sequential visible batch limit when active vendor or search filters change
   useEffect(() => {
     setVisibleBatchLimit(30);
-    setCompletedCardIds(new Set());
-  }, [activeVendorCards, searchQuery, selectedFilter]);
+  }, [selectedVendor?.name, searchQuery, selectedFilter]);
 
   // Advance sequential batch as soon as all currently visible cards have rendered (or after safety timeout)
   useEffect(() => {
@@ -930,7 +954,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
     if (visibleBatchLimit >= filtered.length) return;
 
     const currentBatch = filtered.slice(0, visibleBatchLimit);
-    const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => completedCardIds.has(c.id));
+    const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => isCardCompleted(c.id, c.originalId, c.img));
 
     if (allBatchDone) {
       setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 30));
@@ -1178,11 +1202,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                         <img
                           src={card.img}
                           alt={card.name}
-                          className={`w-full h-auto block rounded-md filter drop-shadow-xl transition-all duration-300 group-hover:scale-[1.02] ${completedCardIds.has(card.id) ? 'opacity-100' : 'opacity-0'}`}
+                          className={`w-full h-auto block rounded-md filter drop-shadow-xl transition-all duration-300 group-hover:scale-[1.02] ${isCardCompleted(card.id, card.originalId, card.img) ? 'opacity-100' : 'opacity-0'}`}
                           onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                           onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                         />
-                        {!completedCardIds.has(card.id) && (
+                        {!isCardCompleted(card.id, card.originalId, card.img) && (
                           <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
                             <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
                               <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
@@ -1641,11 +1665,11 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                               <img
                                 src={item.img}
                                 alt={item.name}
-                                className={`w-full h-full object-cover transition-opacity duration-300 ${completedCardIds.has(item.id) ? 'opacity-100' : 'opacity-0'}`}
+                                className={`w-full h-full object-cover transition-opacity duration-300 ${isCardCompleted(item.id, item.originalId, item.img) ? 'opacity-100' : 'opacity-0'}`}
                                 onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
                                 onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
                               />
-                              {!completedCardIds.has(item.id) && (
+                              {!isCardCompleted(item.id, item.originalId, item.img) && (
                                 <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
                                   <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce mb-0.5" />
                                   <span className="text-[7px] font-mono text-[#38bdf8] font-bold leading-tight">Retrieving...</span>
