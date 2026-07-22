@@ -484,7 +484,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       {/* ── 3. Overhead Camera & Playmat Arena ── */}
       <div className="relative flex-1 w-full bg-[#0c0915] flex flex-col items-center justify-start overflow-hidden min-h-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto custom-scrollbar">
-          <div className="w-full h-full min-h-[420px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center pb-20 relative px-4 overflow-visible">
+          <div className="w-full h-full min-h-[420px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center py-4 relative px-4 overflow-visible">
 
             {/* STAGE 1: Unopened Pack */}
             {packStage === 'unopened' && (
@@ -553,7 +553,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             {/* STAGE 3: 10-Card Stack Reveal */}
             {packStage === 'opened' && activePackCards.length > 0 && (
               <div className="flex flex-col items-center justify-center z-30 w-full max-w-sm px-4 mt-1 sm:mt-2">
-                <div className="flex items-center justify-between w-full mb-2 px-1">
+                <div className="flex items-center justify-between w-full max-w-[320px] mb-2 px-1">
                   <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
                     <Layers className="w-3.5 h-3.5 text-amber-400" />
                     <span>CARD {currentCardIndex + 1} OF {activePackCards.length}</span>
@@ -567,26 +567,21 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
                 <div 
                   onClick={handleFlipNextCard}
-                  className="relative w-52 sm:w-64 aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30"
+                  className="relative h-[65vh] max-h-[550px] min-h-[320px] aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30"
                 >
                   <InteractiveCard3D
                     card={{
-                      ...activePackCards[currentCardIndex],
-                      originalIndex: currentCardIndex,
-                      flipped: true,
-                      collected: false,
-                    } as any}
+                      ...activePackCards[currentCardIndex]?.pokemon,
+                      name: getCurrentCardName(activePackCards[currentCardIndex]),
+                      rarity: getCurrentCardRarity(activePackCards[currentCardIndex]),
+                      imageUrl: getCurrentImage(activePackCards[currentCardIndex]),
+                      value: getCurrentPrice(activePackCards[currentCardIndex]),
+                    }}
                     interactive={true}
                     className="w-full h-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 rounded-2xl group-hover:border-amber-400/60"
-                  >
-                    <img
-                      src={getCurrentImage(activePackCards[currentCardIndex])}
-                      alt={getCurrentCardName(activePackCards[currentCardIndex])}
-                      className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
-                    />
-                  </InteractiveCard3D>
+                  />
 
-                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between z-20 rounded-b-2xl">
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between z-20 rounded-b-2xl pointer-events-none">
                     <div>
                       <div className="text-xs sm:text-sm font-black text-white truncate max-w-[120px] sm:max-w-[160px]">
                         {getCurrentCardName(activePackCards[currentCardIndex])}
