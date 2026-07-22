@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Sparkles, Wind, ShieldCheck, Check, 
   RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight, ChevronDown,
-  Thermometer, PenTool, Disc, Shield, Droplets
+  Thermometer, PenTool, Disc, Shield, Droplets, Info, Sparkle
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
 import { sound } from '../../services/sound';
@@ -113,10 +113,8 @@ export default function PrePSARestorationStudio({
           }
           if (next >= 4) {
             setIsPressing(false);
-            if (targetTemp >= 48 && targetTemp <= 65) {
-              setCardWarpAngle(0);
-              sound.playLaserScan();
-            }
+            setCardWarpAngle(0);
+            sound.playLaserScan();
           }
           return next;
         });
@@ -141,7 +139,16 @@ export default function PrePSARestorationStudio({
 
   const handleApplySteam = () => {
     sound.playAirBlower();
-    setSteamLevel(prev => Math.min(100, prev + 35));
+    setSteamLevel(100);
+  };
+
+  // Foolproof Instant Flatten Action for Station 1
+  const handleAutoFlatten = () => {
+    sound.playAirBlower();
+    setTargetTemp(55);
+    setSteamLevel(100);
+    sound.playLaserScan();
+    setCardWarpAngle(0);
   };
 
   const handleRepairEdgeDing = (id: string) => {
@@ -149,9 +156,25 @@ export default function PrePSARestorationStudio({
     setEdgeDings(prev => prev.map(d => d.id === id ? { ...d, repaired: true } : d));
   };
 
+  const handleFixAllEdgeDings = () => {
+    sound.playClothWipe();
+    setEdgeDings(prev => prev.map(d => ({ ...d, repaired: true })));
+  };
+
   const handleApplyCompound = (id: number) => {
     sound.playButtonClick();
     setScuffSpots(prev => prev.map(s => s.id === id ? { ...s, pasted: true } : s));
+  };
+
+  const handleBuffAllScuffs = () => {
+    sound.playLaserScan();
+    setScuffSpots(prev => prev.map(s => ({ ...s, pasted: true, buffed: true })));
+  };
+
+  const handleEncapsulateBoth = () => {
+    sound.playButtonClick();
+    setHasPennySleeve(true);
+    setHasCardSaver(true);
   };
 
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -203,7 +226,7 @@ export default function PrePSARestorationStudio({
         <motion.div
           initial={{ opacity: 0, scale: 0.94, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.94, y: 20 }}
+          exit={{ opacity: 0, scale: 1, y: 0 }}
           transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           onClick={e => e.stopPropagation()}
           className="w-full max-w-5xl h-[94vh] md:h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_0_80px_rgba(245,158,11,0.15)]"
@@ -298,7 +321,7 @@ export default function PrePSARestorationStudio({
                 )}
               </div>
 
-              {/* Restoration Stations: Horizontal scroll on mobile, Vertical stack on desktop */}
+              {/* Restoration Stations */}
               <div>
                 <label className="text-[10px] md:text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-1 md:mb-2">
                   2. Select Station
@@ -422,7 +445,7 @@ export default function PrePSARestorationStudio({
                     {station === 'press' && steamLevel > 0 && (
                       <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px] pointer-events-none animate-pulse flex items-center justify-center">
                         <span className="text-[10px] font-bold text-black bg-white/90 px-2.5 py-0.5 rounded-full shadow-lg">
-                          ♨️ Steam ({steamLevel}%)
+                          ♨️ Steam Applied ({steamLevel}%)
                         </span>
                       </div>
                     )}
@@ -508,12 +531,21 @@ export default function PrePSARestorationStudio({
 
                   {/* Station-Specific Interactive Controls */}
                   <div className="mt-3 md:mt-4 w-full">
+                    {/* Station 1: Thermal Press Controls */}
                     {station === 'press' && (
-                      <div className="p-3 rounded-2xl bg-black/70 border border-amber-500/30 space-y-2">
-                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
-                          <span>Thermal Clamp:</span>
-                          <span className="text-gray-300 font-mono text-[11px]">Warp: {cardWarpAngle}°</span>
+                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2.5">
+                        <div className="flex items-center gap-1.5 text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span>Goal: Flatten foil curve to 0° (Current: {cardWarpAngle}°)</span>
                         </div>
+
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-gray-300 font-medium">Temperature:</span>
+                          <span className={`font-mono font-bold ${targetTemp >= 48 && targetTemp <= 65 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            {targetTemp}°C {targetTemp >= 48 && targetTemp <= 65 ? '(IDEAL TARGET)' : '(Target: 50°C-65°C)'}
+                          </span>
+                        </div>
+
                         <div className="flex items-center gap-2">
                           <Thermometer className="w-4 h-4 text-orange-400 shrink-0" />
                           <input
@@ -522,65 +554,91 @@ export default function PrePSARestorationStudio({
                             max="80"
                             value={targetTemp}
                             onChange={e => setTargetTemp(Number(e.target.value))}
-                            className="flex-1 accent-amber-400"
+                            className="flex-1 accent-amber-400 cursor-pointer"
                           />
-                          <span className="text-xs font-mono font-bold text-amber-300 w-10 text-right">{targetTemp}°C</span>
                         </div>
+
                         <div className="flex gap-2 pt-1">
                           <button
                             onClick={handleApplySteam}
-                            className="flex-1 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-500/30 transition-all flex items-center justify-center gap-1"
+                            className={`flex-1 py-2 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                              steamLevel > 0 ? 'bg-cyan-500/30 border-cyan-400 text-cyan-300' : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'
+                            }`}
                           >
                             <Droplets className="w-3.5 h-3.5" />
-                            <span>Steam</span>
+                            <span>{steamLevel > 0 ? '✓ Steam Ready' : '1. Inject Steam'}</span>
                           </button>
+
                           <button
-                            onMouseDown={() => setIsPressing(true)}
-                            onMouseUp={() => setIsPressing(false)}
-                            className="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20"
+                            onClick={handleAutoFlatten}
+                            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20 cursor-pointer hover:brightness-110"
                           >
                             <Flame className="w-3.5 h-3.5" />
-                            <span>{isPressing ? `Flattening (${pressHoldTimer}s)...` : 'Hold Clamp'}</span>
+                            <span>🔥 1-Click Flatten</span>
                           </button>
                         </div>
                       </div>
                     )}
 
+                    {/* Station 2: Edge Whitening Controls */}
                     {station === 'edgePen' && (
-                      <div className="p-2.5 rounded-2xl bg-black/70 border border-amber-500/30 text-center">
-                        <div className="text-xs font-bold text-amber-300">Edge Sealant Pen</div>
-                        <p className="text-[10px] text-gray-400 mt-0.5">
-                          Tap the red ding tags on the card borders above to seal whitening!
-                        </p>
-                      </div>
-                    )}
+                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
+                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                          <span className="flex items-center gap-1">
+                            <Info className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Fix Border Dings:</span>
+                          </span>
+                          <span className="text-gray-300 font-mono text-[11px]">{repairedDings}/{edgeDings.length} Sealed</span>
+                        </div>
 
-                    {station === 'rotaryBuffer' && (
-                      <div className="p-2.5 rounded-2xl bg-black/70 border border-amber-500/30 text-center">
-                        <div className="text-xs font-bold text-amber-300">Electric Rotary Polisher</div>
-                        <p className="text-[10px] text-gray-400 mt-0.5">
-                          Tap scuff spots for paste, then drag your finger over them to buff holo scratches!
-                        </p>
-                      </div>
-                    )}
-
-                    {station === 'cardSaver' && (
-                      <div className="p-2 rounded-2xl bg-black/70 border border-amber-500/30 flex gap-2">
                         <button
-                          onClick={() => { sound.playButtonClick(); setHasPennySleeve(true); }}
-                          className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                            hasPennySleeve ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                          }`}
+                          onClick={handleFixAllEdgeDings}
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
                         >
-                          1. Penny Sleeve
+                          <PenTool className="w-3.5 h-3.5" />
+                          <span>🖌️ Seal All Border Dings (1-Click)</span>
                         </button>
+                      </div>
+                    )}
+
+                    {/* Station 3: Rotary Polisher Controls */}
+                    {station === 'rotaryBuffer' && (
+                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
+                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                          <span className="flex items-center gap-1">
+                            <Info className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Buff Holo Scuffs:</span>
+                          </span>
+                          <span className="text-gray-300 font-mono text-[11px]">{buffedSpots}/{scuffSpots.length} Mirror Glare</span>
+                        </div>
+
                         <button
-                          onClick={() => { sound.playButtonClick(); setHasCardSaver(true); }}
-                          className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                            hasCardSaver ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                          }`}
+                          onClick={handleBuffAllScuffs}
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-400 to-purple-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
                         >
-                          2. Card Saver 1
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>✨ Auto-Buff Holo Scuffs (1-Click)</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Station 4: Encapsulation Controls */}
+                    {station === 'cardSaver' && (
+                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
+                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                          <span className="flex items-center gap-1">
+                            <Info className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Pre-Submission Sleeving:</span>
+                          </span>
+                          <span className="text-gray-300 font-mono text-[11px]">{hasCardSaver ? '100% Encapsulated' : 'Pending'}</span>
+                        </div>
+
+                        <button
+                          onClick={handleEncapsulateBoth}
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
+                        >
+                          <Shield className="w-3.5 h-3.5" />
+                          <span>🛡️ Sleeve & Encapsulate Card Saver 1 (1-Click)</span>
                         </button>
                       </div>
                     )}
