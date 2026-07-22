@@ -16,6 +16,7 @@ import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
 import PSAGradingLab from './components/psa/PSAGradingLab';
+import RipNShipView from './components/ripNship/RipNShipView';
 import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
@@ -1930,7 +1931,7 @@ export default function App() {
   }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
-  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
+  const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'ripNship' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
@@ -2801,6 +2802,18 @@ export default function App() {
               <span className={activeTab === 'auctions' ? 'text-red-400' : ''}>Live Auctions</span>
             </button>
 
+            {/* Go Live / Rip & Ship Tab */}
+            <button
+              onClick={() => { sound.playTabSwitch(); setActiveTab('ripNship'); setIsMobileMenuOpen(false); }}
+              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-black text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] ${activeTab === 'ripNship'
+                ? 'bg-gradient-to-r from-red-600 via-rose-600 to-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-red-400'
+                : 'text-gray-300 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20'
+                }`}
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_#ef4444]" />
+              <span className="text-red-400 group-hover:text-red-300 font-black">Go Live</span>
+            </button>
+
             {/* Vault Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setIsBulkModalOpen(true); setIsMobileMenuOpen(false); }}
@@ -2900,6 +2913,10 @@ export default function App() {
           onGradeComplete={() => {
             getBinders();
           }}
+        />
+      ) : activeTab === 'ripNship' ? (
+        <RipNShipView
+          onBackToPacks={() => setActiveTab('pack')}
         />
       ) : activeTab === 'multiplayerLobby' ? (
         <div className="flex-1 overflow-y-auto min-h-0">
