@@ -450,9 +450,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             {/* STAGE 2: Tear Mechanic */}
             {packStage === 'tearing' && (
               <div className="my-auto flex flex-col items-center justify-center z-30">
-                <div className="text-xs font-black text-amber-300 uppercase tracking-widest mb-2 bg-black/70 px-3 py-1 rounded-full border border-amber-400/40 animate-pulse">
-                  ✂️ SWIPE TOP FOIL NOTCH TO TEAR OPEN
-                </div>
                 <div className="w-48 sm:w-60">
                   <BoosterPackTear
                     packArts={activePackArts}
@@ -463,6 +460,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                     setName={activeOrder?.packName}
                     packStage="unopened"
                     remainingCardsCount={10}
+                    hideInstructionPill={true}
                   />
                 </div>
               </div>

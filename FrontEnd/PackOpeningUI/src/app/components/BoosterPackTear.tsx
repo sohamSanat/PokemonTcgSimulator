@@ -14,6 +14,7 @@ interface BoosterPackTearProps {
   remainingCardsCount: number;
   isRemote?: boolean;
   overrideProgress?: number;
+  hideInstructionPill?: boolean;
 }
 
 export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
@@ -27,6 +28,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   remainingCardsCount,
   isRemote = false,
   overrideProgress,
+  hideInstructionPill = false,
 }) => {
   // Local high-performance progress state (0 to 100)
   const [localProgress, setProgress] = useState<number>(0);
@@ -228,7 +230,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-4 shrink-0 select-none">
       {/* Subtle non-blocking instructional pill */}
-      {packStage === 'unopened' && !isRemote && (
+      {!hideInstructionPill && packStage === 'unopened' && !isRemote && (
         <div className="h-7 flex items-center justify-center mb-3 shrink-0">
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
