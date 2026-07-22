@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Sparkles, Wind, ShieldCheck, Check, 
-  RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight,
+  RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight, ChevronDown,
   Thermometer, PenTool, Disc, Shield, Droplets
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
@@ -41,6 +41,7 @@ export default function PrePSARestorationStudio({
 }: PrePSARestorationStudioProps) {
   const availableCards = collection.filter(c => !c.isSlabbed);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [isCardDropdownOpen, setIsCardDropdownOpen] = useState<boolean>(false);
 
   // Active Restoration Station
   const [station, setStation] = useState<RestorationStation>('press');
@@ -238,8 +239,8 @@ export default function PrePSARestorationStudio({
           <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-y-auto md:overflow-hidden">
             {/* Sidebar / Top Mobile Navigation Bar */}
             <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-white/10 p-3 md:p-5 flex flex-col gap-3 md:gap-5 bg-black/40 shrink-0">
-              {/* Card Selector Dropdown */}
-              <div>
+              {/* Custom Styled Card Selector Dropdown */}
+              <div className="relative">
                 <label className="text-[10px] md:text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-1 md:mb-2">
                   1. Select Card to Conserve
                 </label>
@@ -248,20 +249,52 @@ export default function PrePSARestorationStudio({
                     No un-slabbed cards in binder! Open packs to get cards.
                   </div>
                 ) : (
-                  <select
-                    value={selectedCard?.id || ''}
-                    onChange={e => {
-                      const c = availableCards.find(card => card.id === e.target.value);
-                      if (c) setSelectedCard(c);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-[#1a1522] border border-amber-500/30 text-white text-xs font-bold focus:outline-none focus:border-amber-400 transition-all"
-                  >
-                    {availableCards.map(c => (
-                      <option key={c.id} value={c.id}>
-                        {c.name} ({c.setName})
-                      </option>
-                    ))}
-                  </select>
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setIsCardDropdownOpen(!isCardDropdownOpen)}
+                      className="w-full px-3 py-2 rounded-xl bg-[#1a1522] border border-amber-500/40 hover:border-amber-400 text-white text-xs font-bold flex items-center justify-between transition-all cursor-pointer shadow-md"
+                    >
+                      <span className="text-amber-300 font-bold truncate">
+                        {selectedCard ? `${selectedCard.name} (${selectedCard.setName})` : 'Select Card'}
+                      </span>
+                      <ChevronDown className={`w-3.5 h-3.5 text-amber-400 transition-transform duration-200 shrink-0 ${isCardDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    <AnimatePresence>
+                      {isCardDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                          className="absolute left-0 right-0 mt-1 p-1.5 rounded-xl bg-[#120e17] border border-amber-500/40 shadow-[0_15px_40px_rgba(0,0,0,0.9)] space-y-1 max-h-48 overflow-y-auto custom-scrollbar z-40"
+                        >
+                          {availableCards.map(c => {
+                            const isSelected = selectedCard?.id === c.id;
+                            return (
+                              <button
+                                key={c.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedCard(c);
+                                  setIsCardDropdownOpen(false);
+                                  sound.playButtonClick();
+                                }}
+                                className={`w-full px-3 py-2 rounded-lg border text-left flex items-center justify-between transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-black'
+                                    : 'border-transparent text-gray-300 hover:bg-white/5 hover:text-white'
+                                }`}
+                              >
+                                <span className="text-xs truncate">{c.name} ({c.setName})</span>
+                                {isSelected && <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
                 )}
               </div>
 
@@ -273,7 +306,7 @@ export default function PrePSARestorationStudio({
                 <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-hidden gap-2 custom-scrollbar pb-1 md:pb-0">
                   {/* Station 1: Thermal Press */}
                   <button
-                    onClick={() => { sound.playButtonClick(); setStation('press'); }}
+                    onClick={() => { sound.playButtonClick(); setStation('press'); setIsCardDropdownOpen(false); }}
                     className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'press'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
@@ -292,7 +325,7 @@ export default function PrePSARestorationStudio({
 
                   {/* Station 2: Edge Pen */}
                   <button
-                    onClick={() => { sound.playButtonClick(); setStation('edgePen'); }}
+                    onClick={() => { sound.playButtonClick(); setStation('edgePen'); setIsCardDropdownOpen(false); }}
                     className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'edgePen'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
@@ -311,7 +344,7 @@ export default function PrePSARestorationStudio({
 
                   {/* Station 3: Rotary Buffer */}
                   <button
-                    onClick={() => { sound.playButtonClick(); setStation('rotaryBuffer'); }}
+                    onClick={() => { sound.playButtonClick(); setStation('rotaryBuffer'); setIsCardDropdownOpen(false); }}
                     className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'rotaryBuffer'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
@@ -330,7 +363,7 @@ export default function PrePSARestorationStudio({
 
                   {/* Station 4: Card Saver 1 */}
                   <button
-                    onClick={() => { sound.playButtonClick(); setStation('cardSaver'); }}
+                    onClick={() => { sound.playButtonClick(); setStation('cardSaver'); setIsCardDropdownOpen(false); }}
                     className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'cardSaver'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
