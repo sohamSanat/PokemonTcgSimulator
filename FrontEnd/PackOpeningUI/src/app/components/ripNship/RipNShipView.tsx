@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Video, Users, Flame, DollarSign, Package, Send, 
   Sparkles, ArrowLeft, MessageSquare, ShoppingCart, Award, CheckCircle2,
-  Heart, Zap, Gift, Eye, ChevronUp, ChevronDown, Layers, RotateCw, Loader2
+  Heart, Zap, Gift, Eye, ChevronUp, ChevronDown, Layers, RotateCw, Loader2,
+  X, Plus, FileText, Clock, Filter, CheckCircle
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
@@ -110,7 +111,52 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       totalPaid: 449.99,
       status: 'pending'
     },
+    {
+      id: 'ord-100',
+      username: '@VmaxCollector',
+      avatarColor: 'from-emerald-400 to-teal-600',
+      packName: 'Crown Zenith Booster',
+      setId: 'swsh12pt5',
+      packCount: 5,
+      totalPaid: 125.00,
+      status: 'completed',
+      pulledCards: [
+        { name: 'Mewtwo VSTAR', value: 78.50, image: '', rarity: 'Secret Rare' },
+        { name: 'Gengar TG', value: 12.00, image: '', rarity: 'Trainer Gallery' }
+      ]
+    }
   ]);
+
+  const [isOrdersModalOpen, setIsOrdersModalOpen] = useState(false);
+  const [ordersFilter, setOrdersFilter] = useState<'all' | 'pending' | 'completed'>('all');
+  
+  // Add Order Form State
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
+  const [newPackName, setNewPackName] = useState('151 Booster Pack');
+  const [newSetId, setNewSetId] = useState('sv3');
+  const [newPackCount, setNewPackCount] = useState(1);
+  const [newTotalPaid, setNewTotalPaid] = useState(29.99);
+
+  const handleAddNewOrder = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUsername.trim()) return;
+    sound.playButtonClick();
+    const newOrd: CustomerOrder = {
+      id: `ord-${Date.now()}`,
+      username: newUsername.startsWith('@') ? newUsername.trim() : `@${newUsername.trim()}`,
+      avatarColor: 'from-blue-500 to-cyan-600',
+      packName: newPackName,
+      setId: newSetId,
+      packCount: Number(newPackCount),
+      totalPaid: Number(newTotalPaid),
+      status: 'pending'
+    };
+    setOrders(prev => [newOrd, ...prev]);
+    setActiveOrder(newOrd);
+    setNewUsername('');
+    setIsAddFormOpen(false);
+  };
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: '1', username: 'StreamBot', message: '🔴 RIP & SHIP LIVE! Pack ripping in progress! Type in chat to interact with the host!', badge: 'MOD', color: 'text-amber-400', avatarColor: 'from-yellow-400 to-amber-600' },
@@ -237,13 +283,13 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
-            onClick={() => { sound.playButtonClick(); setIsQueueOpen(!isQueueOpen); }}
+            onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
             className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
           >
             <ShoppingCart className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">Orders</span>
+            <span>Orders Ledger</span>
             <span className="bg-amber-400 text-black px-1.5 py-0.2 rounded-full text-[9px] font-black leading-none">
-              {orders.filter(o => o.status === 'pending').length}
+              {orders.length}
             </span>
           </button>
 
@@ -307,35 +353,274 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2 sm:p-3 rounded-2xl bg-black/90 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col gap-1.5 pointer-events-auto"
+            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2.5 sm:p-3.5 rounded-2xl bg-black/90 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col gap-2 pointer-events-auto"
           >
             <div className="flex items-center justify-between text-[10px] font-extrabold text-amber-400 uppercase tracking-widest px-1">
-              <span>Customer Order Queue</span>
-              <span>{orders.filter(o => o.status === 'pending').length} Pending</span>
+              <span className="flex items-center gap-1">
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span>Customer Queue ({orders.filter(o => o.status === 'pending').length} Pending)</span>
+              </span>
+              <button
+                onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); setIsQueueOpen(false); }}
+                className="text-[10px] text-amber-300 hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <span>View All Orders Ledger &rarr;</span>
+              </button>
             </div>
             <div className="flex overflow-x-auto gap-2 custom-scrollbar pb-1">
               {orders.map(ord => (
                 <button
                   key={ord.id}
                   onClick={() => { sound.playButtonClick(); setActiveOrder(ord); }}
-                  className={`p-2 rounded-xl border text-left flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
+                  className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all shrink-0 cursor-pointer ${
                     activeOrder?.id === ord.id
-                      ? 'border-amber-400 bg-amber-500/25 text-white shadow-lg'
+                      ? 'border-amber-400 bg-amber-500/25 text-white shadow-lg ring-1 ring-amber-400/50'
                       : ord.status === 'completed'
                       ? 'border-white/5 bg-white/5 opacity-50'
                       : 'border-white/10 bg-white/10 hover:bg-white/15'
                   }`}
                 >
-                  <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${ord.avatarColor} flex items-center justify-center font-black text-[10px] text-white shrink-0`}>
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${ord.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md`}>
                     {ord.username.substring(1, 3).toUpperCase()}
                   </div>
                   <div className="text-left">
-                    <div className="text-xs font-bold truncate max-w-[100px]">{ord.username}</div>
-                    <div className="text-[10px] text-gray-300 font-mono font-bold">{ord.packCount}x {ord.packName}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black truncate max-w-[110px] text-white">{ord.username}</span>
+                      <span className="text-[10px] font-mono font-black text-emerald-400">${ord.totalPaid.toFixed(2)}</span>
+                    </div>
+                    <div className="text-[10px] text-gray-300 font-bold flex items-center gap-1 mt-0.5">
+                      <span>{ord.packCount}x {ord.packName}</span>
+                      {ord.status === 'completed' && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
+                    </div>
                   </div>
                 </button>
               ))}
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── 4B. Full Stream Orders Ledger Modal ── */}
+      <AnimatePresence>
+        {isOrdersModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl p-3 sm:p-6 flex items-center justify-center pointer-events-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              className="relative w-full max-w-4xl max-h-[90vh] bg-[#0c0915] border border-white/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-white"
+            >
+              {/* Modal Header */}
+              <div className="p-4 sm:p-6 bg-[#130f24] border-b border-white/10 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+                    <ShoppingCart className="w-5 h-5 text-amber-400" />
+                    <span>Live Stream Orders Ledger</span>
+                  </h2>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Track customer purchases, total spent, pack counts, and active order status.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { sound.playButtonClick(); setIsAddFormOpen(!isAddFormOpen); }}
+                    className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Order</span>
+                  </button>
+
+                  <button
+                    onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(false); }}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Add Order Collapsible Form */}
+              {isAddFormOpen && (
+                <form onSubmit={handleAddNewOrder} className="p-4 bg-amber-500/10 border-b border-amber-500/30 flex flex-wrap gap-3 items-end">
+                  <div className="flex-1 min-w-[140px]">
+                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Customer Username</label>
+                    <input
+                      type="text"
+                      placeholder="@Username"
+                      value={newUsername}
+                      onChange={e => setNewUsername(e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-[160px]">
+                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Pack Name</label>
+                    <input
+                      type="text"
+                      value={newPackName}
+                      onChange={e => setNewPackName(e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="w-24">
+                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Set ID</label>
+                    <input
+                      type="text"
+                      value={newSetId}
+                      onChange={e => setNewSetId(e.target.value)}
+                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="w-20">
+                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Count</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={newPackCount}
+                      onChange={e => setNewPackCount(Number(e.target.value))}
+                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
+                      required
+                    />
+                  </div>
+
+                  <div className="w-24">
+                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Total ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={newTotalPaid}
+                      onChange={e => setNewTotalPaid(Number(e.target.value))}
+                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs uppercase cursor-pointer"
+                  >
+                    Save Order
+                  </button>
+                </form>
+              )}
+
+              {/* Summary Stats Row & Filters */}
+              <div className="px-4 sm:px-6 py-3 bg-black/40 border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  {(['all', 'pending', 'completed'] as const).map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => { sound.playButtonClick(); setOrdersFilter(tab); }}
+                      className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                        ordersFilter === tab
+                          ? 'bg-amber-400 text-black shadow-md'
+                          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      {tab} ({tab === 'all' ? orders.length : orders.filter(o => o.status === tab).length})
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4 text-xs font-mono">
+                  <div className="text-gray-400">
+                    Total Revenue: <span className="font-black text-emerald-400">${orders.reduce((acc, o) => acc + o.totalPaid, 0).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Orders Table List */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar space-y-3">
+                {orders
+                  .filter(o => ordersFilter === 'all' || o.status === ordersFilter)
+                  .map(ord => {
+                    const isActive = activeOrder?.id === ord.id;
+                    return (
+                      <div
+                        key={ord.id}
+                        className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                          isActive
+                            ? 'bg-amber-500/20 border-amber-400 shadow-xl ring-1 ring-amber-400/40'
+                            : 'bg-white/5 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${ord.avatarColor} flex items-center justify-center font-black text-sm text-white shrink-0 shadow-md`}>
+                            {ord.username.substring(1, 3).toUpperCase()}
+                          </div>
+
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-sm text-white truncate">{ord.username}</span>
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                                ord.status === 'completed'
+                                  ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400'
+                                  : ord.status === 'ripping'
+                                  ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400 animate-pulse'
+                                  : 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
+                              }`}>
+                                {ord.status}
+                              </span>
+                            </div>
+
+                            <div className="text-xs text-gray-300 font-medium mt-0.5 flex items-center gap-2">
+                              <span>Purchased: <strong className="text-amber-300 font-bold">{ord.packCount}x {ord.packName}</strong></span>
+                              <span className="text-gray-500">•</span>
+                              <span className="text-gray-400 font-mono">Set: {ord.setId}</span>
+                            </div>
+
+                            {ord.pulledCards && ord.pulledCards.length > 0 && (
+                              <div className="mt-2 text-[11px] text-emerald-400 flex items-center gap-1.5 flex-wrap">
+                                <Award className="w-3.5 h-3.5" />
+                                <span>Pulled Hits:</span>
+                                {ord.pulledCards.map((c, i) => (
+                                  <span key={i} className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold">
+                                    {c.name} (${c.value.toFixed(2)})
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/10">
+                          <div className="text-right">
+                            <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Total Paid</div>
+                            <div className="text-base font-mono font-black text-emerald-400">${ord.totalPaid.toFixed(2)}</div>
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              sound.playButtonClick();
+                              setActiveOrder(ord);
+                              setIsOrdersModalOpen(false);
+                            }}
+                            disabled={isActive}
+                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                              isActive
+                                ? 'bg-amber-400 text-black opacity-80 cursor-default'
+                                : 'bg-white/10 hover:bg-amber-400 hover:text-black text-white border border-white/20'
+                            }`}
+                          >
+                            {isActive ? 'Active Order' : 'Set Active'}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
