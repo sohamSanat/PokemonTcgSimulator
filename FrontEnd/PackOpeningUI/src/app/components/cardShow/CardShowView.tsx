@@ -2016,12 +2016,18 @@ export const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: (
     spendCash(cashPaid);
     selected.forEach((id) => removeCollectedCard(id));
     if (change > 0 && onAddNetReturn) onAddNetReturn(change);
+    const realMarketPrice = (target as any).marketPrice || target.value || price;
     const newCard = saveCollectedCard(
       {
-        value: price,
+        marketPrice: realMarketPrice,
+        value: realMarketPrice,
+        acquiredPrice: price,
+        originalValue: price,
         pokemon: {
           id: target.id,
           name: target.name,
+          marketPrice: realMarketPrice,
+          value: realMarketPrice,
           images: { large: target.img },
           rarity: target.grade || "Rare",
         },

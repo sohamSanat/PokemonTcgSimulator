@@ -1,5 +1,4 @@
 import React from "react";
-import { ResponsiveContainer, AreaChart, Area, Tooltip } from "recharts";
 import type { Card } from "./types";
 
 interface Props {
@@ -8,22 +7,48 @@ interface Props {
 }
 
 function PriceTooltip({ card, index = 4 }: Props) {
-  const positive = card.priceChange >= 0;
+  const priceVal = typeof card?.currentPrice === 'number' && !isNaN(card.currentPrice)
+    ? card.currentPrice
+    : (typeof card?.originalValue === 'number' && !isNaN(card.originalValue) ? card.originalValue : 0.50);
+
+  const changeVal = typeof card?.priceChange === 'number' && !isNaN(card.priceChange)
+    ? card.priceChange
+    : 0;
+
+  const positive = changeVal >= 0;
   const color = positive ? "#00e676" : "#ff5252";
   const bgColor = positive ? "rgba(0, 230, 118, 0.12)" : "rgba(255, 82, 82, 0.12)";
   const borderColor = positive ? "rgba(0, 230, 118, 0.3)" : "rgba(255, 82, 82, 0.3)";
 
-  // Calculate 30-day min and max
-  const history = card.priceHistory && card.priceHistory.length > 0
+  // Calculate 30-day price history
+  const history = card?.priceHistory && card.priceHistory.length > 0
     ? card.priceHistory
     : [
-        { day: 1, price: card.currentPrice * 0.95 },
-        { day: 15, price: card.currentPrice * 1.02 },
-        { day: 30, price: card.currentPrice },
+        { day: 1, price: Number((priceVal * 0.95).toFixed(2)) },
+        { day: 15, price: Number((priceVal * 1.02).toFixed(2)) },
+        { day: 30, price: Number(priceVal.toFixed(2)) },
       ];
-  const prices = history.map(p => p.price);
-  const minPrice = Math.min(...prices).toFixed(2);
-  const maxPrice = Math.max(...prices).toFixed(2);
+
+  const prices = history.map(p => typeof p.price === 'number' && !isNaN(p.price) ? p.price : priceVal);
+  const minPrice = prices.length > 0 ? Math.min(...prices).toFixed(2) : priceVal.toFixed(2);
+  const maxPrice = prices.length > 0 ? Math.max(...prices).toFixed(2) : priceVal.toFixed(2);
+
+  // SVG Area Chart Math (zero external dependencies)
+  const minVal = Math.min(...prices);
+  const maxVal = Math.max(...prices);
+  const range = maxVal - minVal || 1;
+  const svgWidth = 224;
+  const svgHeight = 44;
+  const padding = 4;
+
+  const pathPoints = prices.map((val, idx) => {
+    const x = (idx / Math.max(1, prices.length - 1)) * (svgWidth - 2 * padding) + padding;
+    const y = svgHeight - padding - ((val - minVal) / range) * (svgHeight - 2 * padding);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  const lineD = `M ${pathPoints.join(' L ')}`;
+  const areaD = `M ${padding},${svgHeight - padding} L ${pathPoints.join(' L ')} L ${svgWidth - padding},${svgHeight - padding} Z`;
 
   // Smart grid positioning: Top row (index 0, 1, 2) appears BELOW card; others appear ABOVE card
   const isTopRow = index < 3;
@@ -45,6 +70,9 @@ function PriceTooltip({ card, index = 4 }: Props) {
   const verticalStyle: React.CSSProperties = isTopRow
     ? { top: "calc(100% + 14px)", bottom: "auto" }
     : { bottom: "calc(100% + 14px)", top: "auto" };
+
+  const safeId = String(card?.id || 'card').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const cardRarity = card?.rarity || 'Common';
 
   return (
     <div
@@ -84,7 +112,7 @@ function PriceTooltip({ card, index = 4 }: Props) {
       {/* Header: Name & Rarity Badge */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {card.name}
+          {card?.name || 'Pokemon Card'}
         </div>
         <div
           style={{
@@ -98,16 +126,16 @@ function PriceTooltip({ card, index = 4 }: Props) {
             letterSpacing: "0.03em",
           }}
         >
-          {card.rarity === "Special Illustration Rare" ? "SIR" :
-           card.rarity === "Illustration Rare" ? "IR" :
-           card.rarity === "Ultra Rare" ? "UR" :
-           card.rarity === "Rare Holo" ? "Holo" : card.rarity}
+          {cardRarity === "Special Illustration Rare" ? "SIR" :
+           cardRarity === "Illustration Rare" ? "IR" :
+           cardRarity === "Ultra Rare" ? "UR" :
+           cardRarity === "Rare Holo" ? "Holo" : cardRarity}
         </div>
       </div>
 
       {/* Subheader: Set info */}
       <div style={{ fontSize: 11, color: "#8e8e9f", marginBottom: 12, fontWeight: 500 }}>
-        {card.setName} · <span style={{ color: "#b0b0c0" }}>#{card.setNumber}</span>
+        {card?.setName || 'Pokemon Set'} · <span style={{ color: "#b0b0c0" }}>#{card?.setNumber || '001'}</span>
       </div>
 
       {/* Price & 30D Trend Banner */}
@@ -115,8 +143,13 @@ function PriceTooltip({ card, index = 4 }: Props) {
         <div>
           <div style={{ fontSize: 9, color: "#7a7a8a", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>Market Price</div>
           <div style={{ fontSize: 22, fontWeight: 800, color: "#ffffff", letterSpacing: "-0.03em", fontFamily: "monospace" }}>
-            ${card.currentPrice.toFixed(2)}
+            ${priceVal.toFixed(2)}
           </div>
+          {card?.originalValue !== undefined && Math.abs(card.originalValue - priceVal) > 0.01 && (
+            <div style={{ fontSize: 9, color: "#a1a1aa", marginTop: 2, fontWeight: 600 }}>
+              Acquired: ${card.originalValue.toFixed(2)}
+            </div>
+          )}
         </div>
         <div
           style={{
@@ -134,34 +167,27 @@ function PriceTooltip({ card, index = 4 }: Props) {
           }}
         >
           <span>{positive ? "▲" : "▼"}</span>
-          <span>{Math.abs(card.priceChange)}%</span>
+          <span>{Math.abs(changeVal)}%</span>
         </div>
       </div>
 
-      {/* 30-Day Market Area Chart */}
-      <div style={{ position: "relative", height: 64, marginBottom: 14, background: "rgba(0,0,0,0.25)", borderRadius: 8, padding: "4px 0", border: "1px solid rgba(255,255,255,0.04)" }}>
+      {/* 30-Day Market SVG Area Chart */}
+      <div style={{ position: "relative", height: 64, marginBottom: 14, background: "rgba(0,0,0,0.25)", borderRadius: 8, padding: "4px 8px", border: "1px solid rgba(255,255,255,0.04)" }}>
         <div style={{ position: "absolute", top: 4, left: 6, fontSize: 8, color: "rgba(255,255,255,0.3)", fontWeight: 600, letterSpacing: "0.05em" }}>
           30D TRAJECTORY
         </div>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={history} margin={{ top: 14, right: 4, bottom: 2, left: 4 }}>
+        <div style={{ width: "100%", height: "100%", paddingTop: "14px" }}>
+          <svg width="100%" height="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="none">
             <defs>
-              <linearGradient id={`spark-fill-${card.id}`} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id={`spark-fill-${safeId}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.45} />
                 <stop offset="100%" stopColor={color} stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <Tooltip content={() => null} />
-            <Area
-              type="monotone"
-              dataKey="price"
-              stroke={color}
-              strokeWidth={2}
-              fill={`url(#spark-fill-${card.id})`}
-              isAnimationActive={false}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+            <path d={areaD} fill={`url(#spark-fill-${safeId})`} />
+            <path d={lineD} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
       </div>
 
       {/* Footer Stats Grid */}
@@ -176,7 +202,7 @@ function PriceTooltip({ card, index = 4 }: Props) {
         </div>
         <div style={{ paddingLeft: 4, textAlign: "right" }}>
           <div style={{ fontSize: 9, color: "#7a7a8a", marginBottom: 2 }}>TYPE</div>
-          <div style={{ fontSize: 11, color: "#ffffff", fontWeight: 600 }}>{card.type}</div>
+          <div style={{ fontSize: 11, color: "#ffffff", fontWeight: 600 }}>{card?.type || 'Colorless'}</div>
         </div>
       </div>
     </div>

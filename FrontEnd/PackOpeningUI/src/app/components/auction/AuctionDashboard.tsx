@@ -1062,11 +1062,17 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
       setWalletBalance((b) => Math.max(0, b - price));
       onSpendNetReturn?.(price);
       const c = res.won!.card;
+      const realMarketPrice = (c as any).marketPrice || (c as any).card?.value || (c as any).card?.marketPrice || c.price;
       const saved = saveCollectedCard({
-        value: c.price,
+        marketPrice: realMarketPrice,
+        value: realMarketPrice,
+        acquiredPrice: c.price,
+        originalValue: c.price,
         pokemon: {
           id: c.id,
           name: c.name,
+          marketPrice: realMarketPrice,
+          value: realMarketPrice,
           images: { large: c.img },
           rarity: c.title || 'Rare'
         }

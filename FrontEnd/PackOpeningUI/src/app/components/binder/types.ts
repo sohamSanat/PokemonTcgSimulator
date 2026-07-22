@@ -186,6 +186,8 @@ export interface Card {
   rarity: string;
   type: string;
   currentPrice: number;
+  originalValue?: number;
+  acquiredPrice?: number;
   priceChange: number;
   priceHistory: PricePoint[];
   holofoil: boolean;
@@ -407,7 +409,33 @@ export function spendFromNetReturn(amount: number): void {
 export function saveCollectedCard(cardData: any, setName: string, binderId: string = 'my-collection'): Card {
   const cards = getCollectedCards();
   const poke = cardData.pokemon || cardData;
-  const basePrice = cardData.currentPrice || cardData.value || poke.value || 0.50;
+  const acquiredCost = cardData.acquiredPrice ?? cardData.buyPrice ?? cardData.purchasePrice ?? cardData.originalValue;
+
+  // Prioritize real market price fields over purchase cost
+  let realMarketPrice = 0;
+  if (typeof cardData.marketPrice === 'number' && cardData.marketPrice > 0) {
+    realMarketPrice = cardData.marketPrice;
+  } else if (typeof poke.marketPrice === 'number' && poke.marketPrice > 0) {
+    realMarketPrice = poke.marketPrice;
+  } else if (typeof cardData.realMarketPrice === 'number' && cardData.realMarketPrice > 0) {
+    realMarketPrice = cardData.realMarketPrice;
+  } else if (typeof cardData.value === 'number' && cardData.value > 0 && cardData.value !== acquiredCost) {
+    realMarketPrice = cardData.value;
+  } else if (typeof poke.value === 'number' && poke.value > 0 && poke.value !== acquiredCost) {
+    realMarketPrice = poke.value;
+  } else if (typeof cardData.value === 'number' && cardData.value > 0) {
+    realMarketPrice = cardData.value;
+  } else if (typeof poke.value === 'number' && poke.value > 0) {
+    realMarketPrice = poke.value;
+  } else if (typeof cardData.currentPrice === 'number' && cardData.currentPrice > 0 && cardData.currentPrice !== acquiredCost) {
+    realMarketPrice = cardData.currentPrice;
+  } else if (typeof cardData.currentPrice === 'number' && cardData.currentPrice > 0) {
+    realMarketPrice = cardData.currentPrice;
+  } else {
+    realMarketPrice = 0.50;
+  }
+
+  const basePrice = Number(realMarketPrice.toFixed(2));
   const trend = (Math.random() - 0.45) * 2;
   const points: PricePoint[] = [];
   let price = basePrice * (1 - trend * 0.3);
@@ -438,6 +466,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
     rarity: poke.rarity || cardData.rarity || 'Common',
     type: type,
     currentPrice: basePrice,
+    originalValue: acquiredCost !== undefined ? acquiredCost : basePrice,
     priceChange: Number((trend * 5 + (Math.random() * 4 - 2)).toFixed(1)),
     priceHistory: points,
     holofoil: poke.isReverseHolo || (poke.rarity && String(poke.rarity).toLowerCase().includes('rare')) || false,

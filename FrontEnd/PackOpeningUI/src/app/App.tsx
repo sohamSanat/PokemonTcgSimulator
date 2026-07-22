@@ -4058,13 +4058,18 @@ export default function App() {
 
               // 2. Transfer that card to the user's binder
               const setName = (cardToBuy.pokemon as any)?.set?.name || cardToBuy.pokemon?.name?.split('(')[1]?.replace(')', '').trim() || 'Vendor Acquisition';
+              const realMarketPrice = (cardToBuy as any).marketPrice ?? (cardToBuy.pokemon as any)?.marketPrice ?? (cardToBuy.pokemon as any)?.value ?? (cardToBuy.value !== buyPrice ? cardToBuy.value : undefined) ?? buyPrice;
               saveCollectedCard({
                 ...cardToBuy,
-                value: buyPrice,
-                currentPrice: buyPrice,
+                marketPrice: realMarketPrice,
+                value: realMarketPrice,
+                acquiredPrice: buyPrice,
+                originalValue: buyPrice,
                 isVendorCatalog: false,
                 pokemon: {
                   ...cardToBuy.pokemon,
+                  marketPrice: realMarketPrice,
+                  value: realMarketPrice,
                   isVendorCatalog: false
                 }
               }, setName, 'my-collection');
