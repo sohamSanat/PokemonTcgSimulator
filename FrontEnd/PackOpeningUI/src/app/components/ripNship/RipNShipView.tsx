@@ -483,8 +483,8 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
       {/* ── 3. Overhead Camera & Playmat Arena ── */}
       <div className="relative flex-1 w-full bg-[#0c0915] flex flex-col items-center justify-start overflow-hidden min-h-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto custom-scrollbar">
-          <div className="w-full h-full min-h-[420px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center py-4 relative px-4 overflow-visible">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-start p-2 sm:p-4 overflow-y-auto custom-scrollbar">
+          <div className="w-full h-full min-h-[380px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-start pt-2 sm:pt-4 pb-24 relative px-3 sm:px-4 overflow-visible">
 
             {/* STAGE 1: Unopened Pack */}
             {packStage === 'unopened' && (
@@ -553,7 +553,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             {/* STAGE 3: 10-Card Stack Reveal */}
             {packStage === 'opened' && activePackCards.length > 0 && (
               <div className="flex flex-col items-center justify-center z-30 w-full max-w-sm px-4 mt-1 sm:mt-2">
-                <div className="flex items-center justify-between w-full max-w-[320px] mb-2 px-1">
+                <div className="flex items-center justify-between w-full max-w-[280px] sm:max-w-[320px] mb-2 px-1">
                   <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
                     <Layers className="w-3.5 h-3.5 text-amber-400" />
                     <span>CARD {currentCardIndex + 1} OF {activePackCards.length}</span>
@@ -567,7 +567,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
                 <div 
                   onClick={handleFlipNextCard}
-                  className="relative h-[65vh] max-h-[550px] min-h-[320px] aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30"
+                  className="relative w-52 sm:w-64 max-w-[80vw] max-h-[45vh] aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30 shrink-0"
                 >
                   <InteractiveCard3D
                     card={{
