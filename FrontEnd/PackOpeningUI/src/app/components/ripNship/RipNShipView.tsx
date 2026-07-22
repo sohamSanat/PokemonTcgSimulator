@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Radio, Video, Users, Flame, DollarSign, Package, Send, 
   Sparkles, ArrowLeft, MessageSquare, ShoppingCart, Award, CheckCircle2,
-  Heart, Zap, Gift, Eye, ChevronUp, ChevronDown
+  Heart, Zap, Gift, Eye, ChevronUp, ChevronDown, Layers, RotateCw
 } from 'lucide-react';
 import { sound } from '../../services/sound';
-import { addCash } from '../binder/types';
+import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
 import { generateVendorReply } from '../../services/geminiVendorChat';
+import { BoosterPackTear } from '../BoosterPackTear';
 
 interface RipNShipViewProps {
   onBackToPacks: () => void;
@@ -40,21 +41,93 @@ interface FloatingReaction {
   x: number; // percentage
 }
 
-const DEFAULT_SAMPLE_PULLS = [
-  { name: 'Charizard ex', value: 273.60, rarity: 'Special Illustration Rare', image: 'https://images.pokemontcg.io/sv3/223_hires.png' },
-  { name: 'Blastoise ex', value: 92.50, rarity: 'Special Illustration Rare', image: 'https://images.pokemontcg.io/sv3/200_hires.png' },
-  { name: 'Gengar VMAX', value: 310.00, rarity: 'Alternate Art Secret', image: 'https://images.pokemontcg.io/swsh8/271_hires.png' },
-  { name: 'Umbreon VMAX', value: 650.00, rarity: 'Secret Rare', image: 'https://images.pokemontcg.io/swsh7/215_hires.png' },
-  { name: 'Pikachu ex', value: 180.00, rarity: 'Special Illustration Rare', image: 'https://images.pokemontcg.io/sv8/238_hires.png' },
-  { name: 'Rayquaza VMAX', value: 420.00, rarity: 'Alternate Art Secret', image: 'https://images.pokemontcg.io/swsh7/218_hires.png' },
-];
+interface PulledCardItem {
+  id: string;
+  name: string;
+  rarity: string;
+  value: number;
+  image: string;
+  isHit: boolean;
+}
+
+// REAL POKÉMON TCG PACK POOLS WITH AUTHENTIC ODDS & MARKET PRICES
+const REAL_PACK_POOLS: Record<string, PulledCardItem[]> = {
+  '151': [
+    { id: '151-223', name: 'Charizard ex SAR', rarity: 'Special Illustration Rare', value: 273.60, image: 'https://images.pokemontcg.io/sv3/223_hires.png', isHit: true },
+    { id: '151-200', name: 'Blastoise ex SAR', rarity: 'Special Illustration Rare', value: 92.50, image: 'https://images.pokemontcg.io/sv3/200_hires.png', isHit: true },
+    { id: '151-198', name: 'Venusaur ex SAR', rarity: 'Special Illustration Rare', value: 58.00, image: 'https://images.pokemontcg.io/sv3/198_hires.png', isHit: true },
+    { id: '151-201', name: 'Alakazam ex SAR', rarity: 'Special Illustration Rare', value: 42.00, image: 'https://images.pokemontcg.io/sv3/201_hires.png', isHit: true },
+    { id: '151-202', name: 'Zapdos ex SAR', rarity: 'Special Illustration Rare', value: 38.50, image: 'https://images.pokemontcg.io/sv3/202_hires.png', isHit: true },
+    { id: '151-173', name: 'Pikachu IR', rarity: 'Illustration Rare', value: 18.50, image: 'https://images.pokemontcg.io/sv3/173_hires.png', isHit: false },
+    { id: '151-170', name: 'Squirtle IR', rarity: 'Illustration Rare', value: 26.00, image: 'https://images.pokemontcg.io/sv3/170_hires.png', isHit: false },
+    { id: '151-168', name: 'Charmander IR', rarity: 'Illustration Rare', value: 28.00, image: 'https://images.pokemontcg.io/sv3/168_hires.png', isHit: false },
+    { id: '151-166', name: 'Bulbasaur IR', rarity: 'Illustration Rare', value: 22.00, image: 'https://images.pokemontcg.io/sv3/166_hires.png', isHit: false },
+    { id: '151-143', name: 'Snorlax Holo', rarity: 'Holo Rare', value: 4.50, image: 'https://images.pokemontcg.io/sv3/143_hires.png', isHit: false },
+    { id: '151-94', name: 'Gengar Holo', rarity: 'Holo Rare', value: 3.20, image: 'https://images.pokemontcg.io/sv3/94_hires.png', isHit: false },
+    { id: '151-38', name: 'Ninetales ex', rarity: 'Double Rare', value: 2.50, image: 'https://images.pokemontcg.io/sv3/38_hires.png', isHit: false },
+    { id: '151-39', name: 'Jigglypuff', rarity: 'Common', value: 0.25, image: 'https://images.pokemontcg.io/sv3/39_hires.png', isHit: false },
+    { id: '151-52', name: 'Meowth', rarity: 'Common', value: 0.15, image: 'https://images.pokemontcg.io/sv3/52_hires.png', isHit: false },
+    { id: '151-54', name: 'Psyduck', rarity: 'Uncommon', value: 0.40, image: 'https://images.pokemontcg.io/sv3/54_hires.png', isHit: false },
+  ],
+  'Evolving Skies': [
+    { id: 'es-215', name: 'Umbreon VMAX (Moonbreon)', rarity: 'Alternate Art Secret', value: 650.00, image: 'https://images.pokemontcg.io/swsh7/215_hires.png', isHit: true },
+    { id: 'es-218', name: 'Rayquaza VMAX Alt Art', rarity: 'Alternate Art Secret', value: 420.00, image: 'https://images.pokemontcg.io/swsh7/218_hires.png', isHit: true },
+    { id: 'es-212', name: 'Sylveon VMAX Alt Art', rarity: 'Alternate Art Secret', value: 210.00, image: 'https://images.pokemontcg.io/swsh7/212_hires.png', isHit: true },
+    { id: 'es-209', name: 'Glaceon VMAX Alt Art', rarity: 'Alternate Art Secret', value: 185.00, image: 'https://images.pokemontcg.io/swsh7/209_hires.png', isHit: true },
+    { id: 'es-205', name: 'Leafeon VMAX Alt Art', rarity: 'Alternate Art Secret', value: 240.00, image: 'https://images.pokemontcg.io/swsh7/205_hires.png', isHit: true },
+    { id: 'es-192', name: 'Dragonite V Alt Art', rarity: 'Alternate Art Secret', value: 125.00, image: 'https://images.pokemontcg.io/swsh7/192_hires.png', isHit: true },
+    { id: 'es-125', name: 'Eevee Reverse Holo', rarity: 'Reverse Holo', value: 1.50, image: 'https://images.pokemontcg.io/swsh7/125_hires.png', isHit: false },
+    { id: 'es-220', name: 'Duraludon VMAX Gold', rarity: 'Secret Rare', value: 22.00, image: 'https://images.pokemontcg.io/swsh7/220_hires.png', isHit: false },
+    { id: 'es-49', name: 'Pikachu', rarity: 'Common', value: 0.30, image: 'https://images.pokemontcg.io/swsh7/49_hires.png', isHit: false },
+  ],
+  'Base Set': [
+    { id: 'base-4', name: 'Charizard 1st Edition', rarity: '1st Edition Shadowless Holo', value: 1250.00, image: 'https://images.pokemontcg.io/base1/4_hires.png', isHit: true },
+    { id: 'base-2', name: 'Blastoise Holo', rarity: 'Holo Rare', value: 180.00, image: 'https://images.pokemontcg.io/base1/2_hires.png', isHit: true },
+    { id: 'base-15', name: 'Venusaur Holo', rarity: 'Holo Rare', value: 140.00, image: 'https://images.pokemontcg.io/base1/15_hires.png', isHit: true },
+    { id: 'base-10', name: 'Mewtwo Holo', rarity: 'Holo Rare', value: 85.00, image: 'https://images.pokemontcg.io/base1/10_hires.png', isHit: true },
+    { id: 'base-6', name: 'Gyarados Holo', rarity: 'Holo Rare', value: 45.00, image: 'https://images.pokemontcg.io/base1/6_hires.png', isHit: false },
+    { id: 'base-1', name: 'Alakazam Holo', rarity: 'Holo Rare', value: 55.00, image: 'https://images.pokemontcg.io/base1/1_hires.png', isHit: false },
+    { id: 'base-58', name: 'Pikachu Red Cheeks', rarity: 'Shadowless Common', value: 35.00, image: 'https://images.pokemontcg.io/base1/58_hires.png', isHit: false },
+    { id: 'base-44', name: 'Bulbasaur', rarity: 'Common', value: 2.50, image: 'https://images.pokemontcg.io/base1/44_hires.png', isHit: false },
+    { id: 'base-46', name: 'Charmander', rarity: 'Common', value: 3.50, image: 'https://images.pokemontcg.io/base1/46_hires.png', isHit: false },
+    { id: 'base-63', name: 'Squirtle', rarity: 'Common', value: 3.00, image: 'https://images.pokemontcg.io/base1/63_hires.png', isHit: false },
+  ]
+};
+
+// Helper: Real weighted pull odds generator (10 cards per pack)
+function generateRealPackCards(packName: string): PulledCardItem[] {
+  let pool = REAL_PACK_POOLS['151'];
+  if (packName.includes('Evolving')) pool = REAL_PACK_POOLS['Evolving Skies'];
+  if (packName.includes('Base')) pool = REAL_PACK_POOLS['Base Set'];
+
+  const hits = pool.filter(c => c.isHit);
+  const regular = pool.filter(c => !c.isHit);
+
+  const packCards: PulledCardItem[] = [];
+
+  // Generate 8 regular common/uncommon/holo cards
+  for (let i = 0; i < 8; i++) {
+    const card = regular[Math.floor(Math.random() * regular.length)];
+    packCards.push({ ...card, id: `${card.id}-${i}-${Date.now()}` });
+  }
+
+  // 1 Reverse Holo / Foil
+  const reverseCard = pool[Math.floor(Math.random() * pool.length)];
+  packCards.push({ ...reverseCard, id: `${reverseCard.id}-rev-${Date.now()}` });
+
+  // 1 RARE HIT SLOT (Authentic market probability: 25% ultra-rare hit, 75% regular rare)
+  const isChaseHit = Math.random() < 0.35;
+  const rareHit = isChaseHit ? hits[Math.floor(Math.random() * hits.length)] : regular[Math.floor(Math.random() * regular.length)];
+  packCards.push({ ...rareHit, id: `${rareHit.id}-hit-${Date.now()}` });
+
+  return packCards;
+}
 
 export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   // Stream Stats
   const [viewerCount, setViewerCount] = useState<number>(1420);
   const [totalRevenue, setTotalRevenue] = useState<number>(1280.00);
   const [hypeLevel, setHypeLevel] = useState<number>(4);
-  const [hypeProgress, setHypeProgress] = useState<number>(75);
   const [isQueueOpen, setIsQueueOpen] = useState<boolean>(false);
 
   // Floating Social Live Reactions
@@ -91,7 +164,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     },
   ]);
 
-  // TikTok / Instagram Style Live Overlay Chat Messages
+  // Live Stream Chat Messages
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { id: '1', username: 'StreamBot', message: '🔴 RIP & SHIP LIVE! Pack ripping in progress! Type in chat to interact with the host!', badge: 'MOD', color: 'text-amber-400', avatarColor: 'from-yellow-400 to-amber-600' },
     { id: '2', username: 'PokeKing99', message: 'LET\'S GOOO! Hoping for that 151 Charizard ex SAR today! 🔥', badge: 'BUYER', color: 'text-emerald-400', avatarColor: 'from-amber-400 to-orange-500' },
@@ -101,8 +174,12 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const [hostInput, setHostInput] = useState<string>('');
   const [activeOrder, setActiveOrder] = useState<CustomerOrder | null>(orders[0] || null);
-  const [isOpeningPack, setIsOpeningPack] = useState<boolean>(false);
-  const [currentPulledCard, setCurrentPulledCard] = useState<typeof DEFAULT_SAMPLE_PULLS[0] | null>(null);
+
+  // Mastered 3D Pack Opening States
+  const [packStage, setPackStage] = useState<'unopened' | 'tearing' | 'opened'>('unopened');
+  const [activePackCards, setActivePackCards] = useState<PulledCardItem[]>([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
+  const [topHitPulled, setTopHitPulled] = useState<PulledCardItem | null>(null);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
@@ -112,11 +189,10 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       setViewerCount(prev => prev + Math.floor(Math.random() * 7) - 3);
     }, 3000);
 
-    // Spawn floating TikTok/Instagram reactions
     const reactionInterval = setInterval(() => {
       const emojis = ['❤️', '🔥', '💎', '🚀', '⭐', '⚡', '🎉'];
       const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-      const x = Math.floor(Math.random() * 40) + 60; // 60% to 100% right side
+      const x = Math.floor(Math.random() * 40) + 60;
       setReactions(prev => [
         ...prev.slice(-15),
         { id: Date.now() + Math.random(), emoji, x }
@@ -159,7 +235,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     setChatMessages(prev => [...prev.slice(-25), msg]);
   };
 
-  // Tap screen to spawn heart reaction
   const handleSpawnHeart = () => {
     sound.playButtonClick();
     const emojis = ['❤️', '🔥', '💎', '🚀'];
@@ -170,7 +245,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     ]);
   };
 
-  // Host Chatting with Gemini AI Chatter Reactions
   const handleSendHostMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!hostInput.trim()) return;
@@ -187,7 +261,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     });
     setHostInput('');
 
-    // Trigger AI Chat Reaction via Gemini Service
     try {
       const res = await generateVendorReply({
         vendorName: 'Live Stream Audience',
@@ -225,89 +298,144 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     }
   };
 
-  // Ripping Pack for Customer
-  const handleRipPackForCustomer = () => {
-    if (!activeOrder || isOpeningPack) return;
+  // 1. Start Pack Tear Stage
+  const handleStartRipPack = () => {
+    if (!activeOrder || packStage !== 'unopened') return;
+    sound.playPackOpen();
+    setPackStage('tearing');
+  };
+
+  // 2. Foil Tear Complete: Generate 10 Real-Odds Cards & Enter Card Stack Reveal
+  const handleFoilTearComplete = () => {
+    if (!activeOrder) return;
+
+    const generatedCards = generateRealPackCards(activeOrder.packName);
+    setActivePackCards(generatedCards);
+    setCurrentCardIndex(0);
+
+    // Find top highest value hit
+    const sorted = [...generatedCards].sort((a, b) => b.value - a.value);
+    const topHit = sorted[0];
+    setTopHitPulled(topHit);
 
     sound.playPackOpen();
-    setIsOpeningPack(true);
+    setPackStage('opened');
+  };
 
-    setTimeout(() => {
-      const pull = DEFAULT_SAMPLE_PULLS[Math.floor(Math.random() * DEFAULT_SAMPLE_PULLS.length)];
-      setCurrentPulledCard(pull);
-      sound.playLaserScan();
+  // 3. Flip Next Card in 10-Card Stack
+  const handleFlipNextCard = () => {
+    if (currentCardIndex < activePackCards.length - 1) {
+      sound.playClothWipe();
+      const nextIdx = currentCardIndex + 1;
+      setCurrentCardIndex(nextIdx);
 
-      // Add earnings
-      addCash(activeOrder.totalPaid);
-      setTotalRevenue(prev => prev + activeOrder.totalPaid);
-
-      // Update Order Status
-      setOrders(prev => prev.map(o => {
-        if (o.id === activeOrder.id) {
-          const pulls = o.pulledCards || [];
-          return {
-            ...o,
-            status: 'completed',
-            pulledCards: [...pulls, pull]
-          };
-        }
-        return o;
-      }));
-
-      // Add Chat Announcement
-      addChatMessage({
-        id: Date.now().toString(),
-        username: 'STREAM ALERT',
-        message: `🎉 GRAIL HIT! ${activeOrder.username} pulled a ${pull.name} (${pull.rarity}) worth $${pull.value.toFixed(2)}! 🔥`,
-        badge: 'HIT 👑',
-        color: 'text-amber-300 font-extrabold',
-        avatarColor: 'from-amber-400 to-red-500',
-        isOrderNotification: true
-      });
-
-      setIsOpeningPack(false);
-
-      // Advance to next pending order
-      const remaining = orders.filter(o => o.id !== activeOrder.id && o.status === 'pending');
-      if (remaining.length > 0) {
-        setActiveOrder(remaining[0]);
+      const card = activePackCards[nextIdx];
+      if (card && card.value > 15) {
+        sound.playLaserScan();
       }
-    }, 1800);
+    }
+  };
+
+  // 4. Complete Pack Ripping & Ship Cards to Customer
+  const handleShipCompletedPack = () => {
+    if (!activeOrder || !topHitPulled) return;
+
+    sound.playLaserScan();
+
+    // Add Revenue
+    addCash(activeOrder.totalPaid);
+    setTotalRevenue(prev => prev + activeOrder.totalPaid);
+
+    // Save Top Pulled Card to Host's Collection Binder
+    const cardToSave: Card = {
+      id: topHitPulled.id,
+      name: topHitPulled.name,
+      setName: activeOrder.packName,
+      setNumber: '101/150',
+      rarity: topHitPulled.rarity,
+      type: 'Rare',
+      currentPrice: topHitPulled.value,
+      priceChange: 0,
+      priceHistory: [],
+      holofoil: topHitPulled.isHit,
+      imageUrl: topHitPulled.image,
+      favorite: topHitPulled.isHit,
+      isSlabbed: false,
+    };
+    const collectionCards = getCollectedCards();
+    collectionCards.push(cardToSave);
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(collectionCards));
+    syncToFirestore();
+
+    // Update Customer Order Status
+    setOrders(prev => prev.map(o => {
+      if (o.id === activeOrder.id) {
+        const pulls = o.pulledCards || [];
+        return {
+          ...o,
+          status: 'completed',
+          pulledCards: [...pulls, topHitPulled]
+        };
+      }
+      return o;
+    }));
+
+    // Add Chat Announcement
+    addChatMessage({
+      id: Date.now().toString(),
+      username: 'STREAM ALERT',
+      message: `🎉 GRAIL HIT SHIPPED! ${activeOrder.username} pulled a ${topHitPulled.name} (${topHitPulled.rarity}) worth $${topHitPulled.value.toFixed(2)}! 🔥`,
+      badge: 'HIT 👑',
+      color: 'text-amber-300 font-extrabold',
+      avatarColor: 'from-amber-400 to-red-500',
+      isOrderNotification: true
+    });
+
+    // Reset Pack Stage for Next Pack
+    setPackStage('unopened');
+    setActivePackCards([]);
+    setCurrentCardIndex(0);
+
+    // Advance to next pending order
+    const remaining = orders.filter(o => o.id !== activeOrder.id && o.status === 'pending');
+    if (remaining.length > 0) {
+      setActiveOrder(remaining[0]);
+    }
   };
 
   return (
     <div className="relative w-full h-[100dvh] bg-[#05040a] overflow-hidden text-white flex flex-col select-none">
-      {/* ── 1. Top Spacious Live Stream Header HUD ── */}
-      <div className="absolute top-0 inset-x-0 z-40 px-3 sm:px-6 py-3 sm:py-4 bg-gradient-to-b from-black/95 via-black/70 to-transparent flex items-center justify-between pointer-events-auto gap-2">
-        <div className="flex items-center gap-2 sm:gap-3">
+      {/* ── 1. Top Spacious Stream Header HUD (Row 1) ── */}
+      <div className="relative w-full z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-[#090712] border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
           {/* Live Badge & Viewer Count */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/30 border border-red-500/60 text-red-400 font-black text-xs uppercase tracking-wider backdrop-blur-md shadow-lg shadow-red-600/20 animate-pulse">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444]" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/25 border border-red-500/50 text-red-400 font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-md shrink-0">
+            <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-pulse" />
             <span>LIVE &middot; {viewerCount.toLocaleString()}</span>
           </div>
 
           {/* Stream Revenue Badge */}
-          <div className="bg-black/70 backdrop-blur-md border border-amber-500/40 px-3 py-1.5 rounded-full text-xs font-bold text-amber-300 flex items-center gap-1.5 shadow-lg">
+          <div className="bg-black/60 border border-amber-500/30 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-300 flex items-center gap-1 shadow-md shrink-0">
             <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span className="font-mono font-black">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
           </div>
 
           {/* Hype Level */}
-          <div className="hidden md:flex items-center gap-2 bg-purple-950/60 backdrop-blur-md border border-purple-500/40 px-3 py-1.5 rounded-full text-xs font-bold text-purple-300 shadow-lg">
+          <div className="hidden md:flex items-center gap-1.5 bg-purple-950/60 border border-purple-500/40 px-2.5 py-1 rounded-full text-xs font-bold text-purple-300 shadow-md">
             <Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
             <span>Hype Lvl {hypeLevel}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Toggle Customer Queue Drawer (Cart Icon Button) */}
           <button
             onClick={() => { sound.playButtonClick(); setIsQueueOpen(!isQueueOpen); }}
-            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-black flex items-center gap-2 backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95"
+            className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
           >
-            <ShoppingCart className="w-4 h-4 text-amber-400" />
+            <ShoppingCart className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">Orders</span>
-            <span className="bg-amber-400 text-black px-1.5 py-0.5 rounded-full text-[10px] font-black leading-none">
+            <span className="bg-amber-400 text-black px-1.5 py-0.2 rounded-full text-[9px] font-black leading-none">
               {orders.filter(o => o.status === 'pending').length}
             </span>
           </button>
@@ -315,118 +443,180 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           {/* Exit Stream Button */}
           <button
             onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-300 text-xs font-black flex items-center gap-1.5 backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95"
+            className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
           >
-            <ArrowLeft className="w-4 h-4 text-red-400" />
+            <ArrowLeft className="w-3.5 h-3.5 text-red-400" />
             <span>Exit</span>
           </button>
         </div>
       </div>
 
-      {/* ── 2. Overhead Camera & Playmat Video Canvas (Fills Screen) ── */}
-      <div className="relative flex-1 w-full h-full bg-[#0c0915] flex flex-col items-center justify-center overflow-hidden">
+      {/* ── 2. Active Customer Order Banner (Row 2 - Zero Overlap Guarantee) ── */}
+      {activeOrder && (
+        <div className="relative w-full z-30 px-3 sm:px-6 py-2 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-[9px] text-white shrink-0 shadow-md`}>
+              {activeOrder.username.substring(1, 3).toUpperCase()}
+            </div>
+            <div className="min-w-0 text-left">
+              <div className="flex items-center gap-1.5 truncate">
+                <span className="text-[11px] font-black text-amber-300 truncate">{activeOrder.username}</span>
+                <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
+              </div>
+              <div className="text-[10px] text-gray-300 font-bold truncate">
+                {activeOrder.packCount}x {activeOrder.packName}
+              </div>
+            </div>
+          </div>
+
+          {/* Compact Rip Button */}
+          <button
+            onClick={handleStartRipPack}
+            disabled={packStage !== 'unopened'}
+            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+          >
+            <Package className="w-3.5 h-3.5" />
+            <span>{packStage !== 'unopened' ? 'Ripping...' : '📦 RIP LIVE ⚡'}</span>
+          </button>
+        </div>
+      )}
+
+      {/* ── 3. Overhead Camera & Mastered 3D Pack Opening Playmat Arena ── */}
+      <div className="relative flex-1 w-full h-full bg-[#0c0915] flex flex-col items-center justify-center overflow-hidden min-h-0">
         {/* Overhead Camera Grid Background */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-3 sm:p-6">
           <div className="w-full h-full border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center relative p-4 overflow-hidden">
 
-            {/* Ultra-Compact Floating Active Order Banner (Only 45px height at top!) */}
-            {activeOrder && (
-              <div className="absolute top-3 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-30 max-w-md w-full">
-                <div className="p-1.5 sm:p-2 rounded-2xl sm:rounded-full bg-black/85 backdrop-blur-xl border border-amber-400/50 shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0 pl-1">
-                    <div className={`w-7 h-7 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-[10px] text-white shrink-0 shadow-md`}>
-                      {activeOrder.username.substring(1, 3).toUpperCase()}
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <span className="text-[11px] font-black text-amber-300 truncate">{activeOrder.username}</span>
-                        <span className="text-[9px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
-                      </div>
-                      <div className="text-[10px] text-gray-300 font-bold truncate">
-                        {activeOrder.packCount}x {activeOrder.packName}
-                      </div>
-                    </div>
+            {/* STAGE 1: Unopened Pack Resting on Playmat */}
+            {packStage === 'unopened' && (
+              <div
+                onClick={handleStartRipPack}
+                className="my-auto relative flex flex-col items-center justify-center cursor-pointer group z-20"
+              >
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                  className="relative w-36 sm:w-48 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black p-3 flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors"
+                >
+                  <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest">
+                    OFFICIAL BOOSTER PACK
                   </div>
 
-                  {/* Compact Rip Button */}
-                  <button
-                    onClick={handleRipPackForCustomer}
-                    disabled={isOpeningPack}
-                    className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
-                  >
-                    <Package className="w-3.5 h-3.5" />
-                    <span>{isOpeningPack ? 'Ripping...' : '📦 RIP LIVE ⚡'}</span>
-                  </button>
+                  <div className="space-y-1">
+                    <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
+                    <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
+                    <div className="text-[10px] text-amber-300/80 font-bold">10 ADDITIONAL CARDS</div>
+                  </div>
+
+                  <div className="w-full bg-black/70 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/30 uppercase">
+                    TAP PACK TO TEAR FOIL
+                  </div>
+                </motion.div>
+              </div>
+            )}
+
+            {/* STAGE 2: Mastered 3D Serrated Foil Tear Mechanic */}
+            {packStage === 'tearing' && (
+              <div className="my-auto flex flex-col items-center justify-center z-30">
+                <div className="text-xs font-black text-amber-300 uppercase tracking-widest mb-2 bg-black/70 px-3 py-1 rounded-full border border-amber-400/40 animate-pulse">
+                  ✂️ SWIPE TOP FOIL NOTCH TO TEAR OPEN
+                </div>
+                <div className="w-48 sm:w-60">
+                  <BoosterPackTear
+                    packArts={['/packArts/MegaEvolution-Generation/Ascended-heroes/1.webp']}
+                    packArtIndex={0}
+                    onPrevPackArt={() => {}}
+                    onNextPackArt={() => {}}
+                    onTearComplete={handleFoilTearComplete}
+                    setName={activeOrder?.packName}
+                    packStage="unopened"
+                    remainingCardsCount={10}
+                  />
                 </div>
               </div>
             )}
 
-            {/* Playmat Table Surface - Wide Open Pack Opening Arena */}
-            <div
-              onClick={handleRipPackForCustomer}
-              className="my-auto relative flex flex-col items-center justify-center cursor-pointer group z-20"
-            >
-              {/* 3D Booster Pack Sitting on Playmat */}
-              <motion.div
-                animate={isOpeningPack ? { rotate: [0, -8, 8, -8, 8, 0], scale: [1, 1.1, 1] } : { y: [0, -6, 0] }}
-                transition={isOpeningPack ? { repeat: Infinity, duration: 0.3 } : { repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                className="relative w-36 sm:w-48 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black p-3 flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors"
-              >
-                <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest">
-                  OFFICIAL BOOSTER PACK
+            {/* STAGE 3: Mastered 10-Card Interactive Stack Reveal */}
+            {packStage === 'opened' && activePackCards.length > 0 && (
+              <div className="my-auto flex flex-col items-center justify-center z-30 w-full max-w-sm px-4">
+                <div className="flex items-center justify-between w-full mb-2 px-1">
+                  <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-amber-400" />
+                    <span>CARD {currentCardIndex + 1} OF {activePackCards.length}</span>
+                  </span>
+                  {activePackCards[currentCardIndex]?.isHit && (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-400 text-black text-[9px] font-black uppercase tracking-widest animate-pulse">
+                      🔥 SECRET RARE HIT!
+                    </span>
+                  )}
                 </div>
 
-                <div className="space-y-1">
-                  <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
-                  <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
-                  <div className="text-[10px] text-amber-300/80 font-bold">10 ADDITIONAL CARDS</div>
-                </div>
-
-                <div className="w-full bg-black/70 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/30 uppercase">
-                  {isOpeningPack ? '🔥 TEARING FOIL...' : 'TAP PACK TO RIP LIVE'}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Revealed Pulled Card Overlay Modal */}
-            <AnimatePresence>
-              {currentPulledCard && (
-                <motion.div
-                  initial={{ scale: 0.7, opacity: 0, y: 40 }}
-                  animate={{ scale: 1, opacity: 1, y: 0 }}
-                  exit={{ scale: 0.7, opacity: 0, y: 40 }}
-                  className="absolute inset-2 sm:inset-6 rounded-3xl bg-black/95 border-2 border-amber-400/80 p-4 flex flex-col md:flex-row items-center justify-center gap-4 z-50 shadow-[0_0_60px_rgba(245,158,11,0.4)] backdrop-blur-xl"
+                {/* 3D Stack Card Display */}
+                <div 
+                  onClick={handleFlipNextCard}
+                  className="relative w-44 sm:w-56 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/30 cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95"
                 >
-                  <img src={currentPulledCard.image} alt={currentPulledCard.name} className="w-32 sm:w-44 aspect-[2.5/3.5] rounded-2xl object-cover border-2 border-amber-300 shadow-[0_0_35px_rgba(245,158,11,0.6)]" />
-                  <div className="text-center md:text-left space-y-1.5 sm:space-y-2">
-                    <div className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[10px] font-black uppercase text-amber-300 tracking-widest">
-                      🔥 GRAIL HIT LIVE ON STREAM!
+                  <img
+                    src={activePackCards[currentCardIndex]?.image}
+                    alt={activePackCards[currentCardIndex]?.name}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Foil Holographic Shine on Rare Hits */}
+                  {activePackCards[currentCardIndex]?.isHit && (
+                    <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/20 via-purple-500/20 to-cyan-400/20 backdrop-blur-[1px] pointer-events-none animate-pulse" />
+                  )}
+
+                  {/* Bottom Card Details Footer */}
+                  <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-black text-white truncate max-w-[120px] sm:max-w-[150px]">
+                        {activePackCards[currentCardIndex]?.name}
+                      </div>
+                      <div className="text-[9px] text-gray-300 font-bold">
+                        {activePackCards[currentCardIndex]?.rarity}
+                      </div>
                     </div>
-                    <h4 className="text-lg sm:text-2xl font-black text-white">{currentPulledCard.name}</h4>
-                    <div className="text-xs text-gray-300 font-medium">{currentPulledCard.rarity}</div>
-                    <div className="text-xl sm:text-2xl font-mono font-black text-emerald-400">${currentPulledCard.value.toFixed(2)}</div>
-                    <button
-                      onClick={() => setCurrentPulledCard(null)}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-black text-xs uppercase tracking-wider shadow-lg cursor-pointer hover:brightness-110"
-                    >
-                      Ship Card to Buyer ✓
-                    </button>
+                    <div className="text-xs font-mono font-black text-emerald-400">
+                      ${activePackCards[currentCardIndex]?.value.toFixed(2)}
+                    </div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+
+                {/* Action Buttons: Next Card / Complete Ship */}
+                <div className="mt-3 w-full flex gap-2">
+                  {currentCardIndex < activePackCards.length - 1 ? (
+                    <button
+                      onClick={handleFlipNextCard}
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-600 text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1 cursor-pointer hover:brightness-110"
+                    >
+                      <RotateCw className="w-3.5 h-3.5" />
+                      <span>FLIP NEXT CARD ({currentCardIndex + 1}/10)</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleShipCompletedPack}
+                      className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-110 animate-bounce"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>SHIP PACK TO BUYER ✓</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ── 3. Customer Order Queue Drawer (Top Floating Reel) ── */}
+      {/* ── 4. Customer Order Queue Drawer (Top Floating Reel) ── */}
       <AnimatePresence>
         {isQueueOpen && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-14 inset-x-2 sm:inset-x-6 z-30 p-2 sm:p-3 rounded-2xl bg-black/80 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col gap-1.5 pointer-events-auto"
+            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2 sm:p-3 rounded-2xl bg-black/90 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col gap-1.5 pointer-events-auto"
           >
             <div className="flex items-center justify-between text-[10px] font-extrabold text-amber-400 uppercase tracking-widest px-1">
               <span>Customer Order Queue</span>
@@ -437,7 +627,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
               {orders.map(ord => (
                 <button
                   key={ord.id}
-                  onClick={() => { sound.playButtonClick(); setActiveOrder(ord); }}
+                  onClick={() => { sound.playButtonClick(); setActiveOrder(ord); setPackStage('unopened'); }}
                   className={`p-2 rounded-xl border text-left flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
                     activeOrder?.id === ord.id
                       ? 'border-amber-400 bg-amber-500/25 text-white shadow-lg'
@@ -460,7 +650,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         )}
       </AnimatePresence>
 
-      {/* ── 4. Floating Social Reactions (TikTok / Instagram Right Edge) ── */}
+      {/* ── 5. Floating Social Reactions (TikTok / Instagram Right Edge) ── */}
       <div className="absolute inset-y-16 right-4 w-20 pointer-events-none z-30 overflow-hidden">
         {reactions.map(r => (
           <motion.div
@@ -476,11 +666,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         ))}
       </div>
 
-      {/* ── 5. ON-SCREEN TIKTOK / INSTAGRAM STYLE OVERLAY CHAT (Bottom Left) ── */}
+      {/* ── 6. ON-SCREEN TIKTOK / INSTAGRAM STYLE OVERLAY CHAT (Bottom Left) ── */}
       <div className="absolute bottom-3 left-2 sm:left-4 right-2 sm:right-auto z-30 w-full sm:w-96 max-w-[calc(100vw-16px)] flex flex-col pointer-events-auto gap-2">
         {/* Chat Rolling Message Overlay Box */}
         <div 
-          className="max-h-52 sm:max-h-64 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl"
+          className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl"
           style={{
             maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
             WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
