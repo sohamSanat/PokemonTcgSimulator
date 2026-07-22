@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Sparkles, Wind, ShieldCheck, Check, 
   RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight, ChevronDown,
-  Thermometer, PenTool, Disc, Shield, Droplets, Info, Sparkle, Maximize2, Move
+  Thermometer, PenTool, Disc, Shield, Droplets, Info, Sparkle, Maximize2, Move,
+  Lock, CheckCircle2, Star, Radio, ZapOff, RefreshCw
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
 import { sound } from '../../services/sound';
@@ -63,14 +64,16 @@ export default function PrePSARestorationStudio({
   const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
   const [bufferRPM, setBufferRPM] = useState<number>(3500); // 1000 - 8000 RPM
   const [bufferRotation, setBufferRotation] = useState<number>(0);
-  const [isBuffingActive, setIsBuffingActive] = useState<boolean>(false);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
-  // Station 4: Card Saver 1 Encapsulation
+  // Station 4: High-Tech Card Saver 1 Encapsulation
   const [sleeveSlideProgress, setSleeveSlideProgress] = useState<number>(0); // 0 - 100%
   const [saverSnapProgress, setSaverSnapProgress] = useState<number>(0); // 0 - 100%
   const [hasPennySleeve, setHasPennySleeve] = useState<boolean>(false);
   const [hasCardSaver, setHasCardSaver] = useState<boolean>(false);
+  const [sleeveStyle, setSleeveStyle] = useState<'clear' | 'gold' | 'holo'>('clear');
+  const [isLaserSealing, setIsLaserSealing] = useState<boolean>(false);
+  const [laserScanPos, setLaserScanPos] = useState<number>(0);
 
   useEffect(() => {
     if (availableCards.length > 0 && !selectedCard) {
@@ -106,6 +109,8 @@ export default function PrePSARestorationStudio({
       setSaverSnapProgress(0);
       setHasPennySleeve(false);
       setHasCardSaver(false);
+      setIsLaserSealing(false);
+      setLaserScanPos(0);
     }
   }, [selectedCard]);
 
@@ -142,6 +147,27 @@ export default function PrePSARestorationStudio({
     animationFrame = requestAnimationFrame(spin);
     return () => cancelAnimationFrame(animationFrame);
   }, [bufferRPM]);
+
+  // Station 4: Laser sealing animation
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLaserSealing) {
+      interval = setInterval(() => {
+        setLaserScanPos(prev => {
+          if (prev >= 100) {
+            setIsLaserSealing(false);
+            setSaverSnapProgress(100);
+            setHasCardSaver(true);
+            sound.playLaserScan();
+            return 100;
+          }
+          sound.playUltrasonicWeldPulse();
+          return prev + 20;
+        });
+      }, 150);
+    }
+    return () => clearInterval(interval);
+  }, [isLaserSealing]);
 
   if (!isOpen) return null;
 
@@ -184,29 +210,38 @@ export default function PrePSARestorationStudio({
   };
 
   // Station 4 Actions
+  const handleTriggerLaserSeal = () => {
+    sound.playAirBlower();
+    setSleeveSlideProgress(100);
+    setHasPennySleeve(true);
+    setIsLaserSealing(true);
+    setLaserScanPos(0);
+  };
+
   const handleEncapsulateBoth = () => {
     sound.playButtonClick();
     setSleeveSlideProgress(100);
     setSaverSnapProgress(100);
     setHasPennySleeve(true);
     setHasCardSaver(true);
+    sound.playLaserScan();
   };
 
-  // Interactive Card Surface Drag & Mouse Motion Logic
-  const handleCardInteraction = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Touch & Pointer Interaction Handler (Fully Compatible with Mobile Screen Touch + Mouse)
+  const handleCardPointerInteraction = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
     setMousePos({ x, y });
 
-    // Station 2: Interactive Edge Ink Pen Brushing
-    if (station === 'edgePen' && (e.buttons === 1 || isDrawingInk)) {
+    // Station 2: Mobile Touch & Mouse Edge Ink Pen Brushing
+    if (station === 'edgePen' && (e.buttons === 1 || isDrawingInk || e.pointerType === 'touch')) {
       setEdgeDings(prev => prev.map(d => {
         if (d.repaired) return d;
         const dist = Math.hypot(d.x - x, d.y - y);
-        if (dist < 22) {
+        if (dist < 28) { // High touch sensitivity
           sound.playClothWipe();
-          const newProgress = Math.min(100, d.progress + 25);
+          const newProgress = Math.min(100, d.progress + 35);
           return {
             ...d,
             progress: newProgress,
@@ -217,26 +252,24 @@ export default function PrePSARestorationStudio({
       }));
     }
 
-    // Station 3: Interactive Rotary Buffer Compound & Buffing
-    if (station === 'rotaryBuffer') {
-      if (e.buttons === 1) {
-        sound.playUltrasonicWeldPulse();
-        setScuffSpots(prev => prev.map(s => {
-          const dist = Math.hypot(s.x - x, s.y - y);
-          if (dist < 20) {
-            if (!s.pasted) {
-              return { ...s, pasted: true };
-            }
-            const newBuff = Math.min(100, s.buffProgress + 20);
-            return {
-              ...s,
-              buffProgress: newBuff,
-              buffed: newBuff >= 100
-            };
+    // Station 3: Mobile Touch & Mouse Rotary Buffer & Paste
+    if (station === 'rotaryBuffer' && (e.buttons === 1 || isDrawingInk || e.pointerType === 'touch')) {
+      sound.playUltrasonicWeldPulse();
+      setScuffSpots(prev => prev.map(s => {
+        const dist = Math.hypot(s.x - x, s.y - y);
+        if (dist < 25) { // High touch sensitivity
+          if (!s.pasted) {
+            return { ...s, pasted: true };
           }
-          return s;
-        }));
-      }
+          const newBuff = Math.min(100, s.buffProgress + 35);
+          return {
+            ...s,
+            buffProgress: newBuff,
+            buffed: newBuff >= 100
+          };
+        }
+        return s;
+      }));
     }
   };
 
@@ -248,6 +281,7 @@ export default function PrePSARestorationStudio({
       isRestored: true,
       prepScore: overallRestorationScore,
     };
+
     const cards = getCollectedCards();
     const updatedCards = cards.map(c => c.id === updated.id ? updated : c);
     localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(updatedCards));
@@ -373,7 +407,7 @@ export default function PrePSARestorationStudio({
                   {/* Station 1: Thermal Press */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('press'); setIsCardDropdownOpen(false); }}
-                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink cursor-pointer ${
                       station === 'press'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
@@ -392,7 +426,7 @@ export default function PrePSARestorationStudio({
                   {/* Station 2: Edge Pen */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('edgePen'); setIsCardDropdownOpen(false); }}
-                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink cursor-pointer ${
                       station === 'edgePen'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
@@ -402,7 +436,7 @@ export default function PrePSARestorationStudio({
                       <PenTool className="w-3.5 h-3.5 md:w-4 md:h-4 text-cyan-400" />
                       <div>
                         <div className="text-xs text-white whitespace-nowrap">2. Edge Ink Pen</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Drag pen along borders to seal dings</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Touch/Drag pen to seal edge dings</div>
                       </div>
                     </div>
                     {edgeScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -411,7 +445,7 @@ export default function PrePSARestorationStudio({
                   {/* Station 3: Rotary Buffer */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('rotaryBuffer'); setIsCardDropdownOpen(false); }}
-                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink cursor-pointer ${
                       station === 'rotaryBuffer'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
@@ -421,7 +455,7 @@ export default function PrePSARestorationStudio({
                       <Disc className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400 animate-spin" />
                       <div>
                         <div className="text-xs text-white whitespace-nowrap">3. Rotary Buffer</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Drag spinning wheel over holo scuffs</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Touch/Drag polisher over scuffs</div>
                       </div>
                     </div>
                     {bufferScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -430,7 +464,7 @@ export default function PrePSARestorationStudio({
                   {/* Station 4: Card Saver 1 */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('cardSaver'); setIsCardDropdownOpen(false); }}
-                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink cursor-pointer ${
                       station === 'cardSaver'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
@@ -439,8 +473,8 @@ export default function PrePSARestorationStudio({
                     <div className="flex items-center gap-2">
                       <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" />
                       <div>
-                        <div className="text-xs text-white whitespace-nowrap">4. Card Saver 1</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Slide & snap into semi-rigid case</div>
+                        <div className="text-xs text-white whitespace-nowrap">4. Ultrasonic Encapsulation</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Laser seal & predicted sub-grades</div>
                       </div>
                     </div>
                     {sleeveScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -448,10 +482,10 @@ export default function PrePSARestorationStudio({
                 </div>
               </div>
 
-              {/* Progress Gauge */}
+              {/* Progress Gauge & Live Sub-Grades */}
               <div className="p-2.5 md:p-4 rounded-2xl bg-black/60 border border-amber-500/30 space-y-1.5 md:space-y-2.5">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-gray-300 text-[11px] md:text-xs">Conservation Progress</span>
+                  <span className="text-gray-300 text-[11px] md:text-xs">Conservation Score</span>
                   <span className="text-amber-300 font-black text-xs md:text-sm">{overallRestorationScore}%</span>
                 </div>
                 <div className="w-full bg-white/10 h-1.5 md:h-2 rounded-full overflow-hidden">
@@ -459,6 +493,13 @@ export default function PrePSARestorationStudio({
                     className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full transition-all duration-500"
                     style={{ width: `${overallRestorationScore}%` }}
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-1 pt-1 border-t border-white/10 text-[9px] font-mono">
+                  <div className="text-gray-400">Curve: <span className="text-amber-300 font-bold">{flattenScore}%</span></div>
+                  <div className="text-gray-400">Edges: <span className="text-cyan-300 font-bold">{edgeScore}%</span></div>
+                  <div className="text-gray-400">Surface: <span className="text-purple-300 font-bold">{bufferScore}%</span></div>
+                  <div className="text-gray-400">Sleeve: <span className="text-emerald-300 font-bold">{sleeveScore}%</span></div>
                 </div>
               </div>
             </div>
@@ -469,12 +510,15 @@ export default function PrePSARestorationStudio({
 
               {selectedCard ? (
                 <div className="relative flex flex-col items-center max-w-md w-full my-auto">
-                  {/* Card Display Canvas with Dynamic Interactivity */}
+                  {/* Card Display Canvas with Screen Touch & Pointer Support */}
                   <div
-                    onMouseDown={() => setIsDrawingInk(true)}
-                    onMouseUp={() => setIsDrawingInk(false)}
-                    onMouseMove={handleCardInteraction}
-                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0 cursor-crosshair"
+                    onPointerDown={(e) => {
+                      setIsDrawingInk(true);
+                      handleCardPointerInteraction(e);
+                    }}
+                    onPointerUp={() => setIsDrawingInk(false)}
+                    onPointerMove={handleCardPointerInteraction}
+                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0 cursor-crosshair touch-none"
                     style={{
                       transform: `rotateY(${cardWarpAngle}deg) rotateX(${cardWarpAngle * 0.4}deg)`,
                       transformStyle: 'preserve-3d'
@@ -495,23 +539,28 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 2: Interactive Edge Ink Pen Trail */}
+                    {/* Station 2: Touch & Pointer Edge Ink Pen Trail */}
                     {station === 'edgePen' && (
-                      <div className="absolute inset-0 pointer-events-none">
+                      <div className="absolute inset-0">
                         {edgeDings.map(d => (
                           <div
                             key={d.id}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playClothWipe();
+                              setEdgeDings(prev => prev.map(item => item.id === d.id ? { ...item, progress: 100, repaired: true } : item));
+                            }}
+                            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 transition-all cursor-pointer z-20"
                             style={{ left: `${d.x}%`, top: `${d.y}%` }}
                           >
                             {d.repaired ? (
                               <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[9px] font-black border border-white shadow-lg">
-                                ✓ Sealed Ink
+                                ✓ Sealed
                               </span>
                             ) : (
                               <div className="flex flex-col items-center">
                                 <span className="px-2 py-0.5 rounded-full bg-red-600 text-white text-[8px] font-black border border-white animate-bounce shadow-lg">
-                                  🖌️ Brush {d.edge} ({d.progress}%)
+                                  🖌️ Touch {d.edge} ({d.progress}%)
                                 </span>
                                 <div className="w-12 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
                                   <div className="h-full bg-cyan-400" style={{ width: `${d.progress}%` }} />
@@ -523,23 +572,28 @@ export default function PrePSARestorationStudio({
 
                         {/* Floating Pen Nib Cursor */}
                         <div
-                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2"
+                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
                           style={{ left: `${mousePos.x}%`, top: `${mousePos.y}%` }}
                         >
-                          <div className="w-7 h-7 rounded-full bg-cyan-400/30 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.8)]">
+                          <div className="w-8 h-8 rounded-full bg-cyan-400/30 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.8)]">
                             <PenTool className="w-4 h-4 text-cyan-200" />
                           </div>
                         </div>
                       </div>
                     )}
 
-                    {/* Station 3: Spinning Rotary Buffing Wheel Overlays */}
+                    {/* Station 3: Touch & Pointer Rotary Buffing Overlays */}
                     {station === 'rotaryBuffer' && (
-                      <div className="absolute inset-0 pointer-events-none">
+                      <div className="absolute inset-0">
                         {scuffSpots.map(s => (
                           <div
                             key={s.id}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playLaserScan();
+                              setScuffSpots(prev => prev.map(item => item.id === s.id ? { ...item, pasted: true, buffProgress: 100, buffed: true } : item));
+                            }}
+                            className="absolute -translate-x-1/2 -translate-y-1/2 transition-all cursor-pointer z-20"
                             style={{ left: `${s.x}%`, top: `${s.y}%` }}
                           >
                             {s.buffed ? (
@@ -549,7 +603,7 @@ export default function PrePSARestorationStudio({
                             ) : s.pasted ? (
                               <div className="flex flex-col items-center">
                                 <div className="w-7 h-7 rounded-full bg-white/90 border border-purple-400 shadow-md flex items-center justify-center text-[8px] font-bold text-black">
-                                  Paste
+                                  Buff
                                 </div>
                                 <div className="w-10 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
                                   <div className="h-full bg-purple-400" style={{ width: `${s.buffProgress}%` }} />
@@ -557,7 +611,7 @@ export default function PrePSARestorationStudio({
                               </div>
                             ) : (
                               <div className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-bold border border-white animate-bounce shadow-md">
-                                💧 Tap for Paste
+                                💧 Tap Paste
                               </div>
                             )}
                           </div>
@@ -565,7 +619,7 @@ export default function PrePSARestorationStudio({
 
                         {/* Spinning Rotary Buffer Tool */}
                         <div
-                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2"
+                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
                           style={{
                             left: `${mousePos.x}%`,
                             top: `${mousePos.y}%`,
@@ -579,25 +633,57 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 4: Penny Sleeve & Card Saver 1 Overlays */}
+                    {/* Station 4: Customized Penny Sleeve & Ultrasonic Laser Sealing */}
                     {sleeveSlideProgress > 0 && (
                       <div
-                        className="absolute inset-x-0 top-0 border-2 border-emerald-400/80 bg-emerald-400/20 backdrop-blur-[1px] transition-all duration-300 pointer-events-none flex items-center justify-center shadow-lg"
+                        className={`absolute inset-x-0 top-0 border-2 transition-all duration-300 pointer-events-none flex items-center justify-center shadow-lg ${
+                          sleeveStyle === 'gold' 
+                            ? 'border-amber-400 bg-amber-500/20' 
+                            : sleeveStyle === 'holo' 
+                            ? 'border-purple-400 bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-cyan-500/20 backdrop-blur-[1px]' 
+                            : 'border-emerald-400/80 bg-emerald-400/20 backdrop-blur-[1px]'
+                        }`}
                         style={{ height: `${sleeveSlideProgress}%` }}
                       >
-                        <span className="text-[9px] font-black text-emerald-200 bg-black/80 px-2 py-0.5 rounded border border-emerald-400/40">
-                          ✓ Penny Sleeved ({sleeveSlideProgress}%)
+                        <span className="text-[9px] font-black text-emerald-200 bg-black/80 px-2 py-0.5 rounded border border-emerald-400/40 uppercase">
+                          ✓ {sleeveStyle} Sleeve ({sleeveSlideProgress}%)
                         </span>
                       </div>
                     )}
+
+                    {/* Ultrasonic Laser Sealing Scanline Animation */}
+                    {isLaserSealing && (
+                      <div
+                        className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_15px_rgba(34,211,238,1)] z-30 pointer-events-none"
+                        style={{ top: `${laserScanPos}%` }}
+                      />
+                    )}
+
+                    {/* Card Saver 1 Encapsulation Case */}
                     {saverSnapProgress > 0 && (
                       <div
-                        className="absolute inset-0 border-4 border-amber-400 bg-amber-500/25 pointer-events-none flex items-center justify-center transition-all duration-300 shadow-[0_0_30px_rgba(245,158,11,0.5)]"
+                        className="absolute inset-0 border-4 border-amber-400 bg-amber-500/25 pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300 shadow-[0_0_40px_rgba(245,158,11,0.6)] z-20"
                         style={{ opacity: saverSnapProgress / 100 }}
                       >
-                        <span className="text-[11px] font-black text-amber-300 bg-black/90 px-3 py-1 rounded-xl border border-amber-400/60 shadow-2xl flex items-center gap-1">
-                          🛡️ CARD SAVER 1 SEALED
-                        </span>
+                        {/* Top Holographic Tamper Seal Header */}
+                        <div className="w-full bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 text-black text-[9px] font-black uppercase text-center py-1 rounded shadow-md border border-white/50 tracking-wider">
+                          ⭐ PSA PREP - CARD SAVER 1 SEALED ⭐
+                        </div>
+
+                        <div className="px-3 py-1.5 rounded-xl bg-black/90 border border-amber-400/60 shadow-2xl flex flex-col items-center gap-1 backdrop-blur-md">
+                          <span className="text-[10px] font-black text-amber-300 flex items-center gap-1">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                            CARD SAVER 1 ENCAPSULATED
+                          </span>
+                          <span className="text-[9px] text-gray-300 font-mono">
+                            PREDICTED SUB-GRADES: GEM MT 10
+                          </span>
+                        </div>
+
+                        {/* Bottom Security Barcode */}
+                        <div className="w-full bg-black/80 p-1 rounded border border-white/20 text-center font-mono text-[8px] text-amber-400 tracking-widest">
+                          |||||| |||| ||||||| #PSA-PREP-2026
+                        </div>
                       </div>
                     )}
                   </div>
@@ -659,13 +745,13 @@ export default function PrePSARestorationStudio({
                         <div className="flex items-center justify-between text-xs text-cyan-300 font-bold border-b border-white/10 pb-1.5">
                           <span className="flex items-center gap-1">
                             <PenTool className="w-3.5 h-3.5 text-cyan-400" />
-                            <span>Drag Pen Along Card Borders</span>
+                            <span>Touch or Drag Pen Along Card Borders</span>
                           </span>
                           <span className="text-gray-300 font-mono text-[11px]">{repairedDings}/{edgeDings.length} Sealed</span>
                         </div>
 
                         <div className="text-[11px] text-gray-300 text-center">
-                          Hold mouse / touch and drag the <strong className="text-cyan-300">Ink Pen</strong> over the card edges to touch up paper dings!
+                          Tap screen or drag your finger / mouse over the <strong className="text-cyan-300">Edge Dings</strong> to touch up paper wear!
                         </div>
 
                         <button
@@ -713,43 +799,78 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 4: Encapsulation Controls */}
+                    {/* Station 4: Encapsulation Controls (Super High Tech overhaul) */}
                     {station === 'cardSaver' && (
                       <div className="p-3 rounded-2xl bg-black/80 border border-emerald-500/30 space-y-2.5">
                         <div className="flex items-center justify-between text-xs text-emerald-300 font-bold border-b border-white/10 pb-1.5">
                           <span className="flex items-center gap-1">
                             <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Tactile Encapsulation Controls</span>
+                            <span>Ultrasonic Card Saver Encapsulation</span>
                           </span>
-                          <span className="text-gray-300 font-mono text-[11px]">{saverSnapProgress === 100 ? '100% Encapsulated' : 'Pending'}</span>
+                          <span className="text-amber-300 font-mono text-[11px] font-bold">
+                            {saverSnapProgress === 100 ? '⭐ GEM MT 10 PREDICTED' : 'Awaiting Seal'}
+                          </span>
                         </div>
 
+                        {/* Interactive Sleeve Slider & Customization */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-[11px] text-gray-300">
+                            <span>Sleeve Style:</span>
+                            <div className="flex gap-1">
+                              {(['clear', 'gold', 'holo'] as const).map(style => (
+                                <button
+                                  key={style}
+                                  onClick={() => { setSleeveStyle(style); sound.playButtonClick(); }}
+                                  className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border cursor-pointer ${
+                                    sleeveStyle === style 
+                                      ? 'border-amber-400 bg-amber-500/30 text-amber-300' 
+                                      : 'border-white/10 bg-white/5 text-gray-400'
+                                  }`}
+                                >
+                                  {style}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <input
+                              type="range"
+                              min="0"
+                              max="100"
+                              value={sleeveSlideProgress}
+                              onChange={e => {
+                                const val = Number(e.target.value);
+                                setSleeveSlideProgress(val);
+                                setHasPennySleeve(val > 50);
+                                if (val > 0) sound.playClothWipe();
+                              }}
+                              className="flex-1 accent-emerald-400 cursor-pointer"
+                            />
+                            <span className="text-xs font-mono text-emerald-300 w-10 text-right">{sleeveSlideProgress}%</span>
+                          </div>
+                        </div>
+
+                        {/* Laser Sealing & 1-Click Encapsulation Buttons */}
                         <div className="flex gap-2">
                           <button
-                            onClick={() => { sound.playClothWipe(); setSleeveSlideProgress(100); setHasPennySleeve(true); }}
-                            className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                              sleeveSlideProgress === 100 ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                            }`}
+                            onClick={handleTriggerLaserSeal}
+                            disabled={isLaserSealing}
+                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg cursor-pointer hover:brightness-110 disabled:opacity-50"
                           >
-                            1. Slide Penny Sleeve
+                            <Zap className="w-3.5 h-3.5" />
+                            <span>{isLaserSealing ? 'Sealing...' : '⚡ Ultrasonic Laser Seal'}</span>
                           </button>
+
                           <button
-                            onClick={() => { sound.playLaserScan(); setSaverSnapProgress(100); setHasCardSaver(true); }}
-                            className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                              saverSnapProgress === 100 ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
-                            }`}
+                            onClick={handleEncapsulateBoth}
+                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg cursor-pointer hover:brightness-110"
                           >
-                            2. Snap Card Saver 1
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span>1-Click Snap</span>
                           </button>
                         </div>
-
-                        <button
-                          onClick={handleEncapsulateBoth}
-                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
-                        >
-                          <Shield className="w-3.5 h-3.5" />
-                          <span>🛡️ Sleeve & Encapsulate Card Saver 1 (1-Click)</span>
-                        </button>
                       </div>
                     )}
                   </div>
