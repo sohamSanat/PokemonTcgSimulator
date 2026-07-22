@@ -8,20 +8,6 @@ import {
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
 import { generateVendorReply } from '../../services/geminiVendorChat';
-import { BoosterPackTear } from '../BoosterPackTear';
-import { 
-  fetchSetDetails, 
-  generatePackFromSet, 
-  orchestrateSetLoading, 
-  onCardFullCacheUpdated, 
-  cardFullCache, 
-  getRealCardPrice, 
-  formatAndSortPackCards, 
-  getCardImageUrl, 
-  PokemonCard 
-} from '../../services/tcgdex';
-import { resolveVendorCardRealPrice } from '../../services/scrydex';
-import InteractiveCard3D from '../binder/InteractiveCard3D';
 
 interface RipNShipViewProps {
   onBackToPacks: () => void;
@@ -53,13 +39,6 @@ interface FloatingReaction {
   id: number;
   emoji: string;
   x: number;
-}
-
-interface GeneratedCardData {
-  id: string;
-  value: number;
-  pokemon: PokemonCard;
-  isHit: boolean;
 }
 
 const getPackArtsForSet = (setId: string, manifest: Record<string, string[]> = {}): string[] => {
@@ -140,53 +119,9 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [hostInput, setHostInput] = useState<string>('');
   const [activeOrder, setActiveOrder] = useState<CustomerOrder | null>(orders[0] || null);
 
-  // Pack States
-  const [packStage, setPackStage] = useState<'unopened' | 'tearing' | 'opened'>('unopened');
-  const [isLoadingPack, setIsLoadingPack] = useState(false);
-  const [activePackCards, setActivePackCards] = useState<GeneratedCardData[]>([]);
-  const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
-  const [topHitPulled, setTopHitPulled] = useState<GeneratedCardData | null>(null);
-  
-  const [activePackArts, setActivePackArts] = useState<string[]>(['/packArts/MegaEvolution-Generation/Ascended-heroes/1.webp']);
-  const [activePackArtIndex, setActivePackArtIndex] = useState<number>(0);
+  const [isChatTyping, setIsChatTyping] = useState(false);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
-
-  // Listen for real-time TCGdex full card details updates (names, images, real market prices)
-  useEffect(() => {
-    const handler = () => {
-      setActivePackCards(prevCards => prevCards.map(c => {
-        const cached = cardFullCache.get(c.pokemon.id);
-        if (cached) {
-          const updatedPoke: PokemonCard = {
-            ...c.pokemon,
-            name: cached.name || c.pokemon.name,
-            rarity: cached.rarity || c.pokemon.rarity,
-            illustrator: cached.illustrator || c.pokemon.illustrator,
-            pricing: cached.pricing || c.pokemon.pricing,
-            tcgplayer: cached.tcgplayer || cached.pricing?.tcgplayer ? { prices: cached.tcgplayer || cached.pricing?.tcgplayer, unit: 'USD' } : c.pokemon.tcgplayer,
-            cardmarket: cached.cardmarket || cached.pricing?.cardmarket || c.pokemon.cardmarket,
-            images: {
-              small: getCardImageUrl(cached.image || c.pokemon.images?.small, 'low'),
-              large: getCardImageUrl(cached.image || c.pokemon.images?.large, 'high'),
-            }
-          };
-          const newVal = getRealCardPrice(updatedPoke);
-          return {
-            ...c,
-            value: newVal > 0 ? newVal : c.value,
-            pokemon: updatedPoke
-          };
-        }
-        return c;
-      }));
-    };
-    
-    onCardFullCacheUpdated.add(handler);
-    return () => {
-      onCardFullCacheUpdated.delete(handler);
-    };
-  }, []);
 
   useEffect(() => {
     const viewerInterval = setInterval(() => {
@@ -226,7 +161,8 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const handleSendHostMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!hostInput.trim()) return;
+    if (!hostInput.trim() || isChatTyping) return;
+    
     const userMsg = hostInput.trim();
     sound.playButtonClick();
     addChatMessage({
@@ -238,179 +174,38 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       avatarColor: 'from-amber-400 via-yellow-500 to-amber-600'
     });
     setHostInput('');
-  };
 
-  // Pre-load the correct pack art and pack data when they click start
-  const handleStartRipPack = async () => {
-    if (!activeOrder || packStage !== 'unopened' || isLoadingPack) return;
-    
-    setIsLoadingPack(true);
-    sound.playButtonClick();
+    setIsChatTyping(true);
     
     try {
-      // Get exact authentic pack art
-      const arts = getPackArtsForSet(activeOrder.setId, packArtsManifest);
-      setActivePackArts(arts);
-      setActivePackArtIndex(Math.floor(Math.random() * arts.length));
+      const history = chatMessages.slice(-5).map(m => ({
+        sender: m.username === 'HOST 🔴' ? 'user' as const : 'vendor' as const,
+        text: m.message
+      }));
       
-      // Load Set & Generate Authentic Pack!
-      const setDetails = await fetchSetDetails(activeOrder.setId);
-      const newCards = await generatePackFromSet(setDetails, 10);
-      
-      // Format & sort cards (Energy first, Chase Hit last in reveal stack)
-      const sorted = formatAndSortPackCards(newCards);
-      
-      let maxPrice = 0;
-      let topHit: GeneratedCardData | null = null;
-      
-      const formattedCards: GeneratedCardData[] = sorted.map((c, idx) => {
-        const val = getRealCardPrice(c.pokemon);
-        const cardData = {
-          id: `${c.pokemon.id}-${Date.now()}-${idx}`,
-          value: val,
-          pokemon: c.pokemon,
-          isHit: false
-        };
-        if (val > maxPrice || !topHit) {
-          maxPrice = val;
-          topHit = cardData;
-        }
-        return cardData;
+      const response = await generateVendorReply({
+        vendorName: "Stream Chat",
+        vendorBooth: "Rip & Ship Chat",
+        vendorRating: "5 Stars",
+        cardName: activeOrder ? activeOrder.packName : "Pokemon Pack",
+        cardPrice: 0,
+        cardGrade: "Raw",
+        chatHistory: history,
+        userMessage: userMsg
       });
-      
-      if (topHit) {
-        (topHit as GeneratedCardData).isHit = true;
-        setTopHitPulled(topHit);
-      }
-      
-      setActivePackCards(formattedCards);
-      
-      // Warm up full card data & market prices in background
-      orchestrateSetLoading(setDetails, newCards.map(c => c.id));
-      
-      // Ready to tear
-      sound.playPackOpen();
-      setPackStage('tearing');
-      
+
+      addChatMessage({
+        id: Date.now().toString(),
+        username: 'ChatBot',
+        message: response.text,
+        badge: 'VIP',
+        color: 'text-emerald-400',
+        avatarColor: 'from-emerald-400 to-emerald-600'
+      });
     } catch (err) {
-      console.error("Failed to generate real pack", err);
+      console.error("Failed to generate gemini reply", err);
     } finally {
-      setIsLoadingPack(false);
-    }
-  };
-
-  // Tear Completed
-  const handleFoilTearComplete = () => {
-    setCurrentCardIndex(0);
-    sound.playPackOpen();
-    setPackStage('opened');
-  };
-
-  const handleFlipNextCard = () => {
-    if (currentCardIndex < activePackCards.length - 1) {
-      sound.playClothWipe();
-      const nextIdx = currentCardIndex + 1;
-      setCurrentCardIndex(nextIdx);
-      const card = activePackCards[nextIdx];
-      if (card && card.value > 15) {
-        sound.playLaserScan();
-      }
-    }
-  };
-
-  const getCurrentCardName = (card?: GeneratedCardData | null) => {
-    if (!card) return 'Pokemon Card';
-    const cached = cardFullCache.get(card.pokemon.id);
-    return cached?.name || card.pokemon.name || 'Pokemon Card';
-  };
-
-  const getCurrentCardRarity = (card?: GeneratedCardData | null) => {
-    if (!card) return 'Common';
-    const cached = cardFullCache.get(card.pokemon.id);
-    return cached?.rarity || card.pokemon.rarity || 'Common';
-  };
-
-  const getCurrentImage = (card?: GeneratedCardData | null) => {
-    if (!card) return '';
-    const cached = cardFullCache.get(card.pokemon.id);
-    const rawImg = cached?.image || card.pokemon.images?.large || card.pokemon.images?.small;
-    if (rawImg) {
-      return getCardImageUrl(rawImg, 'high');
-    }
-    if ((card.pokemon as any).image) {
-      return getCardImageUrl((card.pokemon as any).image, 'high');
-    }
-    return '';
-  };
-
-  const getCurrentPrice = (card?: GeneratedCardData | null) => {
-    if (!card) return 0.10;
-    const livePrice = getRealCardPrice(card.pokemon);
-    return livePrice > 0 ? livePrice : card.value;
-  };
-
-  const handleShipCompletedPack = () => {
-    if (!activeOrder || !topHitPulled) return;
-
-    sound.playLaserScan();
-    addCash(activeOrder.totalPaid);
-    setTotalRevenue(prev => prev + activeOrder.totalPaid);
-
-    const hitName = getCurrentCardName(topHitPulled);
-    const hitRarity = getCurrentCardRarity(topHitPulled);
-    const hitPrice = getCurrentPrice(topHitPulled);
-    const imgUrl = getCurrentImage(topHitPulled);
-
-    const cardToSave: Card = {
-      id: topHitPulled.pokemon.id,
-      name: hitName,
-      setName: activeOrder.packName,
-      setNumber: '101/150',
-      rarity: hitRarity,
-      type: hitRarity,
-      currentPrice: hitPrice,
-      priceChange: 0,
-      priceHistory: [],
-      holofoil: topHitPulled.isHit,
-      imageUrl: imgUrl || '',
-      favorite: topHitPulled.isHit,
-      isSlabbed: false,
-    };
-    
-    const collectionCards = getCollectedCards();
-    collectionCards.push(cardToSave);
-    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(collectionCards));
-    syncToFirestore();
-
-    setOrders(prev => prev.map(o => {
-      if (o.id === activeOrder.id) {
-        const pulls = o.pulledCards || [];
-        return {
-          ...o,
-          status: 'completed',
-          pulledCards: [...pulls, { name: hitName, value: hitPrice, image: imgUrl || '', rarity: hitRarity }]
-        };
-      }
-      return o;
-    }));
-
-    addChatMessage({
-      id: Date.now().toString(),
-      username: 'STREAM ALERT',
-      message: `🎉 GRAIL HIT SHIPPED! ${activeOrder.username} pulled a ${hitName} worth $${hitPrice.toFixed(2)}! 🔥`,
-      badge: 'HIT 👑',
-      color: 'text-amber-300 font-extrabold',
-      avatarColor: 'from-amber-400 to-red-500',
-      isOrderNotification: true
-    });
-
-    setPackStage('unopened');
-    setActivePackCards([]);
-    setCurrentCardIndex(0);
-
-    const remaining = orders.filter(o => o.id !== activeOrder.id && o.status === 'pending');
-    if (remaining.length > 0) {
-      setActiveOrder(remaining[0]);
+      setIsChatTyping(false);
     }
   };
 
@@ -471,12 +266,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           </div>
 
           <button
-            onClick={handleStartRipPack}
-            disabled={packStage !== 'unopened' || isLoadingPack}
+            onClick={() => {}}
             className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
           >
-            {isLoadingPack ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Package className="w-3.5 h-3.5" />}
-            <span>{isLoadingPack ? 'FETCHING PACK...' : packStage !== 'unopened' ? 'RIPPING...' : '📦 RIP LIVE ⚡'}</span>
+            <Package className="w-3.5 h-3.5" />
+            <span>📦 RIP LIVE ⚡</span>
           </button>
         </div>
       )}
@@ -486,129 +280,12 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-start p-2 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="w-full h-full min-h-[380px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-start pt-2 sm:pt-4 pb-24 relative px-3 sm:px-4 overflow-visible">
 
-            {/* STAGE 1: Unopened Pack */}
-            {packStage === 'unopened' && (
-              <div
-                onClick={handleStartRipPack}
-                className="relative flex flex-col items-center justify-center cursor-pointer group z-20 mt-2 sm:mt-4"
-              >
-                <motion.div
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                  className="relative w-40 sm:w-52 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors p-2.5"
-                >
-                  {isLoadingPack && (
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
-                      <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-2" />
-                      <div className="text-[10px] font-black text-amber-400 tracking-widest uppercase">FETCHING SET API...</div>
-                    </div>
-                  )}
-
-                  <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest z-10 backdrop-blur-xs">
-                    OFFICIAL BOOSTER PACK
-                  </div>
-
-                  {activeOrder && getPackArtsForSet(activeOrder.setId, packArtsManifest)[0] ? (
-                    <div className="relative w-full flex-1 my-1 rounded-lg overflow-hidden flex items-center justify-center min-h-0">
-                      <img 
-                        src={getPackArtsForSet(activeOrder.setId, packArtsManifest)[0]} 
-                        alt={activeOrder.packName} 
-                        className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
-                    </div>
-                  ) : (
-                    <div className="space-y-1 my-auto">
-                      <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
-                      <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
-                    </div>
-                  )}
-
-                  <div className="w-full bg-black/80 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/40 uppercase z-10 tracking-wider">
-                    TAP PACK TO TEAR FOIL
-                  </div>
-                </motion.div>
-              </div>
-            )}
-
-            {/* STAGE 2: Tear Mechanic */}
-            {packStage === 'tearing' && (
-              <div className="flex flex-col items-center justify-center z-30 mt-2 sm:mt-4">
-                <div className="w-48 sm:w-60">
-                  <BoosterPackTear
-                    packArts={activePackArts}
-                    packArtIndex={activePackArtIndex}
-                    onPrevPackArt={() => {}}
-                    onNextPackArt={() => {}}
-                    onTearComplete={handleFoilTearComplete}
-                    setName={activeOrder?.packName}
-                    packStage="unopened"
-                    remainingCardsCount={10}
-                    hideInstructionPill={true}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* STAGE 3: 10-Card Stack Reveal */}
-            {packStage === 'opened' && activePackCards.length > 0 && (
-              <div className="flex flex-col items-center justify-center z-30 w-full max-w-sm px-4 mt-1 sm:mt-2">
-                <div className="flex items-center justify-between w-full max-w-[280px] sm:max-w-[320px] mb-2 px-1">
-                  <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
-                    <Layers className="w-3.5 h-3.5 text-amber-400" />
-                    <span>CARD {currentCardIndex + 1} OF {activePackCards.length}</span>
-                  </span>
-                  {activePackCards[currentCardIndex]?.isHit && (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-400 text-black text-[9px] font-black uppercase tracking-widest animate-pulse">
-                      🔥 SECRET RARE HIT!
-                    </span>
-                  )}
-                </div>
-
-                <div 
-                  onClick={handleFlipNextCard}
-                  className="relative w-52 sm:w-64 max-w-[80vw] max-h-[45vh] aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30 shrink-0"
-                >
-                  <InteractiveCard3D
-                    card={{
-                      ...activePackCards[currentCardIndex]?.pokemon,
-                      name: getCurrentCardName(activePackCards[currentCardIndex]),
-                      rarity: getCurrentCardRarity(activePackCards[currentCardIndex]),
-                      imageUrl: getCurrentImage(activePackCards[currentCardIndex]),
-                      value: getCurrentPrice(activePackCards[currentCardIndex]),
-                    }}
-                    interactive={true}
-                    className="w-full h-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 rounded-2xl group-hover:border-amber-400/60"
-                  />
-
-                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between z-20 rounded-b-2xl pointer-events-none">
-                    <div>
-                      <div className="text-xs sm:text-sm font-black text-white truncate max-w-[120px] sm:max-w-[160px]">
-                        {getCurrentCardName(activePackCards[currentCardIndex])}
-                      </div>
-                      <div className="text-[10px] text-gray-300 font-bold">
-                        {getCurrentCardRarity(activePackCards[currentCardIndex])}
-                      </div>
-                    </div>
-                    <div className="text-xs font-mono font-black text-emerald-400">
-                      ${getCurrentPrice(activePackCards[currentCardIndex]).toFixed(2)}
-                    </div>
-                  </div>
-                </div>
-
-                {currentCardIndex === activePackCards.length - 1 && (
-                  <div className="mt-3 w-full flex">
-                    <button
-                      onClick={handleShipCompletedPack}
-                      className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-110 animate-bounce"
-                    >
-                      <Award className="w-4 h-4" />
-                      <span>SHIP PACK TO BUYER ✓</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Pack System Placeholder */}
+            <div className="w-full h-full flex flex-col items-center justify-center text-amber-500/50">
+              <Package className="w-16 h-16 mb-4 opacity-50" />
+              <p className="text-sm font-bold uppercase tracking-widest text-center">Pack System Removed</p>
+              <p className="text-xs mt-2 max-w-xs text-center opacity-70">Ready to be built from scratch.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -630,7 +307,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
               {orders.map(ord => (
                 <button
                   key={ord.id}
-                  onClick={() => { sound.playButtonClick(); setActiveOrder(ord); setPackStage('unopened'); }}
+                  onClick={() => { sound.playButtonClick(); setActiveOrder(ord); }}
                   className={`p-2 rounded-xl border text-left flex items-center gap-2 transition-all shrink-0 cursor-pointer ${
                     activeOrder?.id === ord.id
                       ? 'border-amber-400 bg-amber-500/25 text-white shadow-lg'
