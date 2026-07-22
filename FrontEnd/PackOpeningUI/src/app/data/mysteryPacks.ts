@@ -174,9 +174,36 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
 ];
 
 export function getRandomSetFromMysteryPack(pack: MysteryPackConfig): string {
-  if (!pack.setIds || pack.setIds.length === 0) return 'me01';
-  const randomIndex = Math.floor(Math.random() * pack.setIds.length);
-  return pack.setIds[randomIndex];
+  const packList = pack.language === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS;
+  const tierIndex = packList.findIndex(p => p.id === pack.id);
+
+  if (tierIndex <= 0) {
+    if (!pack.setIds || pack.setIds.length === 0) return pack.language === 'ja' ? 'SV1S_ja' : 'me01';
+    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
+    return pack.setIds[randomIndex];
+  }
+
+  // 60% chance for current tier sets, 40% aggregate chance for any lower tier sets
+  const roll = Math.random();
+  if (roll < 0.60) {
+    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
+    return pack.setIds[randomIndex];
+  } else {
+    // Combine all setIds from all tiers below the current tier
+    const lowerSetIds: string[] = [];
+    for (let i = 0; i < tierIndex; i++) {
+      if (packList[i].setIds) {
+        lowerSetIds.push(...packList[i].setIds);
+      }
+    }
+    if (lowerSetIds.length > 0) {
+      const randomIndex = Math.floor(Math.random() * lowerSetIds.length);
+      return lowerSetIds[randomIndex];
+    }
+    // Fallback if lower pool is empty
+    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
+    return pack.setIds[randomIndex];
+  }
 }
 
 export function getMysteryPackById(id: string): MysteryPackConfig | undefined {

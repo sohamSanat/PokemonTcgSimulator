@@ -3816,7 +3816,12 @@ export default function App() {
 
                         <div className="mt-4 pt-3 border-t border-white/10 z-10">
                           <div className="text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
-                            <span>Possible Set Draws</span>
+                            <span className="flex items-center gap-1.5">
+                              <span>Possible Sets</span>
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-extrabold normal-case">
+                                {pack.id.includes('bronze') || pack.id.includes('starter') ? '100% Tier 1' : '60% Tier / 40% Lower'}
+                              </span>
+                            </span>
                             <span className="text-amber-400 font-extrabold">{pack.setIds.length} Sets</span>
                           </div>
                           <div className="flex flex-wrap gap-1">
