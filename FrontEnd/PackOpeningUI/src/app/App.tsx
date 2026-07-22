@@ -2250,21 +2250,27 @@ export default function App() {
       setCurrentMysteryPack(mysteryPack);
     }
 
-    // Pick pack arts for this set from manifest or default
-    const setArts = getPackArtsForSet(setId, undefined, packArtsManifest);
-    setCurrentPackArts(setArts);
-    setPackArtIndex(Math.floor(Math.random() * setArts.length));
+    // Pick pack arts for this set from mystery pack art or set manifest
+    const effectiveMysteryPack = mysteryPack !== undefined ? mysteryPack : currentMysteryPack;
+    if (effectiveMysteryPack && effectiveMysteryPack.packArt) {
+      setCurrentPackArts([effectiveMysteryPack.packArt]);
+      setPackArtIndex(0);
+    } else {
+      const setArts = getPackArtsForSet(setId, undefined, packArtsManifest);
+      setCurrentPackArts(setArts);
+      setPackArtIndex(Math.floor(Math.random() * setArts.length));
+    }
 
     try {
       if (langToUse === 'ja') {
         const setDetails = await fetchSingleJapaneseSet(setId);
-        if (mysteryPack) {
-          (setDetails as any).mysteryPackPrice = mysteryPack.price;
-          (setDetails as any).mysteryPackName = mysteryPack.name;
+        if (effectiveMysteryPack) {
+          (setDetails as any).mysteryPackPrice = effectiveMysteryPack.price;
+          (setDetails as any).mysteryPackName = effectiveMysteryPack.name;
         }
         setCurrentSet(setDetails);
-        const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
-        if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
+        if (!effectiveMysteryPack) {
+          const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generateJapanesePackFromSet(setDetails);
@@ -2272,13 +2278,13 @@ export default function App() {
         setIsChaseCardsReady(true);
       } else {
         const setDetails = await fetchSetDetails(setId);
-        if (mysteryPack) {
-          (setDetails as any).mysteryPackPrice = mysteryPack.price;
-          (setDetails as any).mysteryPackName = mysteryPack.name;
+        if (effectiveMysteryPack) {
+          (setDetails as any).mysteryPackPrice = effectiveMysteryPack.price;
+          (setDetails as any).mysteryPackName = effectiveMysteryPack.name;
         }
         setCurrentSet(setDetails);
-        const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
-        if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
+        if (!effectiveMysteryPack) {
+          const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generatePackFromSet(setDetails);
@@ -3805,13 +3811,25 @@ export default function App() {
                           </span>
                         </div>
 
-                        <div className="my-2 z-10">
-                          <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors drop-shadow-md flex items-center gap-2">
-                            {pack.name}
-                          </h3>
-                          <p className="text-xs text-gray-300/90 mt-1.5 line-clamp-2 leading-relaxed">
-                            {pack.description}
-                          </p>
+                        <div className="my-2 flex items-center gap-3.5 z-10">
+                          {pack.packArt && (
+                            <div className="w-16 h-24 shrink-0 rounded-xl overflow-hidden border border-white/25 shadow-[0_8px_20px_rgba(0,0,0,0.6)] bg-black/40 flex items-center justify-center p-1 group-hover:scale-105 group-hover:border-amber-400/50 transition-all duration-300">
+                              <img
+                                src={pack.packArt}
+                                alt={pack.name}
+                                className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]"
+                                onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                              />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-black text-white group-hover:text-amber-300 transition-colors drop-shadow-md leading-snug">
+                              {pack.name}
+                            </h3>
+                            <p className="text-xs text-gray-300/90 mt-1 line-clamp-2 leading-relaxed">
+                              {pack.description}
+                            </p>
+                          </div>
                         </div>
 
                         <div className="mt-4 pt-3 border-t border-white/10 z-10">

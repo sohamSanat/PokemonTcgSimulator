@@ -11,6 +11,7 @@ export interface MysteryPackConfig {
   setIds: string[];
   highlightSets: string[];
   icon: string;
+  packArt: string;
 }
 
 export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
@@ -25,6 +26,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-amber-600/50',
     glowColor: 'shadow-[0_0_25px_rgba(217,119,6,0.35)]',
     icon: '📦',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/bronze.png',
     setIds: ['me01', 'me03', 'me04', 'sv01', 'sv04', 'sv05', 'sv08', 'sv09', 'swsh04.5', 'swsh05', 'swsh10'],
     highlightSets: ['Mega Evolution', 'Chaos Rising', 'Scarlet & Violet Base', 'Paradox Rift', 'Surging Sparks', 'Astral Radiance']
   },
@@ -39,6 +41,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-slate-300/50',
     glowColor: 'shadow-[0_0_25px_rgba(203,213,225,0.35)]',
     icon: '🥈',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/silver.png',
     setIds: ['me02.5', 'sv02', 'sv03', 'sv06', 'sv07', 'swsh01', 'swsh02', 'swsh03', 'swsh06', 'swsh12'],
     highlightSets: ['Ascended Heroes', 'Paldea Evolved', 'Obsidian Flames', 'Twilight Masquerade', 'Stellar Crown', 'Silver Tempest']
   },
@@ -53,6 +56,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-amber-400/70',
     glowColor: 'shadow-[0_0_30px_rgba(245,158,11,0.45)]',
     icon: '✨',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/gold.png',
     setIds: ['sv03.5', 'sv08.5', 'swsh12.5', 'swsh11', 'swsh08', 'swsh09', 'paldean-fates', 'shrouded-fable'],
     highlightSets: ['Pokémon 151', 'Prismatic Evolutions', 'Crown Zenith', 'Lost Origin', 'Fusion Strike', 'Brilliant Stars']
   },
@@ -67,6 +71,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-cyan-300/70',
     glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.5)]',
     icon: '💎',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/diamond.png',
     setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault'],
     highlightSets: ['Evolving Skies', 'Celebrations', 'Hidden Fates', 'Ultra Prism', 'Sun & Moon Base', 'Guardians Rising']
   },
@@ -81,6 +86,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-purple-400/70',
     glowColor: 'shadow-[0_0_35px_rgba(168,85,247,0.5)]',
     icon: '🔮',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/vintage.png',
     setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12'],
     highlightSets: ['Shining Legends', 'Dragon Majesty', 'Cosmic Eclipse', 'XY Base', 'Roaring Skies', 'XY Evolutions']
   },
@@ -95,6 +101,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-rose-400/80',
     glowColor: 'shadow-[0_0_40px_rgba(244,63,94,0.6)]',
     icon: '⚡',
+    packArt: '/packArts/MysteryPacks/EN-MysteryPacks/god-tier.png',
     setIds: ['base1', 'base2', 'base3', 'base4', 'base5', 'sm9', 'xy2', 'xy4', 'g1', 'dc1'],
     highlightSets: ['WOTC Base Set', 'Jungle', 'Fossil', 'Team Rocket', 'Team Up', 'XY Flashfire', 'Double Crisis']
   }
@@ -112,6 +119,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-pink-400/60',
     glowColor: 'shadow-[0_0_25px_rgba(244,114,182,0.35)]',
     icon: '🌸',
+    packArt: '/packArts/MysteryPacks/JP-MysteryPacks/starter.png',
     setIds: ['SV1S_ja', 'SV1V_ja', 'SV1a_ja', 'SV2P_ja', 'SV2D_ja', 'SV3_ja', 'SV5K_ja', 'SV5M_ja'],
     highlightSets: ['Violet ex', 'Scarlet ex', 'Triplet Beat', 'Clay Burst', 'Snow Hazard', 'Ruler of the Black Flame']
   },
@@ -126,6 +134,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-emerald-400/70',
     glowColor: 'shadow-[0_0_30px_rgba(52,211,153,0.45)]',
     icon: '✨',
+    packArt: '/packArts/MysteryPacks/JP-MysteryPacks/high-class.png',
     setIds: ['SV2a_ja', 'SV4a_ja', 'SV8a_ja', 'S12a_ja', 'S8b_ja', 'S4a_ja', 'S6a_ja'],
     highlightSets: ['Pokémon Card 151', 'Shiny Treasure ex', 'Terastal Fest ex', 'VSTAR Universe', 'VMAX Climax', 'Eevee Heroes']
   },
@@ -140,6 +149,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-blue-400/70',
     glowColor: 'shadow-[0_0_30px_rgba(96,165,250,0.45)]',
     icon: '⚔️',
+    packArt: '/packArts/MysteryPacks/JP-MysteryPacks/collector.png',
     setIds: ['S7R_ja', 'S7D_ja', 'S11_ja', 'S12_ja', 'S10P_ja', 'S10D_ja', 'S9_ja', 'S8a_ja'],
     highlightSets: ['Blue Sky Stream', 'Skyscraping Perfection', 'Lost Abyss', 'Paradigm Trigger', 'Space Juggler']
   },
@@ -154,6 +164,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-orange-400/70',
     glowColor: 'shadow-[0_0_35px_rgba(251,146,60,0.5)]',
     icon: '☀️',
+    packArt: '/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.png',
     setIds: ['SM12a_ja', 'SM11b_ja', 'SM8b_ja', 'SM9_ja', 'SM12_ja', 'SM10_ja', 'SM3+_ja'],
     highlightSets: ['Tag Team All Stars', 'Dream League', 'GX Ultra Shiny', 'Tag Bolt', 'Alter Genesis', 'Double Blaze']
   },
@@ -168,6 +179,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     borderColor: 'border-fuchsia-400/80',
     glowColor: 'shadow-[0_0_40px_rgba(232,121,249,0.6)]',
     icon: '⛩️',
+    packArt: '/packArts/MysteryPacks/JP-MysteryPacks/Vintage.png',
     setIds: ['PMCG1_ja', 'PMCG2_ja', 'PMCG3_ja', 'PMCG4_ja', 'PMCG5_ja', 'neo1_ja', 'neo2_ja', 'neo3_ja', 'neo4_ja', 'VS1_ja', 'web1_ja'],
     highlightSets: ['Expansion Pack (Base)', 'Jungle', 'Fossil', 'Team Rocket', 'Neo Series', 'Pokémon VS', 'Pokémon Web']
   }

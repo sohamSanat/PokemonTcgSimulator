@@ -5319,6 +5319,51 @@
     "/packArts/MegaEvolution-Generation/phantasmal-flames/2.webp",
     "/packArts/MegaEvolution-Generation/phantasmal-flames/3.webp"
   ],
+  "EN-MysteryPacks": [
+    "/packArts/MysteryPacks/EN-MysteryPacks/bronze.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/diamond.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/god-tier.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/gold.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/silver.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/vintage.png"
+  ],
+  "en-mysterypacks": [
+    "/packArts/MysteryPacks/EN-MysteryPacks/bronze.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/diamond.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/god-tier.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/gold.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/silver.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/vintage.png"
+  ],
+  "enmysterypacks": [
+    "/packArts/MysteryPacks/EN-MysteryPacks/bronze.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/diamond.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/god-tier.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/gold.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/silver.png",
+    "/packArts/MysteryPacks/EN-MysteryPacks/vintage.png"
+  ],
+  "JP-MysteryPacks": [
+    "/packArts/MysteryPacks/JP-MysteryPacks/collector.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/high-class.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/starter.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/Vintage.png"
+  ],
+  "jp-mysterypacks": [
+    "/packArts/MysteryPacks/JP-MysteryPacks/collector.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/high-class.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/starter.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/Vintage.png"
+  ],
+  "jpmysterypacks": [
+    "/packArts/MysteryPacks/JP-MysteryPacks/collector.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/high-class.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/starter.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.png",
+    "/packArts/MysteryPacks/JP-MysteryPacks/Vintage.png"
+  ],
   "sv03.5": [
     "/packArts/ScarletAndViolet-Generation/151/1.webp"
   ],
