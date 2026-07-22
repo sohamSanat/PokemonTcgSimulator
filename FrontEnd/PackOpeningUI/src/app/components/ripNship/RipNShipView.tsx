@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
-import { generateVendorReply } from '../../services/geminiVendorChat';
+import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewer } from '../../services/geminiStreamChat';
 
 interface RipNShipViewProps {
   onBackToPacks: () => void;
@@ -137,9 +137,23 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       ]);
     }, 1200);
 
+    // Live background stream chatter generator
+    const streamChatInterval = setInterval(() => {
+      const { viewer, text } = getRandomStreamMessage();
+      addChatMessage({
+        id: Date.now().toString() + Math.random(),
+        username: viewer.username,
+        message: text,
+        badge: viewer.badge,
+        color: viewer.color,
+        avatarColor: viewer.avatarColor
+      });
+    }, 4500);
+
     return () => {
       clearInterval(viewerInterval);
       clearInterval(reactionInterval);
+      clearInterval(streamChatInterval);
     };
   }, []);
 
@@ -178,32 +192,28 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     setIsChatTyping(true);
     
     try {
-      const history = chatMessages.slice(-5).map(m => ({
-        sender: m.username === 'HOST 🔴' ? 'user' as const : 'vendor' as const,
-        text: m.message
+      const history = chatMessages.slice(-6).map(m => ({
+        username: m.username,
+        message: m.message
       }));
       
-      const response = await generateVendorReply({
-        vendorName: "Stream Chat",
-        vendorBooth: "Rip & Ship Chat",
-        vendorRating: "5 Stars",
-        cardName: activeOrder ? activeOrder.packName : "Pokemon Pack",
-        cardPrice: 0,
-        cardGrade: "Raw",
-        chatHistory: history,
-        userMessage: userMsg
+      const { viewer, text } = await generateStreamViewerReply({
+        activePackName: activeOrder ? activeOrder.packName : "Pokemon Booster Pack",
+        activeUsername: activeOrder ? activeOrder.username : undefined,
+        userMessage: userMsg,
+        chatHistory: history
       });
 
       addChatMessage({
-        id: Date.now().toString(),
-        username: 'ChatBot',
-        message: response.text,
-        badge: 'VIP',
-        color: 'text-emerald-400',
-        avatarColor: 'from-emerald-400 to-emerald-600'
+        id: Date.now().toString() + "-ai",
+        username: viewer.username,
+        message: text,
+        badge: viewer.badge || 'VIP',
+        color: viewer.color || 'text-amber-400',
+        avatarColor: viewer.avatarColor || 'from-amber-400 to-orange-500'
       });
     } catch (err) {
-      console.error("Failed to generate gemini reply", err);
+      console.error("Failed to generate gemini stream chat reply", err);
     } finally {
       setIsChatTyping(false);
     }
