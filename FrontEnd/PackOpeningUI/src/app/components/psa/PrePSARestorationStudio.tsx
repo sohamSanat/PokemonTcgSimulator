@@ -54,11 +54,9 @@ export default function PrePSARestorationStudio({
 
   // Station 2: Edge Whitening Repair Pen
   const [edgeDings, setEdgeDings] = useState<EdgeDing[]>([]);
-  const [penActive, setPenActive] = useState<boolean>(false);
 
   // Station 3: Electric Rotary Buffer
   const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
-  const [isBuffingActive, setIsBuffingActive] = useState<boolean>(false);
   const [bufferRotation, setBufferRotation] = useState<number>(0);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
@@ -197,7 +195,7 @@ export default function PrePSARestorationStudio({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9500] flex items-center justify-center p-3 sm:p-6 overflow-hidden"
+        className="fixed inset-0 z-[9500] flex items-center justify-center p-2 sm:p-6 overflow-hidden"
         style={{ backdropFilter: 'blur(20px)', background: 'rgba(5, 5, 10, 0.88)' }}
         onClick={onClose}
       >
@@ -207,46 +205,46 @@ export default function PrePSARestorationStudio({
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
           transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           onClick={e => e.stopPropagation()}
-          className="w-full max-w-5xl h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_0_80px_rgba(245,158,11,0.15)]"
+          className="w-full max-w-5xl h-[94vh] md:h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_0_80px_rgba(245,158,11,0.15)]"
           style={{ background: 'linear-gradient(145deg, #120e17 0%, #0a080f 100%)' }}
         >
-          {/* Header */}
-          <div className="px-6 py-4 border-b border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-transparent flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-black font-black">
+          {/* Header - Compact on Mobile */}
+          <div className="px-4 md:px-6 py-3 md:py-4 border-b border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-transparent flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-black font-black text-sm md:text-base shrink-0">
                 🛠️
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-black text-white tracking-tight">Card Conservation & Restoration Workshop</h2>
-                  <span className="bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                    ⭐ 85% GEM MINT BOOST
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-sm md:text-lg font-black text-white tracking-tight">Card Conservation Studio</h2>
+                  <span className="bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] md:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                    ⭐ 85% GEM BOOST
                   </span>
                 </div>
-                <p className="text-xs text-amber-400/70 font-medium">
+                <p className="hidden md:block text-xs text-amber-400/70 font-medium">
                   Un-warp foil curves, seal edge whitening, buff holo scuffs, and encapsulate in Card Saver 1!
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              className="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all shrink-0"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
 
           {/* Main Workshop Body */}
-          <div className="flex-1 flex flex-col md:flex-row min-h-0">
-            {/* Sidebar: Card & Station Selector */}
-            <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-white/10 p-5 flex flex-col gap-5 bg-black/40 overflow-y-auto custom-scrollbar shrink-0">
-              {/* Card Selector */}
+          <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-y-auto md:overflow-hidden">
+            {/* Sidebar / Top Mobile Navigation Bar */}
+            <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-white/10 p-3 md:p-5 flex flex-col gap-3 md:gap-5 bg-black/40 shrink-0">
+              {/* Card Selector Dropdown */}
               <div>
-                <label className="text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-2">
+                <label className="text-[10px] md:text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-1 md:mb-2">
                   1. Select Card to Conserve
                 </label>
                 {availableCards.length === 0 ? (
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400 text-center">
+                  <div className="p-2 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400 text-center">
                     No un-slabbed cards in binder! Open packs to get cards.
                   </div>
                 ) : (
@@ -256,7 +254,7 @@ export default function PrePSARestorationStudio({
                       const c = availableCards.find(card => card.id === e.target.value);
                       if (c) setSelectedCard(c);
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#1a1522] border border-amber-500/30 text-white text-xs font-bold focus:outline-none focus:border-amber-400 transition-all"
+                    className="w-full px-3 py-2 rounded-xl bg-[#1a1522] border border-amber-500/30 text-white text-xs font-bold focus:outline-none focus:border-amber-400 transition-all"
                   >
                     {availableCards.map(c => (
                       <option key={c.id} value={c.id}>
@@ -267,118 +265,115 @@ export default function PrePSARestorationStudio({
                 )}
               </div>
 
-              {/* Station Tabs */}
+              {/* Restoration Stations: Horizontal scroll on mobile, Vertical stack on desktop */}
               <div>
-                <label className="text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-2">
-                  2. Restoration Stations
+                <label className="text-[10px] md:text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-1 md:mb-2">
+                  2. Select Station
                 </label>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-hidden gap-2 custom-scrollbar pb-1 md:pb-0">
                   {/* Station 1: Thermal Press */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('press'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'press'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Thermometer className="w-4 h-4 text-orange-400" />
+                    <div className="flex items-center gap-2">
+                      <Thermometer className="w-3.5 h-3.5 md:w-4 md:h-4 text-orange-400" />
                       <div>
-                        <div className="text-xs text-white">1. Thermal Moisture Press</div>
-                        <div className="text-[10px] text-gray-400">Flattens warped foil curvature</div>
+                        <div className="text-xs text-white whitespace-nowrap">1. Thermal Press</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Flattens warped foil curvature</div>
                       </div>
                     </div>
-                    {flattenScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                    {flattenScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
                   </button>
 
                   {/* Station 2: Edge Pen */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('edgePen'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'edgePen'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <PenTool className="w-4 h-4 text-cyan-400" />
+                    <div className="flex items-center gap-2">
+                      <PenTool className="w-3.5 h-3.5 md:w-4 md:h-4 text-cyan-400" />
                       <div>
-                        <div className="text-xs text-white">2. Edge Whitening Sealant Pen</div>
-                        <div className="text-[10px] text-gray-400">Touches up paper dings & corner wear</div>
+                        <div className="text-xs text-white whitespace-nowrap">2. Edge Repair Pen</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Touches up paper dings & corner wear</div>
                       </div>
                     </div>
-                    {edgeScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                    {edgeScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
                   </button>
 
                   {/* Station 3: Rotary Buffer */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('rotaryBuffer'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'rotaryBuffer'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Disc className="w-4 h-4 text-purple-400" />
+                    <div className="flex items-center gap-2">
+                      <Disc className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400" />
                       <div>
-                        <div className="text-xs text-white">3. Rotary Buffer & Diamond Paste</div>
-                        <div className="text-[10px] text-gray-400">Buffs out scuffs for mirror holo glare</div>
+                        <div className="text-xs text-white whitespace-nowrap">3. Rotary Buffer</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Buffs out scuffs for mirror holo glare</div>
                       </div>
                     </div>
-                    {bufferScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                    {bufferScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
                   </button>
 
                   {/* Station 4: Card Saver 1 */}
                   <button
                     onClick={() => { sound.playButtonClick(); setStation('cardSaver'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                    className={`px-3 py-2 md:p-3 rounded-xl border text-left flex items-center justify-between transition-all shrink-0 md:shrink ${
                       station === 'cardSaver'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Shield className="w-4 h-4 text-emerald-400" />
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" />
                       <div>
-                        <div className="text-xs text-white">4. Card Saver 1 Encapsulation</div>
-                        <div className="text-[10px] text-gray-400">Sleeves card for submission</div>
+                        <div className="text-xs text-white whitespace-nowrap">4. Card Saver 1</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Sleeves card for submission</div>
                       </div>
                     </div>
-                    {sleeveScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                    {sleeveScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
                   </button>
                 </div>
               </div>
 
-              {/* Real-Time Conservation Rating */}
-              <div className="mt-auto p-4 rounded-2xl bg-black/60 border border-amber-500/30 space-y-2.5">
+              {/* Progress Gauge */}
+              <div className="p-2.5 md:p-4 rounded-2xl bg-black/60 border border-amber-500/30 space-y-1.5 md:space-y-2.5">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-gray-300">Conservation Progress</span>
-                  <span className="text-amber-300 font-black text-sm">{overallRestorationScore}%</span>
+                  <span className="text-gray-300 text-[11px] md:text-xs">Conservation Progress</span>
+                  <span className="text-amber-300 font-black text-xs md:text-sm">{overallRestorationScore}%</span>
                 </div>
-                <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-white/10 h-1.5 md:h-2 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full transition-all duration-500"
                     style={{ width: `${overallRestorationScore}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-gray-400 text-center pt-1">
-                  ⭐ Reaching 80%+ boosts your PSA 10 Gem Mint odds to <span className="text-amber-300 font-bold">85%</span>!
-                </p>
               </div>
             </div>
 
-            {/* Interactive Workbench Workspace */}
-            <div className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-hidden bg-[#0a070e]">
+            {/* Interactive Workbench Workspace (Maximum Height on Mobile) */}
+            <div className="flex-1 flex flex-col items-center justify-center p-3 md:p-6 relative overflow-hidden bg-[#0a070e] min-h-[360px] md:min-h-0">
               <div className="absolute inset-0 bg-[radial-gradient(#261d33_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
 
               {selectedCard ? (
-                <div className="relative flex flex-col items-center max-w-md w-full">
+                <div className="relative flex flex-col items-center max-w-md w-full my-auto">
                   {/* Card Display with Station-Specific Visual Effects */}
                   <div
                     onMouseMove={handleCardMouseMove}
-                    className="relative w-64 sm:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300"
+                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0"
                     style={{
                       transform: `rotateY(${cardWarpAngle}deg) rotateX(${cardWarpAngle * 0.4}deg)`,
                       transformStyle: 'preserve-3d'
@@ -393,8 +388,8 @@ export default function PrePSARestorationStudio({
                     {/* Station 1: Thermal Steam Effect */}
                     {station === 'press' && steamLevel > 0 && (
                       <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px] pointer-events-none animate-pulse flex items-center justify-center">
-                        <span className="text-xs font-bold text-black bg-white/80 px-3 py-1 rounded-full shadow-lg">
-                          ♨️ Steam Applied ({steamLevel}%)
+                        <span className="text-[10px] font-bold text-black bg-white/90 px-2.5 py-0.5 rounded-full shadow-lg">
+                          ♨️ Steam ({steamLevel}%)
                         </span>
                       </div>
                     )}
@@ -406,14 +401,14 @@ export default function PrePSARestorationStudio({
                           <button
                             key={d.id}
                             onClick={() => handleRepairEdgeDing(d.id)}
-                            className={`absolute -translate-x-1/2 -translate-y-1/2 px-2 py-1 rounded-full text-[9px] font-black transition-all cursor-pointer shadow-lg ${
+                            className={`absolute -translate-x-1/2 -translate-y-1/2 px-2 py-0.5 rounded-full text-[8px] md:text-[9px] font-black transition-all cursor-pointer shadow-lg ${
                               d.repaired
                                 ? 'bg-emerald-500 text-black border border-emerald-300'
                                 : 'bg-red-500 text-white border border-white animate-bounce'
                             }`}
                             style={{ left: `${d.x}%`, top: `${d.y}%` }}
                           >
-                            {d.repaired ? '✓ Sealed' : `🖌️ Fix ${d.edge} Ding`}
+                            {d.repaired ? '✓ Sealed' : `🖌️ Fix ${d.edge}`}
                           </button>
                         ))}
                       </div>
@@ -430,16 +425,16 @@ export default function PrePSARestorationStudio({
                             style={{ left: `${s.x}%`, top: `${s.y}%` }}
                           >
                             {s.buffed ? (
-                              <div className="w-8 h-8 rounded-full border-2 border-amber-300 bg-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.8)] flex items-center justify-center text-amber-300 font-bold text-[10px]">
+                              <div className="w-7 h-7 rounded-full border-2 border-amber-300 bg-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.8)] flex items-center justify-center text-amber-300 font-bold text-[9px]">
                                 ✨
                               </div>
                             ) : s.pasted ? (
-                              <div className="w-7 h-7 rounded-full bg-white/80 border border-gray-300 shadow-md flex items-center justify-center text-[8px] font-bold text-black">
+                              <div className="w-6 h-6 rounded-full bg-white/80 border border-gray-300 shadow-md flex items-center justify-center text-[7px] font-bold text-black">
                                 Paste
                               </div>
                             ) : (
-                              <div className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[9px] font-bold border border-white animate-pulse">
-                                💧 Add Paste
+                              <div className="px-1.5 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-bold border border-white animate-pulse">
+                                💧 Paste
                               </div>
                             )}
                           </div>
@@ -454,8 +449,8 @@ export default function PrePSARestorationStudio({
                             transform: `translate(-50%, -50%) rotate(${bufferRotation}deg)`
                           }}
                         >
-                          <div className="w-12 h-12 rounded-full border-4 border-dashed border-amber-400 bg-amber-500/30 flex items-center justify-center">
-                            <Disc className="w-6 h-6 text-amber-300" />
+                          <div className="w-10 h-10 rounded-full border-4 border-dashed border-amber-400 bg-amber-500/30 flex items-center justify-center">
+                            <Disc className="w-5 h-5 text-amber-300" />
                           </div>
                         </div>
                       </div>
@@ -464,29 +459,29 @@ export default function PrePSARestorationStudio({
                     {/* Station 4: Penny Sleeve & Card Saver Overlays */}
                     {hasPennySleeve && (
                       <div className="absolute inset-0 border-2 border-emerald-400/60 bg-emerald-400/10 pointer-events-none flex items-center justify-center">
-                        <span className="text-[10px] font-black text-emerald-300 bg-black/80 px-2 py-1 rounded">
+                        <span className="text-[9px] font-black text-emerald-300 bg-black/80 px-2 py-0.5 rounded">
                           ✓ Penny Sleeved
                         </span>
                       </div>
                     )}
                     {hasCardSaver && (
                       <div className="absolute inset-0 border-4 border-amber-400 bg-amber-500/20 pointer-events-none flex items-center justify-center">
-                        <span className="text-xs font-black text-amber-300 bg-black/90 px-3 py-1.5 rounded-xl border border-amber-400/50 shadow-xl">
-                          🛡️ Card Saver 1 Encapsulated
+                        <span className="text-[11px] font-black text-amber-300 bg-black/90 px-2.5 py-1 rounded-xl border border-amber-400/50 shadow-xl">
+                          🛡️ Card Saver 1
                         </span>
                       </div>
                     )}
                   </div>
 
                   {/* Station-Specific Interactive Controls */}
-                  <div className="mt-5 w-full">
+                  <div className="mt-3 md:mt-4 w-full">
                     {station === 'press' && (
-                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 space-y-3">
+                      <div className="p-3 rounded-2xl bg-black/70 border border-amber-500/30 space-y-2">
                         <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
-                          <span>Thermal Hydraulic Clamp:</span>
-                          <span className="text-gray-300 font-mono">Warp: {cardWarpAngle}°</span>
+                          <span>Thermal Clamp:</span>
+                          <span className="text-gray-300 font-mono text-[11px]">Warp: {cardWarpAngle}°</span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           <Thermometer className="w-4 h-4 text-orange-400 shrink-0" />
                           <input
                             type="range"
@@ -496,82 +491,82 @@ export default function PrePSARestorationStudio({
                             onChange={e => setTargetTemp(Number(e.target.value))}
                             className="flex-1 accent-amber-400"
                           />
-                          <span className="text-xs font-mono font-bold text-amber-300 w-12 text-right">{targetTemp}°C</span>
+                          <span className="text-xs font-mono font-bold text-amber-300 w-10 text-right">{targetTemp}°C</span>
                         </div>
                         <div className="flex gap-2 pt-1">
                           <button
                             onClick={handleApplySteam}
-                            className="flex-1 py-2.5 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-500/30 transition-all flex items-center justify-center gap-1.5"
+                            className="flex-1 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-500/30 transition-all flex items-center justify-center gap-1"
                           >
-                            <Droplets className="w-4 h-4" />
-                            <span>Apply Moisture Steam</span>
+                            <Droplets className="w-3.5 h-3.5" />
+                            <span>Steam</span>
                           </button>
                           <button
                             onMouseDown={() => setIsPressing(true)}
                             onMouseUp={() => setIsPressing(false)}
-                            className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20"
+                            className="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20"
                           >
-                            <Flame className="w-4 h-4" />
-                            <span>{isPressing ? `Flattening (${pressHoldTimer}s)...` : 'Hold Clamp Lever'}</span>
+                            <Flame className="w-3.5 h-3.5" />
+                            <span>{isPressing ? `Flattening (${pressHoldTimer}s)...` : 'Hold Clamp'}</span>
                           </button>
                         </div>
                       </div>
                     )}
 
                     {station === 'edgePen' && (
-                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 text-center space-y-2">
-                        <div className="text-xs font-bold text-amber-300">Edge Whitening Sealant Pen</div>
-                        <p className="text-[11px] text-gray-400">
-                          Click each red ding tag on the card borders above to seal whitening and restore pristine paper edges!
+                      <div className="p-2.5 rounded-2xl bg-black/70 border border-amber-500/30 text-center">
+                        <div className="text-xs font-bold text-amber-300">Edge Sealant Pen</div>
+                        <p className="text-[10px] text-gray-400 mt-0.5">
+                          Tap the red ding tags on the card borders above to seal whitening!
                         </p>
                       </div>
                     )}
 
                     {station === 'rotaryBuffer' && (
-                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 text-center space-y-2">
+                      <div className="p-2.5 rounded-2xl bg-black/70 border border-amber-500/30 text-center">
                         <div className="text-xs font-bold text-amber-300">Electric Rotary Polisher</div>
-                        <p className="text-[11px] text-gray-400">
-                          Click scuff spots to dab diamond paste, then drag your mouse over them to buff holo scratches!
+                        <p className="text-[10px] text-gray-400 mt-0.5">
+                          Tap scuff spots for paste, then drag your finger over them to buff holo scratches!
                         </p>
                       </div>
                     )}
 
                     {station === 'cardSaver' && (
-                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 flex gap-2">
+                      <div className="p-2 rounded-2xl bg-black/70 border border-amber-500/30 flex gap-2">
                         <button
                           onClick={() => { sound.playButtonClick(); setHasPennySleeve(true); }}
-                          className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${
+                          className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
                             hasPennySleeve ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                           }`}
                         >
-                          1. Slip Penny Sleeve
+                          1. Penny Sleeve
                         </button>
                         <button
                           onClick={() => { sound.playButtonClick(); setHasCardSaver(true); }}
-                          className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${
+                          className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
                             hasCardSaver ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
                           }`}
                         >
-                          2. Insert Card Saver 1
+                          2. Card Saver 1
                         </button>
                       </div>
                     )}
                   </div>
 
                   {/* Action Button: Send to PSA Grading */}
-                  <div className="mt-6 w-full flex items-center justify-center">
+                  <div className="mt-3 md:mt-4 w-full flex items-center justify-center">
                     <button
                       onClick={handleCompleteRestoration}
-                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
+                      className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Award className="w-5 h-5" />
-                      <span>Submit Conserved Card to PSA (85% Gem Boost)</span>
+                      <Award className="w-4 h-4" />
+                      <span>Submit Card to PSA (85% Gem Boost)</span>
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500 text-sm">Select a card on the left to begin conservation</div>
+                <div className="text-gray-500 text-sm">Select a card above to begin conservation</div>
               )}
             </div>
           </div>
