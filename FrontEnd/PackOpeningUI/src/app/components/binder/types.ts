@@ -217,7 +217,167 @@ export interface Binder {
   count: number;
   value: number;
   isCustom?: boolean;
+  isMasterSet?: boolean;
+  masterSetId?: string;
+  masterSetName?: string;
+  totalCardsInSet?: number;
+  generation?: string;
 }
+
+export interface SetOption {
+  id: string;
+  name: string;
+  totalCards: number;
+}
+
+export interface GenerationOption {
+  name: string;
+  sets: SetOption[];
+}
+
+export const MASTER_SET_GENERATIONS: GenerationOption[] = [
+  {
+    name: "Scarlet & Violet Series",
+    sets: [
+      { id: "sv3pt5", name: "151", totalCards: 207 },
+      { id: "sv1", name: "Scarlet & Violet Base", totalCards: 258 },
+      { id: "sv2", name: "Paldea Evolved", totalCards: 279 },
+      { id: "sv3", name: "Obsidian Flames", totalCards: 230 },
+      { id: "sv4", name: "Paradox Rift", totalCards: 266 },
+      { id: "sv45", name: "Paldean Fates", totalCards: 245 },
+      { id: "sv5", name: "Temporal Forces", totalCards: 218 },
+      { id: "sv6", name: "Twilight Masquerade", totalCards: 226 },
+      { id: "sv65", name: "Shrouded Fable", totalCards: 99 },
+      { id: "sv7", name: "Stellar Crown", totalCards: 175 },
+      { id: "sv8", name: "Surging Sparks", totalCards: 252 },
+      { id: "sv85", name: "Prismatic Evolutions", totalCards: 175 },
+    ]
+  },
+  {
+    name: "Sword & Shield Series",
+    sets: [
+      { id: "swsh7", name: "Evolving Skies", totalCards: 237 },
+      { id: "swsh1", name: "Sword & Shield Base", totalCards: 216 },
+      { id: "swsh2", name: "Rebel Clash", totalCards: 209 },
+      { id: "swsh3", name: "Darkness Ablaze", totalCards: 201 },
+      { id: "swsh4", name: "Vivid Voltage", totalCards: 203 },
+      { id: "swsh45", name: "Shining Fates", totalCards: 195 },
+      { id: "swsh5", name: "Battle Styles", totalCards: 183 },
+      { id: "swsh6", name: "Chilling Reign", totalCards: 233 },
+      { id: "swsh8", name: "Fusion Strike", totalCards: 284 },
+      { id: "swsh9", name: "Brilliant Stars", totalCards: 216 },
+      { id: "swsh10", name: "Astral Radiance", totalCards: 246 },
+      { id: "swsh11", name: "Lost Origin", totalCards: 247 },
+      { id: "swsh12", name: "Silver Tempest", totalCards: 245 },
+      { id: "swsh125", name: "Crown Zenith", totalCards: 230 },
+    ]
+  },
+  {
+    name: "Sun & Moon Series",
+    sets: [
+      { id: "sm1", name: "Sun & Moon Base", totalCards: 163 },
+      { id: "sm2", name: "Guardians Rising", totalCards: 169 },
+      { id: "sm3", name: "Burning Shadows", totalCards: 169 },
+      { id: "sm4", name: "Crimson Invasion", totalCards: 124 },
+      { id: "sm5", name: "Ultra Prism", totalCards: 178 },
+      { id: "sm6", name: "Forbidden Light", totalCards: 146 },
+      { id: "sm7", name: "Celestial Storm", totalCards: 183 },
+      { id: "sm8", name: "Lost Thunder", totalCards: 236 },
+      { id: "sm9", name: "Team Up", totalCards: 198 },
+      { id: "sm10", name: "Unbroken Bonds", totalCards: 234 },
+      { id: "sm11", name: "Unified Minds", totalCards: 258 },
+      { id: "sm12", name: "Cosmic Eclipse", totalCards: 271 },
+    ]
+  },
+  {
+    name: "XY Series",
+    sets: [
+      { id: "xy11", name: "Evolutions", totalCards: 113 },
+      { id: "xy1", name: "XY Base Set", totalCards: 146 },
+      { id: "xy2", name: "Flashfire", totalCards: 109 },
+      { id: "xy3", name: "Furious Fists", totalCards: 113 },
+      { id: "xy4", name: "Phantom Forces", totalCards: 122 },
+      { id: "xy5", name: "Roaring Skies", totalCards: 110 },
+      { id: "xy6", name: "Ancient Origins", totalCards: 100 },
+      { id: "xy7", name: "BREAKthrough", totalCards: 164 },
+      { id: "xy8", name: "BREAKpoint", totalCards: 123 },
+      { id: "xy9", name: "Fates Collide", totalCards: 125 },
+      { id: "xy10", name: "Steam Siege", totalCards: 116 },
+    ]
+  },
+  {
+    name: "Black & White Series",
+    sets: [
+      { id: "bw1", name: "Black & White Base", totalCards: 115 },
+      { id: "bw2", name: "Emerging Powers", totalCards: 98 },
+      { id: "bw3", name: "Noble Victories", totalCards: 102 },
+      { id: "bw4", name: "Next Destinies", totalCards: 103 },
+      { id: "bw5", name: "Dark Explorers", totalCards: 111 },
+      { id: "bw6", name: "Dragons Exalted", totalCards: 128 },
+      { id: "bw7", name: "Boundaries Crossed", totalCards: 153 },
+      { id: "bw8", name: "Plasma Storm", totalCards: 138 },
+      { id: "bw9", name: "Plasma Freeze", totalCards: 122 },
+      { id: "bw10", name: "Plasma Blast", totalCards: 105 },
+      { id: "bw11", name: "Legendary Treasures", totalCards: 140 },
+    ]
+  },
+  {
+    name: "HeartGold & SoulSilver Series",
+    sets: [
+      { id: "hgss1", name: "HeartGold & SoulSilver Base", totalCards: 124 },
+      { id: "hgss2", name: "Unleashed", totalCards: 96 },
+      { id: "hgss3", name: "Undaunted", totalCards: 91 },
+      { id: "hgss4", name: "Triumphant", totalCards: 103 },
+    ]
+  },
+  {
+    name: "Platinum Series",
+    sets: [
+      { id: "pl1", name: "Platinum Base", totalCards: 133 },
+      { id: "pl2", name: "Rising Rivals", totalCards: 120 },
+      { id: "pl3", name: "Supreme Victors", totalCards: 153 },
+      { id: "pl4", name: "Arceus", totalCards: 111 },
+    ]
+  },
+  {
+    name: "Diamond & Pearl Series",
+    sets: [
+      { id: "dp1", name: "Diamond & Pearl Base", totalCards: 130 },
+      { id: "dp2", name: "Mysterious Treasures", totalCards: 124 },
+      { id: "dp3", name: "Secret Wonders", totalCards: 132 },
+      { id: "dp4", name: "Great Encounters", totalCards: 106 },
+      { id: "dp5", name: "Majestic Dawn", totalCards: 100 },
+      { id: "dp6", name: "Legends Awakened", totalCards: 146 },
+      { id: "dp7", name: "Stormfront", totalCards: 106 },
+    ]
+  },
+  {
+    name: "EX Series",
+    sets: [
+      { id: "ex1", name: "EX Ruby & Sapphire", totalCards: 109 },
+      { id: "ex2", name: "EX Sandstorm", totalCards: 100 },
+      { id: "ex3", name: "EX Dragon", totalCards: 100 },
+      { id: "ex5", name: "EX Hidden Legends", totalCards: 102 },
+      { id: "ex6", name: "EX FireRed & LeafGreen", totalCards: 116 },
+      { id: "ex7", name: "EX Team Rocket Returns", totalCards: 111 },
+      { id: "ex8", name: "EX Deoxys", totalCards: 108 },
+      { id: "ex14", name: "EX Crystal Guardians", totalCards: 100 },
+      { id: "ex15", name: "EX Dragon Frontiers", totalCards: 101 },
+      { id: "ex16", name: "EX Power Keepers", totalCards: 108 },
+    ]
+  },
+  {
+    name: "Wizards of the Coast (Base Gen)",
+    sets: [
+      { id: "base1", name: "Base Set", totalCards: 102 },
+      { id: "ju", name: "Jungle", totalCards: 64 },
+      { id: "fo", name: "Fossil", totalCards: 62 },
+      { id: "base4", name: "Base Set 2", totalCards: 130 },
+      { id: "tr", name: "Team Rocket", totalCards: 83 },
+    ]
+  }
+];
+
 
 export function genPriceHistory(base: number, trend: number): PricePoint[] {
   const points: PricePoint[] = [];

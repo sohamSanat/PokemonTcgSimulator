@@ -22,7 +22,7 @@ interface Props {
   setsList?: string[];
 }
 
-const BinderIcon = React.memo(({ name, isActive }: { name: string; isActive?: boolean }) => {
+const BinderIcon = React.memo(({ name, isMasterSet, isActive }: { name: string; isMasterSet?: boolean; isActive?: boolean }) => {
   const colors: Record<string, string> = {
     "My Collection (Opened)": "linear-gradient(135deg, #10b981, #059669)",
     "Chase Cards": "linear-gradient(135deg, #f59e0b, #d97706)",
@@ -37,14 +37,21 @@ const BinderIcon = React.memo(({ name, isActive }: { name: string; isActive?: bo
     "Master Set — SV": "👑",
     "Evolving Skies": "⚡",
   };
+
+  const isMaster = isMasterSet || name.includes("👑") || name.includes("Master Set");
+
   return (
     <div
       style={{
         width: 44,
         height: 44,
         borderRadius: 12,
-        background: colors[name] || "linear-gradient(135deg, #6366f1, #4f46e5)",
-        border: isActive ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.15)",
+        background: isMaster
+          ? "linear-gradient(135deg, #f59e0b, #a855f7)"
+          : colors[name] || "linear-gradient(135deg, #6366f1, #4f46e5)",
+        border: isActive
+          ? isMaster ? "1px solid rgba(251,191,36,0.8)" : "1px solid rgba(255,255,255,0.4)"
+          : "1px solid rgba(255,255,255,0.15)",
         flexShrink: 0,
         display: "flex",
         alignItems: "center",
@@ -52,12 +59,14 @@ const BinderIcon = React.memo(({ name, isActive }: { name: string; isActive?: bo
         fontSize: 20,
         color: "white",
         fontWeight: "bold",
-        boxShadow: isActive ? "0 0 16px rgba(245,158,11,0.35)" : "0 2px 8px rgba(0,0,0,0.3)",
+        boxShadow: isMaster
+          ? "0 0 16px rgba(245,158,11,0.5), 0 0 30px rgba(168,85,247,0.3)"
+          : isActive ? "0 0 16px rgba(245,158,11,0.35)" : "0 2px 8px rgba(0,0,0,0.3)",
         transition: "transform 0.2s",
         transform: isActive ? "scale(1.05)" : "scale(1)"
       }}
     >
-      {icons[name] || "📁"}
+      {isMaster ? "👑" : icons[name] || "📁"}
     </div>
   );
 });
@@ -159,34 +168,63 @@ function Sidebar({
           {binders.map((binder) => {
             const isActive = activeBinder === binder.id;
             const isDefault = binder.id === 'my-collection';
+            const isMaster = binder.isMasterSet || binder.name.includes('👑') || binder.name.includes('Master Set');
+            const totalSetCards = binder.totalCardsInSet || 100;
+            const completionPct = isMaster ? Math.min(100, Math.round((binder.count / totalSetCards) * 100)) : 0;
+
             return (
               <div
                 key={binder.id}
                 onClick={() => onSelectBinder(binder.id)}
                 role="button"
                 tabIndex={0}
-                className={`flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-xl w-[210px] md:w-full shrink-0 cursor-pointer transition-all duration-200 relative overflow-hidden text-left ${isActive
-                    ? "border border-amber-500/50 bg-gradient-to-br from-amber-500/15 to-orange-500/10 shadow-[0_4px_20px_rgba(245,158,11,0.15)]"
-                    : "border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/15"
-                  }`}
+                className={`flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-xl w-[210px] md:w-full shrink-0 cursor-pointer transition-all duration-200 relative overflow-hidden text-left ${
+                  isMaster
+                    ? isActive
+                      ? "border border-amber-400 bg-gradient-to-br from-amber-500/25 via-purple-600/20 to-amber-900/30 shadow-[0_0_25px_rgba(245,158,11,0.3)]"
+                      : "border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-purple-500/5 to-transparent hover:border-amber-500/60 hover:bg-amber-500/15"
+                    : isActive
+                      ? "border border-amber-500/50 bg-gradient-to-br from-amber-500/15 to-orange-500/10 shadow-[0_4px_20px_rgba(245,158,11,0.15)]"
+                      : "border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/15"
+                }`}
               >
                 {/* Binder Icon */}
                 <div className="scale-75 md:scale-100 origin-left">
-                  <BinderIcon name={binder.name} isActive={isActive} />
+                  <BinderIcon name={binder.name} isMasterSet={binder.isMasterSet} isActive={isActive} />
                 </div>
 
                 {/* Binder Info */}
                 <div className="flex-1 min-w-0 -ml-1 md:ml-0">
-                  <div className={`text-xs md:text-sm whitespace-nowrap overflow-hidden text-ellipsis mb-0.5 ${isActive ? "font-bold text-amber-400" : "font-semibold text-zinc-100"}`}>
-                    {binder.name}
+                  <div className={`text-xs md:text-sm whitespace-nowrap overflow-hidden text-ellipsis mb-0.5 flex items-center gap-1 ${
+                    isMaster ? "font-extrabold text-amber-300" : isActive ? "font-bold text-amber-400" : "font-semibold text-zinc-100"
+                  }`}>
+                    <span className="truncate">{binder.name}</span>
                   </div>
-                  <div className="text-[10px] md:text-[11px] text-zinc-400 flex items-center gap-1 md:gap-1.5">
-                    <span>{binder.count} {binder.count === 1 ? 'card' : 'cards'}</span>
-                    <span>•</span>
-                    <span className="text-emerald-400 font-bold">
-                      ${(binder.value || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
-                    </span>
-                  </div>
+
+                  {isMaster ? (
+                    <div className="space-y-1">
+                      <div className="text-[10px] md:text-[11px] text-amber-200/90 font-bold flex items-center justify-between">
+                        <span>{binder.count}/{totalSetCards} ({completionPct}%)</span>
+                        <span className="text-emerald-400 font-extrabold">
+                          ${(binder.value || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                        </span>
+                      </div>
+                      <div className="w-full bg-black/40 h-1.5 rounded-full overflow-hidden border border-white/10">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-500"
+                          style={{ width: `${completionPct}%` }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-[10px] md:text-[11px] text-zinc-400 flex items-center gap-1 md:gap-1.5">
+                      <span>{binder.count} {binder.count === 1 ? 'card' : 'cards'}</span>
+                      <span>•</span>
+                      <span className="text-emerald-400 font-bold">
+                        ${(binder.value || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Delete Binder Button */}
@@ -197,7 +235,7 @@ function Sidebar({
                       onDeleteBinder(binder.id);
                     }}
                     title="Delete Binder"
-                    className="w-6 h-6 md:w-7 md:h-7 rounded-md md:rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-xs cursor-pointer transition-colors hover:bg-red-500/25 hover:border-red-500/60 hover:text-red-500 shrink-0 mr-1 md:mr-0"
+                    className="w-6 h-6 md:w-7 md:h-7 rounded-md md:rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-xs cursor-pointer transition-colors hover:bg-red-500/25 hover:border-red-500/60 hover:text-red-500 shrink-0 mr-1 md:mr-0 z-10"
                   >
                     🗑️
                   </button>
@@ -205,7 +243,9 @@ function Sidebar({
 
                 {/* Active Indicator Arrow */}
                 {isActive && (
-                  <div className="hidden md:flex w-6 h-6 rounded-md bg-amber-500/20 text-amber-400 items-center justify-center text-xs font-bold shrink-0">
+                  <div className={`hidden md:flex w-6 h-6 rounded-md items-center justify-center text-xs font-bold shrink-0 ${
+                    isMaster ? 'bg-amber-500/30 text-amber-300' : 'bg-amber-500/20 text-amber-400'
+                  }`}>
                     →
                   </div>
                 )}

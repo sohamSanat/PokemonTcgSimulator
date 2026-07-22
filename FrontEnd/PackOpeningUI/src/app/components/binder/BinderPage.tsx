@@ -1,5 +1,5 @@
 import React from "react";
-import type { Card } from "./types";
+import type { Card, Binder } from "./types";
 import CardSlot from "./CardSlot";
 import { getCardImageUrl } from "../../services/tcgdex";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
@@ -18,6 +18,7 @@ interface Props {
   onDeleteBinder?: () => void;
   totalCardsInBinder: number;
   onInspectCard?: (card: Card) => void;
+  currentBinderObj?: Binder;
 }
 
 function BinderPage({
@@ -33,7 +34,8 @@ function BinderPage({
   onClearBinder,
   onDeleteBinder,
   totalCardsInBinder,
-  onInspectCard
+  onInspectCard,
+  currentBinderObj
 }: Props) {
   // Ensure 9 slots for grid view
   const gridSlots: (Card | null)[] = [...cards];
@@ -56,8 +58,13 @@ function BinderPage({
       {/* Topbar */}
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-4 md:mb-5 shrink-0 gap-3 xl:gap-0">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#f0f0f2]">
-            {binderName}
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#f0f0f2] flex items-center gap-2">
+            <span>{binderName}</span>
+            {currentBinderObj?.isMasterSet && (
+              <span className="text-xs font-black px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 uppercase tracking-wider">
+                👑 Master Set
+              </span>
+            )}
           </h1>
           <p className="text-xs text-[#7a7a8a] mt-1">
             {totalCardsInBinder} cards · Page {currentPage} of {Math.max(1, totalPages)}
@@ -73,6 +80,43 @@ function BinderPage({
           <TopBtn label="+ Open Packs to Add" accent onClick={onAddCard} />
         </div>
       </div>
+
+      {/* Master Set Banner */}
+      {currentBinderObj?.isMasterSet && (
+        <div className="mb-5 p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-purple-600/15 to-amber-900/20 border border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-yellow-300 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/30 text-black font-black shrink-0">
+              👑
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base md:text-lg font-black text-amber-300">{currentBinderObj.masterSetName || binderName}</h2>
+              </div>
+              <p className="text-xs text-gray-300 mt-0.5">
+                {currentBinderObj.generation || 'Official Expansion'} &middot; <span className="text-amber-300 font-bold">{totalCardsInBinder}</span> of <span className="text-white font-bold">{currentBinderObj.totalCardsInSet || 100}</span> cards collected
+              </p>
+            </div>
+          </div>
+
+          {/* Completion bar */}
+          <div className="flex items-center gap-4 md:w-72 shrink-0">
+            <div className="flex-1 space-y-1.5">
+              <div className="flex justify-between text-xs font-bold text-amber-200">
+                <span>Master Progress</span>
+                <span className="text-amber-400 font-extrabold">
+                  {Math.min(100, Math.round((totalCardsInBinder / (currentBinderObj.totalCardsInSet || 100)) * 100))}%
+                </span>
+              </div>
+              <div className="w-full bg-black/60 h-2.5 rounded-full overflow-hidden border border-white/10 p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 rounded-full transition-all duration-700 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
+                  style={{ width: `${Math.min(100, Math.round((totalCardsInBinder / (currentBinderObj.totalCardsInSet || 100)) * 100))}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Binder content area */}
       {viewMode === "grid" ? (

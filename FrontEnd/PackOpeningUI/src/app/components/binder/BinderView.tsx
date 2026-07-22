@@ -4,6 +4,7 @@ import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSens
 import { arrayMove } from '@dnd-kit/sortable';
 import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
+import CreateBinderModal from "./CreateBinderModal";
 import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, type Card, type Binder } from "./types";
 
 interface Props {
@@ -44,16 +45,32 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
     return () => window.removeEventListener('storage', handleStorage);
   }, [refreshData, activeBinder]);
 
-  const handleNewBinder = useCallback(() => {
-    const name = window.prompt("Enter a name for your new binder:", "New Binder");
-    if (!name || !name.trim()) return;
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+
+  const handleOpenNewBinderModal = useCallback(() => {
+    setIsCreateModalOpen(true);
+  }, []);
+
+  const handleCreateBinder = useCallback((data: {
+    name: string;
+    isMasterSet?: boolean;
+    masterSetId?: string;
+    masterSetName?: string;
+    totalCardsInSet?: number;
+    generation?: string;
+  }) => {
     const newId = `binder-${Date.now()}`;
     const newBinder: Binder = {
       id: newId,
-      name: name.trim(),
+      name: data.name,
       count: 0,
       value: 0,
-      isCustom: true
+      isCustom: true,
+      isMasterSet: data.isMasterSet,
+      masterSetId: data.masterSetId,
+      masterSetName: data.masterSetName,
+      totalCardsInSet: data.totalCardsInSet,
+      generation: data.generation,
     };
     const updated = [...binders, newBinder];
     setBinders(updated);
@@ -192,7 +209,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
         binders={binders}
         activeBinder={activeBinder}
         onSelectBinder={handleSelectBinder}
-        onNewBinder={handleNewBinder}
+        onNewBinder={handleOpenNewBinderModal}
         onDeleteBinder={handleDeleteBinder}
         activeSetFilter={activeSetFilter}
         onSetFilterChange={handleSetFilterChange}
@@ -231,9 +248,16 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
             onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
             totalCardsInBinder={filteredCards.length}
             onInspectCard={onInspectCard}
+            currentBinderObj={currentBinderObj}
           />
         </DndContext>
       )}
+
+      <CreateBinderModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateBinder={handleCreateBinder}
+      />
     </div>
   );
 }
