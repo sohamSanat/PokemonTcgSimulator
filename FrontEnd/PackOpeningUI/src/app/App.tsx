@@ -1664,6 +1664,11 @@ const ENGLISH_SERIES_TABS = [
   { id: 'swsh', name: 'Sword & Shield' },
   { id: 'sm', name: 'Sun & Moon' },
   { id: 'xy', name: 'XY Series' },
+  { id: 'bw', name: 'Black & White' },
+  { id: 'hgss', name: 'HeartGold & SoulSilver' },
+  { id: 'pl', name: 'Platinum' },
+  { id: 'dp', name: 'Diamond & Pearl' },
+  { id: 'ex', name: 'EX Series' },
   { id: 'base', name: 'Original / Base' },
 ];
 
@@ -1674,6 +1679,11 @@ const JAPANESE_SERIES_TABS = [
   { id: 'swsh_ja', name: 'Sword & Shield' },
   { id: 'sm_ja', name: 'Sun & Moon' },
   { id: 'xy_ja', name: 'XY Series' },
+  { id: 'bw_ja', name: 'Black & White' },
+  { id: 'hgss_ja', name: 'HeartGold & SoulSilver' },
+  { id: 'pl_ja', name: 'Platinum' },
+  { id: 'dp_ja', name: 'Diamond & Pearl' },
+  { id: 'ex_ja', name: 'EX Series' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
 ];
 
@@ -2374,10 +2384,15 @@ export default function App() {
             if (mounted) setIsLoadingSeries(false);
           });
       } else {
-        fetchSeriesDetails(selectedSeriesId)
-          .then(data => {
+        if (selectedSeriesId === 'base') {
+          Promise.all([
+            fetchSeriesDetails('base'),
+            fetchSeriesDetails('gym')
+          ])
+          .then(([baseData, gymData]) => {
             if (mounted) {
-              setCurrentSeriesData(data);
+              const combinedSets = [...(baseData.sets || []), ...(gymData.sets || [])];
+              setCurrentSeriesData({ ...baseData, sets: combinedSets });
               setIsLoadingSeries(false);
             }
           })
@@ -2385,6 +2400,19 @@ export default function App() {
             console.error('Error fetching series details:', err);
             if (mounted) setIsLoadingSeries(false);
           });
+        } else {
+          fetchSeriesDetails(selectedSeriesId)
+            .then(data => {
+              if (mounted) {
+                setCurrentSeriesData(data);
+                setIsLoadingSeries(false);
+              }
+            })
+            .catch(err => {
+              console.error('Error fetching series details:', err);
+              if (mounted) setIsLoadingSeries(false);
+            });
+        }
       }
     }
     return () => { mounted = false; };
