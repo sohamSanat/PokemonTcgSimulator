@@ -7,6 +7,7 @@ import {
   Wind, Crosshair, ZoomIn, Radio, AlertTriangle, Check, Gauge
 } from 'lucide-react';
 import { getCollectedCards, saveCollectedCard, savePSAGradingResult, type Card } from '../binder/types';
+import PrePSARestorationStudio from './PrePSARestorationStudio';
 import { sound } from '../../services/sound';
 import { trackMissionProgress } from '../../services/missions';
 
@@ -188,6 +189,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
   const [stage, setStage] = useState<GradingStage>('queue');
   const [collection, setCollection] = useState<Card[]>([]);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
+  const [isRestorationStudioOpen, setIsRestorationStudioOpen] = useState<boolean>(false);
   
   // Calculated subgrades during flow
   const [subgrades, setSubgrades] = useState<{
@@ -263,7 +265,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
     startGradingProcess(demoCard, sample.targetGrade);
   };
 
-  const startGradingProcess = (card: Card, forcedTargetGrade?: number) => {
+  const startGradingProcess = (card: Card, forcedTargetGrade?: number, isRestoredBoosted?: boolean) => {
     sound.playModalOpen();
     setActiveCard(card);
     setStage('prep');
@@ -276,7 +278,18 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
     let gradeNum = 10;
     let mult = 3.2;
 
-    if (forcedTargetGrade !== undefined) {
+    if (isRestoredBoosted || card.isRestored) {
+      const rand = Math.random();
+      if (rand < 0.85) {
+        gradeNum = 10;
+        centeringScore = 10; surfaceScore = 10; cornersScore = 10; edgesScore = 10;
+        mult = 3.2;
+      } else {
+        gradeNum = 9;
+        centeringScore = 9.5; surfaceScore = 9.5; cornersScore = 9.5; edgesScore = 9.0;
+        mult = 1.8;
+      }
+    } else if (forcedTargetGrade !== undefined) {
       gradeNum = forcedTargetGrade;
       if (gradeNum === 10) {
         centeringScore = 10; surfaceScore = 10; cornersScore = 10; edgesScore = 10;
@@ -592,6 +605,13 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto justify-start sm:justify-end">
+          <button
+            onClick={() => { sound.playTabSwitch(); setIsRestorationStudioOpen(true); }}
+            className="px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-amber-300 text-black font-black text-xs transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-[0_0_25px_rgba(45,212,191,0.5)] border border-teal-200 hover:brightness-110"
+          >
+            <span>🧹 Pre-PSA Cleaning & Restoration Studio</span>
+            <Sparkles className="w-4 h-4 text-black animate-pulse" />
+          </button>
           <button
             onClick={() => { sound.playTabSwitch(); setStage('queue'); setFilterTab('vault'); }}
             className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer border ${
@@ -1969,6 +1989,17 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
           </motion.div>
         )}
       </div>
+
+      <PrePSARestorationStudio
+        isOpen={isRestorationStudioOpen}
+        onClose={() => setIsRestorationStudioOpen(false)}
+        collection={collection}
+        onSendToGrading={(card, isBoosted) => {
+          loadCards();
+          startGradingProcess(card, undefined, isBoosted);
+        }}
+      />
     </div>
   );
 }
+

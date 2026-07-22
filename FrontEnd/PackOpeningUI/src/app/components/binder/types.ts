@@ -196,6 +196,8 @@ export interface Card {
   binderId?: string;
   isSlabbed?: boolean;
   slabGrade?: string;
+  isRestored?: boolean;
+  prepScore?: number;
   psaDetails?: {
     gradeNum: number;
     certNumber: string;
