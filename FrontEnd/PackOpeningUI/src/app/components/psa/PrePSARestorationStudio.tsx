@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  X, Sparkles, Wind, Crosshair, Eye, ShieldCheck, Check, 
-  RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight
+  X, Sparkles, Wind, ShieldCheck, Check, 
+  RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight,
+  Thermometer, PenTool, Disc, Shield, Droplets
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
 import { sound } from '../../services/sound';
@@ -14,13 +15,22 @@ interface PrePSARestorationStudioProps {
   onSendToGrading: (card: Card, isRestoredBoosted: boolean) => void;
 }
 
-interface DustParticle {
+type RestorationStation = 'press' | 'edgePen' | 'rotaryBuffer' | 'cardSaver';
+
+interface EdgeDing {
+  id: string;
+  edge: 'Top' | 'Right' | 'Bottom' | 'Left';
+  x: number; // %
+  y: number; // %
+  repaired: boolean;
+}
+
+interface ScuffSpot {
   id: number;
-  x: number; // % from left
-  y: number; // % from top
-  type: 'dust' | 'smudge' | 'fingerprint' | 'lint';
-  cleaned: boolean;
-  blowingOff?: boolean;
+  x: number; // %
+  y: number; // %
+  pasted: boolean;
+  buffed: boolean;
 }
 
 export default function PrePSARestorationStudio({
@@ -32,25 +42,29 @@ export default function PrePSARestorationStudio({
   const availableCards = collection.filter(c => !c.isSlabbed);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
-  // Active Tool: 'towel' | 'blower' | 'calipers' | 'uv' | 'polish'
-  const [activeTool, setActiveTool] = useState<'towel' | 'blower' | 'calipers' | 'uv' | 'polish'>('towel');
+  // Active Restoration Station
+  const [station, setStation] = useState<RestorationStation>('press');
 
-  // Minigame States
-  const [dustParticles, setDustParticles] = useState<DustParticle[]>([]);
-  const [wipedCount, setWipedCount] = useState<number>(0);
-  const [isUVActive, setIsUVActive] = useState<boolean>(false);
-  const [uvPos, setUvPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  // Station 1: Thermal Moisture Press
+  const [targetTemp, setTargetTemp] = useState<number>(35); // 50-60 target
+  const [steamLevel, setSteamLevel] = useState<number>(0);
+  const [isPressing, setIsPressing] = useState<boolean>(false);
+  const [cardWarpAngle, setCardWarpAngle] = useState<number>(24); // 24deg down to 0deg
+  const [pressHoldTimer, setPressHoldTimer] = useState<number>(0);
 
-  // Centering Caliper State
-  const [lrRatio, setLrRatio] = useState<number>(50); // 50/50 is perfect
-  const [tbRatio, setTbRatio] = useState<number>(50);
-  const [isCalibrated, setIsCalibrated] = useState<boolean>(false);
+  // Station 2: Edge Whitening Repair Pen
+  const [edgeDings, setEdgeDings] = useState<EdgeDing[]>([]);
+  const [penActive, setPenActive] = useState<boolean>(false);
 
-  // Polish State
-  const [polishCoverage, setPolishCoverage] = useState<number>(0);
+  // Station 3: Electric Rotary Buffer
+  const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
+  const [isBuffingActive, setIsBuffingActive] = useState<boolean>(false);
+  const [bufferRotation, setBufferRotation] = useState<number>(0);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
-  // Air puff animations
-  const [airPuffs, setAirPuffs] = useState<{ id: number; x: number; y: number }[]>([]);
+  // Station 4: Card Saver 1 Encapsulation
+  const [hasPennySleeve, setHasPennySleeve] = useState<boolean>(false);
+  const [hasCardSaver, setHasCardSaver] = useState<boolean>(false);
 
   useEffect(() => {
     if (availableCards.length > 0 && !selectedCard) {
@@ -60,90 +74,114 @@ export default function PrePSARestorationStudio({
 
   useEffect(() => {
     if (selectedCard) {
-      // Generate realistic dust specks & smudges on card surface
-      const initialParticles: DustParticle[] = [
-        { id: 1, x: 25, y: 30, type: 'dust', cleaned: false },
-        { id: 2, x: 70, y: 45, type: 'fingerprint', cleaned: false },
-        { id: 3, x: 40, y: 75, type: 'smudge', cleaned: false },
-        { id: 4, x: 80, y: 20, type: 'lint', cleaned: false },
-        { id: 5, x: 30, y: 60, type: 'dust', cleaned: false },
-        { id: 6, x: 60, y: 85, type: 'smudge', cleaned: false },
-      ];
-      setDustParticles(initialParticles);
-      setWipedCount(0);
-      setPolishCoverage(0);
-      setIsCalibrated(false);
-      setLrRatio(48 + Math.floor(Math.random() * 5));
-      setTbRatio(49 + Math.floor(Math.random() * 4));
+      // Reset Station 1
+      setTargetTemp(35);
+      setSteamLevel(0);
+      setCardWarpAngle(24);
+      setPressHoldTimer(0);
+
+      // Reset Station 2: 4 edge dings
+      setEdgeDings([
+        { id: 'top', edge: 'Top', x: 50, y: 3, repaired: false },
+        { id: 'right', edge: 'Right', x: 97, y: 40, repaired: false },
+        { id: 'bottom', edge: 'Bottom', x: 60, y: 97, repaired: false },
+        { id: 'left', edge: 'Left', x: 3, y: 65, repaired: false },
+      ]);
+
+      // Reset Station 3: 3 holo scuffs
+      setScuffSpots([
+        { id: 1, x: 35, y: 35, pasted: false, buffed: false },
+        { id: 2, x: 65, y: 40, pasted: false, buffed: false },
+        { id: 3, x: 50, y: 60, pasted: false, buffed: false },
+      ]);
+
+      // Reset Station 4
+      setHasPennySleeve(false);
+      setHasCardSaver(false);
     }
   }, [selectedCard]);
 
+  // Pressing lever hold effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isPressing) {
+      interval = setInterval(() => {
+        setPressHoldTimer(prev => {
+          const next = prev + 1;
+          sound.playAirBlower();
+          if (targetTemp >= 48 && targetTemp <= 65 && steamLevel > 0) {
+            setCardWarpAngle(angle => Math.max(0, angle - 6));
+          }
+          if (next >= 4) {
+            setIsPressing(false);
+            if (targetTemp >= 48 && targetTemp <= 65) {
+              setCardWarpAngle(0);
+              sound.playLaserScan();
+            }
+          }
+          return next;
+        });
+      }, 500);
+    }
+    return () => clearInterval(interval);
+  }, [isPressing, targetTemp, steamLevel]);
+
   if (!isOpen) return null;
 
-  const totalDust = dustParticles.length || 1;
-  const dustScore = Math.min(100, Math.round((wipedCount / totalDust) * 100));
-  const centeringScore = isCalibrated ? 100 : (Math.abs(50 - lrRatio) <= 2 && Math.abs(50 - tbRatio) <= 2 ? 100 : 70);
-  const overallPrepScore = Math.round((dustScore * 0.4) + (centeringScore * 0.3) + (polishCoverage * 0.3));
+  // Station Completion Scores
+  const flattenScore = cardWarpAngle === 0 ? 100 : Math.round(((24 - cardWarpAngle) / 24) * 100);
+  const repairedDings = edgeDings.filter(d => d.repaired).length;
+  const edgeScore = Math.round((repairedDings / (edgeDings.length || 1)) * 100);
+  const buffedSpots = scuffSpots.filter(s => s.buffed).length;
+  const bufferScore = Math.round((buffedSpots / (scuffSpots.length || 1)) * 100);
+  const sleeveScore = (hasPennySleeve ? 50 : 0) + (hasCardSaver ? 50 : 0);
+
+  const overallRestorationScore = Math.round(
+    (flattenScore * 0.25) + (edgeScore * 0.25) + (bufferScore * 0.25) + (sleeveScore * 0.25)
+  );
+
+  const handleApplySteam = () => {
+    sound.playAirBlower();
+    setSteamLevel(prev => Math.min(100, prev + 35));
+  };
+
+  const handleRepairEdgeDing = (id: string) => {
+    sound.playClothWipe();
+    setEdgeDings(prev => prev.map(d => d.id === id ? { ...d, repaired: true } : d));
+  };
+
+  const handleApplyCompound = (id: number) => {
+    sound.playButtonClick();
+    setScuffSpots(prev => prev.map(s => s.id === id ? { ...s, pasted: true } : s));
+  };
 
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setUvPos({ x, y });
+    setMousePos({ x, y });
 
-    if (activeTool === 'towel' && e.buttons === 1) {
-      sound.playClothWipe();
-      cleanNearbyParticles(x, y, 15);
-    } else if (activeTool === 'polish' && e.buttons === 1) {
-      sound.playClothWipe();
-      setPolishCoverage(prev => Math.min(100, prev + 3));
-    }
-  };
-
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    if (activeTool === 'blower') {
-      sound.playAirBlower();
-      setAirPuffs(prev => [...prev.slice(-4), { id: Date.now() + Math.random(), x, y }]);
-      cleanNearbyParticles(x, y, 22, true);
-    } else if (activeTool === 'towel') {
-      sound.playClothWipe();
-      cleanNearbyParticles(x, y, 18);
-    }
-  };
-
-  const cleanNearbyParticles = (x: number, y: number, radius: number, isBlower = false) => {
-    let countNew = 0;
-    setDustParticles(prev => {
-      return prev.map(p => {
-        if (p.cleaned || p.blowingOff) return p;
-        const dist = Math.hypot(p.x - x, p.y - y);
-        if (dist < radius) {
-          if (isBlower && (p.type === 'fingerprint' || p.type === 'smudge')) {
-            // Air blower doesn't remove greasy smudges
-            return p;
-          }
-          countNew++;
-          return { ...p, cleaned: true };
+    if (station === 'rotaryBuffer' && e.buttons === 1) {
+      setBufferRotation(r => r + 25);
+      sound.playUltrasonicWeldPulse();
+      setScuffSpots(prev => prev.map(s => {
+        if (!s.pasted || s.buffed) return s;
+        const dist = Math.hypot(s.x - x, s.y - y);
+        if (dist < 18) {
+          return { ...s, buffed: true };
         }
-        return p;
-      });
-    });
-    if (countNew > 0) {
-      setWipedCount(c => c + countNew);
+        return s;
+      }));
     }
   };
 
-  const handleCompletePrep = () => {
+  const handleCompleteRestoration = () => {
     if (!selectedCard) return;
     sound.playLaserScan();
     const updated: Card = {
       ...selectedCard,
       isRestored: true,
-      prepScore: overallPrepScore,
+      prepScore: overallRestorationScore,
     };
     const cards = getCollectedCards();
     const updatedCards = cards.map(c => c.id === updated.id ? updated : c);
@@ -169,24 +207,24 @@ export default function PrePSARestorationStudio({
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
           transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           onClick={e => e.stopPropagation()}
-          className="w-full max-w-5xl h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-teal-500/30 shadow-[0_0_80px_rgba(45,212,191,0.15)]"
-          style={{ background: 'linear-gradient(145deg, #0b1317 0%, #060a0d 100%)' }}
+          className="w-full max-w-5xl h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_0_80px_rgba(245,158,11,0.15)]"
+          style={{ background: 'linear-gradient(145deg, #120e17 0%, #0a080f 100%)' }}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-teal-500/20 bg-gradient-to-r from-teal-500/10 via-emerald-500/5 to-transparent flex items-center justify-between shrink-0">
+          <div className="px-6 py-4 border-b border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-transparent flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-400 via-emerald-500 to-amber-400 flex items-center justify-center shadow-lg shadow-teal-500/20 text-black font-black">
-                🧹
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-black font-black">
+                🛠️
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-black text-white tracking-tight">Pre-PSA Cleaning & Restoration Studio</h2>
-                  <span className="bg-teal-500/20 border border-teal-500/40 text-teal-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                  <h2 className="text-lg font-black text-white tracking-tight">Card Conservation & Restoration Workshop</h2>
+                  <span className="bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
                     ⭐ 85% GEM MINT BOOST
                   </span>
                 </div>
-                <p className="text-xs text-teal-400/70 font-medium">
-                  Clean dust, polish surface gloss, and calibrate border centering to maximize your PSA 10 odds!
+                <p className="text-xs text-amber-400/70 font-medium">
+                  Un-warp foil curves, seal edge whitening, buff holo scuffs, and encapsulate in Card Saver 1!
                 </p>
               </div>
             </div>
@@ -198,14 +236,14 @@ export default function PrePSARestorationStudio({
             </button>
           </div>
 
-          {/* Main Studio Body */}
+          {/* Main Workshop Body */}
           <div className="flex-1 flex flex-col md:flex-row min-h-0">
-            {/* Sidebar: Card Selector & Tools */}
+            {/* Sidebar: Card & Station Selector */}
             <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-white/10 p-5 flex flex-col gap-5 bg-black/40 overflow-y-auto custom-scrollbar shrink-0">
               {/* Card Selector */}
               <div>
-                <label className="text-[11px] font-extrabold text-teal-400/80 uppercase tracking-widest block mb-2">
-                  1. Select Card to Restore
+                <label className="text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-2">
+                  1. Select Card to Conserve
                 </label>
                 {availableCards.length === 0 ? (
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400 text-center">
@@ -218,7 +256,7 @@ export default function PrePSARestorationStudio({
                       const c = availableCards.find(card => card.id === e.target.value);
                       if (c) setSelectedCard(c);
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#141c22] border border-teal-500/30 text-white text-xs font-bold focus:outline-none focus:border-teal-400 transition-all"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#1a1522] border border-amber-500/30 text-white text-xs font-bold focus:outline-none focus:border-amber-400 transition-all"
                   >
                     {availableCards.map(c => (
                       <option key={c.id} value={c.id}>
@@ -229,137 +267,122 @@ export default function PrePSARestorationStudio({
                 )}
               </div>
 
-              {/* Tools Selector */}
+              {/* Station Tabs */}
               <div>
-                <label className="text-[11px] font-extrabold text-teal-400/80 uppercase tracking-widest block mb-2">
-                  2. Select Professional Tool
+                <label className="text-[11px] font-extrabold text-amber-400/80 uppercase tracking-widest block mb-2">
+                  2. Restoration Stations
                 </label>
                 <div className="grid grid-cols-1 gap-2">
-                  {/* Tool 1: Microfiber Towel */}
+                  {/* Station 1: Thermal Press */}
                   <button
-                    onClick={() => { sound.playButtonClick(); setActiveTool('towel'); }}
+                    onClick={() => { sound.playButtonClick(); setStation('press'); }}
                     className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      activeTool === 'towel'
-                        ? 'border-teal-400 bg-teal-500/20 text-teal-300 font-bold shadow-md shadow-teal-500/10'
-                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-base">🧽</span>
-                      <div>
-                        <div className="text-xs text-white">Microfiber Anti-Static Towel</div>
-                        <div className="text-[10px] text-gray-400">Wipes smudges & fingerprints</div>
-                      </div>
-                    </div>
-                    {dustScore >= 100 && <Check className="w-4 h-4 text-teal-400" />}
-                  </button>
-
-                  {/* Tool 2: Precision Air Blower */}
-                  <button
-                    onClick={() => { sound.playButtonClick(); setActiveTool('blower'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      activeTool === 'blower'
-                        ? 'border-teal-400 bg-teal-500/20 text-teal-300 font-bold shadow-md shadow-teal-500/10'
-                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Wind className="w-4 h-4 text-cyan-400" />
-                      <div>
-                        <div className="text-xs text-white">Precision Air Blower Bulb</div>
-                        <div className="text-[10px] text-gray-400">Blasts off loose lint particles</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Tool 3: Digital Centering Calipers */}
-                  <button
-                    onClick={() => { sound.playButtonClick(); setActiveTool('calipers'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      activeTool === 'calipers'
-                        ? 'border-teal-400 bg-teal-500/20 text-teal-300 font-bold shadow-md shadow-teal-500/10'
-                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Crosshair className="w-4 h-4 text-amber-400" />
-                      <div>
-                        <div className="text-xs text-white">Digital Border Calipers</div>
-                        <div className="text-[10px] text-gray-400">Calibrates 50/50 optical centering</div>
-                      </div>
-                    </div>
-                    {isCalibrated && <Check className="w-4 h-4 text-teal-400" />}
-                  </button>
-
-                  {/* Tool 4: 365nm UV Blacklight */}
-                  <button
-                    onClick={() => { sound.playButtonClick(); setActiveTool('uv'); setIsUVActive(!isUVActive); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      activeTool === 'uv'
-                        ? 'border-purple-400 bg-purple-500/20 text-purple-300 font-bold shadow-md shadow-purple-500/10'
-                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Eye className="w-4 h-4 text-purple-400" />
-                      <div>
-                        <div className="text-xs text-white">365nm UV Blacklight Scanner</div>
-                        <div className="text-[10px] text-gray-400">Inspects hidden surface print lines</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Tool 5: Holo Polish Solution */}
-                  <button
-                    onClick={() => { sound.playButtonClick(); setActiveTool('polish'); }}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                      activeTool === 'polish'
+                      station === 'press'
                         ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                         : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <Thermometer className="w-4 h-4 text-orange-400" />
                       <div>
-                        <div className="text-xs text-white">Conservation Holo Polish</div>
-                        <div className="text-[10px] text-gray-400">Restores 100% factory holo gloss</div>
+                        <div className="text-xs text-white">1. Thermal Moisture Press</div>
+                        <div className="text-[10px] text-gray-400">Flattens warped foil curvature</div>
                       </div>
                     </div>
-                    {polishCoverage >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                    {flattenScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                  </button>
+
+                  {/* Station 2: Edge Pen */}
+                  <button
+                    onClick={() => { sound.playButtonClick(); setStation('edgePen'); }}
+                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                      station === 'edgePen'
+                        ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
+                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <PenTool className="w-4 h-4 text-cyan-400" />
+                      <div>
+                        <div className="text-xs text-white">2. Edge Whitening Sealant Pen</div>
+                        <div className="text-[10px] text-gray-400">Touches up paper dings & corner wear</div>
+                      </div>
+                    </div>
+                    {edgeScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                  </button>
+
+                  {/* Station 3: Rotary Buffer */}
+                  <button
+                    onClick={() => { sound.playButtonClick(); setStation('rotaryBuffer'); }}
+                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                      station === 'rotaryBuffer'
+                        ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
+                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Disc className="w-4 h-4 text-purple-400" />
+                      <div>
+                        <div className="text-xs text-white">3. Rotary Buffer & Diamond Paste</div>
+                        <div className="text-[10px] text-gray-400">Buffs out scuffs for mirror holo glare</div>
+                      </div>
+                    </div>
+                    {bufferScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
+                  </button>
+
+                  {/* Station 4: Card Saver 1 */}
+                  <button
+                    onClick={() => { sound.playButtonClick(); setStation('cardSaver'); }}
+                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                      station === 'cardSaver'
+                        ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
+                        : 'border-white/5 bg-white/5 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Shield className="w-4 h-4 text-emerald-400" />
+                      <div>
+                        <div className="text-xs text-white">4. Card Saver 1 Encapsulation</div>
+                        <div className="text-[10px] text-gray-400">Sleeves card for submission</div>
+                      </div>
+                    </div>
+                    {sleeveScore >= 100 && <Check className="w-4 h-4 text-amber-400" />}
                   </button>
                 </div>
               </div>
 
-              {/* Real-Time Prep Scores */}
-              <div className="mt-auto p-4 rounded-2xl bg-black/60 border border-teal-500/30 space-y-2.5">
+              {/* Real-Time Conservation Rating */}
+              <div className="mt-auto p-4 rounded-2xl bg-black/60 border border-amber-500/30 space-y-2.5">
                 <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-gray-300">Restoration Score</span>
-                  <span className="text-teal-300 font-black text-sm">{overallPrepScore}%</span>
+                  <span className="text-gray-300">Conservation Progress</span>
+                  <span className="text-amber-300 font-black text-sm">{overallRestorationScore}%</span>
                 </div>
                 <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full transition-all duration-500"
-                    style={{ width: `${overallPrepScore}%` }}
+                    className="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full transition-all duration-500"
+                    style={{ width: `${overallRestorationScore}%` }}
                   />
                 </div>
                 <p className="text-[10px] text-gray-400 text-center pt-1">
-                  ⭐ Reaching 80%+ boosts your PSA 10 Gem Mint odds to <span className="text-teal-300 font-bold">85%</span>!
+                  ⭐ Reaching 80%+ boosts your PSA 10 Gem Mint odds to <span className="text-amber-300 font-bold">85%</span>!
                 </p>
               </div>
             </div>
 
-            {/* Workbench Interactive Area */}
-            <div className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-hidden bg-[#070b0e]">
-              {/* Background Lab Grid */}
-              <div className="absolute inset-0 bg-[radial-gradient(#14252e_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
+            {/* Interactive Workbench Workspace */}
+            <div className="flex-1 flex flex-col items-center justify-center p-6 relative overflow-hidden bg-[#0a070e]">
+              <div className="absolute inset-0 bg-[radial-gradient(#261d33_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
 
               {selectedCard ? (
                 <div className="relative flex flex-col items-center max-w-md w-full">
-                  {/* Interactive Card Canvas */}
+                  {/* Card Display with Station-Specific Visual Effects */}
                   <div
                     onMouseMove={handleCardMouseMove}
-                    onClick={handleCardClick}
-                    className="relative w-64 sm:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 cursor-crosshair select-none group"
+                    className="relative w-64 sm:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300"
+                    style={{
+                      transform: `rotateY(${cardWarpAngle}deg) rotateX(${cardWarpAngle * 0.4}deg)`,
+                      transformStyle: 'preserve-3d'
+                    }}
                   >
                     <img
                       src={selectedCard.imageUrl}
@@ -367,125 +390,188 @@ export default function PrePSARestorationStudio({
                       className="w-full h-full object-cover pointer-events-none"
                     />
 
-                    {/* UV Scanner Effect */}
-                    {isUVActive && (
-                      <div
-                        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-                        style={{
-                          background: `radial-gradient(circle 90px at ${uvPos.x}% ${uvPos.y}%, rgba(168,85,247,0.45) 0%, rgba(126,34,206,0.2) 60%, rgba(0,0,0,0.85) 100%)`,
-                          mixBlendMode: 'hard-light'
-                        }}
-                      />
+                    {/* Station 1: Thermal Steam Effect */}
+                    {station === 'press' && steamLevel > 0 && (
+                      <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px] pointer-events-none animate-pulse flex items-center justify-center">
+                        <span className="text-xs font-bold text-black bg-white/80 px-3 py-1 rounded-full shadow-lg">
+                          ♨️ Steam Applied ({steamLevel}%)
+                        </span>
+                      </div>
                     )}
 
-                    {/* Polish Gloss Layer */}
-                    {polishCoverage > 0 && (
-                      <div
-                        className="absolute inset-0 pointer-events-none transition-all duration-300"
-                        style={{
-                          background: `linear-gradient(135deg, rgba(255,255,255,${polishCoverage * 0.0025}) 0%, transparent 50%, rgba(245,158,11,${polishCoverage * 0.002}) 100%)`,
-                          boxShadow: `inset 0 0 30px rgba(45,212,191,${polishCoverage * 0.003})`
-                        }}
-                      />
+                    {/* Station 2: Edge Whitening Dings */}
+                    {station === 'edgePen' && (
+                      <div className="absolute inset-0 pointer-events-auto">
+                        {edgeDings.map(d => (
+                          <button
+                            key={d.id}
+                            onClick={() => handleRepairEdgeDing(d.id)}
+                            className={`absolute -translate-x-1/2 -translate-y-1/2 px-2 py-1 rounded-full text-[9px] font-black transition-all cursor-pointer shadow-lg ${
+                              d.repaired
+                                ? 'bg-emerald-500 text-black border border-emerald-300'
+                                : 'bg-red-500 text-white border border-white animate-bounce'
+                            }`}
+                            style={{ left: `${d.x}%`, top: `${d.y}%` }}
+                          >
+                            {d.repaired ? '✓ Sealed' : `🖌️ Fix ${d.edge} Ding`}
+                          </button>
+                        ))}
+                      </div>
                     )}
 
-                    {/* Centering Overlay Lines */}
-                    {activeTool === 'calipers' && (
-                      <div className="absolute inset-0 pointer-events-none z-30">
-                        {/* Horizontal & Vertical Crosshairs */}
-                        <div className="absolute left-0 right-0 top-1/2 border-t border-amber-400/80 border-dashed" />
-                        <div className="absolute top-0 bottom-0 left-1/2 border-l border-amber-400/80 border-dashed" />
-                        {/* Caliper Border Gauges */}
-                        <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[9px] font-mono text-amber-300 border border-amber-400/40">
-                          L/R: {lrRatio}/{100 - lrRatio}
-                        </div>
-                        <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[9px] font-mono text-amber-300 border border-amber-400/40">
-                          T/B: {tbRatio}/{100 - tbRatio}
+                    {/* Station 3: Scuff Spots & Rotary Buffing Wheel */}
+                    {station === 'rotaryBuffer' && (
+                      <div className="absolute inset-0 pointer-events-auto">
+                        {scuffSpots.map(s => (
+                          <div
+                            key={s.id}
+                            onClick={() => handleApplyCompound(s.id)}
+                            className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
+                          >
+                            {s.buffed ? (
+                              <div className="w-8 h-8 rounded-full border-2 border-amber-300 bg-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.8)] flex items-center justify-center text-amber-300 font-bold text-[10px]">
+                                ✨
+                              </div>
+                            ) : s.pasted ? (
+                              <div className="w-7 h-7 rounded-full bg-white/80 border border-gray-300 shadow-md flex items-center justify-center text-[8px] font-bold text-black">
+                                Paste
+                              </div>
+                            ) : (
+                              <div className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[9px] font-bold border border-white animate-pulse">
+                                💧 Add Paste
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        {/* Rotary Buffer Cursor Tool */}
+                        <div
+                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-transform"
+                          style={{
+                            left: `${mousePos.x}%`,
+                            top: `${mousePos.y}%`,
+                            transform: `translate(-50%, -50%) rotate(${bufferRotation}deg)`
+                          }}
+                        >
+                          <div className="w-12 h-12 rounded-full border-4 border-dashed border-amber-400 bg-amber-500/30 flex items-center justify-center">
+                            <Disc className="w-6 h-6 text-amber-300" />
+                          </div>
                         </div>
                       </div>
                     )}
 
-                    {/* Dust & Smudge Particles */}
-                    {dustParticles.map(p => {
-                      if (p.cleaned) return null;
-                      return (
-                        <div
-                          key={p.id}
-                          className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-300"
-                          style={{ left: `${p.x}%`, top: `${p.y}%` }}
-                        >
-                          {p.type === 'fingerprint' ? (
-                            <div className="w-8 h-8 rounded-full bg-white/20 blur-[1px] border border-white/30" />
-                          ) : p.type === 'smudge' ? (
-                            <div className="w-10 h-6 rounded-full bg-amber-900/40 blur-[2px]" />
-                          ) : (
-                            <div className="w-3 h-3 rounded-full bg-gray-200/60 blur-[0.5px]" />
-                          )}
-                        </div>
-                      );
-                    })}
-
-                    {/* Air Puffs Animation */}
-                    {airPuffs.map(puff => (
-                      <motion.div
-                        key={puff.id}
-                        initial={{ scale: 0.2, opacity: 0.8 }}
-                        animate={{ scale: 2, opacity: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="absolute w-12 h-12 rounded-full border-2 border-cyan-300/60 pointer-events-none -translate-x-1/2 -translate-y-1/2"
-                        style={{ left: `${puff.x}%`, top: `${puff.y}%` }}
-                      />
-                    ))}
+                    {/* Station 4: Penny Sleeve & Card Saver Overlays */}
+                    {hasPennySleeve && (
+                      <div className="absolute inset-0 border-2 border-emerald-400/60 bg-emerald-400/10 pointer-events-none flex items-center justify-center">
+                        <span className="text-[10px] font-black text-emerald-300 bg-black/80 px-2 py-1 rounded">
+                          ✓ Penny Sleeved
+                        </span>
+                      </div>
+                    )}
+                    {hasCardSaver && (
+                      <div className="absolute inset-0 border-4 border-amber-400 bg-amber-500/20 pointer-events-none flex items-center justify-center">
+                        <span className="text-xs font-black text-amber-300 bg-black/90 px-3 py-1.5 rounded-xl border border-amber-400/50 shadow-xl">
+                          🛡️ Card Saver 1 Encapsulated
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Centering Control Sliders if Caliper tool selected */}
-                  {activeTool === 'calipers' && (
-                    <div className="mt-4 p-4 rounded-2xl bg-black/70 border border-amber-500/30 w-full space-y-3">
-                      <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
-                        <span>Adjust Caliper Alignment:</span>
+                  {/* Station-Specific Interactive Controls */}
+                  <div className="mt-5 w-full">
+                    {station === 'press' && (
+                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 space-y-3">
+                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
+                          <span>Thermal Hydraulic Clamp:</span>
+                          <span className="text-gray-300 font-mono">Warp: {cardWarpAngle}°</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Thermometer className="w-4 h-4 text-orange-400 shrink-0" />
+                          <input
+                            type="range"
+                            min="30"
+                            max="80"
+                            value={targetTemp}
+                            onChange={e => setTargetTemp(Number(e.target.value))}
+                            className="flex-1 accent-amber-400"
+                          />
+                          <span className="text-xs font-mono font-bold text-amber-300 w-12 text-right">{targetTemp}°C</span>
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          <button
+                            onClick={handleApplySteam}
+                            className="flex-1 py-2.5 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-500/30 transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <Droplets className="w-4 h-4" />
+                            <span>Apply Moisture Steam</span>
+                          </button>
+                          <button
+                            onMouseDown={() => setIsPressing(true)}
+                            onMouseUp={() => setIsPressing(false)}
+                            className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20"
+                          >
+                            <Flame className="w-4 h-4" />
+                            <span>{isPressing ? `Flattening (${pressHoldTimer}s)...` : 'Hold Clamp Lever'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {station === 'edgePen' && (
+                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 text-center space-y-2">
+                        <div className="text-xs font-bold text-amber-300">Edge Whitening Sealant Pen</div>
+                        <p className="text-[11px] text-gray-400">
+                          Click each red ding tag on the card borders above to seal whitening and restore pristine paper edges!
+                        </p>
+                      </div>
+                    )}
+
+                    {station === 'rotaryBuffer' && (
+                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 text-center space-y-2">
+                        <div className="text-xs font-bold text-amber-300">Electric Rotary Polisher</div>
+                        <p className="text-[11px] text-gray-400">
+                          Click scuff spots to dab diamond paste, then drag your mouse over them to buff holo scratches!
+                        </p>
+                      </div>
+                    )}
+
+                    {station === 'cardSaver' && (
+                      <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 flex gap-2">
                         <button
-                          onClick={() => {
-                            setLrRatio(50);
-                            setTbRatio(50);
-                            setIsCalibrated(true);
-                            sound.playButtonClick();
-                          }}
-                          className="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-black text-[10px] hover:bg-amber-400 transition-all"
+                          onClick={() => { sound.playButtonClick(); setHasPennySleeve(true); }}
+                          className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${
+                            hasPennySleeve ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                          }`}
                         >
-                          Calibrate Perfect 50/50
+                          1. Slip Penny Sleeve
+                        </button>
+                        <button
+                          onClick={() => { sound.playButtonClick(); setHasCardSaver(true); }}
+                          className={`flex-1 py-3 rounded-xl border text-xs font-bold transition-all ${
+                            hasCardSaver ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                          }`}
+                        >
+                          2. Insert Card Saver 1
                         </button>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[10px] text-gray-400 flex justify-between">
-                          <span>Left / Right Balance</span>
-                          <span>{lrRatio}% / {100 - lrRatio}%</span>
-                        </label>
-                        <input
-                          type="range"
-                          min="45"
-                          max="55"
-                          value={lrRatio}
-                          onChange={e => setLrRatio(Number(e.target.value))}
-                          className="w-full accent-amber-400"
-                        />
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                   {/* Action Button: Send to PSA Grading */}
                   <div className="mt-6 w-full flex items-center justify-center">
                     <button
-                      onClick={handleCompletePrep}
-                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-teal-400 via-emerald-400 to-amber-400 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-teal-500/25 hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
+                      onClick={handleCompleteRestoration}
+                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
                     >
                       <Award className="w-5 h-5" />
-                      <span>Send to PSA Grading with 85% Gem Boost</span>
+                      <span>Submit Conserved Card to PSA (85% Gem Boost)</span>
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-500 text-sm">Select a card on the left to begin pre-grading restoration</div>
+                <div className="text-gray-500 text-sm">Select a card on the left to begin conservation</div>
               )}
             </div>
           </div>
