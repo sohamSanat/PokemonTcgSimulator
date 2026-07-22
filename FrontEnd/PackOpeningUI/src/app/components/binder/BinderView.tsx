@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Loader2 } from 'lucide-react';
+import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
 import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, type Card, type Binder } from "./types";
@@ -109,6 +111,27 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
     return binders.reduce((sum, b) => sum + (b.count || 0), 0);
   }, [binders]);
 
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } })
+  );
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id && over?.id) {
+      setCollectedCards(prev => {
+        const oldGlobalIndex = prev.findIndex(c => c.id === active.id);
+        const newGlobalIndex = prev.findIndex(c => c.id === over.id);
+        if (oldGlobalIndex !== -1 && newGlobalIndex !== -1) {
+          const updated = arrayMove(prev, oldGlobalIndex, newGlobalIndex);
+          localStorage.setItem(getStorageKey("tcg_my_collection"), JSON.stringify(updated));
+          return updated;
+        }
+        return prev;
+      });
+    }
+  }, []);
+
   const handleClearBinder = useCallback(() => {
     if (window.confirm(`Are you sure you want to clear all cards from "${currentBinderObj.name}"?`)) {
       setCollectedCards(prev => {
@@ -193,21 +216,23 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
           <p className="text-sm text-gray-400 z-10">Syncing live market prices...</p>
         </div>
       ) : (
-        <BinderPage
-          binderName={currentBinderObj.name}
-          cards={paginatedCards}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          onToggleFavorite={handleToggleFavorite}
-          onAddCard={handleAddCard}
-          onClearBinder={handleClearBinder}
-          onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
-          totalCardsInBinder={filteredCards.length}
-          onInspectCard={onInspectCard}
-        />
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <BinderPage
+            binderName={currentBinderObj.name}
+            cards={paginatedCards}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onToggleFavorite={handleToggleFavorite}
+            onAddCard={handleAddCard}
+            onClearBinder={handleClearBinder}
+            onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
+            totalCardsInBinder={filteredCards.length}
+            onInspectCard={onInspectCard}
+          />
+        </DndContext>
       )}
     </div>
   );

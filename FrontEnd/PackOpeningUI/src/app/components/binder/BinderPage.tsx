@@ -2,6 +2,7 @@ import React from "react";
 import type { Card } from "./types";
 import CardSlot from "./CardSlot";
 import { getCardImageUrl } from "../../services/tcgdex";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 
 interface Props {
   binderName: string;
@@ -137,13 +138,15 @@ function BinderPage({
             </div>
 
             {/* 9-pocket sheet background texture & grid */}
-            <div
-              className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 relative z-10"
-            >
-              {gridSlots.slice(0, 9).map((card, i) => (
-                <CardSlot key={card?.id ?? `empty-${i}`} card={card} index={i} onToggleFavorite={onToggleFavorite} onAddCard={onAddCard} onInspectCard={onInspectCard} />
-              ))}
-            </div>
+            <SortableContext items={gridSlots.map((c, i) => c?.id ?? `empty-${i}`)} strategy={rectSortingStrategy}>
+              <div
+                className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 relative z-10"
+              >
+                {gridSlots.slice(0, 9).map((card, i) => (
+                  <CardSlot key={card?.id ?? `empty-${i}`} card={card} index={i} onToggleFavorite={onToggleFavorite} onAddCard={onAddCard} onInspectCard={onInspectCard} />
+                ))}
+              </div>
+            </SortableContext>
 
             {/* Page number */}
             <div style={{

@@ -114,7 +114,59 @@ const SET_ALIASES = {
   'jungle': ['base2', 'ju', 'jungle'],
   'fossill': ['base3', 'fo', 'fossil', 'fossill'],
   'base-set2': ['base4', 'base set 2', 'base-set2', 'baseset2', 'bs2'],
-  'Team-Rocket': ['base5', 'tr', 'team rocket', 'team-rocket', 'teamrocket']
+  'Team-Rocket': ['base5', 'tr', 'team rocket', 'team-rocket', 'teamrocket'],
+
+  // EX Series
+  'ruby-sapphire': ['ex1', 'ex01', 'ex ruby & sapphire', 'ruby & sapphire', 'ruby-sapphire', 'ruby and sapphire', 'ex ruby and sapphire'],
+  'sandstorm': ['ex2', 'ex02', 'ex sandstorm', 'sandstorm'],
+  'dragon': ['ex3', 'ex03', 'ex dragon', 'dragon'],
+  'team-magma-vs-team-aqua': ['ex4', 'ex04', 'ex team magma vs team aqua', 'team magma vs team aqua', 'team-magma-vs-team-aqua'],
+  'hidden-legends': ['ex5', 'ex05', 'ex hidden legends', 'hidden legends', 'hidden-legends'],
+  'FireRed-GreenLeaf': ['ex6', 'ex06', 'ex firered & leafgreen', 'firered & leafgreen', 'firered-greenleaf', 'firered and leafgreen', 'firered & leaf green', 'firered-leafgreen'],
+  'TeamRocket-Returns': ['ex7', 'ex07', 'ex team rocket returns', 'team rocket returns', 'teamrocket-returns', 'team rocket-returns'],
+  'deoxys': ['ex8', 'ex08', 'ex deoxys', 'deoxys'],
+  'emerald': ['ex9', 'ex09', 'ex emerald', 'emerald'],
+  'unseen-forces': ['ex10', 'ex unseen forces', 'unseen forces', 'unseen-forces'],
+  'delta-species': ['ex11', 'ex delta species', 'delta species', 'delta-species'],
+  'legend-maker': ['ex12', 'ex legend maker', 'legend maker', 'legend-maker'],
+  'holon-phantoms': ['ex13', 'ex holon phantoms', 'holon phantoms', 'holon-phantoms', 'holoh-phantoms'],
+  'crystal-guardians': ['ex14', 'ex crystal guardians', 'crystal guardians', 'crystal-guardians'],
+  'dragon-frontiers': ['ex15', 'ex dragon frontiers', 'dragon frontiers', 'dragon-frontiers'],
+  'power-keepers': ['ex16', 'ex power keepers', 'power keepers', 'power-keepers'],
+
+  // Diamond & Pearl Series
+  'diamon-pearl': ['dp1', 'dp01', 'diamond & pearl', 'diamond & pearl base set', 'diamond-pearl', 'diamon-pearl', 'diamond and pearl'],
+  'mysterious-treasures': ['dp2', 'dp02', 'mysterious treasures', 'mysterious-treasures'],
+  'secret-wonders': ['dp3', 'dp03', 'secret wonders', 'secret-wonders'],
+  'great-encounters': ['dp4', 'dp04', 'great encounters', 'great-encounters'],
+  'majestic-dawn': ['dp5', 'dp05', 'majestic dawn', 'majestic-dawn'],
+  'legend-awakened': ['dp6', 'dp06', 'legends awakened', 'legend awakened', 'legend-awakened', 'legends-awakened'],
+  'stormfront': ['dp7', 'dp07', 'stormfront'],
+
+  // Platinum Series
+  'platinum': ['pl1', 'pl01', 'platinum', 'platinum base set'],
+  'rising-rivals': ['pl2', 'pl02', 'rising rivals', 'rising-rivals'],
+  'supreme-victors': ['pl3', 'pl03', 'supreme victors', 'supreme-victors'],
+  'arceus': ['pl4', 'pl04', 'arceus'],
+
+  // HeartGold & SoulSilver Series
+  'heartgold-soulsilver': ['hgss1', 'hgss01', 'heartgold & soulsilver', 'heartgold soulsilver', 'heartgold-soulsilver', 'heartgold & soulsilver base set'],
+  'unleashed': ['hgss2', 'hgss02', 'unleashed', 'hgss unleashed'],
+  'undaunted': ['hgss3', 'hgss03', 'undaunted', 'hgss undaunted'],
+  'triumphant': ['hgss4', 'hgss04', 'triumphant', 'hgss triumphant'],
+
+  // Black & White Series
+  'black-white-base': ['bw1', 'bw01', 'black & white', 'black & white base set', 'black and white', 'black-white', 'black-white-base'],
+  'emerging-powers': ['bw2', 'bw02', 'emerging powers', 'emerging-powers'],
+  'noble-victories': ['bw3', 'bw03', 'noble victories', 'noble-victories'],
+  'next-destinies': ['bw4', 'bw04', 'next destinies', 'next-destinies'],
+  'dark-explorers': ['bw5', 'bw05', 'dark explorers', 'dark-explorers'],
+  'dragons-exalted': ['bw6', 'bw06', 'dragons exalted', 'dragons-exalted'],
+  'boundaries-crossed': ['bw7', 'bw07', 'boundaries crossed', 'boundaries-crossed'],
+  'plasma-storm': ['bw8', 'bw08', 'plasma storm', 'plasma-storm'],
+  'plasma-freeze': ['bw9', 'bw09', 'plasma freeze', 'plasma-freeze'],
+  'plasma-blast': ['bw10', 'plasma blast', 'plasma-blast'],
+  'legendary-treasures': ['bw11', 'legendary treasures', 'legendary-treasures', 'Legendar-Treasure']
 };
 
 const JAPANESE_SET_ALIASES = {

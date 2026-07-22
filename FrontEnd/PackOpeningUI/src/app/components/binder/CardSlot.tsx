@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { Card } from "./types";
 import PriceTooltip from "./PriceTooltip";
 import InteractiveCard3D from "./InteractiveCard3D";
@@ -44,11 +46,33 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
     setPriceOpen(false);
   };
 
+  const sortableId = card?.id ?? `empty-${index}`;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: sortableId, disabled: !card });
+
+  const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : (hovered ? 100 : 1),
+    opacity: isDragging ? 0.8 : 1,
+    touchAction: "none",
+  };
+
   if (!card) {
     return (
       <div
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
         onClick={onAddCard}
         style={{
+          ...sortableStyle,
           position: "relative",
           aspectRatio: "2.5/3.5",
           borderRadius: 14,
@@ -132,10 +156,13 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
 
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
       style={{
+        ...sortableStyle,
         position: "relative",
         aspectRatio: "2.5/3.5",
-        zIndex: hovered ? 100 : 1,
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

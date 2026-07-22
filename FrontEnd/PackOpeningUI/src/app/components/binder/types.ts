@@ -640,3 +640,48 @@ export function savePSAGradingResult(
     return null;
   }
 }
+
+
+export function moveBulkCardToBinder(bulkCard: BulkCard, binderId: string): void {
+  try {
+    const catalogues = getCatalogues();
+    if (!catalogues[bulkCard.setName] || !catalogues[bulkCard.setName][bulkCard.id]) return;
+    
+    // Decrement count
+    catalogues[bulkCard.setName][bulkCard.id].count--;
+    if (catalogues[bulkCard.setName][bulkCard.id].count <= 0) {
+      delete catalogues[bulkCard.setName][bulkCard.id];
+    }
+    
+    // Save updated catalogues
+    localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(catalogues));
+    
+    // Convert to Card and add to collection
+    const newCardId = `vault-${bulkCard.id}-${Date.now()}`;
+    const newCard: Card = {
+      id: newCardId,
+      name: bulkCard.name,
+      setName: bulkCard.setName,
+      setNumber: bulkCard.id, // approximate
+      rarity: bulkCard.rarity,
+      type: 'Unknown',
+      currentPrice: 0.00,
+      priceChange: 0,
+      priceHistory: genPriceHistory(0.00, 0),
+      holofoil: false,
+      imageUrl: bulkCard.imageUrl,
+      favorite: false,
+      binderId: binderId
+    };
+    
+    const cards = getCollectedCards();
+    cards.push(newCard);
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cards));
+    
+    getBinders(); // refresh counts
+    syncToFirestore();
+    window.dispatchEvent(new Event('storage'));
+  } catch (e) {
+    console.error('Failed to move bulk card to binder', e);
+  }
+}

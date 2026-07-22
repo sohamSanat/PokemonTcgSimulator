@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Layers, Package, Search, Inbox } from 'lucide-react';
-import { getCatalogues, clearCatalogues, type BulkCard, type CatalogueStore } from './types';
+import { getCatalogues, clearCatalogues, moveBulkCardToBinder, getBinders, type BulkCard, type CatalogueStore, type Binder } from './types';
 
 interface BulkCatalogueModalProps {
   isOpen: boolean;
@@ -13,8 +13,10 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
   const [selectedSet, setSelectedSet] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [previewCard, setPreviewCard] = useState<BulkCard | null>(null);
+  const [binders, setBinders] = useState<Binder[]>([]);
 
   useEffect(() => {
+    setBinders(getBinders());
     const loadCatalogues = () => {
       const data = getCatalogues();
       setCatalogues(data);
@@ -298,6 +300,24 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                     <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-teal-500/20 text-teal-300 text-xs font-black">
                       <Layers className="w-3.5 h-3.5" />
                       <span>{previewCard.count} Copies Owned</span>
+                    </div>
+                    <div className="mt-4 flex flex-col gap-2 w-full pt-4 border-t border-white/10">
+                      <p className="text-xs text-gray-400 mb-1">Add to Binder:</p>
+                      <div className="flex flex-wrap justify-center gap-2 max-h-32 overflow-y-auto custom-scrollbar">
+                        {binders.map(b => (
+                          <button
+                            key={b.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveBulkCardToBinder(previewCard, b.id);
+                              setPreviewCard(null);
+                            }}
+                            className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white/10 hover:bg-teal-500/20 hover:text-teal-300 text-gray-300 transition-colors border border-white/5 hover:border-teal-500/30"
+                          >
+                            {b.name}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
