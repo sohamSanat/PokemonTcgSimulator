@@ -55,7 +55,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [totalRevenue, setTotalRevenue] = useState<number>(1280.00);
   const [hypeLevel, setHypeLevel] = useState<number>(4);
   const [hypeProgress, setHypeProgress] = useState<number>(75);
-  const [isQueueOpen, setIsQueueOpen] = useState<boolean>(true);
+  const [isQueueOpen, setIsQueueOpen] = useState<boolean>(false);
 
   // Floating Social Live Reactions
   const [reactions, setReactions] = useState<FloatingReaction[]>([]);
@@ -329,41 +329,64 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-3 sm:p-6">
           <div className="w-full h-full border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center relative p-4 overflow-hidden">
 
-            {/* Active Customer Order Spotlight Table */}
-            {activeOrder ? (
-              <div className="text-center space-y-3 sm:space-y-4 z-20 max-w-sm w-full my-auto px-2">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-amber-500/20 border border-amber-400/40 shadow-lg backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                  <span className="text-xs font-black text-amber-300">RIPPING FOR {activeOrder.username}</span>
-                </div>
-
-                <div className="p-4 sm:p-6 rounded-3xl bg-black/60 border border-white/10 backdrop-blur-xl shadow-2xl space-y-2">
-                  <h3 className="text-xl sm:text-3xl font-black text-white tracking-tight">
-                    {activeOrder.packCount}x {activeOrder.packName}
-                  </h3>
-
-                  <div className="text-xs sm:text-sm font-mono font-bold text-emerald-400">
-                    Order Total Paid: ${activeOrder.totalPaid.toFixed(2)}
+            {/* Ultra-Compact Floating Active Order Banner (Only 45px height at top!) */}
+            {activeOrder && (
+              <div className="absolute top-3 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-30 max-w-md w-full">
+                <div className="p-1.5 sm:p-2 rounded-2xl sm:rounded-full bg-black/85 backdrop-blur-xl border border-amber-400/50 shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0 pl-1">
+                    <div className={`w-7 h-7 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-[10px] text-white shrink-0 shadow-md`}>
+                      {activeOrder.username.substring(1, 3).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="text-[11px] font-black text-amber-300 truncate">{activeOrder.username}</span>
+                        <span className="text-[9px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
+                      </div>
+                      <div className="text-[10px] text-gray-300 font-bold truncate">
+                        {activeOrder.packCount}x {activeOrder.packName}
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Rip Action Button */}
-                <div>
+                  {/* Compact Rip Button */}
                   <button
                     onClick={handleRipPackForCustomer}
                     disabled={isOpeningPack}
-                    className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_35px_rgba(239,68,68,0.6)] border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 mx-auto"
+                    className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
                   >
-                    <Package className="w-5 h-5" />
-                    <span>{isOpeningPack ? '🔥 RIPPING PACK LIVE...' : '📦 RIP PACK LIVE ON CAMERA'}</span>
+                    <Package className="w-3.5 h-3.5" />
+                    <span>{isOpeningPack ? 'Ripping...' : '📦 RIP LIVE ⚡'}</span>
                   </button>
                 </div>
               </div>
-            ) : (
-              <div className="text-center text-gray-500 text-xs sm:text-sm my-auto">
-                No order selected. Select an order from the queue at the top!
-              </div>
             )}
+
+            {/* Playmat Table Surface - Wide Open Pack Opening Arena */}
+            <div
+              onClick={handleRipPackForCustomer}
+              className="my-auto relative flex flex-col items-center justify-center cursor-pointer group z-20"
+            >
+              {/* 3D Booster Pack Sitting on Playmat */}
+              <motion.div
+                animate={isOpeningPack ? { rotate: [0, -8, 8, -8, 8, 0], scale: [1, 1.1, 1] } : { y: [0, -6, 0] }}
+                transition={isOpeningPack ? { repeat: Infinity, duration: 0.3 } : { repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                className="relative w-36 sm:w-48 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black p-3 flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors"
+              >
+                <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest">
+                  OFFICIAL BOOSTER PACK
+                </div>
+
+                <div className="space-y-1">
+                  <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
+                  <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
+                  <div className="text-[10px] text-amber-300/80 font-bold">10 ADDITIONAL CARDS</div>
+                </div>
+
+                <div className="w-full bg-black/70 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/30 uppercase">
+                  {isOpeningPack ? '🔥 TEARING FOIL...' : 'TAP PACK TO RIP LIVE'}
+                </div>
+              </motion.div>
+            </div>
 
             {/* Revealed Pulled Card Overlay Modal */}
             <AnimatePresence>
