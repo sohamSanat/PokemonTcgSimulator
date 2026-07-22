@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Sparkles, Wind, ShieldCheck, Check, 
   RotateCw, Gauge, Zap, Flame, Award, Sliders, Layers, ChevronRight, ChevronDown,
-  Thermometer, PenTool, Disc, Shield, Droplets, Info, Sparkle
+  Thermometer, PenTool, Disc, Shield, Droplets, Info, Sparkle, Maximize2, Move
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
 import { sound } from '../../services/sound';
@@ -22,6 +22,7 @@ interface EdgeDing {
   edge: 'Top' | 'Right' | 'Bottom' | 'Left';
   x: number; // %
   y: number; // %
+  progress: number; // 0 - 100
   repaired: boolean;
 }
 
@@ -30,6 +31,7 @@ interface ScuffSpot {
   x: number; // %
   y: number; // %
   pasted: boolean;
+  buffProgress: number; // 0 - 100
   buffed: boolean;
 }
 
@@ -55,13 +57,18 @@ export default function PrePSARestorationStudio({
 
   // Station 2: Edge Whitening Repair Pen
   const [edgeDings, setEdgeDings] = useState<EdgeDing[]>([]);
+  const [isDrawingInk, setIsDrawingInk] = useState<boolean>(false);
 
   // Station 3: Electric Rotary Buffer
   const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
+  const [bufferRPM, setBufferRPM] = useState<number>(3500); // 1000 - 8000 RPM
   const [bufferRotation, setBufferRotation] = useState<number>(0);
+  const [isBuffingActive, setIsBuffingActive] = useState<boolean>(false);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
   // Station 4: Card Saver 1 Encapsulation
+  const [sleeveSlideProgress, setSleeveSlideProgress] = useState<number>(0); // 0 - 100%
+  const [saverSnapProgress, setSaverSnapProgress] = useState<number>(0); // 0 - 100%
   const [hasPennySleeve, setHasPennySleeve] = useState<boolean>(false);
   const [hasCardSaver, setHasCardSaver] = useState<boolean>(false);
 
@@ -81,26 +88,28 @@ export default function PrePSARestorationStudio({
 
       // Reset Station 2: 4 edge dings
       setEdgeDings([
-        { id: 'top', edge: 'Top', x: 50, y: 3, repaired: false },
-        { id: 'right', edge: 'Right', x: 97, y: 40, repaired: false },
-        { id: 'bottom', edge: 'Bottom', x: 60, y: 97, repaired: false },
-        { id: 'left', edge: 'Left', x: 3, y: 65, repaired: false },
+        { id: 'top', edge: 'Top', x: 50, y: 3, progress: 0, repaired: false },
+        { id: 'right', edge: 'Right', x: 97, y: 40, progress: 0, repaired: false },
+        { id: 'bottom', edge: 'Bottom', x: 60, y: 97, progress: 0, repaired: false },
+        { id: 'left', edge: 'Left', x: 3, y: 65, progress: 0, repaired: false },
       ]);
 
       // Reset Station 3: 3 holo scuffs
       setScuffSpots([
-        { id: 1, x: 35, y: 35, pasted: false, buffed: false },
-        { id: 2, x: 65, y: 40, pasted: false, buffed: false },
-        { id: 3, x: 50, y: 60, pasted: false, buffed: false },
+        { id: 1, x: 35, y: 35, pasted: false, buffProgress: 0, buffed: false },
+        { id: 2, x: 65, y: 40, pasted: false, buffProgress: 0, buffed: false },
+        { id: 3, x: 50, y: 60, pasted: false, buffProgress: 0, buffed: false },
       ]);
 
       // Reset Station 4
+      setSleeveSlideProgress(0);
+      setSaverSnapProgress(0);
       setHasPennySleeve(false);
       setHasCardSaver(false);
     }
   }, [selectedCard]);
 
-  // Pressing lever hold effect
+  // Station 1: Pressing lever hold effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isPressing) {
@@ -123,6 +132,17 @@ export default function PrePSARestorationStudio({
     return () => clearInterval(interval);
   }, [isPressing, targetTemp, steamLevel]);
 
+  // Rotary Buffer Spinning Animation Loop
+  useEffect(() => {
+    let animationFrame: number;
+    const spin = () => {
+      setBufferRotation(r => (r + bufferRPM / 100) % 360);
+      animationFrame = requestAnimationFrame(spin);
+    };
+    animationFrame = requestAnimationFrame(spin);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [bufferRPM]);
+
   if (!isOpen) return null;
 
   // Station Completion Scores
@@ -137,12 +157,12 @@ export default function PrePSARestorationStudio({
     (flattenScore * 0.25) + (edgeScore * 0.25) + (bufferScore * 0.25) + (sleeveScore * 0.25)
   );
 
+  // Station 1 Actions
   const handleApplySteam = () => {
     sound.playAirBlower();
     setSteamLevel(100);
   };
 
-  // Foolproof Instant Flatten Action for Station 1
   const handleAutoFlatten = () => {
     sound.playAirBlower();
     setTargetTemp(55);
@@ -151,49 +171,72 @@ export default function PrePSARestorationStudio({
     setCardWarpAngle(0);
   };
 
-  const handleRepairEdgeDing = (id: string) => {
-    sound.playClothWipe();
-    setEdgeDings(prev => prev.map(d => d.id === id ? { ...d, repaired: true } : d));
-  };
-
+  // Station 2 Actions
   const handleFixAllEdgeDings = () => {
     sound.playClothWipe();
-    setEdgeDings(prev => prev.map(d => ({ ...d, repaired: true })));
+    setEdgeDings(prev => prev.map(d => ({ ...d, progress: 100, repaired: true })));
   };
 
-  const handleApplyCompound = (id: number) => {
-    sound.playButtonClick();
-    setScuffSpots(prev => prev.map(s => s.id === id ? { ...s, pasted: true } : s));
-  };
-
+  // Station 3 Actions
   const handleBuffAllScuffs = () => {
     sound.playLaserScan();
-    setScuffSpots(prev => prev.map(s => ({ ...s, pasted: true, buffed: true })));
+    setScuffSpots(prev => prev.map(s => ({ ...s, pasted: true, buffProgress: 100, buffed: true })));
   };
 
+  // Station 4 Actions
   const handleEncapsulateBoth = () => {
     sound.playButtonClick();
+    setSleeveSlideProgress(100);
+    setSaverSnapProgress(100);
     setHasPennySleeve(true);
     setHasCardSaver(true);
   };
 
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Interactive Card Surface Drag & Mouse Motion Logic
+  const handleCardInteraction = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     setMousePos({ x, y });
 
-    if (station === 'rotaryBuffer' && e.buttons === 1) {
-      setBufferRotation(r => r + 25);
-      sound.playUltrasonicWeldPulse();
-      setScuffSpots(prev => prev.map(s => {
-        if (!s.pasted || s.buffed) return s;
-        const dist = Math.hypot(s.x - x, s.y - y);
-        if (dist < 18) {
-          return { ...s, buffed: true };
+    // Station 2: Interactive Edge Ink Pen Brushing
+    if (station === 'edgePen' && (e.buttons === 1 || isDrawingInk)) {
+      setEdgeDings(prev => prev.map(d => {
+        if (d.repaired) return d;
+        const dist = Math.hypot(d.x - x, d.y - y);
+        if (dist < 22) {
+          sound.playClothWipe();
+          const newProgress = Math.min(100, d.progress + 25);
+          return {
+            ...d,
+            progress: newProgress,
+            repaired: newProgress >= 100
+          };
         }
-        return s;
+        return d;
       }));
+    }
+
+    // Station 3: Interactive Rotary Buffer Compound & Buffing
+    if (station === 'rotaryBuffer') {
+      if (e.buttons === 1) {
+        sound.playUltrasonicWeldPulse();
+        setScuffSpots(prev => prev.map(s => {
+          const dist = Math.hypot(s.x - x, s.y - y);
+          if (dist < 20) {
+            if (!s.pasted) {
+              return { ...s, pasted: true };
+            }
+            const newBuff = Math.min(100, s.buffProgress + 20);
+            return {
+              ...s,
+              buffProgress: newBuff,
+              buffed: newBuff >= 100
+            };
+          }
+          return s;
+        }));
+      }
     }
   };
 
@@ -232,7 +275,7 @@ export default function PrePSARestorationStudio({
           className="w-full max-w-5xl h-[94vh] md:h-[88vh] flex flex-col rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_0_80px_rgba(245,158,11,0.15)]"
           style={{ background: 'linear-gradient(145deg, #120e17 0%, #0a080f 100%)' }}
         >
-          {/* Header - Compact on Mobile */}
+          {/* Header */}
           <div className="px-4 md:px-6 py-3 md:py-4 border-b border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-purple-500/5 to-transparent flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-black font-black text-sm md:text-base shrink-0">
@@ -358,8 +401,8 @@ export default function PrePSARestorationStudio({
                     <div className="flex items-center gap-2">
                       <PenTool className="w-3.5 h-3.5 md:w-4 md:h-4 text-cyan-400" />
                       <div>
-                        <div className="text-xs text-white whitespace-nowrap">2. Edge Repair Pen</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Touches up paper dings & corner wear</div>
+                        <div className="text-xs text-white whitespace-nowrap">2. Edge Ink Pen</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Drag pen along borders to seal dings</div>
                       </div>
                     </div>
                     {edgeScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -375,10 +418,10 @@ export default function PrePSARestorationStudio({
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <Disc className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400" />
+                      <Disc className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400 animate-spin" />
                       <div>
                         <div className="text-xs text-white whitespace-nowrap">3. Rotary Buffer</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Buffs out scuffs for mirror holo glare</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Drag spinning wheel over holo scuffs</div>
                       </div>
                     </div>
                     {bufferScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -397,7 +440,7 @@ export default function PrePSARestorationStudio({
                       <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" />
                       <div>
                         <div className="text-xs text-white whitespace-nowrap">4. Card Saver 1</div>
-                        <div className="hidden md:block text-[10px] text-gray-400">Sleeves card for submission</div>
+                        <div className="hidden md:block text-[10px] text-gray-400">Slide & snap into semi-rigid case</div>
                       </div>
                     </div>
                     {sleeveScore >= 100 && <Check className="w-3.5 h-3.5 text-amber-400 ml-2" />}
@@ -420,16 +463,18 @@ export default function PrePSARestorationStudio({
               </div>
             </div>
 
-            {/* Interactive Workbench Workspace (Maximum Height on Mobile) */}
-            <div className="flex-1 flex flex-col items-center justify-center p-3 md:p-6 relative overflow-hidden bg-[#0a070e] min-h-[360px] md:min-h-0">
+            {/* Interactive Workbench Workspace */}
+            <div className="flex-1 flex flex-col items-center justify-center p-3 md:p-6 relative overflow-hidden bg-[#0a070e] min-h-[380px] md:min-h-0">
               <div className="absolute inset-0 bg-[radial-gradient(#261d33_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
 
               {selectedCard ? (
                 <div className="relative flex flex-col items-center max-w-md w-full my-auto">
-                  {/* Card Display with Station-Specific Visual Effects */}
+                  {/* Card Display Canvas with Dynamic Interactivity */}
                   <div
-                    onMouseMove={handleCardMouseMove}
-                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0"
+                    onMouseDown={() => setIsDrawingInk(true)}
+                    onMouseUp={() => setIsDrawingInk(false)}
+                    onMouseMove={handleCardInteraction}
+                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0 cursor-crosshair"
                     style={{
                       transform: `rotateY(${cardWarpAngle}deg) rotateX(${cardWarpAngle * 0.4}deg)`,
                       transformStyle: 'preserve-3d'
@@ -450,80 +495,108 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 2: Edge Whitening Dings */}
+                    {/* Station 2: Interactive Edge Ink Pen Trail */}
                     {station === 'edgePen' && (
-                      <div className="absolute inset-0 pointer-events-auto">
+                      <div className="absolute inset-0 pointer-events-none">
                         {edgeDings.map(d => (
-                          <button
+                          <div
                             key={d.id}
-                            onClick={() => handleRepairEdgeDing(d.id)}
-                            className={`absolute -translate-x-1/2 -translate-y-1/2 px-2 py-0.5 rounded-full text-[8px] md:text-[9px] font-black transition-all cursor-pointer shadow-lg ${
-                              d.repaired
-                                ? 'bg-emerald-500 text-black border border-emerald-300'
-                                : 'bg-red-500 text-white border border-white animate-bounce'
-                            }`}
+                            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 transition-all"
                             style={{ left: `${d.x}%`, top: `${d.y}%` }}
                           >
-                            {d.repaired ? '✓ Sealed' : `🖌️ Fix ${d.edge}`}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Station 3: Scuff Spots & Rotary Buffing Wheel */}
-                    {station === 'rotaryBuffer' && (
-                      <div className="absolute inset-0 pointer-events-auto">
-                        {scuffSpots.map(s => (
-                          <div
-                            key={s.id}
-                            onClick={() => handleApplyCompound(s.id)}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
-                          >
-                            {s.buffed ? (
-                              <div className="w-7 h-7 rounded-full border-2 border-amber-300 bg-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.8)] flex items-center justify-center text-amber-300 font-bold text-[9px]">
-                                ✨
-                              </div>
-                            ) : s.pasted ? (
-                              <div className="w-6 h-6 rounded-full bg-white/80 border border-gray-300 shadow-md flex items-center justify-center text-[7px] font-bold text-black">
-                                Paste
-                              </div>
+                            {d.repaired ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[9px] font-black border border-white shadow-lg">
+                                ✓ Sealed Ink
+                              </span>
                             ) : (
-                              <div className="px-1.5 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-bold border border-white animate-pulse">
-                                💧 Paste
+                              <div className="flex flex-col items-center">
+                                <span className="px-2 py-0.5 rounded-full bg-red-600 text-white text-[8px] font-black border border-white animate-bounce shadow-lg">
+                                  🖌️ Brush {d.edge} ({d.progress}%)
+                                </span>
+                                <div className="w-12 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
+                                  <div className="h-full bg-cyan-400" style={{ width: `${d.progress}%` }} />
+                                </div>
                               </div>
                             )}
                           </div>
                         ))}
 
-                        {/* Rotary Buffer Cursor Tool */}
+                        {/* Floating Pen Nib Cursor */}
                         <div
-                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-transform"
+                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2"
+                          style={{ left: `${mousePos.x}%`, top: `${mousePos.y}%` }}
+                        >
+                          <div className="w-7 h-7 rounded-full bg-cyan-400/30 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.8)]">
+                            <PenTool className="w-4 h-4 text-cyan-200" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Station 3: Spinning Rotary Buffing Wheel Overlays */}
+                    {station === 'rotaryBuffer' && (
+                      <div className="absolute inset-0 pointer-events-none">
+                        {scuffSpots.map(s => (
+                          <div
+                            key={s.id}
+                            className="absolute -translate-x-1/2 -translate-y-1/2 transition-all"
+                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
+                          >
+                            {s.buffed ? (
+                              <div className="w-8 h-8 rounded-full border-2 border-amber-300 bg-gradient-to-tr from-amber-400/30 via-purple-500/30 to-amber-300/30 shadow-[0_0_20px_rgba(245,158,11,0.9)] flex items-center justify-center animate-pulse">
+                                <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
+                              </div>
+                            ) : s.pasted ? (
+                              <div className="flex flex-col items-center">
+                                <div className="w-7 h-7 rounded-full bg-white/90 border border-purple-400 shadow-md flex items-center justify-center text-[8px] font-bold text-black">
+                                  Paste
+                                </div>
+                                <div className="w-10 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
+                                  <div className="h-full bg-purple-400" style={{ width: `${s.buffProgress}%` }} />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-bold border border-white animate-bounce shadow-md">
+                                💧 Tap for Paste
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        {/* Spinning Rotary Buffer Tool */}
+                        <div
+                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2"
                           style={{
                             left: `${mousePos.x}%`,
                             top: `${mousePos.y}%`,
                             transform: `translate(-50%, -50%) rotate(${bufferRotation}deg)`
                           }}
                         >
-                          <div className="w-10 h-10 rounded-full border-4 border-dashed border-amber-400 bg-amber-500/30 flex items-center justify-center">
-                            <Disc className="w-5 h-5 text-amber-300" />
+                          <div className="w-12 h-12 rounded-full border-4 border-dashed border-purple-400 bg-purple-600/40 shadow-[0_0_25px_rgba(168,85,247,0.8)] flex items-center justify-center">
+                            <Disc className="w-6 h-6 text-purple-200" />
                           </div>
                         </div>
                       </div>
                     )}
 
-                    {/* Station 4: Penny Sleeve & Card Saver Overlays */}
-                    {hasPennySleeve && (
-                      <div className="absolute inset-0 border-2 border-emerald-400/60 bg-emerald-400/10 pointer-events-none flex items-center justify-center">
-                        <span className="text-[9px] font-black text-emerald-300 bg-black/80 px-2 py-0.5 rounded">
-                          ✓ Penny Sleeved
+                    {/* Station 4: Penny Sleeve & Card Saver 1 Overlays */}
+                    {sleeveSlideProgress > 0 && (
+                      <div
+                        className="absolute inset-x-0 top-0 border-2 border-emerald-400/80 bg-emerald-400/20 backdrop-blur-[1px] transition-all duration-300 pointer-events-none flex items-center justify-center shadow-lg"
+                        style={{ height: `${sleeveSlideProgress}%` }}
+                      >
+                        <span className="text-[9px] font-black text-emerald-200 bg-black/80 px-2 py-0.5 rounded border border-emerald-400/40">
+                          ✓ Penny Sleeved ({sleeveSlideProgress}%)
                         </span>
                       </div>
                     )}
-                    {hasCardSaver && (
-                      <div className="absolute inset-0 border-4 border-amber-400 bg-amber-500/20 pointer-events-none flex items-center justify-center">
-                        <span className="text-[11px] font-black text-amber-300 bg-black/90 px-2.5 py-1 rounded-xl border border-amber-400/50 shadow-xl">
-                          🛡️ Card Saver 1
+                    {saverSnapProgress > 0 && (
+                      <div
+                        className="absolute inset-0 border-4 border-amber-400 bg-amber-500/25 pointer-events-none flex items-center justify-center transition-all duration-300 shadow-[0_0_30px_rgba(245,158,11,0.5)]"
+                        style={{ opacity: saverSnapProgress / 100 }}
+                      >
+                        <span className="text-[11px] font-black text-amber-300 bg-black/90 px-3 py-1 rounded-xl border border-amber-400/60 shadow-2xl flex items-center gap-1">
+                          🛡️ CARD SAVER 1 SEALED
                         </span>
                       </div>
                     )}
@@ -580,15 +653,19 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 2: Edge Whitening Controls */}
+                    {/* Station 2: Edge Whitening Ink Pen Controls */}
                     {station === 'edgePen' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
-                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                      <div className="p-3 rounded-2xl bg-black/80 border border-cyan-500/30 space-y-2.5">
+                        <div className="flex items-center justify-between text-xs text-cyan-300 font-bold border-b border-white/10 pb-1.5">
                           <span className="flex items-center gap-1">
-                            <Info className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Fix Border Dings:</span>
+                            <PenTool className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>Drag Pen Along Card Borders</span>
                           </span>
                           <span className="text-gray-300 font-mono text-[11px]">{repairedDings}/{edgeDings.length} Sealed</span>
+                        </div>
+
+                        <div className="text-[11px] text-gray-300 text-center">
+                          Hold mouse / touch and drag the <strong className="text-cyan-300">Ink Pen</strong> over the card edges to touch up paper dings!
                         </div>
 
                         <button
@@ -601,15 +678,29 @@ export default function PrePSARestorationStudio({
                       </div>
                     )}
 
-                    {/* Station 3: Rotary Polisher Controls */}
+                    {/* Station 3: Electric Rotary Polisher Controls */}
                     {station === 'rotaryBuffer' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
-                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                      <div className="p-3 rounded-2xl bg-black/80 border border-purple-500/30 space-y-2.5">
+                        <div className="flex items-center justify-between text-xs text-purple-300 font-bold border-b border-white/10 pb-1.5">
                           <span className="flex items-center gap-1">
-                            <Info className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Buff Holo Scuffs:</span>
+                            <Disc className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+                            <span>Rotary Polisher Control ({bufferRPM} RPM)</span>
                           </span>
                           <span className="text-gray-300 font-mono text-[11px]">{buffedSpots}/{scuffSpots.length} Mirror Glare</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Gauge className="w-4 h-4 text-purple-400 shrink-0" />
+                          <input
+                            type="range"
+                            min="1000"
+                            max="8000"
+                            step="500"
+                            value={bufferRPM}
+                            onChange={e => setBufferRPM(Number(e.target.value))}
+                            className="flex-1 accent-purple-400 cursor-pointer"
+                          />
+                          <span className="text-xs font-mono font-bold text-purple-300 w-16 text-right">{bufferRPM} RPM</span>
                         </div>
 
                         <button
@@ -624,13 +715,32 @@ export default function PrePSARestorationStudio({
 
                     {/* Station 4: Encapsulation Controls */}
                     {station === 'cardSaver' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2">
-                        <div className="flex items-center justify-between text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
+                      <div className="p-3 rounded-2xl bg-black/80 border border-emerald-500/30 space-y-2.5">
+                        <div className="flex items-center justify-between text-xs text-emerald-300 font-bold border-b border-white/10 pb-1.5">
                           <span className="flex items-center gap-1">
-                            <Info className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Pre-Submission Sleeving:</span>
+                            <Shield className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Tactile Encapsulation Controls</span>
                           </span>
-                          <span className="text-gray-300 font-mono text-[11px]">{hasCardSaver ? '100% Encapsulated' : 'Pending'}</span>
+                          <span className="text-gray-300 font-mono text-[11px]">{saverSnapProgress === 100 ? '100% Encapsulated' : 'Pending'}</span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => { sound.playClothWipe(); setSleeveSlideProgress(100); setHasPennySleeve(true); }}
+                            className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
+                              sleeveSlideProgress === 100 ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                            }`}
+                          >
+                            1. Slide Penny Sleeve
+                          </button>
+                          <button
+                            onClick={() => { sound.playLaserScan(); setSaverSnapProgress(100); setHasCardSaver(true); }}
+                            className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${
+                              saverSnapProgress === 100 ? 'bg-amber-500/20 border-amber-400 text-amber-300' : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
+                            }`}
+                          >
+                            2. Snap Card Saver 1
+                          </button>
                         </div>
 
                         <button
