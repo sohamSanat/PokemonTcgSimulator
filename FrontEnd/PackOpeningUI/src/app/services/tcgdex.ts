@@ -1,4 +1,4 @@
-import { weightedPick, loadJapaneseMetadata } from './scrydex';
+import { weightedPick, loadJapaneseMetadata, getJapaneseCardRealPrice } from './scrydex';
 
 export interface TCGDexCardSummary {
   id: string;
@@ -418,6 +418,200 @@ export async function fetchCardFull(cardId: string, skipEvent: boolean = false):
       image: getTCGDexValidAssetPath(setId, rawNum)
     };
   }
+}
+
+const OVERRIDE_CARD_PRICES: Record<string, number> = {
+  "me4-1": 0.05,
+  "me4-2": 0.08,
+  "me4-3": 6.50,
+  "me4-4": 0.10,
+  "me4-5": 0.05,
+  "me4-6": 0.08,
+  "me4-7": 0.85,
+  "me4-8": 0.06,
+  "me4-9": 0.40,
+  "me4-10": 2.50
+};
+
+const NAME_OVERRIDE_PRICES: Record<string, number> = {
+  "Beedrill ex": 6.50,
+  "Mega Pyroar ex": 1.25,
+  "Mega Greninja ex": 1.75,
+  "Mega Floette ex": 0.57,
+  "Ho-Oh": 2.50,
+  "Keldeo": 1.10,
+  "Chesnaught": 0.85
+};
+
+export const getRealCardPrice = (poke: PokemonCard): number => {
+  if (!poke) return 0.10;
+  const isJapaneseCard = poke.id?.includes('_ja');
+
+  if (poke.id && isJapaneseCard) {
+    const rawSet = poke.id.split('-')[0] || '';
+    const localNum = poke.localId || poke.id.split('-')[1] || '';
+    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
+    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+      return Number(jaRealPrice.toFixed(2));
+    }
+  }
+
+  if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
+    fetchCardFull(poke.id).catch(() => { });
+  }
+  const cached = cardFullCache.get(poke.id);
+  const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
+  if (activePricing || cached?.tcgplayer || cached?.cardmarket || poke.tcgplayer) {
+    let foundPrice = 0;
+
+    let cmUsd = 0;
+    const cmObj = activePricing?.cardmarket || cached?.cardmarket || poke.cardmarket;
+    if (cmObj) {
+      const cmVal = cmObj.trend ?? cmObj.avg ?? cmObj['trend-holo'] ?? cmObj['avg-holo'] ?? cmObj.avg30 ?? cmObj.low;
+      if (typeof cmVal === 'number' && !isNaN(cmVal) && cmVal > 0) {
+        cmUsd = cmVal * (cmObj.unit === 'EUR' ? 1.08 : 1);
+      }
+    }
+
+    const tcgObj = activePricing?.tcgplayer || cached?.tcgplayer || (poke.tcgplayer?.prices || poke.tcgplayer);
+    if (tcgObj) {
+      const tcg = tcgObj;
+      const candidates: number[] = [];
+      for (const key of Object.keys(tcg)) {
+        if (typeof tcg[key] === 'object' && tcg[key] !== null) {
+          const sub = tcg[key];
+          const val = sub.marketPrice ?? sub.midPrice ?? sub.lowPrice ?? sub.highPrice ?? sub.market ?? sub.mid ?? sub.low;
+          if (typeof val === 'number' && !isNaN(val) && val > 0) {
+            candidates.push(val);
+          }
+        }
+      }
+
+      if (candidates.length > 0) {
+        if (poke.isReverseHolo && (tcg.reverseHolofoil || tcg.reverse)) {
+          const rev = tcg.reverseHolofoil ?? tcg.reverse;
+          const rVal = rev.marketPrice ?? rev.midPrice ?? rev.lowPrice;
+          foundPrice = (typeof rVal === 'number' && !isNaN(rVal) && rVal > 0) ? rVal : candidates[0];
+        } else if (tcg.holofoil && typeof tcg.holofoil === 'object') {
+          const hVal = tcg.holofoil.marketPrice ?? tcg.holofoil.midPrice ?? tcg.holofoil.lowPrice;
+          foundPrice = (typeof hVal === 'number' && !isNaN(hVal) && hVal > 0) ? hVal : candidates[0];
+        } else if (tcg.normal && typeof tcg.normal === 'object') {
+          const nVal = tcg.normal.marketPrice ?? tcg.normal.midPrice ?? tcg.normal.lowPrice;
+          foundPrice = (typeof nVal === 'number' && !isNaN(nVal) && nVal > 0) ? nVal : candidates[0];
+        } else if (cmUsd > 0 && candidates.length > 1) {
+          let minDelta = Infinity;
+          for (const cand of candidates) {
+            const delta = Math.abs(cand - cmUsd);
+            if (delta < minDelta) {
+              minDelta = delta;
+              foundPrice = cand;
+            }
+          }
+        } else {
+          foundPrice = candidates[0];
+        }
+      }
+    }
+
+    if (foundPrice === 0 && cmUsd > 0) {
+      foundPrice = cmUsd;
+    }
+
+    if (foundPrice > 0) return Number(foundPrice.toFixed(2));
+  }
+
+  if (Array.isArray(poke.prices) && poke.prices.length > 0) {
+    let maxPrice = 0;
+    for (const item of poke.prices) {
+      if (item && typeof item === 'object') {
+        const val = item.market ?? item.marketPrice ?? item.price ?? item.value ?? item.amount ?? item.mid ?? item.low;
+        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
+          maxPrice = val;
+        }
+      } else if (typeof item === 'number' && !isNaN(item) && item > maxPrice) {
+        maxPrice = item;
+      }
+    }
+    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
+  }
+
+  if (poke.tcgplayer?.prices) {
+    const p = poke.tcgplayer.prices as Record<string, any>;
+    let maxPrice = 0;
+    for (const key of Object.keys(p)) {
+      const sub = p[key];
+      if (sub && typeof sub === 'object') {
+        const val = sub.market ?? sub.mid ?? sub.low;
+        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
+          maxPrice = val;
+        }
+      }
+    }
+    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
+  }
+
+  if (OVERRIDE_CARD_PRICES[poke.id]) return OVERRIDE_CARD_PRICES[poke.id];
+  if (NAME_OVERRIDE_PRICES[poke.name]) return NAME_OVERRIDE_PRICES[poke.name];
+
+  let hash = 0;
+  const str = poke.id || poke.name || 'card';
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const normalizedHash = Math.abs(hash) % 100 / 100;
+
+  const isEnergy = poke.name?.toLowerCase().includes('energy') || poke.id?.toLowerCase().includes('energy');
+  const isExOrMega = poke.name?.includes('ex') || poke.name?.includes('MEGA') || poke.name?.includes('VMAX') || poke.name?.includes('VSTAR');
+  const rarity = poke.rarity || '';
+
+  if (isEnergy || rarity.includes('Common') || rarity.includes('Uncommon') || !rarity) {
+    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+  }
+
+  const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
+  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold');
+  const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
+
+  if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
+    return Number((30.00 + normalizedHash * 60.00).toFixed(2));
+  } else if (isSecretOrAlt) {
+    return Number((15.00 + normalizedHash * 30.00).toFixed(2));
+  } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
+    return Number((2.00 + normalizedHash * 8.00).toFixed(2));
+  } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
+    return Number((0.50 + normalizedHash * 2.50).toFixed(2));
+  } else {
+    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+  }
+};
+
+export function formatAndSortPackCards(newCards: PokemonCard[]) {
+  const formatted = newCards.map((poke, idx) => ({
+    id: `${poke.id || 'card'}-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 9)}`,
+    originalIndex: idx,
+    value: getRealCardPrice(poke),
+    pokemon: poke
+  }));
+  const energyIdx = formatted.findIndex(c => c.pokemon.name?.toLowerCase().includes('energy') || c.pokemon.id?.toLowerCase().includes('energy'));
+  if (energyIdx > 0) {
+    const [energyCard] = formatted.splice(energyIdx, 1);
+    formatted.unshift(energyCard);
+  }
+  let maxIdx = 0;
+  let maxVal = formatted[0]?.value || 0;
+  for (let i = 1; i < formatted.length; i++) {
+    if (formatted[i].value >= maxVal) {
+      maxVal = formatted[i].value;
+      maxIdx = i;
+    }
+  }
+  if (maxIdx !== formatted.length - 1 && formatted.length > 1) {
+    const [mostExpensive] = formatted.splice(maxIdx, 1);
+    formatted.push(mostExpensive);
+  }
+  formatted.reverse();
+  return formatted.map((c, idx) => ({ ...c, originalIndex: idx }));
 }
 
 let activeWarmupSetId: string | null = null;

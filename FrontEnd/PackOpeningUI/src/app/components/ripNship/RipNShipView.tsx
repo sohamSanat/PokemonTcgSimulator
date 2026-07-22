@@ -9,8 +9,19 @@ import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
 import { generateVendorReply } from '../../services/geminiVendorChat';
 import { BoosterPackTear } from '../BoosterPackTear';
-import { fetchSetDetails, generatePackFromSet, PokemonCard, getCardImageUrl } from '../../services/tcgdex';
+import { 
+  fetchSetDetails, 
+  generatePackFromSet, 
+  orchestrateSetLoading, 
+  onCardFullCacheUpdated, 
+  cardFullCache, 
+  getRealCardPrice, 
+  formatAndSortPackCards, 
+  getCardImageUrl, 
+  PokemonCard 
+} from '../../services/tcgdex';
 import { resolveVendorCardRealPrice } from '../../services/scrydex';
+import InteractiveCard3D from '../binder/InteractiveCard3D';
 
 interface RipNShipViewProps {
   onBackToPacks: () => void;
@@ -141,6 +152,42 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
+  // Listen for real-time TCGdex full card details updates (names, images, real market prices)
+  useEffect(() => {
+    const handler = () => {
+      setActivePackCards(prevCards => prevCards.map(c => {
+        const cached = cardFullCache.get(c.pokemon.id);
+        if (cached) {
+          const updatedPoke: PokemonCard = {
+            ...c.pokemon,
+            name: cached.name || c.pokemon.name,
+            rarity: cached.rarity || c.pokemon.rarity,
+            illustrator: cached.illustrator || c.pokemon.illustrator,
+            pricing: cached.pricing || c.pokemon.pricing,
+            tcgplayer: cached.tcgplayer || cached.pricing?.tcgplayer ? { prices: cached.tcgplayer || cached.pricing?.tcgplayer, unit: 'USD' } : c.pokemon.tcgplayer,
+            cardmarket: cached.cardmarket || cached.pricing?.cardmarket || c.pokemon.cardmarket,
+            images: {
+              small: getCardImageUrl(cached.image || c.pokemon.images?.small, 'low'),
+              large: getCardImageUrl(cached.image || c.pokemon.images?.large, 'high'),
+            }
+          };
+          const newVal = getRealCardPrice(updatedPoke);
+          return {
+            ...c,
+            value: newVal > 0 ? newVal : c.value,
+            pokemon: updatedPoke
+          };
+        }
+        return c;
+      }));
+    };
+    
+    onCardFullCacheUpdated.add(handler);
+    return () => {
+      onCardFullCacheUpdated.delete(handler);
+    };
+  }, []);
+
   useEffect(() => {
     const viewerInterval = setInterval(() => {
       setViewerCount(prev => prev + Math.floor(Math.random() * 7) - 3);
@@ -210,17 +257,19 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       const setDetails = await fetchSetDetails(activeOrder.setId);
       const newCards = await generatePackFromSet(setDetails, 10);
       
-      // Calculate authentic prices and sort/format
+      // Format & sort cards (Energy first, Chase Hit last in reveal stack)
+      const sorted = formatAndSortPackCards(newCards);
+      
       let maxPrice = 0;
       let topHit: GeneratedCardData | null = null;
       
-      const formattedCards: GeneratedCardData[] = newCards.map((c, idx) => {
-        const val = resolveVendorCardRealPrice(c);
+      const formattedCards: GeneratedCardData[] = sorted.map((c, idx) => {
+        const val = getRealCardPrice(c.pokemon);
         const cardData = {
-          id: `${c.id}-${Date.now()}-${idx}`,
+          id: `${c.pokemon.id}-${Date.now()}-${idx}`,
           value: val,
-          pokemon: c,
-          isHit: false // we will resolve the top hit next
+          pokemon: c.pokemon,
+          isHit: false
         };
         if (val > maxPrice || !topHit) {
           maxPrice = val;
@@ -236,13 +285,15 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       
       setActivePackCards(formattedCards);
       
+      // Warm up full card data & market prices in background
+      orchestrateSetLoading(setDetails, newCards.map(c => c.id));
+      
       // Ready to tear
       sound.playPackOpen();
       setPackStage('tearing');
       
     } catch (err) {
       console.error("Failed to generate real pack", err);
-      // fallback
     } finally {
       setIsLoadingPack(false);
     }
@@ -267,6 +318,37 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     }
   };
 
+  const getCurrentCardName = (card?: GeneratedCardData | null) => {
+    if (!card) return 'Pokemon Card';
+    const cached = cardFullCache.get(card.pokemon.id);
+    return cached?.name || card.pokemon.name || 'Pokemon Card';
+  };
+
+  const getCurrentCardRarity = (card?: GeneratedCardData | null) => {
+    if (!card) return 'Common';
+    const cached = cardFullCache.get(card.pokemon.id);
+    return cached?.rarity || card.pokemon.rarity || 'Common';
+  };
+
+  const getCurrentImage = (card?: GeneratedCardData | null) => {
+    if (!card) return '';
+    const cached = cardFullCache.get(card.pokemon.id);
+    const rawImg = cached?.image || card.pokemon.images?.large || card.pokemon.images?.small;
+    if (rawImg) {
+      return getCardImageUrl(rawImg, 'high');
+    }
+    if ((card.pokemon as any).image) {
+      return getCardImageUrl((card.pokemon as any).image, 'high');
+    }
+    return '';
+  };
+
+  const getCurrentPrice = (card?: GeneratedCardData | null) => {
+    if (!card) return 0.10;
+    const livePrice = getRealCardPrice(card.pokemon);
+    return livePrice > 0 ? livePrice : card.value;
+  };
+
   const handleShipCompletedPack = () => {
     if (!activeOrder || !topHitPulled) return;
 
@@ -274,20 +356,19 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     addCash(activeOrder.totalPaid);
     setTotalRevenue(prev => prev + activeOrder.totalPaid);
 
-    // Get the high quality image properly
-    let imgUrl = topHitPulled.pokemon.images?.large || topHitPulled.pokemon.images?.small;
-    if (!imgUrl && (topHitPulled.pokemon as any).image) {
-      imgUrl = getCardImageUrl((topHitPulled.pokemon as any).image, 'high');
-    }
+    const hitName = getCurrentCardName(topHitPulled);
+    const hitRarity = getCurrentCardRarity(topHitPulled);
+    const hitPrice = getCurrentPrice(topHitPulled);
+    const imgUrl = getCurrentImage(topHitPulled);
 
     const cardToSave: Card = {
       id: topHitPulled.pokemon.id,
-      name: topHitPulled.pokemon.name,
+      name: hitName,
       setName: activeOrder.packName,
       setNumber: '101/150',
-      rarity: topHitPulled.pokemon.rarity || 'Rare',
-      type: 'Rare',
-      currentPrice: topHitPulled.value,
+      rarity: hitRarity,
+      type: hitRarity,
+      currentPrice: hitPrice,
       priceChange: 0,
       priceHistory: [],
       holofoil: topHitPulled.isHit,
@@ -307,7 +388,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         return {
           ...o,
           status: 'completed',
-          pulledCards: [...pulls, { name: topHitPulled.pokemon.name, value: topHitPulled.value, image: imgUrl || '', rarity: topHitPulled.pokemon.rarity || 'Rare' }]
+          pulledCards: [...pulls, { name: hitName, value: hitPrice, image: imgUrl || '', rarity: hitRarity }]
         };
       }
       return o;
@@ -316,7 +397,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     addChatMessage({
       id: Date.now().toString(),
       username: 'STREAM ALERT',
-      message: `🎉 GRAIL HIT SHIPPED! ${activeOrder.username} pulled a ${topHitPulled.pokemon.name} worth $${topHitPulled.value.toFixed(2)}! 🔥`,
+      message: `🎉 GRAIL HIT SHIPPED! ${activeOrder.username} pulled a ${hitName} worth $${hitPrice.toFixed(2)}! 🔥`,
       badge: 'HIT 👑',
       color: 'text-amber-300 font-extrabold',
       avatarColor: 'from-amber-400 to-red-500',
@@ -331,14 +412,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     if (remaining.length > 0) {
       setActiveOrder(remaining[0]);
     }
-  };
-
-  const getCurrentImage = (card: GeneratedCardData) => {
-    let imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
-    if (!imgUrl && (card.pokemon as any).image) {
-      imgUrl = getCardImageUrl((card.pokemon as any).image, 'high');
-    }
-    return imgUrl || '';
   };
 
   return (
@@ -409,20 +482,20 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       )}
 
       {/* ── 3. Overhead Camera & Playmat Arena ── */}
-      <div className="relative flex-1 w-full h-full bg-[#0c0915] flex flex-col items-center justify-center overflow-hidden min-h-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-3 sm:p-6">
-          <div className="w-full h-full border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center relative p-4 overflow-hidden">
+      <div className="relative flex-1 w-full bg-[#0c0915] flex flex-col items-center justify-start overflow-hidden min-h-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-center p-2 sm:p-4 overflow-y-auto custom-scrollbar">
+          <div className="w-full h-full min-h-[420px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-center pb-20 relative px-4 overflow-visible">
 
             {/* STAGE 1: Unopened Pack */}
             {packStage === 'unopened' && (
               <div
                 onClick={handleStartRipPack}
-                className="my-auto relative flex flex-col items-center justify-center cursor-pointer group z-20"
+                className="relative flex flex-col items-center justify-center cursor-pointer group z-20 mt-2 sm:mt-4"
               >
                 <motion.div
                   animate={{ y: [0, -6, 0] }}
                   transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                  className="relative w-36 sm:w-48 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black p-3 flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors"
+                  className="relative w-40 sm:w-52 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-amber-400/50 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex flex-col items-center justify-between text-center select-none group-hover:border-amber-300 transition-colors p-2.5"
                 >
                   {isLoadingPack && (
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
@@ -431,16 +504,27 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                     </div>
                   )}
 
-                  <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest">
+                  <div className="w-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase py-0.5 rounded-full tracking-widest z-10 backdrop-blur-xs">
                     OFFICIAL BOOSTER PACK
                   </div>
 
-                  <div className="space-y-1">
-                    <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
-                    <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
-                  </div>
+                  {activeOrder && getPackArtsForSet(activeOrder.setId, packArtsManifest)[0] ? (
+                    <div className="relative w-full flex-1 my-1 rounded-lg overflow-hidden flex items-center justify-center min-h-0">
+                      <img 
+                        src={getPackArtsForSet(activeOrder.setId, packArtsManifest)[0]} 
+                        alt={activeOrder.packName} 
+                        className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+                    </div>
+                  ) : (
+                    <div className="space-y-1 my-auto">
+                      <Package className="w-10 h-10 sm:w-14 sm:h-14 text-amber-400 mx-auto animate-pulse" />
+                      <div className="text-xs sm:text-sm font-black text-white">{activeOrder ? activeOrder.packName : 'Pokemon TCG Pack'}</div>
+                    </div>
+                  )}
 
-                  <div className="w-full bg-black/70 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/30 uppercase">
+                  <div className="w-full bg-black/80 text-[9px] font-mono text-amber-300 font-bold py-1 rounded border border-amber-400/40 uppercase z-10 tracking-wider">
                     TAP PACK TO TEAR FOIL
                   </div>
                 </motion.div>
@@ -449,7 +533,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
             {/* STAGE 2: Tear Mechanic */}
             {packStage === 'tearing' && (
-              <div className="my-auto flex flex-col items-center justify-center z-30">
+              <div className="flex flex-col items-center justify-center z-30 mt-2 sm:mt-4">
                 <div className="w-48 sm:w-60">
                   <BoosterPackTear
                     packArts={activePackArts}
@@ -468,7 +552,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
             {/* STAGE 3: 10-Card Stack Reveal */}
             {packStage === 'opened' && activePackCards.length > 0 && (
-              <div className="my-auto flex flex-col items-center justify-center z-30 w-full max-w-sm px-4">
+              <div className="flex flex-col items-center justify-center z-30 w-full max-w-sm px-4 mt-1 sm:mt-2">
                 <div className="flex items-center justify-between w-full mb-2 px-1">
                   <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
                     <Layers className="w-3.5 h-3.5 text-amber-400" />
@@ -483,52 +567,51 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
                 <div 
                   onClick={handleFlipNextCard}
-                  className="relative w-44 sm:w-56 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/30 cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95"
+                  className="relative w-52 sm:w-64 aspect-[0.718] rounded-2xl overflow-visible cursor-pointer select-none group transition-transform duration-200 transform hover:scale-105 active:scale-95 z-30"
                 >
-                  <img
-                    src={getCurrentImage(activePackCards[currentCardIndex])}
-                    alt={activePackCards[currentCardIndex]?.pokemon.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <InteractiveCard3D
+                    card={{
+                      ...activePackCards[currentCardIndex],
+                      originalIndex: currentCardIndex,
+                      flipped: true,
+                      collected: false,
+                    } as any}
+                    interactive={true}
+                    className="w-full h-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 rounded-2xl group-hover:border-amber-400/60"
+                  >
+                    <img
+                      src={getCurrentImage(activePackCards[currentCardIndex])}
+                      alt={getCurrentCardName(activePackCards[currentCardIndex])}
+                      className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
+                    />
+                  </InteractiveCard3D>
 
-                  {activePackCards[currentCardIndex]?.isHit && (
-                    <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/20 via-purple-500/20 to-cyan-400/20 backdrop-blur-[1px] pointer-events-none animate-pulse" />
-                  )}
-
-                  <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between">
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between z-20 rounded-b-2xl">
                     <div>
-                      <div className="text-xs font-black text-white truncate max-w-[120px] sm:max-w-[150px]">
-                        {activePackCards[currentCardIndex]?.pokemon.name}
+                      <div className="text-xs sm:text-sm font-black text-white truncate max-w-[120px] sm:max-w-[160px]">
+                        {getCurrentCardName(activePackCards[currentCardIndex])}
                       </div>
-                      <div className="text-[9px] text-gray-300 font-bold">
-                        {activePackCards[currentCardIndex]?.pokemon.rarity || 'Common'}
+                      <div className="text-[10px] text-gray-300 font-bold">
+                        {getCurrentCardRarity(activePackCards[currentCardIndex])}
                       </div>
                     </div>
                     <div className="text-xs font-mono font-black text-emerald-400">
-                      ${activePackCards[currentCardIndex]?.value.toFixed(2)}
+                      ${getCurrentPrice(activePackCards[currentCardIndex]).toFixed(2)}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 w-full flex gap-2">
-                  {currentCardIndex < activePackCards.length - 1 ? (
-                    <button
-                      onClick={handleFlipNextCard}
-                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-600 text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1 cursor-pointer hover:brightness-110"
-                    >
-                      <RotateCw className="w-3.5 h-3.5" />
-                      <span>FLIP NEXT CARD ({currentCardIndex + 1}/10)</span>
-                    </button>
-                  ) : (
+                {currentCardIndex === activePackCards.length - 1 && (
+                  <div className="mt-3 w-full flex">
                     <button
                       onClick={handleShipCompletedPack}
-                      className="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-110 animate-bounce"
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-110 animate-bounce"
                     >
                       <Award className="w-4 h-4" />
                       <span>SHIP PACK TO BUYER ✓</span>
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
