@@ -24,6 +24,7 @@ import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
 import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
+import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack } from './data/mysteryPacks';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -106,7 +107,9 @@ const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> =
   return `/setLogos/${safeId}.png`;
 };
 
-const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined): number => {
+const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined, mysteryPackOverride?: MysteryPackConfig | null): number => {
+  if (mysteryPackOverride) return mysteryPackOverride.price;
+  if ((set as any)?.mysteryPackPrice) return Number((set as any).mysteryPackPrice);
   if (!set) return 10.99;
 
   // 1. Check if set object or TCGdex has any custom pricing metadata attached
@@ -1661,6 +1664,7 @@ const ENGLISH_SERIES_TABS = [
   { id: 'sm', name: 'Sun & Moon' },
   { id: 'xy', name: 'XY Series' },
   { id: 'base', name: 'Original / Base' },
+  { id: 'mystery_en', name: '🎁 Mystery Packs' },
 ];
 
 const JAPANESE_SERIES_TABS = [
@@ -1670,6 +1674,7 @@ const JAPANESE_SERIES_TABS = [
   { id: 'sm_ja', name: 'Sun & Moon' },
   { id: 'xy_ja', name: 'XY Series' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
+  { id: 'mystery_ja', name: '🎁 Mystery Packs' },
 ];
 
 
@@ -1752,6 +1757,7 @@ export default function App() {
   const [isHoveringStack, setIsHoveringStack] = useState(false);
 
   const [currentSet, setCurrentSet] = useState<TCGDexSet | null>(null);
+  const [currentMysteryPack, setCurrentMysteryPack] = useState<MysteryPackConfig | null>(null);
   const [isLoadingPack, setIsLoadingPack] = useState<boolean>(false);
   const isLoadingPackRef = useRef<boolean>(false);
   const [isSetSelectorOpen, setIsSetSelectorOpen] = useState<boolean>(false);
@@ -2042,7 +2048,7 @@ export default function App() {
 
       // 2. Only when that loading is finished, start loading up other generation's sets' logos in the background
       const activeTabs = ENGLISH_SERIES_TABS;
-      const otherSeries = activeTabs.map(t => t.id).filter(id => id !== selectedSeriesId);
+      const otherSeries = activeTabs.map(t => t.id).filter(id => id !== selectedSeriesId && !id.startsWith('mystery'));
       for (const seriesId of otherSeries) {
         if (!isActive) break;
         await preloadSeriesLogos(seriesId, selectedLanguage);
@@ -2229,16 +2235,20 @@ export default function App() {
     }, 900);
   };
 
-  const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja') => {
+  const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja', mysteryPack?: MysteryPackConfig | null) => {
     if (isLoadingPackRef.current) return;
     isLoadingPackRef.current = true;
-    const langToUse = forceLanguage || selectedLanguage;
+    const langToUse = forceLanguage || (mysteryPack ? mysteryPack.language : selectedLanguage);
     sound.playPackOpen();
     setIsLoadingPack(true);
     setIsSetSelectorOpen(false);
     setPackStage('unopened');
     setTearProgress(0);
     setBinderAddedIds(new Set());
+
+    if (mysteryPack !== undefined) {
+      setCurrentMysteryPack(mysteryPack);
+    }
 
     // Pick pack arts for this set from manifest or default
     const setArts = getPackArtsForSet(setId, undefined, packArtsManifest);
@@ -2248,6 +2258,10 @@ export default function App() {
     try {
       if (langToUse === 'ja') {
         const setDetails = await fetchSingleJapaneseSet(setId);
+        if (mysteryPack) {
+          (setDetails as any).mysteryPackPrice = mysteryPack.price;
+          (setDetails as any).mysteryPackName = mysteryPack.name;
+        }
         setCurrentSet(setDetails);
         const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
         if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
@@ -2258,6 +2272,10 @@ export default function App() {
         setIsChaseCardsReady(true);
       } else {
         const setDetails = await fetchSetDetails(setId);
+        if (mysteryPack) {
+          (setDetails as any).mysteryPackPrice = mysteryPack.price;
+          (setDetails as any).mysteryPackName = mysteryPack.name;
+        }
         setCurrentSet(setDetails);
         const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
         if (refinedArts !== DEFAULT_PACK_ARTS || setArts === DEFAULT_PACK_ARTS) {
@@ -2307,7 +2325,7 @@ export default function App() {
   // Fetch series sets with race condition protection when modal opens or tab changes
   useEffect(() => {
     let mounted = true;
-    if (isSetSelectorOpen && selectedSeriesId) {
+    if (isSetSelectorOpen && selectedSeriesId && !selectedSeriesId.startsWith('mystery')) {
       setIsLoadingSeries(true);
       if (selectedLanguage === 'ja') {
         fetchJapaneseSeriesDetails(selectedSeriesId)
@@ -2539,6 +2557,13 @@ export default function App() {
     if (deductFromNetReturn > 0) {
       setSessionSpent(prev => prev + deductFromNetReturn);
     }
+    // If opening a mystery pack, draw a new random set from the mystery pack pool on reset
+    if (currentMysteryPack) {
+      const nextRandomSetId = getRandomSetFromMysteryPack(currentMysteryPack);
+      await loadSetAndGeneratePack(nextRandomSetId, currentMysteryPack.language, currentMysteryPack);
+      return;
+    }
+
     if (currentSet) {
       if (isLoadingPackRef.current) return;
       isLoadingPackRef.current = true;
@@ -2977,7 +3002,19 @@ export default function App() {
               transition={{ duration: 0.5 }}
               className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 text-center"
             >
-              {currentSet?.name || 'Live Cards'}
+              {currentMysteryPack ? (
+                <span className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
+                  <span className="text-amber-400 font-extrabold flex items-center gap-1.5">
+                    <span>{currentMysteryPack.icon}</span>
+                    <span>{currentMysteryPack.name}</span>
+                  </span>
+                  <span className="text-xs sm:text-sm px-3 py-1 rounded-full bg-white/10 text-gray-300 font-medium border border-white/15">
+                    Set: {currentSet?.name || 'Loading'}
+                  </span>
+                </span>
+              ) : (
+                currentSet?.name || 'Live Cards'
+              )}
             </motion.h1>
 
             {/* SMALL CIRCLE WITH CHECKLIST SYMBOL */}
@@ -3692,7 +3729,11 @@ export default function App() {
               <div className="flex justify-center border-b border-white/10 p-4">
                 <div className="bg-[#0f0f13] border border-white/10 rounded-full p-1 flex shadow-inner">
                   <button
-                    onClick={() => { sound.playTabSwitch(); setSelectedLanguage('en'); setSelectedSeriesId(ENGLISH_SERIES_TABS[0].id); }}
+                    onClick={() => {
+                      sound.playTabSwitch();
+                      setSelectedLanguage('en');
+                      setSelectedSeriesId(prev => prev.startsWith('mystery') ? 'mystery_en' : ENGLISH_SERIES_TABS[0].id);
+                    }}
                     className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'en'
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -3701,7 +3742,11 @@ export default function App() {
                     English
                   </button>
                   <button
-                    onClick={() => { sound.playTabSwitch(); setSelectedLanguage('ja'); setSelectedSeriesId(JAPANESE_SERIES_TABS[0].id); }}
+                    onClick={() => {
+                      sound.playTabSwitch();
+                      setSelectedLanguage('ja');
+                      setSelectedSeriesId(prev => prev.startsWith('mystery') ? 'mystery_ja' : JAPANESE_SERIES_TABS[0].id);
+                    }}
                     className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'ja'
                         ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]'
                         : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -3730,7 +3775,74 @@ export default function App() {
 
               {/* Sets Grid */}
               <div className="p-6 overflow-y-auto flex-1">
-                {isLoadingSeries ? (
+                {(selectedSeriesId === 'mystery_en' || selectedSeriesId === 'mystery_ja') ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                    {(selectedLanguage === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS).map(pack => (
+                      <div
+                        key={pack.id}
+                        onClick={() => {
+                          const randomSetId = getRandomSetFromMysteryPack(pack);
+                          if (activeTab === 'multiplayerArena' && matchId) {
+                            try {
+                              void updateMatchPack(matchId, randomSetId);
+                              setIsSetSelectorOpen(false);
+                            } catch (err) {
+                              console.error("Failed to update match set", err);
+                            }
+                          } else {
+                            void loadSetAndGeneratePack(randomSetId, pack.language, pack);
+                          }
+                        }}
+                        className={`p-5 rounded-3xl border bg-gradient-to-br ${pack.gradient} ${pack.borderColor} ${pack.glowColor} transition-all duration-300 cursor-pointer flex flex-col justify-between group hover:scale-[1.03] relative overflow-hidden shadow-2xl`}
+                      >
+                        <div className="flex items-center justify-between mb-3 z-10">
+                          <span className="px-3 py-1 rounded-full bg-black/70 border border-white/20 text-[11px] font-black text-white tracking-wide backdrop-blur-md shadow-md flex items-center gap-1.5">
+                            <span>{pack.icon}</span>
+                            <span>{pack.badge}</span>
+                          </span>
+                          <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-black font-black text-xs shadow-lg font-mono">
+                            ${pack.price.toFixed(2)}
+                          </span>
+                        </div>
+
+                        <div className="my-2 z-10">
+                          <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition-colors drop-shadow-md flex items-center gap-2">
+                            {pack.name}
+                          </h3>
+                          <p className="text-xs text-gray-300/90 mt-1.5 line-clamp-2 leading-relaxed">
+                            {pack.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-white/10 z-10">
+                          <div className="text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span>Possible Set Draws</span>
+                            <span className="text-amber-400 font-extrabold">{pack.setIds.length} Sets</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {pack.highlightSets.slice(0, 4).map((setName, idx) => (
+                              <span key={idx} className="px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-[10px] text-gray-200 font-semibold truncate max-w-[120px]">
+                                {setName}
+                              </span>
+                            ))}
+                            {pack.highlightSets.length > 4 && (
+                              <span className="px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-[10px] text-amber-300 font-bold">
+                                +{pack.highlightSets.length - 4} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-4 w-full py-2.5 rounded-xl bg-white/15 group-hover:bg-amber-400 group-hover:text-black text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md z-10">
+                          <Sparkles className="w-4 h-4 text-amber-300 group-hover:text-black" />
+                          <span>Open Mystery Pack (${pack.price.toFixed(2)})</span>
+                        </div>
+
+                        <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/5 blur-2xl group-hover:bg-amber-400/20 transition-all pointer-events-none" />
+                      </div>
+                    ))}
+                  </div>
+                ) : isLoadingSeries ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-3" />
                     <span className="text-sm text-gray-400">Loading series sets...</span>
