@@ -319,11 +319,11 @@ export default function PrePSARestorationStudio({
                 <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="text-sm md:text-lg font-black text-white tracking-tight">Card Conservation Studio</h2>
                   <span className="bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] md:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                    ⭐ 85% GEM BOOST
+                    ⭐ ODDS BOOST: 20% PSA 10 | 30% PSA 9
                   </span>
                 </div>
                 <p className="hidden md:block text-xs text-amber-400/70 font-medium">
-                  Un-warp foil curves, seal edge whitening, buff holo scuffs, and encapsulate in Card Saver 1!
+                  Un-warp curves, touch up dings & scuffs! Bumps PSA 10 chance to 20% & PSA 9 to 30%!
                 </p>
               </div>
             </div>
@@ -505,7 +505,7 @@ export default function PrePSARestorationStudio({
             </div>
 
             {/* Interactive Workbench Workspace */}
-            <div className="flex-1 flex flex-col items-center justify-center p-3 md:p-6 relative overflow-hidden bg-[#0a070e] min-h-[380px] md:min-h-0">
+            <div className="flex-1 flex flex-col items-center justify-start p-3 md:p-6 relative overflow-y-auto custom-scrollbar bg-[#0a070e] min-h-[380px] md:min-h-0">
               <div className="absolute inset-0 bg-[radial-gradient(#261d33_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
 
               {selectedCard ? (
@@ -876,14 +876,14 @@ export default function PrePSARestorationStudio({
                   </div>
 
                   {/* Action Button: Send to PSA Grading */}
-                  <div className="mt-3 md:mt-4 w-full flex items-center justify-center">
+                  <div className="mt-4 pb-6 w-full flex items-center justify-center">
                     <button
                       onClick={handleCompleteRestoration}
-                      className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs md:text-sm uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Award className="w-4 h-4" />
-                      <span>Submit Card to PSA (85% Gem Boost)</span>
-                      <ChevronRight className="w-4 h-4" />
+                      <Award className="w-4 h-4 md:w-5 md:h-5" />
+                      <span>Submit Card to PSA (Boosted Odds: 20% PSA 10 | 30% PSA 9)</span>
+                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
                 </div>

@@ -279,15 +279,26 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
     let mult = 3.2;
 
     if (isRestoredBoosted || card.isRestored) {
+      // Restored card odds: PSA 7 (25%), PSA 8 (25%), PSA 9 (30%), PSA 10 (20%)
       const rand = Math.random();
-      if (rand < 0.85) {
+      const randSub = Math.random();
+
+      if (rand < 0.25) {
+        gradeNum = 7;
+        centeringScore = 7.5; surfaceScore = 7.0; cornersScore = 7.5; edgesScore = 7.0 + (randSub > 0.5 ? 0.5 : 0);
+        mult = 1.05 + randSub * 0.1;
+      } else if (rand < 0.50) {
+        gradeNum = 8;
+        centeringScore = 8.5; surfaceScore = 8.0; cornersScore = 8.5; edgesScore = 8.0 + (randSub > 0.5 ? 0.5 : 0);
+        mult = 1.25 + randSub * 0.15;
+      } else if (rand < 0.80) {
+        gradeNum = 9;
+        centeringScore = 9.5; surfaceScore = 9.0; cornersScore = 9.5; edgesScore = 9.0 + (randSub > 0.5 ? 0.5 : 0);
+        mult = 1.8 + randSub * 0.2;
+      } else {
         gradeNum = 10;
         centeringScore = 10; surfaceScore = 10; cornersScore = 10; edgesScore = 10;
-        mult = 3.2;
-      } else {
-        gradeNum = 9;
-        centeringScore = 9.5; surfaceScore = 9.5; cornersScore = 9.5; edgesScore = 9.0;
-        mult = 1.8;
+        mult = 2.8 + randSub * 0.6;
       }
     } else if (forcedTargetGrade !== undefined) {
       gradeNum = forcedTargetGrade;
@@ -305,8 +316,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
         mult = 1.05;
       }
     } else {
-      // User-pulled binder cards: exact requested probabilities
-      // PSA 7: 35%, PSA 8: 35%, PSA 9: 20%, PSA 10: 10%
+      // Unrestored base odds: PSA 7 (35%), PSA 8 (35%), PSA 9 (20%), PSA 10 (10%)
       const rand = Math.random();
       const randSub = Math.random();
 
