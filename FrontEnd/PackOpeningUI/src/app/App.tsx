@@ -22,9 +22,9 @@ import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
-import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
+import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
-import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack } from './data/mysteryPacks';
+import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1658,23 +1658,23 @@ const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAddedToBin
 });
 
 const ENGLISH_SERIES_TABS = [
+  { id: 'mystery_en', name: '🎁 Mystery Packs' },
   { id: 'me', name: 'Mega Evolution' },
   { id: 'sv', name: 'Scarlet & Violet' },
   { id: 'swsh', name: 'Sword & Shield' },
   { id: 'sm', name: 'Sun & Moon' },
   { id: 'xy', name: 'XY Series' },
   { id: 'base', name: 'Original / Base' },
-  { id: 'mystery_en', name: '🎁 Mystery Packs' },
 ];
 
 const JAPANESE_SERIES_TABS = [
+  { id: 'mystery_ja', name: '🎁 Mystery Packs' },
   { id: 'me_ja', name: 'Mega Evolution' },
   { id: 'sv_ja', name: 'Scarlet & Violet' },
   { id: 'swsh_ja', name: 'Sword & Shield' },
   { id: 'sm_ja', name: 'Sun & Moon' },
   { id: 'xy_ja', name: 'XY Series' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
-  { id: 'mystery_ja', name: '🎁 Mystery Packs' },
 ];
 
 
@@ -1763,10 +1763,17 @@ export default function App() {
   const [isSetSelectorOpen, setIsSetSelectorOpen] = useState<boolean>(false);
   const [showChaseModal, setShowChaseModal] = useState<boolean>(false);
   const [cacheTick, setCacheTick] = useState<number>(0);
-  const [selectedSeriesId, setSelectedSeriesId] = useState<string>('swsh');
+  const [selectedSeriesId, setSelectedSeriesId] = useState<string>('mystery_en');
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ja'>('en');
   const [currentSeriesData, setCurrentSeriesData] = useState<TCGDexSeries | null>(null);
   const [isLoadingSeries, setIsLoadingSeries] = useState<boolean>(false);
+  const [pityNotification, setPityNotification] = useState<{
+    show: boolean;
+    packName: string;
+    setName: string;
+    bonusPacksCount: number;
+    price: number;
+  } | null>(null);
 
   const [sessionTotal, setSessionTotal] = useState(() => {
     try {
@@ -2235,7 +2242,7 @@ export default function App() {
     }, 900);
   };
 
-  const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja', mysteryPack?: MysteryPackConfig | null) => {
+  const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja', mysteryPack?: MysteryPackConfig | null, mysteryResult?: MysteryPackResult | null) => {
     if (isLoadingPackRef.current) return;
     isLoadingPackRef.current = true;
     const langToUse = forceLanguage || (mysteryPack ? mysteryPack.language : selectedLanguage);
@@ -2245,6 +2252,7 @@ export default function App() {
     setPackStage('unopened');
     setTearProgress(0);
     setBinderAddedIds(new Set());
+    setPityNotification(null);
 
     if (mysteryPack !== undefined) {
       setCurrentMysteryPack(mysteryPack);
@@ -2262,8 +2270,10 @@ export default function App() {
     }
 
     try {
+      let resolvedSetName = setId;
       if (langToUse === 'ja') {
         const setDetails = await fetchSingleJapaneseSet(setId);
+        resolvedSetName = setDetails.name || setId;
         if (effectiveMysteryPack) {
           (setDetails as any).mysteryPackPrice = effectiveMysteryPack.price;
           (setDetails as any).mysteryPackName = effectiveMysteryPack.name;
@@ -2278,6 +2288,7 @@ export default function App() {
         setIsChaseCardsReady(true);
       } else {
         const setDetails = await fetchSetDetails(setId);
+        resolvedSetName = setDetails.name || setId;
         if (effectiveMysteryPack) {
           (setDetails as any).mysteryPackPrice = effectiveMysteryPack.price;
           (setDetails as any).mysteryPackName = effectiveMysteryPack.name;
@@ -2294,6 +2305,23 @@ export default function App() {
           setIsChaseCardsReady(true);
         });
       }
+
+      // Check if mystery pack pity protection was triggered
+      if (effectiveMysteryPack && mysteryResult && !mysteryResult.isHighTier && mysteryResult.bonusPacksCount > 0) {
+        addEarnedSetPacks([{
+          setId: setId,
+          setName: resolvedSetName,
+          language: langToUse,
+          count: mysteryResult.bonusPacksCount
+        }]);
+        setPityNotification({
+          show: true,
+          packName: effectiveMysteryPack.name,
+          setName: resolvedSetName,
+          bonusPacksCount: mysteryResult.bonusPacksCount,
+          price: effectiveMysteryPack.price
+        });
+      }
     } catch (error) {
       console.error('Failed to load set pack:', error);
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
@@ -2301,7 +2329,7 @@ export default function App() {
       isLoadingPackRef.current = false;
       setIsLoadingPack(false);
     }
-  }, [packArtsManifest, selectedLanguage]);
+  }, [packArtsManifest, selectedLanguage, currentMysteryPack]);
 
   // Load initial set on mount only once
   const hasLoadedInitialSetRef = useRef(false);
@@ -2565,8 +2593,8 @@ export default function App() {
     }
     // If opening a mystery pack, draw a new random set from the mystery pack pool on reset
     if (currentMysteryPack) {
-      const nextRandomSetId = getRandomSetFromMysteryPack(currentMysteryPack);
-      await loadSetAndGeneratePack(nextRandomSetId, currentMysteryPack.language, currentMysteryPack);
+      const result = rollMysteryPackResult(currentMysteryPack);
+      await loadSetAndGeneratePack(result.setId, currentMysteryPack.language, currentMysteryPack, result);
       return;
     }
 
@@ -3469,6 +3497,46 @@ export default function App() {
                     🔥
                   </motion.div>
 
+                  {/* Pity Protection Active Alert Banner */}
+                  <AnimatePresence>
+                    {pityNotification && pityNotification.show && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                        className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 sm:w-96 p-3 rounded-2xl bg-gradient-to-r from-amber-950/95 via-purple-950/95 to-slate-900/95 border-2 border-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.6)] backdrop-blur-xl z-30 text-left select-none"
+                      >
+                        <div className="flex items-start justify-between gap-2.5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-black flex items-center justify-center text-lg shrink-0 shadow-md font-black">
+                              🛡️
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[9px] font-black uppercase tracking-wider text-amber-300 bg-amber-400/20 px-1.5 py-0.2 rounded border border-amber-400/40">
+                                  Pity Protection Active
+                                </span>
+                                <span className="text-[10px] text-amber-300/80 font-mono font-bold">${pityNotification.price.toFixed(2)}</span>
+                              </div>
+                              <h5 className="text-xs font-black text-white mt-0.5 truncate max-w-[210px]">
+                                Drawn: {pityNotification.setName}
+                              </h5>
+                              <p className="text-[10px] text-amber-200/90 mt-0.5 leading-tight">
+                                Compensated with <strong className="text-amber-300 font-extrabold">+{pityNotification.bonusPacksCount} FREE Packs</strong> of {pityNotification.setName} in inventory!
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => setPityNotification(null)}
+                            className="p-1 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer shrink-0"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   <BoosterPackTear
                     packArts={currentPackArts}
                     packArtIndex={packArtIndex}
@@ -3787,16 +3855,16 @@ export default function App() {
                       <div
                         key={pack.id}
                         onClick={() => {
-                          const randomSetId = getRandomSetFromMysteryPack(pack);
+                          const result = rollMysteryPackResult(pack);
                           if (activeTab === 'multiplayerArena' && matchId) {
                             try {
-                              void updateMatchPack(matchId, randomSetId);
+                              void updateMatchPack(matchId, result.setId);
                               setIsSetSelectorOpen(false);
                             } catch (err) {
                               console.error("Failed to update match set", err);
                             }
                           } else {
-                            void loadSetAndGeneratePack(randomSetId, pack.language, pack);
+                            void loadSetAndGeneratePack(result.setId, pack.language, pack, result);
                           }
                         }}
                         className={`p-5 rounded-3xl border bg-gradient-to-br ${pack.gradient} ${pack.borderColor} ${pack.glowColor} transition-all duration-300 cursor-pointer flex flex-col justify-between group hover:scale-[1.03] relative overflow-hidden shadow-2xl`}
@@ -3813,11 +3881,11 @@ export default function App() {
 
                         <div className="my-2 flex items-center gap-3.5 z-10">
                           {pack.packArt && (
-                            <div className="w-16 h-24 shrink-0 rounded-xl overflow-hidden border border-white/25 shadow-[0_8px_20px_rgba(0,0,0,0.6)] bg-black/40 flex items-center justify-center p-1 group-hover:scale-105 group-hover:border-amber-400/50 transition-all duration-300">
+                            <div className="w-11 h-16 sm:w-12 sm:h-18 shrink-0 rounded-xl overflow-hidden border border-white/25 shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-black/40 flex items-center justify-center p-0.5 group-hover:scale-105 group-hover:border-amber-400/50 transition-all duration-300">
                               <img
                                 src={pack.packArt}
                                 alt={pack.name}
-                                className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]"
+                                className="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
                                 onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
                               />
                             </div>
@@ -3837,7 +3905,7 @@ export default function App() {
                             <span className="flex items-center gap-1.5">
                               <span>Possible Sets</span>
                               <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-extrabold normal-case">
-                                {pack.id.includes('bronze') || pack.id.includes('starter') ? '100% Tier 1' : '60% Tier / 40% Lower'}
+                                {pack.id.includes('bronze') || pack.id.includes('starter') ? '100% Tier 1' : '60% Tier / 40% Lower (Pity Protected)'}
                               </span>
                             </span>
                             <span className="text-amber-400 font-extrabold">{pack.setIds.length} Sets</span>

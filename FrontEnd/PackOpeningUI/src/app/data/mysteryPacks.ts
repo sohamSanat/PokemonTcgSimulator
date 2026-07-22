@@ -185,37 +185,74 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
   }
 ];
 
-export function getRandomSetFromMysteryPack(pack: MysteryPackConfig): string {
+export interface MysteryPackResult {
+  setId: string;
+  isHighTier: boolean;
+  bonusPacksCount: number;
+  tierGap: number;
+}
+
+export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResult {
   const packList = pack.language === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS;
   const tierIndex = packList.findIndex(p => p.id === pack.id);
 
   if (tierIndex <= 0) {
-    if (!pack.setIds || pack.setIds.length === 0) return pack.language === 'ja' ? 'SV1S_ja' : 'me01';
-    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
-    return pack.setIds[randomIndex];
+    const defaultSetId = !pack.setIds || pack.setIds.length === 0 ? (pack.language === 'ja' ? 'SV1S_ja' : 'me01') : pack.setIds[Math.floor(Math.random() * pack.setIds.length)];
+    return {
+      setId: defaultSetId,
+      isHighTier: true,
+      bonusPacksCount: 0,
+      tierGap: 0
+    };
   }
 
-  // 60% chance for current tier sets, 40% aggregate chance for any lower tier sets
   const roll = Math.random();
   if (roll < 0.60) {
     const randomIndex = Math.floor(Math.random() * pack.setIds.length);
-    return pack.setIds[randomIndex];
+    return {
+      setId: pack.setIds[randomIndex],
+      isHighTier: true,
+      bonusPacksCount: 0,
+      tierGap: 0
+    };
   } else {
-    // Combine all setIds from all tiers below the current tier
-    const lowerSetIds: string[] = [];
-    for (let i = 0; i < tierIndex; i++) {
-      if (packList[i].setIds) {
-        lowerSetIds.push(...packList[i].setIds);
-      }
+    // 40% chance: User loses the 60/40 roll and gets a lower tier set
+    const targetLowerTierIndex = Math.floor(Math.random() * tierIndex);
+    const targetLowerPack = packList[targetLowerTierIndex];
+    const lowerSetIds = (targetLowerPack.setIds && targetLowerPack.setIds.length > 0)
+      ? targetLowerPack.setIds
+      : pack.setIds;
+
+    const selectedSetId = lowerSetIds[Math.floor(Math.random() * lowerSetIds.length)];
+    const tierGap = tierIndex - targetLowerTierIndex;
+
+    // Calculate pity bonus packs based on tier gap to compensate for the lower-tier roll
+    let bonusPacksCount = 2;
+    if (tierGap >= 4) {
+      // 4+ Tiers lower (e.g. $300 God Tier or $100 Vintage hitting Bronze/Starter)
+      bonusPacksCount = Math.floor(Math.random() * 2) + 5; // 5 to 6 bonus packs
+    } else if (tierGap === 3) {
+      // 3 Tiers lower (e.g. $300 God Tier hitting Silver)
+      bonusPacksCount = Math.floor(Math.random() * 2) + 4; // 4 to 5 bonus packs
+    } else if (tierGap === 2) {
+      // 2 Tiers lower
+      bonusPacksCount = Math.floor(Math.random() * 2) + 3; // 3 to 4 bonus packs
+    } else {
+      // 1 Tier lower
+      bonusPacksCount = Math.floor(Math.random() * 2) + 2; // 2 to 3 bonus packs
     }
-    if (lowerSetIds.length > 0) {
-      const randomIndex = Math.floor(Math.random() * lowerSetIds.length);
-      return lowerSetIds[randomIndex];
-    }
-    // Fallback if lower pool is empty
-    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
-    return pack.setIds[randomIndex];
+
+    return {
+      setId: selectedSetId,
+      isHighTier: false,
+      bonusPacksCount,
+      tierGap
+    };
   }
+}
+
+export function getRandomSetFromMysteryPack(pack: MysteryPackConfig): string {
+  return rollMysteryPackResult(pack).setId;
 }
 
 export function getMysteryPackById(id: string): MysteryPackConfig | undefined {
