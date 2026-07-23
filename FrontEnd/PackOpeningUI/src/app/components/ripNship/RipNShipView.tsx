@@ -135,6 +135,10 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
         return chosen;
       }
     }
+    if (candidates.length > 0) {
+      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+      if (chosen) return chosen;
+    }
     const rem = fallbackCardPool.filter(c => !pickedIds.has(c.id));
     if (rem.length > 0) {
       const chosen = rem[Math.floor(Math.random() * rem.length)];
@@ -816,7 +820,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       location: 'Los Angeles, California 🇺🇸',
       avatarColor: 'from-amber-400 to-orange-500',
       packName: '151 Booster Pack',
-      setId: 'sv3',
+      setId: 'sv3pt5',
       packCount: 3,
       totalPaid: 86.73,
       status: 'pending'

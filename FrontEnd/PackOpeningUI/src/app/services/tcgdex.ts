@@ -223,6 +223,14 @@ export function normalizeSetId(setId: string): string {
     if (sLow === 'sv8') return 'sv08';
     if (sLow === 'sv8pt5' || sLow === 'sv8.5') return 'sv08.5';
   }
+  if (sLow.startsWith('swsh')) {
+    if (sLow === 'swsh4pt5') return 'swsh4.5';
+    if (sLow === 'swsh12pt5') return 'swsh12.5';
+  }
+  if (sLow.startsWith('sm')) {
+    if (sLow === 'sm115' || sLow === 'sm11pt5') return 'sm11.5';
+  }
+  if (sLow === 'me02pt5') return 'me02.5';
   return setId;
 }
 

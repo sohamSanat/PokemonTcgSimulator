@@ -1,0 +1,525 @@
+================================================================================
+            PACK OPENING SYSTEM ARCHITECTURE — COMPREHENSIVE GUIDE
+================================================================================
+
+Table of Contents
+  1. High-Level Flow
+  2. Pack Structure Per Era
+  3. Hit Tier Probabilities
+     3.1 English — Scarlet & Violet / Mega Evolution
+     3.2 English — Sword & Shield
+     3.3 English — Sun & Moon
+     3.4 English — XY
+     3.5 English — Base / Vintage
+     3.6 Japanese — Standard SV Era
+     3.7 Japanese — Standard SWSH Era
+     3.8 Japanese — Standard SM Era
+     3.9 Japanese — Classic / Older Eras
+     3.10 Japanese — Pokemon Card 151 (sv2a)
+     3.11 Japanese — High Class Sets
+     3.12 God Pack Chance
+  4. Era Detection Logic
+  5. Mystery Pack System
+  6. Pricing Pipeline
+  7. Economy & Free-to-Play
+  8. Key Implementation Files
+  9. Where Probabilities Are Defined
+  10. Architectural Notes
+
+================================================================================
+1. HIGH-LEVEL FLOW
+================================================================================
+
+  Set Selection → Load Set Data → Generate Box (pre-build 36/30 packs)
+  → Tear Pack Animation → Reveal Cards (single-click or reveal-all)
+  → Collect / Binder → Reset for next pack
+
+  English Engine:  tcgdex.ts  — uses TCGdex API (api.tcgdex.net)
+  Japanese Engine: scrydex.ts — uses Scrydex API (api.scrydex.com/pokemon/v1/ja)
+
+================================================================================
+2. PACK STRUCTURE PER ERA
+================================================================================
+
+ENGLISH PACKS (11 cards, 36 packs per box)
+
+  Slot | SV / ME          | SWSH              | SM                | XY                | Base/Vintage
+  ------+------------------+-------------------+-------------------+-------------------+---------------
+    1   | Basic Energy     | Basic Energy      | Energy            | Energy            | Energy/Trainer
+  2-6   | 5 Commons        | 4 Commons         | 4 Commons         | 4 Commons         | 5 Commons
+  7-9   | 3 Uncommons      | 3 Uncommons       | 3 Uncommons       | 3 Uncommons       | (fewer)
+   10   | Reverse Holo     | Reverse Holo      | Special Slot*     | Reverse Holo      | —
+   11   | Rare+ Hit        | Rare+ Hit         | Rare+ Hit         | Rare+ Hit         | Rare+ Hit
+
+  * SM Special Slot can be:
+    - Character Rare (Cosmic Eclipse): 8%
+    - Prism Star:                       8%
+    - Shiny Vault:                     10%
+    - Normal Reverse Holo:             remainder
+
+  SWSH Special Slot (TG/GG sets):
+    - Trainer Gallery / Shiny Vault:   12%
+
+JAPANESE PACKS (card counts vary by set type)
+
+  Standard (5 cards, 30 packs/box):
+    Slot 1: Common
+    Slot 2: Common
+    Slot 3: Common or Uncommon (50/50)
+    Slot 4: Uncommon
+    Slot 5: Hit (R or higher, always holo)
+
+  Pokemon Card 151 (7 cards, 20 packs/box):
+    Slot 1-3: Commons
+    Slot 4:   Uncommon
+    Slot 5:   Master Ball Rev Holo (1 per box) or Poke Ball Rev Holo
+    Slot 6:   Seeded Hit
+    Slot 7:   Energy / Holo / Uncommon
+
+  High Class (10-11 cards, 10 packs/box):
+    Slots 1-4:  Commons
+    Slots 5-6:  Uncommons
+    Slot 7:     Reverse Holo
+    Slot 8:     Guaranteed RR/RRR/ex/V
+    Slot 9:     Box Seeded Hit
+    Slots 10+:  Energy / Uncommon
+
+================================================================================
+3. HIT TIER PROBABILITIES
+================================================================================
+
+Each pack's hit slot rolls independently against a tiered probability table
+specific to the card's era.
+
+3.1 English — Scarlet & Violet / Mega Evolution (sv / me)
+----------------------------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Hyper Rare (Gold)                 |     0.8%   |  1 in 125
+  Special Illustration Rare (SIR)   |     3.0%   |  1 in 33
+  Ultra Rare (Full Art)             |     6.0%   |  1 in 17
+  Illustration Rare (IR)            |    10.0%   |  1 in 10
+  Double Rare (ex)                  |    17.0%   |  1 in 6
+  Holo Rare (default)               |    63.2%   |  —
+
+  Reverse Holo Energy: 15% chance (1 in 6.7 packs)
+  Textured Foil Energy (Crown Zenith): 20% (1 in 5)
+
+3.2 English — Sword & Shield (swsh)
+------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Gold Secret Rare                  |     0.7%   |  1 in 143
+  Rainbow Rare                      |     1.5%   |  1 in 67
+  Full Art                          |     5.0%   |  1 in 20
+  VMAX / VSTAR                      |     8.0%   |  1 in 12
+  Pokemon V                         |    14.0%   |  1 in 7
+  Holo Rare (default)               |    70.8%   |  —
+
+3.3 English — Sun & Moon (sm)
+------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Rare                       |     0.8%   |  1 in 125
+  Rainbow Rare                      |     1.5%   |  1 in 67
+  Full Art                          |     6.0%   |  1 in 17
+  Pokemon-GX                        |    12.0%   |  1 in 8
+  Holo Rare (default)               |    79.7%   |  —
+
+3.4 English — XY (xy)
+----------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Rare                       |     1.0%   |  1 in 100
+  Full Art EX                       |     5.0%   |  1 in 20
+  Pokemon EX                        |     8.0%   |  1 in 12
+  Pokemon BREAK                     |     4.0%   |  1 in 25
+  Holo Rare (default)               |    82.0%   |  —
+
+3.5 English — Base / Vintage (base, gym, neo, ecard, ex, hgss, dp, pl, bw)
+----------------------------------------------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Rare                       |     0.5%   |  1 in 200
+  Holo Rare                         |    33.0%   |  1 in 3
+  Non-Holo Rare (default)           |    66.5%   |  —
+
+3.6 Japanese — Standard SV Era (5-card packs)
+-----------------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Hit (SR/SAR/UR)            |     7.0%   |  1 in 14
+  ACE SPEC                          |     4.0%   |  1 in 25
+  AR (Art Rare)                     |     9.0%   |  1 in 11
+  RR (Double Rare)                  |    14.0%   |  1 in 7
+  R (Holo Rare, default)            |    66.0%   |  —
+
+3.7 Japanese — Standard SWSH Era
+----------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Hit (SR/HR/UR)             |     6.0%   |  1 in 17
+  RRR (Triple Rare)                 |     5.0%   |  1 in 20
+  CSR (Character Super Rare)        |     2.0%   |  1 in 50
+  CHR (Character Rare)              |     6.0%   |  1 in 17
+  RR (Double Rare)                  |    14.0%   |  1 in 7
+  R (Holo Rare, default)            |    67.0%   |  —
+
+3.8 Japanese — Standard SM Era
+--------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Hit (SR/HR/UR)             |     5.0%   |  1 in 20
+  RR (Double Rare)                  |    12.0%   |  1 in 8
+  R (Holo Rare, default)            |    83.0%   |  —
+
+3.9 Japanese — Classic / Older Eras
+-------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Hit (SR/UR)                |     4.0%   |  1 in 25
+  Double Rare / EX                  |    12.0%   |  1 in 8
+  R (Holo Rare, default)            |    84.0%   |  —
+
+3.10 Japanese — Pokemon Card 151 (sv2a — 7-card/20-pack boxes)
+-----------------------------------------------------------------
+
+  Rarity Tier                       | Probability | 1 in X packs
+  -----------------------------------+------------+--------------
+  Secret Hit (SR/SAR/UR)            |     5.0%   |  1 in 20
+  AR (Art Rare)                     |    15.0%   |  1 in 7
+  RR (Double Rare)                  |    22.0%   |  1 in 4.5
+  R (Holo Rare, default)            |    58.0%   |  —
+
+  Master Ball Reverse Holo: exactly 1 per box (1 in 20 packs).
+
+3.11 Japanese — High Class Sets
+(Shiny Treasure ex, VSTAR Universe, etc. — 10-card/10-pack boxes)
+-------------------------------------------------------------------
+
+  Rarity Tier                       | Probability
+  -----------------------------------+------------
+  Secret Hit (SAR/SSR/UR/SR)        |    10.0%
+  Illustration Hit (AR/CHR/S)       |    22.0%
+  R / RR / RRR (default)            |    68.0%
+
+3.12 God Pack Chance
+---------------------
+
+  Japanese High Class boxes: ~0.75% (1 in 133 boxes)
+  Every card in the pack is upgraded to a high-tier rarity
+  (SAR, AR, SSR, SR, HR, UR, CSR, or RRR).
+
+================================================================================
+4. ERA DETECTION LOGIC
+================================================================================
+
+  Era is detected by SET ID PREFIX + NAME HEURISTICS in generatePackFromSet():
+
+  me   (Mega Evolution):
+    Prefix: me*
+    Names: "mega evolution", "phantasmal", "ascended", "perfect order", "chaos rising"
+
+  sv   (Scarlet & Violet):
+    Prefix: sv*
+    Names: "scarlet", "paldea", "obsidian", "paradox", "temporal", "twilight",
+           "stellar", "surging", "151", "prismatic", "shrouded", "flare", "bolt",
+           "fates", "journey", "rivals"
+
+  swsh (Sword & Shield):
+    Prefix: swsh*
+    Names: "sword", "shield", "battle styles", "chilling reign", "evolving skies",
+           "celebrations", etc.
+
+  sm   (Sun & Moon):
+    Prefix: sm*
+    Names: "sun & moon", "guardians rising", "burning shadows", "cosmic eclipse",
+           "team up", etc.
+
+  xy   (XY):
+    Prefix: xy*
+    Names: "xy", "flashfire", "furious fists", "phantom forces", "primal clash",
+           "roaring skies", etc.
+
+  base (Base / Vintage):
+    Prefix: base*, gym*, neo*, ecard*, ex*, hgss*, dp*, pl*, bw*
+    Names: various classic set names
+
+  Each era gets its own:
+    - Hit probability table
+    - Energy pool (ENERGY_POOLS_BY_ERA)
+    - Pack slot structure (common count, special slots, etc.)
+    - Special set flags:
+      isShinyVaultSet, isTrainerGallerySet, isCrownZenith,
+      isCosmicEclipse, isPrismStarSet, isBreakSet
+
+================================================================================
+5. MYSTERY PACK SYSTEM
+================================================================================
+
+  10 tiers (5 English + 5 Japanese) with escalating set pools:
+
+  Tier              | Price   | Lucky Hit % | Best Set Pool
+  -------------------+---------+-------------+------------------------------
+  Bronze Starter    | $8.99   |     6%      | Recent SV
+  Silver Hobby      | $18.99  |     9%      | SV + SWSH
+  Gold Elite        | $34.99  |    12%      | SV + SWSH + SM
+  Diamond Premium   | $59.99  |    15%      | All modern
+  Vintage Reserve   | $99.99  |    18%      | All eras inc. vintage
+
+  Lucky Hit: upgrades the mystery tier (e.g., Bronze → Silver).
+  Pity System: if you roll a low tier below your paid tier:
+
+    Tier Gap | Pity Packs
+    ---------+------------
+    4+       | 5-6 packs
+    3        | 4-5 packs
+    2        | 3-4 packs
+    1        | 2-3 packs
+
+================================================================================
+6. PRICING PIPELINE
+================================================================================
+
+  Multi-layer fallback for card pricing:
+
+  Layer 1: TCGdex live pricing API (TCGPlayer + Cardmarket)  → English
+  Layer 2: ja-card-prices.json (aggregated from Japanese-PriceCharts) → Japanese
+  Layer 3: Scrydex API fallback  → Japanese
+  Layer 4: OVERRIDE_CARD_PRICES (App.tsx manual corrections) → both
+  Layer 5: Hash-based fallback:
+             Holy Grail names  → $30-90
+             Secret Rare names → $15-45
+             Other             → $0.50-5
+           → both
+  Layer 6: set_pack_prices.json → booster pack market prices
+           (for affordability gates)
+
+  Booster pack pricing source:
+    BackEnd/scrape.mjs → TCGPlayer multiplayer API
+    → set_pack_prices.json (written to both BackEnd/ and FrontEnd/PackOpeningUI/src/app/data/)
+
+  Example prices:
+    sv01 (Scarlet & Violet Base):           $10.11
+    sv02 (Paldea Evolved):                  $10.49
+    sv05 (Temporal Forces):                 $11.09
+    swsh01 (Sword & Shield Base):           $12.96
+    swsh07 (Evolving Skies — expensive):    $44.00
+    sm01 (Sun & Moon Base):                 $18.27
+    xy1 (XY Base):                          $26.27
+    base1 (Base Set — vintage):             $67.34
+
+================================================================================
+7. ECONOMY & FREE-TO-PLAY
+================================================================================
+
+  Resource            | Daily Reset | Notes
+  --------------------+-------------+------------------------------------------
+  Free English packs  |   5/day     | Only usable for packs <= $20
+  Free Japanese packs |   5/day     | Only usable for packs <= $20
+  Daily cash          |   $80/day   | For buying expensive packs
+  Earned packs        | From missions | Bound to specific set + language
+  Net return          | Session net | Session total - session spent
+
+  Price Gate Logic (handleTearPack / handleResetPack):
+    1. Check earned set packs (from missions) → use one if available
+    2. Check free daily packs (if pack price <= $20) → use one if available
+    3. Check daily cash + net return → deduct from balance
+    4. If price > $20 and no resources → show price gate modal
+    5. If insufficient cash → show insufficient cash modal
+
+  Mission reward example:
+    { id: 'open_50_packs', type: 'open_pack', target: 50,
+      reward: { type: 'set_pack', setId: 'sv5', language: 'en', count: 3 } }
+
+================================================================================
+8. KEY IMPLEMENTATION FILES
+================================================================================
+
+  FrontEnd/PackOpeningUI/src/app/services/tcgdex.ts
+    English pack engine. Box seeding, pack building, hit probability tables,
+    energy pools (ENERGY_POOLS_BY_ERA), TCGdex API fetching, pricing.
+
+  FrontEnd/PackOpeningUI/src/app/services/scrydex.ts
+    Japanese pack engine. Box seeding (activeJapaneseBoxes Map), pack building,
+    hit tables per era, god packs, Scrydex API, Japanese pricing.
+
+  FrontEnd/PackOpeningUI/src/app/services/missions.ts
+    Free pack & daily cash system, earned set packs, mission definitions,
+    Firestore sync, Firestore reset scheduling.
+
+  FrontEnd/PackOpeningUI/src/app/App.tsx
+    Main UI orchestration (~3794 lines). Set selector, pack tearing initiation,
+    card revealing (flip + collect), pricing pipeline, mystery pack integration,
+    stats tracking, binder integration, price overrides, fallbacks.
+
+  FrontEnd/PackOpeningUI/src/app/data/mysteryPacks.ts
+    Mystery pack configs (10 tiers), rollMysteryPackResult(), lucky hit mechanics,
+    pity bonus pack calculations.
+
+  FrontEnd/PackOpeningUI/src/app/data/set_pack_prices.json
+    Booster pack market prices keyed by set ID.
+
+  FrontEnd/PackOpeningUI/src/app/components/BoosterPackTear.tsx
+    Pack tearing animation component. Clip-path foil reveal with drag/swipe
+    interaction + auto-tear mode.
+
+  FrontEnd/PackOpeningUI/src/app/components/binder/CardSlot.tsx
+    Card display component with rarity-based glow effects.
+
+  FrontEnd/PackOpeningUI/src/app/components/binder/BinderView.tsx
+    Binder with rarity/type/set filters.
+
+  BackEnd/scrape.mjs
+    TCGPlayer multiplayer API scraper for booster pack prices.
+
+  BackEnd/generate-price-data.mjs
+    Generates full en-card-prices.json and ja-card-prices.json databases.
+
+  BackEnd/check-coverage.mjs
+    Coverage checker for price data completeness.
+
+  FrontEnd/PackOpeningUI/src/app/data/promo_cards.json
+    Mission reward promo card definitions.
+
+  FrontEnd/PackOpeningUI/public/en-card-prices.json
+    English card price cache (generated from TCGdex).
+
+  FrontEnd/PackOpeningUI/public/ja-card-prices.json
+    Japanese card price cache (aggregated from Japanese-PriceCharts).
+
+  FrontEnd/PackOpeningUI/public/ja-sets.json
+    Japanese sets metadata.
+
+  FrontEnd/PackOpeningUI/public/ja-card-names.json
+    Japanese-to-English card name translations.
+
+  FrontEnd/PackOpeningUI/public/ja-top-cards.json
+    Top Japanese chase cards with prices.
+
+  FrontEnd/PackOpeningUI/Japanese-PriceCharts/**/cards.json
+    Per-set Japanese card price data, organized by era
+    (Scarlet & Violet, Sword & Shield, Sun & Moon, XY, MegaEvolution).
+
+================================================================================
+9. WHERE PROBABILITIES ARE DEFINED (Exact Source Locations)
+================================================================================
+
+  English Hit Tables:
+    FrontEnd/PackOpeningUI/src/app/services/tcgdex.ts
+    Lines ~892-936
+    One probability array per era (sv/me, swsh, sm, xy, base).
+
+  Japanese Hit Tables:
+    FrontEnd/PackOpeningUI/src/app/services/scrydex.ts
+    Lines ~1045-1095
+    One jHitTable array per box type
+    (standard SV, standard SWSH, standard SM, classic, Pokemon 151, other High Class).
+
+  Japanese God Pack:
+    FrontEnd/PackOpeningUI/src/app/services/scrydex.ts
+    Line ~1028
+    jGodPackChance = 0.0075 (0.75%).
+
+  Mystery Lucky Hit:
+    FrontEnd/PackOpeningUI/src/app/data/mysteryPacks.ts
+    Line ~213
+    LUCKY_HIT_CHANCES: { bronze: 0.06, silver: 0.09, gold: 0.12, diamond: 0.15,
+                         vintage: 0.18 }
+
+  Mystery Pity Pack Counts:
+    FrontEnd/PackOpeningUI/src/app/data/mysteryPacks.ts
+    Lines ~260-270
+
+  Daily Free Pack & Cash Amounts:
+    FrontEnd/PackOpeningUI/src/app/services/missions.ts
+    Lines ~420-425
+    FREE_ENGLISH_PACKS = 5, FREE_JAPANESE_PACKS = 5, DAILY_CASH = 80
+
+  Era Detection Heuristics:
+    FrontEnd/PackOpeningUI/src/app/services/tcgdex.ts
+    generatePackFromSet() function.
+
+  Price Override Tables:
+    FrontEnd/PackOpeningUI/src/app/App.tsx
+    Lines ~330-351
+    OVERRIDE_CARD_PRICES, NAME_OVERRIDE_PRICES
+
+  Hash-based Price Fallback:
+    FrontEnd/PackOpeningUI/src/app/App.tsx
+    Lines ~488-502
+
+================================================================================
+10. ARCHITECTURAL NOTES
+================================================================================
+
+  Box Seeding Change
+  ------------------
+  Originally the system pre-seeded a box with fixed guarantees (e.g., 1 gold +
+  1 SIR + 2 IR + 2 FA + 5 ex per 36 packs). This was changed to independent
+  per-pack rolls with realistic odds to avoid the "all hits in first few packs"
+  clustering bug when shuffling variance would concentrate chase cards.
+
+  Dual-Language Architecture
+  --------------------------
+  English and Japanese systems are completely independent:
+    - Separate API backends (TCGdex vs Scrydex)
+    - Separate pricing databases (en-card-prices.json vs ja-card-prices.json)
+    - Separate box caches (englishBoxCache vs activeJapaneseBoxes)
+    - Separate pack structures (11-card vs 5/7/10-card)
+    - Separate probability tables
+  Only the UI layer in App.tsx unifies them.
+
+  Japanese High Class Hit Density
+  --------------------------------
+  High Class boxes have a guaranteed RR+ in EVERY pack + a box-seeded hit,
+  making them significantly more hit-dense than standard boxes. This
+  intentionally replicates real Japanese high-class product structure
+  (e.g., Shiny Treasure ex, VSTAR Universe).
+
+  Duplicate Prevention
+  --------------------
+  A Set<string> tracks picked card IDs and names within each pack to prevent
+  duplicates from appearing in a single pack opening.
+
+  Pack Art Loading
+  ----------------
+  Pack arts are loaded from a local /packArts/ directory organized by generation:
+    /packArts/ScarletAndViolet-Generation/SV-EnergyCards/1.webp
+  A manifest.json maps sets to their available pack arts.
+
+  God Pack Implementation
+  -----------------------
+  God Packs apply to Japanese High Class boxes only. When triggered (0.75%),
+  every slot in the pack is replaced with a high-tier rarity card drawn from
+  the SAR, AR, SSR, SR, HR, UR, CSR, or RRR pools.
+
+  Pricing Complexity
+  ------------------
+  Card pricing is the most complex subsystem with 6 fallback layers:
+    1. TCGdex live API (English primary)
+    2. Local Japanese price cache (Japanese primary)
+    3. Scrydex API fallback (Japanese secondary)
+    4. Manual override tables (for known mispriced cards)
+    5. Hash-based fallback (generates pseudo-random prices from card names)
+    6. Hardcoded minimum values (~$0.50 for bulk)
+
+  Affordability Gates
+  -------------------
+  The price gate prevents free resources from being used on expensive packs
+  (>$20). This gate exists because daily cash is fixed at $80/day, allowing
+  only ~2 expensive pack openings per day in the free economy, which prevents
+  inflation.
+
+================================================================================
+END OF DOCUMENT
+================================================================================
