@@ -189,34 +189,35 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
         </div>
       </div>
 
-      {/* Earned Set Packs Summary */}
-      {earnedSetPacks.length > 0 && (
-        <div className="mb-8 bg-[#111827]/90 p-4 rounded-2xl border border-amber-500/30 backdrop-blur-md">
-          <h2 className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Gift className="w-4 h-4 text-amber-400" /> Earned Set Packs
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {earnedSetPacks.map((pack, idx) => (
-              <div
-                key={idx}
-                onClick={() => {
-                  sound.playButtonClick();
-                  if (onSelectEarnedPack) {
-                    onSelectEarnedPack(pack.setId, pack.language);
-                  }
-                }}
-                className={`p-3 rounded-xl border text-center cursor-pointer hover:scale-105 transition-all shadow-md hover:shadow-lg ${pack.language === 'en'
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50'
-                    : 'bg-rose-500/10 border-rose-500/30 text-rose-300 hover:bg-rose-500/20 hover:border-rose-500/50'
-                  }`}
-              >
-                <div className="text-[10px] font-mono text-gray-400 uppercase">{pack.setName}</div>
-                <div className="text-lg font-black font-mono mt-1">{pack.count}</div>
-              </div>
-            ))}
+      {/* Pack Inventory / Pack Vault Access Card replacing Earned Set Packs */}
+      <div className="mb-8 bg-gradient-to-r from-[#1b152d] via-[#141024] to-[#100d1e] p-5 sm:p-6 rounded-2xl border-2 border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.2)] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] shrink-0">
+            <Box className="w-6 h-6 animate-pulse" />
+          </div>
+          <div>
+            <h3 className="text-lg font-black font-mono text-white flex items-center gap-2">
+              <span>Pack Vault Inventory</span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[10px] font-mono font-bold">
+                {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)} Booster Packs Ready
+              </span>
+            </h3>
+            <p className="text-xs font-mono text-gray-300 mt-0.5">
+              All your earned set packs & mystery packs are safely stored in your Pack Vault ready to rip.
+            </p>
           </div>
         </div>
-      )}
+
+        {onOpenInventory && (
+          <button
+            onClick={() => { sound.playButtonClick(); onOpenInventory(); }}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white font-mono font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.5)] border border-amber-300/60 flex items-center justify-center gap-2 cursor-pointer transform hover:scale-105 active:scale-95 shrink-0"
+          >
+            <Box className="w-4 h-4 text-yellow-200" />
+            <span>Open Pack Vault (Inventory) 🎒</span>
+          </button>
+        )}
+      </div>
 
       {/* Missions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
