@@ -114,48 +114,34 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#111827] px-5 py-3.5 rounded-2xl border border-amber-500/40 shadow-[0_0_25px_rgba(245,158,11,0.15)] shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
-                <Gift className="w-5 h-5" />
-              </div>
-              <div className="flex items-center gap-6">
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Earned Set Packs</span>
-                  <div className="flex items-baseline gap-1.5 font-mono">
-                    <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
-                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
-                    </span>
-                    <span className="text-xs text-gray-400 font-semibold">Total</span>
-                  </div>
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Daily Cash</span>
-                  <div className="flex items-baseline gap-1.5 font-mono">
-                    <span className="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
-                      ${dailyCash.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap">
+              {/* Inventory Button replacing Earned Set Packs */}
               {onOpenInventory && (
                 <button
                   onClick={() => { sound.playButtonClick(); onOpenInventory(); }}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] border border-amber-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white font-mono font-black text-xs sm:text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] border border-amber-300/60 flex items-center gap-2 cursor-pointer transform hover:scale-105 active:scale-95"
                 >
-                  <Box className="w-3.5 h-3.5" /> Pack Vault (Inventory)
+                  <Box className="w-4 h-4 text-yellow-200 animate-pulse" />
+                  <span>Inventory 🎒</span>
                 </button>
               )}
-              {onBackToPacks && (
-                <button
-                  onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
-                >
-                  <Package className="w-3.5 h-3.5" /> Open Packs Now
-                </button>
-              )}
+
+              <div className="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-amber-500/30">
+                <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block">Daily Cash</span>
+                <span className="text-lg font-black text-amber-400 font-mono drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+                  ${dailyCash.toFixed(2)}
+                </span>
+              </div>
             </div>
+
+            {onBackToPacks && (
+              <button
+                onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
+              >
+                <Package className="w-3.5 h-3.5" /> Open Packs Now
+              </button>
+            )}
           </div>
         </div>
       </div>
