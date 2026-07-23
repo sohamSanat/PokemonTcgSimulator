@@ -1,4 +1,4 @@
-// AI Vendor Chat Service powered by Google Gemini
+// Live Vendor Chat Service
 // API key is loaded from the VITE_GEMINI_API_KEY environment variable.
 // - Locally: set it in .env.local (already in .gitignore — safe to commit)
 // - Vercel: add VITE_GEMINI_API_KEY in your Vercel project → Settings → Environment Variables

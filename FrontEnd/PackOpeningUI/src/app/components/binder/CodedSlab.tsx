@@ -183,7 +183,7 @@ export const CodedSlab: React.FC<CodedSlabProps> = ({
         >
           <div className="flex flex-col leading-tight min-w-0 pr-1">
             <span className="text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
-              ANTIGRAVITY ENCASEMENT CO.
+              TITAN ENCASEMENT CO.
             </span>
             <span className="text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
               {cardTitle}

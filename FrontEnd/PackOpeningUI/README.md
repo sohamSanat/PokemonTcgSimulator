@@ -91,4 +91,4 @@ Building this simulator required navigating several difficult technical hurdles,
 ---
 
 ## Conclusion
-The Antigravity TCG Pack Opening Simulator stands as a testament to combining high-end visual aesthetics (3D transforms, shaders, haptics) with rock-solid, defensively-programmed data pipelines. By aggressively managing network priorities and building resilient fallback loops, the application maintains a premium, glitch-free illusion of physical card manipulation.
+The Pokémon TCG Pack Opening Simulator stands as a testament to combining high-end visual aesthetics (3D transforms, shaders, haptics) with rock-solid, defensively-programmed data pipelines. By aggressively managing network priorities and building resilient fallback loops, the application maintains a premium, glitch-free illusion of physical card manipulation.

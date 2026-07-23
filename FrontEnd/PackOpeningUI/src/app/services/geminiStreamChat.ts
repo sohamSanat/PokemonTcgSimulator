@@ -1,4 +1,4 @@
-// AI Live Stream Chat Service powered by Google Gemini
+// Live Stream Chat Service
 // API key loaded from VITE_GEMINI_API_KEY environment variable.
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;

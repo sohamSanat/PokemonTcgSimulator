@@ -311,7 +311,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
                       <>
                         <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
                           <span className="text-[5px] sm:text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
-                            ANTIGRAVITY ENCASEMENT CO.
+                            TITAN ENCASEMENT CO.
                           </span>
                           <span className="text-[6.5px] sm:text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
                             UNGRADED AUTHENTIC
