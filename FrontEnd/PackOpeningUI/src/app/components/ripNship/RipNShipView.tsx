@@ -733,6 +733,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [isHoveringStack, setIsHoveringStack] = useState(false);
   const [sessionTotal, setSessionTotal] = useState(0);
   const flipTimesRef = useRef<Record<string | number, number>>({});
+  const [isChaseCardsReady, setIsChaseCardsReady] = useState(false);
 
   // Shipping & Completion Modal State
   const [completionModal, setCompletionModal] = useState<{
@@ -973,6 +974,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const loadAndRipPack = async (order: CustomerOrder) => {
     sound.playButtonClick();
     setIsLoadingPack(true);
+    setIsChaseCardsReady(false);
     setPackStage('unopened');
     setCards([]);
 
@@ -1002,7 +1004,9 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         // Delay background set warmup so it NEVER competes for network connections with the active pack
         if (!isJa) {
           setTimeout(() => {
-            orchestrateSetLoading(setDetails, newCards.map(c => c.id));
+            orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+              setIsChaseCardsReady(true);
+            });
           }, 400);
         }
       } catch (e) {

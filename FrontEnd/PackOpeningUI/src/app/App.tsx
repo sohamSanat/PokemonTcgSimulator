@@ -2523,7 +2523,25 @@ export default function App() {
 
                     {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
                     <div className="space-y-2 relative">
-                      {chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
+                      {!isChaseCardsReady ? (
+                        Array.from({ length: 3 }).map((_, idx) => (
+                          <div
+                            key={`skeleton-desktop-${idx}`}
+                            className="flex items-center justify-between p-2 rounded-xl bg-black/40 border border-white/10 relative overflow-hidden"
+                            style={{ minHeight: '56px' }}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-12 rounded-md bg-white/10 shrink-0" />
+                              <div className="flex flex-col gap-1.5">
+                                <div className="w-24 h-3 rounded bg-white/10" />
+                                <div className="w-14 h-2.5 rounded bg-white/5" />
+                              </div>
+                            </div>
+                            <div className="w-10 h-4 rounded bg-white/10" />
+                          </div>
+                        ))
+                      ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                         <div
                           key={card.id || idx}
                           onClick={() => {

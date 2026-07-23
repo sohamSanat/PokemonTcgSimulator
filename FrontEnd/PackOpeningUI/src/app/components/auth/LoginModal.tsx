@@ -127,12 +127,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 </p>
               </div>
 
-              <div className="p-3 mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2.5 text-xs text-amber-300 shadow-inner">
-                <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0" />
-                <span>
-                  <strong>Admin Account:</strong> Sign in with <code className="bg-black/60 px-1.5 py-0.5 rounded text-amber-200 font-mono font-bold">admin@gmail.com</code> for a never-ending money pool!
-                </span>
-              </div>
+
 
               {error && (
                 <motion.div
