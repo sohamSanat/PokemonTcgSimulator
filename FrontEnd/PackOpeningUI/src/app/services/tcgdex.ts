@@ -1069,18 +1069,48 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   const cacheKey = `${baseIdForRarity}_${gallerySetId || 'none'}_${set.id}`;
   let rarityData = rarityPoolCache.get(cacheKey);
   if (!rarityData) {
-    rarityData = await Promise.all([
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Common`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Uncommon`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare Holo`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Ultra Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Secret Rare`, 2500).then(r => r.ok ? r.json() : []).catch(() => []),
-      gallerySetId ? fetchWithTimeout(`${API_BASE}/sets/${gallerySetId}`, 2500).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null)
-    ]);
-    if ((rarityData[0] && rarityData[0].length > 0) || (rarityData[1] && rarityData[1].length > 0)) {
-      rarityPoolCache.set(cacheKey, rarityData);
-    }
+    // Non-blocking background fetch to populate cache for future draws
+    Promise.all([
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Common`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Uncommon`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Rare Holo`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Ultra Rare`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetchWithTimeout(`${API_BASE}/cards?set.id=${baseIdForRarity}&rarity=Secret Rare`, 1500).then(r => r.ok ? r.json() : []).catch(() => []),
+      gallerySetId ? fetchWithTimeout(`${API_BASE}/sets/${gallerySetId}`, 1500).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null)
+    ]).then(data => {
+      if ((data[0] && data[0].length > 0) || (data[1] && data[1].length > 0)) {
+        rarityPoolCache.set(cacheKey, data);
+      }
+    }).catch(() => { });
+
+    // Instantly categorize cards from `pool` (set.cards) for 0ms pack generation
+    const cList: any[] = [];
+    const uList: any[] = [];
+    const rList: any[] = [];
+    const hList: any[] = [];
+    const urList: any[] = [];
+    const srList: any[] = [];
+
+    const totalPool = pool.length;
+    pool.forEach((c, idx) => {
+      const r = (c.rarity || '').toLowerCase();
+      const n = (c.name || '').toLowerCase();
+      if (r.includes('secret') || r.includes('illustration') || r.includes('hyper') || r.includes('gold') || r.includes('rainbow')) {
+        srList.push(c);
+      } else if (r.includes('ultra') || r.includes('ex') || n.includes('ex') || n.includes('vmax') || n.includes('vstar') || n.includes('mega')) {
+        urList.push(c);
+      } else if (r.includes('holo') || r.includes('rare')) {
+        hList.push(c);
+      } else if (r.includes('uncommon') || (idx > totalPool * 0.5 && idx <= totalPool * 0.8)) {
+        uList.push(c);
+      } else {
+        cList.push(c);
+      }
+    });
+
+    rarityData = [cList, uList, rList, hList, urList, srList, null];
+    rarityPoolCache.set(cacheKey, rarityData);
   }
 
   const [

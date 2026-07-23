@@ -1912,23 +1912,17 @@ export default function App() {
   const [tradeTarget, setTradeTarget] = useState<any>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
   const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
-  const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(false);
+  const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(true);
+
+  useEffect(() => {
+    setIsChaseCardsRevealed(true);
+  }, [currentSet, selectedLanguage]);
 
   useEffect(() => {
     if (inspectedCard) {
       trackMissionProgress('inspect_card', 1);
     }
   }, [inspectedCard]);
-
-  useEffect(() => {
-    setIsChaseCardsRevealed(false);
-    const isJaSet = selectedLanguage === 'ja' || Boolean(currentSet?.id?.endsWith('_ja')) || Boolean(currentSet?.name?.toLowerCase().includes('japanese'));
-    const waitTime = isJaSet ? 3000 : 10000;
-    const timer = setTimeout(() => {
-      setIsChaseCardsRevealed(true);
-    }, waitTime);
-    return () => clearTimeout(timer);
-  }, [currentSet, selectedLanguage]);
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'ripNship' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
@@ -3291,12 +3285,6 @@ export default function App() {
 
             {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
             <div className="grid grid-cols-3 gap-2 w-full relative">
-              {!isChaseCardsRevealed && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#14141c]/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-lg">
-                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-2" />
-                  <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards</span>
-                </div>
-              )}
               {!isChaseCardsReady ? (
                 Array.from({ length: 3 }).map((_, idx) => (
                   <div
@@ -3363,17 +3351,7 @@ export default function App() {
 
           {/* Centerpiece: Card Stack */}
           <div className="w-full flex items-center justify-center shrink-0 min-h-[380px] my-2">
-            {isLoadingPack ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl w-60 h-[21rem] text-center shrink-0"
-              >
-                <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
-                <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
-                <span className="text-xs text-amber-300 font-semibold mt-1.5">{currentSet?.name || 'Loading Set'}</span>
-              </motion.div>
-            ) : packStage !== 'opened' ? (
+            {packStage !== 'opened' ? (
               <div className="w-full flex items-center justify-center gap-4 lg:gap-8 xl:gap-14 px-2 sm:px-6 relative my-2">
                 {/* ✨ Left Flank: Live Set Lore & God-Pack Intelligence Pill ✨ */}
                 <motion.div
@@ -3427,12 +3405,6 @@ export default function App() {
 
                     {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
                     <div className="space-y-2 relative">
-                      {!isChaseCardsRevealed && (
-                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#11111a]/95 backdrop-blur-sm rounded-xl border border-amber-500/20">
-                          <Loader2 className="w-8 h-8 text-amber-400 animate-spin mb-2" />
-                          <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards</span>
-                        </div>
-                      )}
                       {chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                         <div
                           key={card.id || idx}
@@ -3582,22 +3554,34 @@ export default function App() {
                     )}
                   </AnimatePresence>
 
-                  <BoosterPackTear
-                    packArts={currentPackArts}
-                    packArtIndex={packArtIndex}
-                    onPrevPackArt={() => {
-                      sound.playTabSwitch();
-                      setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length);
-                    }}
-                    onNextPackArt={() => {
-                      sound.playTabSwitch();
-                      setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
-                    }}
-                    onTearComplete={handleTearPack}
-                    setName={currentSet?.name}
-                    packStage={packStage}
-                    remainingCardsCount={remainingCards.length}
-                  />
+                  {isLoadingPack ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl w-60 h-[21rem] text-center shrink-0"
+                    >
+                      <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
+                      <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
+                      <span className="text-xs text-amber-300 font-semibold mt-1.5">{currentSet?.name || 'Loading Set'}</span>
+                    </motion.div>
+                  ) : (
+                    <BoosterPackTear
+                      packArts={currentPackArts}
+                      packArtIndex={packArtIndex}
+                      onPrevPackArt={() => {
+                        sound.playTabSwitch();
+                        setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length);
+                      }}
+                      onNextPackArt={() => {
+                        sound.playTabSwitch();
+                        setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
+                      }}
+                      onTearComplete={handleTearPack}
+                      setName={currentSet?.name}
+                      packStage={packStage}
+                      remainingCardsCount={remainingCards.length}
+                    />
+                  )}
                 </div>
 
                 {/* ✨ Right Flank: Pack Art Studio & Precision Haptic Control Panel ✨ */}
@@ -4464,12 +4448,6 @@ export default function App() {
 
               {/* Chase Cards Grid */}
               <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar min-h-[300px]">
-                {!isChaseCardsRevealed && (
-                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#14141c]/95 backdrop-blur-md rounded-xl border border-white/5">
-                    <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
-                    <span className="text-sm font-bold text-amber-300 uppercase tracking-wider">Loading Chase Cards...</span>
-                  </div>
-                )}
                 {!isChaseCardsReady ? (
                   Array.from({ length: 8 }).map((_, idx) => (
                     <div
