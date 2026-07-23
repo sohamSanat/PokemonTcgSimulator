@@ -15,6 +15,7 @@ interface BoosterPackTearProps {
   isRemote?: boolean;
   overrideProgress?: number;
   hideInstructionPill?: boolean;
+  hideTearButton?: boolean;
 }
 
 export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
@@ -29,6 +30,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   isRemote = false,
   overrideProgress,
   hideInstructionPill = false,
+  hideTearButton = false,
 }) => {
   // Local high-performance progress state (0 to 100)
   const [localProgress, setProgress] = useState<number>(0);
@@ -388,7 +390,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
       </div>
 
       {/* Button */}
-      {packStage === 'unopened' && !isRemote && (
+      {packStage === 'unopened' && !isRemote && !hideTearButton && (
         <div className="flex flex-col items-center gap-3.5 mt-6 z-20 shrink-0">
           <motion.button
             onClick={triggerAutoTear}

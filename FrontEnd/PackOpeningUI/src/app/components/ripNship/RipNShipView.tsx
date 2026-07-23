@@ -1062,6 +1062,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                       setName={activeOrder?.packName}
                       packStage={packStage}
                       remainingCardsCount={remainingCards.length}
+                      hideTearButton={true}
                     />
                   </div>
                 ) : (
