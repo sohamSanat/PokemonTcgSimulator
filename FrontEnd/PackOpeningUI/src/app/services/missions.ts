@@ -25,6 +25,7 @@ const DAILY_CASH_KEY = 'tcg_daily_cash';
 const LAST_RESET_KEY = 'tcg_last_pass_reset';
 const MISSIONS_STATE_KEY = 'tcg_user_missions';
 const EARNED_SET_PACKS_KEY = 'tcg_earned_set_packs'; // Track earned packs from missions
+const OWNED_MYSTERY_PACKS_KEY = 'tcg_owned_mystery_packs'; // Track owned mystery packs
 
 // --- Per-account storage helpers ---
 // All mission state is bound to the signed-in account. When a user is signed in
@@ -570,6 +571,55 @@ export function useEarnedSetPack(setId: string, language: 'en' | 'ja'): boolean 
   localStorage.setItem(lsKey(EARNED_SET_PACKS_KEY), JSON.stringify(updated));
   persistMissions();
   window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
+  window.dispatchEvent(new CustomEvent('inventory_updated', { detail: { setPacks: updated, mysteryPacks: getOwnedMysteryPacks() } }));
+  return true;
+}
+
+// --- Owned Mystery Packs ---
+export interface OwnedMysteryPack {
+  packId: string;
+  count: number;
+}
+
+export function getOwnedMysteryPacks(): OwnedMysteryPack[] {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem(lsKey(OWNED_MYSTERY_PACKS_KEY));
+  if (!saved) return [];
+  try {
+    return JSON.parse(saved) as OwnedMysteryPack[];
+  } catch {
+    return [];
+  }
+}
+
+export function addOwnedMysteryPacks(packId: string, count: number = 1) {
+  if (typeof window === 'undefined') return;
+  const current = getOwnedMysteryPacks();
+  const updated = [...current];
+  const existingIndex = updated.findIndex(p => p.packId === packId);
+  if (existingIndex !== -1) {
+    updated[existingIndex] = {
+      ...updated[existingIndex],
+      count: updated[existingIndex].count + count
+    };
+  } else {
+    updated.push({ packId, count });
+  }
+  localStorage.setItem(lsKey(OWNED_MYSTERY_PACKS_KEY), JSON.stringify(updated));
+  persistMissions();
+  window.dispatchEvent(new CustomEvent('inventory_updated', { detail: { mysteryPacks: updated, setPacks: getEarnedSetPacks() } }));
+}
+
+export function useOwnedMysteryPack(packId: string): boolean {
+  if (typeof window === 'undefined') return true;
+  const current = getOwnedMysteryPacks();
+  const packIndex = current.findIndex(p => p.packId === packId && p.count > 0);
+  if (packIndex === -1) return false;
+  current[packIndex].count -= 1;
+  const updated = current.filter(p => p.count > 0);
+  localStorage.setItem(lsKey(OWNED_MYSTERY_PACKS_KEY), JSON.stringify(updated));
+  persistMissions();
+  window.dispatchEvent(new CustomEvent('inventory_updated', { detail: { mysteryPacks: updated, setPacks: getEarnedSetPacks() } }));
   return true;
 }
 

@@ -24,9 +24,10 @@ import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
-import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash } from './services/missions';
+import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
+import InventoryModal from './components/inventory/InventoryModal';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1034,6 +1035,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'ripNship' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
+  const [ownedMysteryPacks, setOwnedMysteryPacks] = useState<OwnedMysteryPack[]>(() => getOwnedMysteryPacks());
+  const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
   const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
   const [showInsufficientCashModal, setShowInsufficientCashModal] = useState<boolean>(false);
@@ -1056,13 +1059,19 @@ export default function App() {
     const handleDailyCashUpdate = (e: any) => {
       setDailyCash(e.detail);
     };
+    const handleInventoryUpdate = () => {
+      setEarnedSetPacks(getEarnedSetPacks());
+      setOwnedMysteryPacks(getOwnedMysteryPacks());
+    };
     window.addEventListener('daily_packs_updated', handleDailyPacksUpdate);
     window.addEventListener('earned_packs_updated', handleEarnedPacksUpdate);
     window.addEventListener('daily_cash_updated', handleDailyCashUpdate);
+    window.addEventListener('inventory_updated', handleInventoryUpdate);
     return () => {
       window.removeEventListener('daily_packs_updated', handleDailyPacksUpdate);
       window.removeEventListener('earned_packs_updated', handleEarnedPacksUpdate);
       window.removeEventListener('daily_cash_updated', handleDailyCashUpdate);
+      window.removeEventListener('inventory_updated', handleInventoryUpdate);
     };
   }, []);
 
@@ -1868,6 +1877,20 @@ export default function App() {
               <Layers className="w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:text-teal-400" />
               <span>Vault</span>
             </button>
+
+            {/* Inventory Tab */}
+            <button
+              onClick={() => { sound.playTabSwitch(); setIsInventoryOpen(true); setIsMobileMenuOpen(false); }}
+              className="group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-extrabold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.25)] relative"
+            >
+              <Package className="w-4 h-4 lg:w-4 lg:h-4 text-amber-400 transition-transform duration-300 group-hover:scale-110" />
+              <span>Inventory</span>
+              {(earnedSetPacks.reduce((s, p) => s + p.count, 0) + ownedMysteryPacks.reduce((s, p) => s + p.count, 0)) > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-black text-[10px] font-black font-mono shadow animate-pulse">
+                  {earnedSetPacks.reduce((s, p) => s + p.count, 0) + ownedMysteryPacks.reduce((s, p) => s + p.count, 0)}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Right: Utilities */}
@@ -2253,6 +2276,12 @@ export default function App() {
                     <span className="text-xs text-gray-300 font-bold">Earned</span>
                     <span className="text-sm font-black font-mono text-white">
                       {earnedSetPacks.reduce((sum, p) => sum + p.count, 0)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-amber-300 font-bold flex items-center gap-1">🎒 Inventory</span>
+                    <span className="text-sm font-black font-mono text-amber-300">
+                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)} Packs
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -3734,6 +3763,22 @@ export default function App() {
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
       <BulkCatalogueModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
+      <InventoryModal
+        isOpen={isInventoryOpen}
+        onClose={() => setIsInventoryOpen(false)}
+        onOpenEarnedBoosterPack={(setId, language) => {
+          setActiveTab('pack');
+          loadSetAndGeneratePack(setId, language);
+        }}
+        onOpenMysteryPack={async (pack) => {
+          setActiveTab('pack');
+          const result = rollMysteryPackResult(pack);
+          await loadSetAndGeneratePack(result.setId, pack.language, pack, result);
+        }}
+        onNavigateToMissions={() => {
+          setActiveTab('missions');
+        }}
+      />
 
       {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
       <div style={{ display: 'none' }} aria-hidden="true">
