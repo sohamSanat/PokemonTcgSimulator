@@ -831,7 +831,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     if (packStage === 'opened' && cards.length > 0 && remainingCards.length === 0) {
       const packSignature = cards.map(c => c.id).join(',');
       if (lastProcessedPackRef.current === packSignature) return;
-      lastProcessedPackRef.current = packSignature;
 
       handleFinishCurrentPack(cards);
     }
@@ -998,6 +997,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const loadAndRipPack = async (order: CustomerOrder) => {
     sound.playButtonClick();
+    lastProcessedPackRef.current = null;
     setIsLoadingPack(true);
     setIsChaseCardsReady(false);
     setPackStage('unopened');
