@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, saveCollectedCard, getStorageKey, syncToFirestore, type Card } from '../binder/types';
-import { generateStreamViewerReply, getRandomStreamMessage, generateCardPullReaction, type StreamChatViewer } from '../../services/geminiStreamChat';
+import { generateStreamViewerReply, getRandomStreamMessage, generateMultiViewerCardReaction, type StreamChatViewer } from '../../services/geminiStreamChat';
 
 
 import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull, orchestrateSetLoading, getRealCardPrice, onCardFullCacheUpdated } from '../../services/tcgdex';
@@ -1183,10 +1183,10 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [activeOrder, setActiveOrder] = useState<CustomerOrder | null>(orders[0] || null);
 
   const triggerCardReaction = React.useCallback(async (card: CardData) => {
-    if (!card.isMostExpensive && card.value < 1.50 && !(card.pokemon.rarity || '').toLowerCase().includes('rare')) return;
+    if (!isActualHit(card)) return;
 
     try {
-      const { viewer, text } = await generateCardPullReaction({
+      const burst = await generateMultiViewerCardReaction({
         cardName: card.pokemon.name,
         cardValue: card.value,
         rarity: card.pokemon.rarity || 'Card',
@@ -1194,13 +1194,18 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         buyerUsername: activeOrder?.username
       });
 
-      addChatMessage({
-        id: Date.now().toString() + Math.random(),
-        username: viewer.username,
-        message: text,
-        badge: viewer.badge,
-        color: viewer.color,
-        avatarColor: viewer.avatarColor
+      // Stagger each viewer's reaction so chat explodes like a real live stream burst!
+      burst.forEach((item, idx) => {
+        setTimeout(() => {
+          addChatMessage({
+            id: Date.now().toString() + Math.random() + idx,
+            username: item.viewer.username,
+            message: item.text,
+            badge: item.viewer.badge,
+            color: item.viewer.color,
+            avatarColor: item.viewer.avatarColor
+          });
+        }, idx * 220);
       });
     } catch {
       // Silent catch
