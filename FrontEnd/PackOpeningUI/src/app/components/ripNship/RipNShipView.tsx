@@ -150,19 +150,20 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
     return fallbackCardPool[0] || sourcePool[0];
   };
 
+  const setId = (fallbackSet?.id || '').toLowerCase();
+  const setName = (fallbackSet?.name || '').toLowerCase();
+
   const getC = () => pickUnique(commons.length > 0 ? commons : fallbackCardPool);
   const getU = () => pickUnique(uncommons.length > 0 ? uncommons : fallbackCardPool);
   const getR = () => pickUnique(rares.length > 0 ? rares : fallbackCardPool);
   const getE = (): PokemonCard => {
     if (energy.length > 0) return energy[Math.floor(Math.random() * energy.length)];
-    const id = (fallbackSet?.id || '').toLowerCase();
-    const name = (fallbackSet?.name || '').toLowerCase();
     const era: EnergyEra =
-      id.startsWith('me') || name.includes('mega evolution') || name.includes('phantasmal') || name.includes('ascended') || name.includes('perfect order') || name.includes('chaos rising') ? 'me' :
-        id.startsWith('sv') || name.includes('scarlet') || name.includes('paldea') || name.includes('obsidian') || name.includes('paradox') || name.includes('temporal') || name.includes('twilight') || name.includes('stellar') || name.includes('surging') || name.includes('151') || name.includes('prismatic') || name.includes('shrouded') ? 'sv' :
-          id.startsWith('sm') || name.includes('sun & moon') || name.includes('guardians rising') || name.includes('burning shadows') || name.includes('cosmic eclipse') || name.includes('hidden fates') ? 'sm' :
-            id.startsWith('xy') || name.includes('flashfire') || name.includes('furious fists') || name.includes('roaring skies') || name.includes('evolutions') || name.includes('phantom forces') ? 'xy' :
-              id.startsWith('base') || id === 'bs1' || id === 'bs2' || id === 'ju' || id === 'fo' || id === 'tr' || name.includes('base set') || name.includes('jungle') || name.includes('fossil') || name.includes('team rocket') ? 'base' : 'swsh';
+      setId.startsWith('me') || setName.includes('mega evolution') || setName.includes('phantasmal') || setName.includes('ascended') || setName.includes('perfect order') || setName.includes('chaos rising') ? 'me' :
+        setId.startsWith('sv') || setName.includes('scarlet') || setName.includes('paldea') || setName.includes('obsidian') || setName.includes('paradox') || setName.includes('temporal') || setName.includes('twilight') || setName.includes('stellar') || setName.includes('surging') || setName.includes('151') || setName.includes('prismatic') || setName.includes('shrouded') ? 'sv' :
+          setId.startsWith('sm') || setName.includes('sun & moon') || setName.includes('guardians rising') || setName.includes('burning shadows') || setName.includes('cosmic eclipse') || setName.includes('hidden fates') ? 'sm' :
+            setId.startsWith('xy') || setName.includes('flashfire') || setName.includes('furious fists') || setName.includes('roaring skies') || setName.includes('evolutions') || setName.includes('phantom forces') ? 'xy' :
+              setId.startsWith('base') || setId === 'bs1' || setId === 'bs2' || setId === 'ju' || setId === 'fo' || setId === 'tr' || setName.includes('base set') || setName.includes('jungle') || setName.includes('fossil') || setName.includes('team rocket') ? 'base' : 'swsh';
     const pool = ENERGY_POOLS_BY_ERA[era] || ENERGY_POOLS_BY_ERA.sv;
     const chosen = pool[Math.floor(Math.random() * pool.length)];
     return {
@@ -175,16 +176,34 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
     };
   };
 
+  const eraForSlots = setId.startsWith('me') || setName.includes('mega evolution') || setName.includes('phantasmal') || setName.includes('ascended') || setName.includes('perfect order') || setName.includes('chaos rising') ? 'me' :
+        setId.startsWith('sv') || setName.includes('scarlet') || setName.includes('paldea') || setName.includes('obsidian') || setName.includes('paradox') || setName.includes('temporal') || setName.includes('twilight') || setName.includes('stellar') || setName.includes('surging') || setName.includes('151') || setName.includes('prismatic') || setName.includes('shrouded') ? 'sv' :
+          setId.startsWith('sm') || setName.includes('sun & moon') || setName.includes('guardians rising') || setName.includes('burning shadows') || setName.includes('cosmic eclipse') || setName.includes('hidden fates') ? 'sm' :
+            setId.startsWith('xy') || setName.includes('flashfire') || setName.includes('furious fists') || setName.includes('roaring skies') || setName.includes('evolutions') || setName.includes('phantom forces') ? 'xy' :
+              setId.startsWith('base') || setId === 'bs1' || setId === 'bs2' || setId === 'ju' || setId === 'fo' || setId === 'tr' || setName.includes('base set') || setName.includes('jungle') || setName.includes('fossil') || setName.includes('team rocket') ? 'base' : 'swsh';
+
+  const commonCount = (eraForSlots === 'sv' || eraForSlots === 'me' || eraForSlots === 'base') ? 5 : 4;
+  const isSpecialEra = (eraForSlots === 'swsh' || eraForSlots === 'sm');
+
   const selected: PokemonCard[] = [];
   // Slot 1: 1 Basic Energy
   selected.push(getE());
-  // Slots 2-6: 5 Commons
-  for (let i = 0; i < 5; i++) selected.push(getC());
+  
+  // Slots 2-6 (or 2-5): 4 or 5 Commons
+  for (let i = 0; i < commonCount; i++) selected.push(getC());
+  
   // Slots 7-9: 3 Uncommons
   for (let i = 0; i < 3; i++) selected.push(getU());
-  // Slot 10: 1 Reverse Holo
+  
+  // Special Slot / Reverse Holo (Slot 10)
+  if (isSpecialEra && commonCount === 4) {
+    // Fill the missing slot so the pack still has 11 cards
+    const special = getC();
+    selected.push({ ...special, isReverseHolo: true, rarity: 'Special' });
+  }
   const revCard = getC();
   selected.push({ ...revCard, isReverseHolo: true, rarity: 'Reverse Holo' });
+  
   // Slot 11: 1 Rare or higher
   selected.push(getR());
 
@@ -381,6 +400,9 @@ const Card = React.memo(({
           <img
             src={card.pokemon.images?.large || card.pokemon.images?.small || ((card.pokemon as any).image ? getCardImageUrl((card.pokemon as any).image, 'high') : `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`)}
             alt={card.pokemon.name}
+            loading="eager"
+            // @ts-ignore
+            fetchpriority="high"
             className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
             onError={(e) => {
               const nameLower = (card.pokemon.name || '').toLowerCase();
@@ -503,10 +525,12 @@ interface CustomerOrder {
   id: string;
   username: string;
   location: string;
+  address?: string;
   avatarColor: string;
   packName: string;
   setId: string; // The official TCGDex/Scrydex set ID
   packCount: number;
+  openedPacks?: number;
   totalPaid: number;
   status: 'pending' | 'ripping' | 'completed';
   pulledCards?: { name: string; value: number; image: string; rarity: string }[];
@@ -545,18 +569,25 @@ const getPackArtsForSet = (setId: string, manifest: Record<string, string[]> = {
   return DEFAULT;
 };
 
-const SAMPLE_LOCATIONS = [
-  'Los Angeles, California 🇺🇸',
-  'New York City, New York 🇺🇸',
-  'London, United Kingdom 🇬🇧',
-  'Toronto, Canada 🇨🇦',
-  'Tokyo, Japan 🇯🇵',
-  'Sydney, Australia 🇦🇺',
-  'Austin, Texas 🇺🇸',
-  'Miami, Florida 🇺🇸',
-  'Chicago, Illinois 🇺🇸',
-  'Seattle, Washington 🇺🇸'
+const REALISTIC_CUSTOMER_ADDRESSES = [
+  { address: '100 Universal City Plaza, Apt 402, Universal City, CA 91608, USA 🇺🇸', location: 'Los Angeles, California 🇺🇸' },
+  { address: '350 5th Ave, Floor 32, New York, NY 10118, USA 🇺🇸', location: 'New York City, New York 🇺🇸' },
+  { address: '221B Baker Street, Flat 3, Marylebone, London NW1 6XE, UK 🇬🇧', location: 'London, United Kingdom 🇬🇧' },
+  { address: '88 Bay Street, Suite 1400, Toronto, ON M5J 2R8, Canada 🇨🇦', location: 'Toronto, Canada 🇨🇦' },
+  { address: '456 Shibuya Crossing Ave, Apt 12B, Shibuya-ku, Tokyo 150-0042, Japan 🇯🇵', location: 'Tokyo, Japan 🇯🇵' },
+  { address: '14 Opera House Blvd, Circular Quay, Sydney NSW 2000, Australia 🇦🇺', location: 'Sydney, Australia 🇦🇺' },
+  { address: '1200 Congress Ave, Suite 800, Austin, TX 78701, USA 🇺🇸', location: 'Austin, Texas 🇺🇸' },
+  { address: '405 Ocean Drive, Penthouse B, Miami Beach, FL 33139, USA 🇺🇸', location: 'Miami, Florida 🇺🇸' },
+  { address: '233 S Wacker Dr, Unit 540, Chicago, IL 60606, USA 🇺🇸', location: 'Chicago, Illinois 🇺🇸' },
+  { address: '1912 Pike Place, Apt 2A, Seattle, WA 98101, USA 🇺🇸', location: 'Seattle, Washington 🇺🇸' },
+  { address: '75 Champs-Élysées, 4th Floor, 75008 Paris, France 🇫🇷', location: 'Paris, France 🇫🇷' },
+  { address: 'Friedrichstraße 45, 10117 Berlin, Germany 🇩🇪', location: 'Berlin, Germany 🇩🇪' },
+  { address: 'Gran Vía 28, 3rd West, 28013 Madrid, Spain 🇪🇸', location: 'Madrid, Spain 🇪🇸' },
+  { address: 'Keizersgracht 482, 1017 EG Amsterdam, Netherlands 🇳🇱', location: 'Amsterdam, Netherlands 🇳🇱' },
+  { address: 'Gangnam-daero 390, Suite 1102, Seoul 06232, South Korea 🇰🇷', location: 'Seoul, South Korea 🇰🇷' },
 ];
+
+const SAMPLE_LOCATIONS = REALISTIC_CUSTOMER_ADDRESSES.map(a => a.location);
 
 export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
@@ -667,11 +698,18 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [sessionTotal, setSessionTotal] = useState(0);
   const flipTimesRef = useRef<Record<string | number, number>>({});
 
-  // Shipping Modal State
+  // Shipping & Completion Modal State
+  const [completionModal, setCompletionModal] = useState<{
+    order: CustomerOrder;
+    hits: { name: string; value: number; image: string; rarity: string }[];
+    totalValue: number;
+  } | null>(null);
+
   const [shippingModal, setShippingModal] = useState<{
     id: string;
     customer: string;
     location: string;
+    address: string;
     trackingCode: string;
     totalValue: number;
     sleevedHitName: string;
@@ -684,12 +722,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     if (!activeOrder) return;
     sound.playPackComplete();
     const mostExp = cards.find(c => c.isMostExpensive) || cards[0];
-    const trackingCode = `USPS #9400 1092 8847 ${Math.floor(1000 + Math.random() * 9000)}`;
+    const trackingCode = `USPS #9400 1092 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`;
+    const matchedAddr = REALISTIC_CUSTOMER_ADDRESSES.find(a => a.location === activeOrder.location) || REALISTIC_CUSTOMER_ADDRESSES[0];
+    const fullAddress = activeOrder.address || matchedAddr.address;
+
     setShippingProgress(15);
     setShippingModal({
       id: activeOrder.id,
       customer: activeOrder.username,
-      location: activeOrder.location || 'Los Angeles, California 🇺🇸',
+      location: activeOrder.location || matchedAddr.location,
+      address: fullAddress,
       trackingCode,
       totalValue: cards.reduce((acc, c) => acc + c.value, 0),
       sleevedHitName: mostExp?.pokemon.name || 'Top Hit',
@@ -790,10 +832,92 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           setTimeout(() => {
             sound.playPackComplete();
             setIsRevealingAll(false);
+            handleFinishCurrentPack(cards);
           }, 450);
         }
       }, idx * 480 + 620);
     });
+  };
+
+  const handleFinishCurrentPack = (currentCards: CardData[]) => {
+    if (!activeOrder) return;
+    
+    // Extract hits from current pack (value >= $1.50 or Holo/Rare/MostExpensive)
+    const packHits = currentCards
+      .filter(c => c.value >= 1.50 || (c.pokemon.rarity || '').toLowerCase().includes('rare') || (c.pokemon.rarity || '').toLowerCase().includes('holo') || c.isMostExpensive)
+      .map(c => ({
+        name: c.pokemon.name,
+        value: c.value,
+        image: c.pokemon.images?.large || c.pokemon.images?.small || ((c.pokemon as any).image ? getCardImageUrl((c.pokemon as any).image, 'high') : ''),
+        rarity: c.pokemon.rarity || 'Hit'
+      }));
+
+    const currentOpened = activeOrder.openedPacks || 0;
+    const newOpenedPacks = Math.min(currentOpened + 1, activeOrder.packCount);
+    const existingPulled = activeOrder.pulledCards || [];
+    
+    const combinedPulled = [...existingPulled];
+    packHits.forEach(h => {
+      if (!combinedPulled.some(p => p.name === h.name && Math.abs(p.value - h.value) < 0.01)) {
+        combinedPulled.push(h);
+      }
+    });
+
+    const isAllComplete = newOpenedPacks >= activeOrder.packCount;
+    const updatedOrder: CustomerOrder = {
+      ...activeOrder,
+      openedPacks: newOpenedPacks,
+      pulledCards: combinedPulled,
+      status: isAllComplete ? 'completed' : 'ripping'
+    };
+
+    setActiveOrder(updatedOrder);
+    setOrders(prev => prev.map(o => o.id === updatedOrder.id ? updatedOrder : o));
+
+    if (isAllComplete) {
+      setTimeout(() => {
+        sound.playPackComplete();
+        setCompletionModal({
+          order: updatedOrder,
+          hits: combinedPulled,
+          totalValue: combinedPulled.reduce((acc, card) => acc + card.value, 0)
+        });
+      }, 700);
+    }
+  };
+
+  const preloadPackImages = (cards: PokemonCard[]): Promise<void> => {
+    if (!cards || cards.length === 0) return Promise.resolve();
+    const promises: Promise<void>[] = [];
+    cards.forEach(card => {
+      const urls: string[] = [];
+      if (card.images?.large) urls.push(card.images.large);
+      if (card.images?.small) urls.push(card.images.small);
+      const cardAny = card as any;
+      if (cardAny.image) {
+        urls.push(getCardImageUrl(cardAny.image, 'high'));
+        urls.push(getCardImageUrl(cardAny.image, 'low'));
+      }
+      const uniqueUrls = Array.from(new Set(urls));
+      uniqueUrls.forEach(url => {
+        promises.push(new Promise<void>(resolve => {
+          const img = new Image();
+          img.src = url;
+          if (img.complete) {
+            resolve();
+          } else {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          }
+        }));
+      });
+    });
+
+    const timeoutPromise = new Promise<void>(resolve => setTimeout(resolve, 2000));
+    return Promise.race([
+      Promise.allSettled(promises).then(() => {}),
+      timeoutPromise
+    ]);
   };
 
   const loadAndRipPack = async (order: CustomerOrder) => {
@@ -819,27 +943,40 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           setDetails = await fetchSetDetails(order.setId);
           newCards = await generatePackFromSet(setDetails);
         }
+        
+        // PRIORITIZE NETWORK: Force browser to download & cache all card images for THIS pack FIRST
+        await preloadPackImages(newCards);
+
         setCards(formatAndSortCards(newCards));
+
+        // Delay background set warmup so it NEVER competes for network connections with the active pack
         if (!isJa) {
-          orchestrateSetLoading(setDetails, newCards.map(c => c.id));
+          setTimeout(() => {
+            orchestrateSetLoading(setDetails, newCards.map(c => c.id));
+          }, 400);
         }
       } catch (e) {
-        setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails || { id: order.setId }));
+        const fbCards = generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails || { id: order.setId });
+        await preloadPackImages(fbCards.map(c => c.pokemon));
+        setCards(fbCards);
       }
     } catch (e) {
-      setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: order.setId }));
+      const fbCards = generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: order.setId });
+      await preloadPackImages(fbCards.map(c => c.pokemon));
+      setCards(fbCards);
     } finally {
       setIsLoadingPack(false);
     }
   };
 
   
-  // Real orders mapped to actual sets!
+  // Real orders mapped to actual sets & authentic full addresses!
   const [orders, setOrders] = useState<CustomerOrder[]>([
     {
       id: 'ord-101',
       username: '@PokeKing99',
       location: 'Los Angeles, California 🇺🇸',
+      address: '100 Universal City Plaza, Apt 402, Universal City, CA 91608, USA 🇺🇸',
       avatarColor: 'from-amber-400 to-orange-500',
       packName: '151 Booster Pack',
       setId: 'sv3pt5',
@@ -851,6 +988,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       id: 'ord-102',
       username: '@SlabKing',
       location: 'New York City, New York 🇺🇸',
+      address: '350 5th Ave, Floor 32, New York, NY 10118, USA 🇺🇸',
       avatarColor: 'from-purple-500 to-indigo-600',
       packName: 'Evolving Skies Pack',
       setId: 'swsh7',
@@ -862,6 +1000,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       id: 'ord-103',
       username: '@CharizardHunter',
       location: 'London, United Kingdom 🇬🇧',
+      address: '221B Baker Street, Flat 3, Marylebone, London NW1 6XE, UK 🇬🇧',
       avatarColor: 'from-red-500 to-rose-700',
       packName: 'Base Set Vintage Pack',
       setId: 'base1',
@@ -870,9 +1009,70 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       status: 'pending'
     },
     {
+      id: 'ord-104',
+      username: '@TokyoTrainer_JP',
+      location: 'Tokyo, Japan 🇯🇵',
+      address: '456 Shibuya Crossing Ave, Apt 12B, Shibuya-ku, Tokyo 150-0042, Japan 🇯🇵',
+      avatarColor: 'from-pink-500 to-rose-500',
+      packName: 'Shiny Treasure ex (JP)',
+      setId: 'sv4a_ja',
+      packCount: 4,
+      totalPaid: 112.50,
+      status: 'pending'
+    },
+    {
+      id: 'ord-105',
+      username: '@AussiePokeFan',
+      location: 'Sydney, Australia 🇦🇺',
+      address: '14 Opera House Blvd, Circular Quay, Sydney NSW 2000, Australia 🇦🇺',
+      avatarColor: 'from-teal-400 to-cyan-600',
+      packName: 'Paldea Evolved Booster',
+      setId: 'sv2',
+      packCount: 3,
+      totalPaid: 31.47,
+      status: 'pending'
+    },
+    {
+      id: 'ord-106',
+      username: '@MiamiCardVault',
+      location: 'Miami, Florida 🇺🇸',
+      address: '405 Ocean Drive, Penthouse B, Miami Beach, FL 33139, USA 🇺🇸',
+      avatarColor: 'from-cyan-400 to-blue-600',
+      packName: 'Prismatic Evolutions',
+      setId: 'sv8pt5',
+      packCount: 6,
+      totalPaid: 179.94,
+      status: 'pending'
+    },
+    {
+      id: 'ord-107',
+      username: '@BerlinPackCracker',
+      location: 'Berlin, Germany 🇩🇪',
+      address: 'Friedrichstraße 45, 10117 Berlin, Germany 🇩🇪',
+      avatarColor: 'from-yellow-400 to-red-600',
+      packName: 'Obsidian Flames Booster',
+      setId: 'sv3',
+      packCount: 3,
+      totalPaid: 29.97,
+      status: 'pending'
+    },
+    {
+      id: 'ord-108',
+      username: '@SeoulCardMaster',
+      location: 'Seoul, South Korea 🇰🇷',
+      address: 'Gangnam-daero 390, Suite 1102, Seoul 06232, South Korea 🇰🇷',
+      avatarColor: 'from-purple-600 to-fuchsia-600',
+      packName: '151 Japanese Box Pack',
+      setId: 'sv2a_ja',
+      packCount: 5,
+      totalPaid: 145.00,
+      status: 'pending'
+    },
+    {
       id: 'ord-100',
       username: '@VmaxCollector',
       location: 'Toronto, Canada 🇨🇦',
+      address: '88 Bay Street, Suite 1400, Toronto, ON M5J 2R8, Canada 🇨🇦',
       avatarColor: 'from-emerald-400 to-teal-600',
       packName: 'Crown Zenith Booster',
       setId: 'swsh12pt5',
@@ -892,6 +1092,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   // Add Order Form State
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [newUsername, setNewUsername] = useState('');
+  const [newAddress, setNewAddress] = useState('');
   const [newLocation, setNewLocation] = useState('Austin, Texas 🇺🇸');
   const [newPackName, setNewPackName] = useState('151 Booster Pack');
   const [newSetId, setNewSetId] = useState('sv3');
@@ -902,11 +1103,14 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     e.preventDefault();
     if (!newUsername.trim()) return;
     sound.playButtonClick();
-    const randLoc = SAMPLE_LOCATIONS[Math.floor(Math.random() * SAMPLE_LOCATIONS.length)];
+    const randEntry = REALISTIC_CUSTOMER_ADDRESSES[Math.floor(Math.random() * REALISTIC_CUSTOMER_ADDRESSES.length)];
+    const finalAddress = newAddress.trim() || randEntry.address;
+    const finalLocation = newLocation.trim() || randEntry.location;
     const newOrd: CustomerOrder = {
       id: `ord-${Date.now()}`,
       username: newUsername.startsWith('@') ? newUsername.trim() : `@${newUsername.trim()}`,
-      location: newLocation.trim() || randLoc,
+      location: finalLocation,
+      address: finalAddress,
       avatarColor: 'from-blue-500 to-cyan-600',
       packName: newPackName,
       setId: newSetId,
@@ -917,6 +1121,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     setOrders(prev => [newOrd, ...prev]);
     setActiveOrder(newOrd);
     setNewUsername('');
+    setNewAddress('');
     setIsAddFormOpen(false);
   };
 
@@ -1082,28 +1287,61 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
       {/* ── 2. Active Customer Order Banner (Row 2) ── */}
       {activeOrder && (
-        <div className="relative w-full z-30 px-3 sm:px-6 py-2 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-[9px] text-white shrink-0 shadow-md`}>
+        <div className="relative w-full z-30 px-3 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md ring-2 ring-amber-400/50`}>
               {activeOrder.username.substring(1, 3).toUpperCase()}
             </div>
-            <div className="min-w-0 text-left">
-              <div className="flex items-center gap-1.5 truncate">
-                <span className="text-[11px] font-black text-amber-300 truncate">{activeOrder.username}</span>
+            <div className="min-w-0 text-left flex-1 max-w-md">
+              <div className="flex items-center gap-2 truncate">
+                <span className="text-xs font-black text-amber-300 truncate">{activeOrder.username}</span>
                 <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
+                <span className="text-[9px] font-bold text-gray-400 truncate hidden sm:inline">• {activeOrder.location}</span>
               </div>
-              <div className="text-[10px] text-gray-300 font-bold truncate">
-                {activeOrder.packCount}x {activeOrder.packName}
+
+              {/* Customer Pack Progress Bar */}
+              <div className="w-full flex items-center gap-2 mt-1">
+                <div className="flex-1 bg-black/60 rounded-full h-2 border border-white/10 overflow-hidden">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${Math.min(100, Math.round(((activeOrder.openedPacks || 0) / activeOrder.packCount) * 100))}%` }}
+                    transition={{ duration: 0.4 }}
+                    className="bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 h-full rounded-full shadow-[0_0_10px_rgba(245,158,11,0.8)]"
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-amber-300 font-bold shrink-0">
+                  {activeOrder.openedPacks || 0} / {activeOrder.packCount} Packs
+                </span>
               </div>
             </div>
           </div>
 
           <button
-            onClick={() => activeOrder && loadAndRipPack(activeOrder)}
-            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+            onClick={() => {
+              if (!activeOrder) return;
+              if ((activeOrder.openedPacks || 0) >= activeOrder.packCount) {
+                sound.playButtonClick();
+                setCompletionModal({
+                  order: activeOrder,
+                  hits: activeOrder.pulledCards || [],
+                  totalValue: (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0)
+                });
+              } else {
+                loadAndRipPack(activeOrder);
+              }
+            }}
+            className={`px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              (activeOrder.openedPacks || 0) >= activeOrder.packCount
+                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black border border-emerald-300 animate-pulse'
+                : 'bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 text-white border border-red-300'
+            }`}
           >
-            <Package className="w-3.5 h-3.5" />
-            <span>📦 RIP LIVE ⚡</span>
+            <Package className="w-4 h-4" />
+            <span>
+              {(activeOrder.openedPacks || 0) >= activeOrder.packCount
+                ? `📦 ALL PACKS RIPPED - SHIP ORDER`
+                : `📦 RIP PACK ${(activeOrder.openedPacks || 0) + 1}/${activeOrder.packCount} ⚡`}
+            </span>
           </button>
         </div>
       )}
@@ -1479,6 +1717,26 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                               <span className="text-gray-400 font-mono">Set: {ord.setId}</span>
                             </div>
 
+                            {/* Pack Opening Progress Bar */}
+                            <div className="mt-1.5 w-full max-w-sm">
+                              <div className="flex items-center justify-between text-[10px] text-gray-300 font-extrabold mb-0.5">
+                                <span>Pack Progress</span>
+                                <span className="text-amber-300 font-mono">{ord.openedPacks || 0} / {ord.packCount} Packs ({Math.round(((ord.openedPacks || 0) / ord.packCount) * 100)}%)</span>
+                              </div>
+                              <div className="w-full bg-black/60 rounded-full h-1.5 border border-white/10 overflow-hidden">
+                                <div
+                                  style={{ width: `${Math.min(100, Math.round(((ord.openedPacks || 0) / ord.packCount) * 100))}%` }}
+                                  className="bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 h-full rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Full Customer Shipping Address */}
+                            <div className="mt-1 text-[11px] text-gray-300 font-sans flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-lg border border-white/10">
+                              <MapPin className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                              <span className="truncate">{ord.address || ord.location}</span>
+                            </div>
+
                             {ord.pulledCards && ord.pulledCards.length > 0 && (
                               <div className="mt-2 text-[11px] text-emerald-400 flex items-center gap-1.5 flex-wrap">
                                 <Award className="w-3.5 h-3.5" />
@@ -1674,18 +1932,21 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                 Shipping to <span className="text-amber-300">{shippingModal.customer}</span>
               </h2>
               
-              <div className="text-sm font-extrabold text-emerald-400 mb-4 flex items-center justify-center gap-1.5">
-                <MapPin className="w-4 h-4 text-red-400 shrink-0" />
-                <span>{shippingModal.location}</span>
-              </div>
-
-              {/* Parcel Details Box */}
+              {/* Parcel Shipping Address Card */}
               <div className="w-full bg-[#171429] border border-white/15 rounded-2xl p-4 mb-6 flex flex-col items-center relative overflow-hidden shadow-inner">
                 <div className="absolute top-2 right-2 px-2 py-0.5 rounded border border-red-500/60 bg-red-950/90 text-red-400 text-[9px] font-black uppercase tracking-widest rotate-3 shadow">
                   FRAGILE &middot; SLEEVED HITS
                 </div>
 
-                <div className="text-xs text-cyan-300 font-bold flex items-center gap-1 mb-2">
+                <div className="text-xs text-amber-300 font-extrabold flex items-center gap-1.5 mb-1">
+                  <MapPin className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>SHIP TO ADDRESS</span>
+                </div>
+                <div className="text-xs font-bold text-gray-200 text-center max-w-sm mb-3 px-2">
+                  {shippingModal.address}
+                </div>
+
+                <div className="text-xs text-cyan-300 font-bold flex items-center gap-1 mb-2 bg-cyan-950/80 border border-cyan-400/40 px-3 py-1 rounded-full">
                   <ShieldCheck className="w-4 h-4 text-cyan-400" />
                   <span>Sleeved Hit: <strong>{shippingModal.sleevedHitName}</strong> (${shippingModal.sleevedHitValue.toFixed(2)})</span>
                 </div>
@@ -1721,6 +1982,109 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         )}
       </AnimatePresence>
 
+      {/* ── All Packs Opened & Box Packing Modal ── */}
+      <AnimatePresence>
+        {completionModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl pointer-events-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.85, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.85, y: 30 }}
+              className="w-full max-w-lg bg-gradient-to-b from-[#1c1830] via-[#120f24] to-[#0a0817] border-2 border-amber-400/60 rounded-3xl p-6 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-center flex flex-col items-center relative overflow-hidden"
+            >
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
+              
+              {/* Animated Parcel Box Header */}
+              <motion.div
+                animate={{ scale: [1, 1.08, 1], rotate: [0, -3, 3, 0] }}
+                transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                className="w-20 h-20 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center mb-3 shadow-[0_0_30px_rgba(245,158,11,0.4)]"
+              >
+                <Package className="w-10 h-10 text-amber-400 animate-pulse" />
+              </motion.div>
+
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1.5 shadow">
+                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                <span>ORDER COMPLETE ({completionModal.order.packCount}/{completionModal.order.packCount} PACKS RIPPED)</span>
+              </span>
+
+              <h2 className="text-2xl sm:text-3xl font-black text-white mb-1">
+                All Packs Opened for <span className="text-amber-300">{completionModal.order.username}</span>!
+              </h2>
+              <p className="text-xs text-gray-300 font-bold mb-4">
+                Ship off their order! Packing all pulled hit cards into parcel box below 📦
+              </p>
+
+              {/* Packing Box Animation Container */}
+              <div className="w-full bg-[#120f22] border border-amber-500/30 rounded-2xl p-4 mb-5 flex flex-col items-center shadow-inner relative overflow-hidden">
+                <div className="text-xs font-black text-cyan-300 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-cyan-400 animate-spin" />
+                  <span>BOXING UP PULLED HITS ({completionModal.hits.length} CARDS)</span>
+                </div>
+
+                <div className="w-full max-h-48 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+                  {completionModal.hits.length > 0 ? (
+                    completionModal.hits.map((hit, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -30, scale: 0.8 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        transition={{ delay: idx * 0.15, duration: 0.3 }}
+                        className="p-2.5 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between gap-3 shadow-md"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-12 rounded-lg bg-black border border-amber-400/40 overflow-hidden shrink-0 shadow">
+                            {hit.image ? (
+                              <img src={hit.image} alt={hit.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-amber-950/80">
+                                <Sparkles className="w-4 h-4 text-amber-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-left min-w-0">
+                            <div className="text-xs font-extrabold text-white truncate">{hit.name}</div>
+                            <div className="text-[10px] text-amber-300 font-mono">{hit.rarity}</div>
+                          </div>
+                        </div>
+                        <div className="text-xs font-mono font-black text-emerald-400 shrink-0">
+                          ${hit.value.toFixed(2)}
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-xs text-gray-400 py-3 italic">Standard bulk cards packaged in penny sleeves</div>
+                  )}
+                </div>
+
+                <div className="w-full mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                  <span className="text-gray-400 font-bold">Total Pulled Value:</span>
+                  <span className="text-emerald-400 font-black text-sm">${completionModal.totalValue.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Action Button: Ship Off Order */}
+              <button
+                onClick={() => {
+                  sound.playButtonClick();
+                  const orderToShip = completionModal.order;
+                  setCompletionModal(null);
+                  handleStartShipping();
+                }}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_25px_rgba(245,158,11,0.5)] transition-all transform hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Truck className="w-5 h-5 text-white animate-bounce" />
+                <span>SHIP OFF ORDER FOR {completionModal.order.username} 🚚</span>
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
