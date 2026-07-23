@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Target, Award, CheckCircle2, Gift, Sparkles, Clock, Package, Coins, Trophy, ChevronRight, Zap, RefreshCw, Layers } from 'lucide-react';
+import { Target, Award, CheckCircle2, Gift, Sparkles, Clock, Package, Coins, Trophy, ChevronRight, Zap, RefreshCw, Layers, Box } from 'lucide-react';
 import { getMissions, getDailyFreePacks, getEarnedSetPacks, getDailyCash, claimMissionReward, type Mission, type EarnedSetPack } from '../../services/missions';
 import { sound } from '../../services/sound';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
@@ -10,9 +10,10 @@ interface MissionsViewProps {
   onBackToPacks?: () => void;
   onOpenCardCatalogue?: (card: PokemonCard) => void;
   onSelectEarnedPack?: (setId: string, language: 'en' | 'ja') => void;
+  onOpenInventory?: () => void;
 }
 
-export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpenCardCatalogue, onSelectEarnedPack }) => {
+export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpenCardCatalogue, onSelectEarnedPack, onOpenInventory }) => {
   const [missions, setMissions] = useState<Mission[]>(() => getMissions());
   const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
@@ -137,13 +138,24 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                 </div>
               </div>
             </div>
-            {onBackToPacks && (
-              <button
-                onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105">
-                <Package className="w-3.5 h-3.5" /> Open Packs Now
-              </button>
-            )}
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              {onOpenInventory && (
+                <button
+                  onClick={() => { sound.playButtonClick(); onOpenInventory(); }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] border border-amber-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
+                >
+                  <Box className="w-3.5 h-3.5" /> Pack Vault (Inventory)
+                </button>
+              )}
+              {onBackToPacks && (
+                <button
+                  onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-mono font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-400/50 flex items-center gap-1.5 cursor-pointer transform hover:scale-105"
+                >
+                  <Package className="w-3.5 h-3.5" /> Open Packs Now
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

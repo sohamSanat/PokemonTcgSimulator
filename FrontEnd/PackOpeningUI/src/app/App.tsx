@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -24,7 +24,7 @@ import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
-import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
+import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, addOwnedMysteryPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
 import InventoryModal from './components/inventory/InventoryModal';
@@ -2112,6 +2112,7 @@ export default function App() {
         <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
           <MissionsView
             onBackToPacks={() => setActiveTab('pack')}
+            onOpenInventory={() => setIsInventoryOpen(true)}
             onSelectEarnedPack={(setId, language) => {
               setActiveTab('pack');
               setSelectedLanguage(language);
@@ -3052,9 +3053,43 @@ export default function App() {
                           </div>
                         </div>
 
-                        <div className="mt-4 w-full py-2.5 rounded-xl bg-white/15 group-hover:bg-amber-400 group-hover:text-black text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md z-10">
-                          <Sparkles className="w-4 h-4 text-amber-300 group-hover:text-black" />
-                          <span>Open Mystery Pack (${pack.price.toFixed(2)})</span>
+                        <div className="mt-4 flex items-center gap-2 z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playButtonClick();
+                              const result = rollMysteryPackResult(pack);
+                              if (activeTab === 'multiplayerArena' && matchId) {
+                                try {
+                                  void updateMatchPack(matchId, result.setId);
+                                  setIsSetSelectorOpen(false);
+                                } catch (err) {
+                                  console.error("Failed to update match set", err);
+                                }
+                              } else {
+                                setIsSetSelectorOpen(false);
+                                void loadSetAndGeneratePack(result.setId, pack.language, pack, result);
+                              }
+                            }}
+                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+                          >
+                            <Zap className="w-3.5 h-3.5 text-yellow-200" />
+                            <span>Rip Live ⚡</span>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playCardCollect();
+                              addOwnedMysteryPacks(pack.id, 1);
+                              setIsSetSelectorOpen(false);
+                              setIsInventoryOpen(true);
+                            }}
+                            className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-gray-200 hover:text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+                            title="Save to Pack Vault"
+                          >
+                            <Box className="w-3.5 h-3.5 text-purple-300" />
+                            <span>Vault 🎒</span>
+                          </button>
                         </div>
 
                         <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-white/5 blur-2xl group-hover:bg-amber-400/20 transition-all pointer-events-none" />

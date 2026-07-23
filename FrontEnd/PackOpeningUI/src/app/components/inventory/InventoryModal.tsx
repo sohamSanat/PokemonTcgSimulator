@@ -331,7 +331,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/50 text-purple-300 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
                             <span>{cfg.icon || '🎲'}</span>
-                            <span>{cfg.tier.toUpperCase()} MYSTERY</span>
+                            <span>{(cfg.badge || 'MYSTERY PACK').toUpperCase()}</span>
                           </span>
 
                           <span className="px-2 py-0.5 rounded-full bg-black/60 border border-purple-400/40 text-purple-200 font-mono font-black text-xs shadow">
