@@ -11,11 +11,11 @@ import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card }
 import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewer } from '../../services/geminiStreamChat';
 
 
-import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull } from '../../services/tcgdex';
+import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull, orchestrateSetLoading } from '../../services/tcgdex';
 import BoosterPackTear from '../BoosterPackTear';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import setPackPricesData from '../../data/set_pack_prices.json';
-import { getJapaneseCardRealPrice } from '../../services/scrydex';
+import { getJapaneseCardRealPrice, fetchSingleJapaneseSet, generateJapanesePackFromSet } from '../../services/scrydex';
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
 interface CardData {
@@ -764,14 +764,24 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       setCurrentPackArts(arts);
       setPackArtIndex(0);
 
-      const setDetails = await fetchSetDetails(order.setId);
+      const isJa = order.setId.endsWith('_ja');
+      let setDetails;
       
       let newCards: PokemonCard[] = [];
       try {
-        newCards = await generatePackFromSet(setDetails);
+        if (isJa) {
+          setDetails = await fetchSingleJapaneseSet(order.setId);
+          newCards = await generateJapanesePackFromSet(setDetails);
+        } else {
+          setDetails = await fetchSetDetails(order.setId);
+          newCards = await generatePackFromSet(setDetails);
+        }
         setCards(formatAndSortCards(newCards));
+        if (!isJa) {
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id));
+        }
       } catch (e) {
-        setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails));
+        setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails || { id: order.setId }));
       }
     } catch (e) {
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: order.setId }));
