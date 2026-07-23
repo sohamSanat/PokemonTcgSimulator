@@ -43,8 +43,11 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
   }, [poke.id, liveCardFull, poke.pricing]);
 
   const pricing = liveCardFull?.pricing || poke.pricing;
-  const tcg = pricing?.tcgplayer || liveCardFull?.tcgplayer || poke.tcgplayer?.prices || poke.tcgplayer;
-  const cm = pricing?.cardmarket || liveCardFull?.cardmarket || poke.cardmarket;
+  const rawTcg = pricing?.tcgplayer || liveCardFull?.tcgplayer || poke.tcgplayer;
+  const tcg = rawTcg?.prices || (rawTcg && typeof rawTcg === 'object' && !rawTcg.url ? rawTcg : undefined);
+
+  const rawCm = pricing?.cardmarket || liveCardFull?.cardmarket || poke.cardmarket;
+  const cm = rawCm?.prices || rawCm;
 
   const tcgVariants = tcg ? Object.keys(tcg).filter(k => typeof tcg[k] === 'object' && tcg[k] !== null && k !== 'prices') : [];
   const activePoke: PokemonCard = liveCardFull ? {

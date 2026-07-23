@@ -467,26 +467,30 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
   }
   const cached = cardFullCache.get(poke.id);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
-  if (activePricing || cached?.tcgplayer || cached?.cardmarket || poke.tcgplayer) {
+
+  const rawTcg = activePricing?.tcgplayer || cached?.tcgplayer || poke.tcgplayer;
+  const tcg = rawTcg?.prices || (rawTcg && typeof rawTcg === 'object' && !rawTcg.url ? rawTcg : undefined);
+
+  const rawCm = activePricing?.cardmarket || cached?.cardmarket || poke.cardmarket;
+  const cm = rawCm?.prices || rawCm;
+
+  if (tcg || cm) {
     let foundPrice = 0;
 
     let cmUsd = 0;
-    const cmObj = activePricing?.cardmarket || cached?.cardmarket || poke.cardmarket;
-    if (cmObj) {
-      const cmVal = cmObj.trend ?? cmObj.avg ?? cmObj['trend-holo'] ?? cmObj['avg-holo'] ?? cmObj.avg30 ?? cmObj.low;
+    if (cm) {
+      const cmVal = cm.trendPrice ?? cm.averageSellPrice ?? cm.trend ?? cm.avg ?? cm['trend-holo'] ?? cm['avg-holo'] ?? cm.avg30 ?? cm.lowPrice ?? cm.low;
       if (typeof cmVal === 'number' && !isNaN(cmVal) && cmVal > 0) {
-        cmUsd = cmVal * (cmObj.unit === 'EUR' ? 1.08 : 1);
+        cmUsd = cmVal * (cm.unit === 'EUR' || !cm.unit ? 1.08 : 1);
       }
     }
 
-    const tcgObj = activePricing?.tcgplayer || cached?.tcgplayer || (poke.tcgplayer?.prices || poke.tcgplayer);
-    if (tcgObj) {
-      const tcg = tcgObj;
+    if (tcg && typeof tcg === 'object') {
       const candidates: number[] = [];
       for (const key of Object.keys(tcg)) {
         if (typeof tcg[key] === 'object' && tcg[key] !== null) {
           const sub = tcg[key];
-          const val = sub.marketPrice ?? sub.midPrice ?? sub.lowPrice ?? sub.highPrice ?? sub.market ?? sub.mid ?? sub.low;
+          const val = sub.marketPrice ?? sub.market ?? sub.midPrice ?? sub.mid ?? sub.lowPrice ?? sub.low ?? sub.highPrice ?? sub.high;
           if (typeof val === 'number' && !isNaN(val) && val > 0) {
             candidates.push(val);
           }
@@ -496,13 +500,13 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
       if (candidates.length > 0) {
         if (poke.isReverseHolo && (tcg.reverseHolofoil || tcg.reverse)) {
           const rev = tcg.reverseHolofoil ?? tcg.reverse;
-          const rVal = rev.marketPrice ?? rev.midPrice ?? rev.lowPrice;
+          const rVal = rev.marketPrice ?? rev.market ?? rev.midPrice ?? rev.lowPrice;
           foundPrice = (typeof rVal === 'number' && !isNaN(rVal) && rVal > 0) ? rVal : candidates[0];
         } else if (tcg.holofoil && typeof tcg.holofoil === 'object') {
-          const hVal = tcg.holofoil.marketPrice ?? tcg.holofoil.midPrice ?? tcg.holofoil.lowPrice;
+          const hVal = tcg.holofoil.marketPrice ?? tcg.holofoil.market ?? tcg.holofoil.midPrice ?? tcg.holofoil.lowPrice;
           foundPrice = (typeof hVal === 'number' && !isNaN(hVal) && hVal > 0) ? hVal : candidates[0];
         } else if (tcg.normal && typeof tcg.normal === 'object') {
-          const nVal = tcg.normal.marketPrice ?? tcg.normal.midPrice ?? tcg.normal.lowPrice;
+          const nVal = tcg.normal.marketPrice ?? tcg.normal.market ?? tcg.normal.midPrice ?? tcg.normal.lowPrice;
           foundPrice = (typeof nVal === 'number' && !isNaN(nVal) && nVal > 0) ? nVal : candidates[0];
         } else if (cmUsd > 0 && candidates.length > 1) {
           let minDelta = Infinity;
