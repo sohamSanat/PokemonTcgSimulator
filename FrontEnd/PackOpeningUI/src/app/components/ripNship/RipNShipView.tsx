@@ -570,6 +570,8 @@ interface CustomerOrder {
   totalPaid: number;
   status: 'pending' | 'ripping' | 'completed';
   pulledCards?: { name: string; value: number; image: string; rarity: string }[];
+  totalPulledValue?: number;
+  allPulledCardsCount?: number;
 }
 
 interface ChatMessage {
@@ -764,15 +766,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     const fullAddress = activeOrder.address || matchedAddr.address;
 
     setShippingProgress(15);
+    const totalPulledVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
     setShippingModal({
       id: activeOrder.id,
       customer: activeOrder.username,
       location: activeOrder.location || matchedAddr.location,
       address: fullAddress,
       trackingCode,
-      totalValue: cards.reduce((acc, c) => acc + c.value, 0),
-      sleevedHitName: mostExp?.pokemon.name || 'Top Hit',
-      sleevedHitValue: mostExp?.value || 0
+      totalValue: totalPulledVal,
+      sleevedHitName: mostExp?.pokemon.name || (activeOrder.pulledCards?.[0]?.name) || 'Top Hit',
+      sleevedHitValue: mostExp?.value || (activeOrder.pulledCards?.[0]?.value) || 0
     });
 
     let step = 15;
@@ -801,7 +804,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
     if (activeOrder) {
       const updated = { ...activeOrder, status: 'completed' as const };
-      setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
+      setOrders(prev => {
+        const nextOrders = prev.map(o => o.id === updated.id ? updated : o);
+        const nextPending = nextOrders.find(o => o.status === 'pending' || o.status === 'ripping');
+        if (nextPending) {
+          setActiveOrder(nextPending);
+        } else {
+          setActiveOrder(updated);
+        }
+        return nextOrders;
+      });
     }
 
     setShippingModal(null);
@@ -893,7 +905,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const handleFinishCurrentPack = (currentCards: CardData[]) => {
     if (!activeOrder) return;
     
-    // Extract ONLY genuine hits from current pack
+    const packSignature = currentCards.map(c => c.id).join(',');
+    if (lastProcessedPackRef.current === packSignature) return;
+    lastProcessedPackRef.current = packSignature;
+
+    // Extract ONLY genuine hits from current pack for the hits showcase
     const packHits = currentCards
       .filter(c => isActualHit(c))
       .map(c => ({
@@ -903,9 +919,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         rarity: c.pokemon.rarity || 'Hit'
       }));
 
+    // Calculate total value of ALL cards pulled in this pack (hits + non-hits / commons / uncommons / energy)
+    const currentPackAllCardsValue = currentCards.reduce((acc, c) => acc + (c.value || 0), 0);
+
     const currentOpened = activeOrder.openedPacks || 0;
     const newOpenedPacks = Math.min(currentOpened + 1, activeOrder.packCount);
     const existingPulled = activeOrder.pulledCards || [];
+    const baseValue = existingPulled.reduce((acc, c) => acc + c.value, 0);
+    const existingTotalPulledValue = activeOrder.totalPulledValue ?? baseValue;
+    const newTotalPulledValue = Number((existingTotalPulledValue + currentPackAllCardsValue).toFixed(2));
+    const newAllCardsCount = (activeOrder.allPulledCardsCount || 0) + currentCards.length;
     
     const combinedPulled = [...existingPulled];
     packHits.forEach(h => {
@@ -919,6 +942,8 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       ...activeOrder,
       openedPacks: newOpenedPacks,
       pulledCards: combinedPulled,
+      totalPulledValue: newTotalPulledValue,
+      allPulledCardsCount: newAllCardsCount,
       status: isAllComplete ? 'completed' : 'ripping'
     };
 
@@ -931,7 +956,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         setCompletionModal({
           order: updatedOrder,
           hits: combinedPulled,
-          totalValue: combinedPulled.reduce((acc, card) => acc + card.value, 0)
+          totalValue: newTotalPulledValue
         });
       }, 700);
     }
@@ -1400,33 +1425,44 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              if (!activeOrder) return;
-              if ((activeOrder.openedPacks || 0) >= activeOrder.packCount) {
-                sound.playButtonClick();
-                setCompletionModal({
-                  order: activeOrder,
-                  hits: activeOrder.pulledCards || [],
-                  totalValue: (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0)
-                });
-              } else {
-                loadAndRipPack(activeOrder);
-              }
-            }}
-            className={`px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
-              (activeOrder.openedPacks || 0) >= activeOrder.packCount
-                ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black border border-emerald-300 animate-pulse'
-                : 'bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 text-white border border-red-300'
-            }`}
-          >
-            <Package className="w-4 h-4" />
-            <span>
-              {(activeOrder.openedPacks || 0) >= activeOrder.packCount
-                ? `📦 ALL PACKS RIPPED - SHIP ORDER`
-                : `📦 RIP PACK ${(activeOrder.openedPacks || 0) + 1}/${activeOrder.packCount} ⚡`}
-            </span>
-          </button>
+          {activeOrder.status === 'completed' ? (
+            <button
+              onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
+              className="px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow hover:bg-emerald-500/30 transition-all cursor-pointer shrink-0"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>ORDER SHIPPED 🚚</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                if (!activeOrder) return;
+                if ((activeOrder.openedPacks || 0) >= activeOrder.packCount) {
+                  sound.playButtonClick();
+                  const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
+                  setCompletionModal({
+                    order: activeOrder,
+                    hits: activeOrder.pulledCards || [],
+                    totalValue: orderTotalVal
+                  });
+                } else {
+                  loadAndRipPack(activeOrder);
+                }
+              }}
+              className={`px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                (activeOrder.openedPacks || 0) >= activeOrder.packCount
+                  ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black border border-emerald-300 animate-pulse'
+                  : 'bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 text-white border border-red-300'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              <span>
+                {(activeOrder.openedPacks || 0) >= activeOrder.packCount
+                  ? `📦 ALL PACKS RIPPED - SHIP ORDER`
+                  : `📦 RIP PACK ${(activeOrder.openedPacks || 0) + 1}/${activeOrder.packCount} ⚡`}
+              </span>
+            </button>
+          )}
         </div>
       )}
 
@@ -1525,10 +1561,18 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   )}
 
                   <p className="text-gray-400 text-xs mb-5">
-                    Total Order Hits Value: <span className="text-emerald-400 font-bold">${((activeOrder?.pulledCards || []).reduce((acc, c) => acc + c.value, 0)).toFixed(2)}</span>
+                    Total Pulled Value (All Cards): <span className="text-emerald-400 font-bold">${(activeOrder?.totalPulledValue ?? (activeOrder?.pulledCards || []).reduce((acc, c) => acc + c.value, 0)).toFixed(2)}</span>
                   </p>
 
-                  {(activeOrder?.openedPacks || 0) < (activeOrder?.packCount || 1) ? (
+                  {activeOrder?.status === 'completed' ? (
+                    <button
+                      onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
+                      className="px-8 py-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 hover:bg-emerald-500/30 transition-all cursor-pointer"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <span>✅ ORDER SHIPPED - SELECT NEXT ORDER 📦</span>
+                    </button>
+                  ) : (activeOrder?.openedPacks || 0) < (activeOrder?.packCount || 1) ? (
                     <button
                       onClick={() => activeOrder && loadAndRipPack(activeOrder)}
                       className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
@@ -1541,10 +1585,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                       onClick={() => {
                         sound.playButtonClick();
                         if (activeOrder) {
+                          const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
                           setCompletionModal({
                             order: activeOrder,
                             hits: activeOrder.pulledCards || [],
-                            totalValue: (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0)
+                            totalValue: orderTotalVal
                           });
                         }
                       }}
@@ -2172,7 +2217,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                 </div>
 
                 <div className="w-full mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                  <span className="text-gray-400 font-bold">Total Pulled Value:</span>
+                  <span className="text-gray-400 font-bold">Total Pulled Value (All Cards):</span>
                   <span className="text-emerald-400 font-black text-sm">${completionModal.totalValue.toFixed(2)}</span>
                 </div>
               </div>
