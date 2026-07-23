@@ -1662,76 +1662,15 @@ export default function App() {
     });
   };
 
-  const handleResetPack = async (skipGate: boolean = false) => {
+  const handleResetPack = async () => {
     if (!currentSet) return;
-    openKindRef.current = 'reset';
-    const setPrice = getSetBoosterPrice(currentSet);
-    const isFreeEligible = setPrice <= 20;
-    const setLanguage = selectedLanguage; // 'en' or 'ja'
-    const netReturn = sessionTotal - sessionSpent;
-
-    let canOpen = false;
-    let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
-    let deductFromNetReturn = 0;
-    // First check if we have earned packs for this set and language
-    const earnedPackForThisSet = earnedSetPacks.find(
-      p => p.setId === currentSet.id && p.language === setLanguage && p.count > 0
-    );
-    if (earnedPackForThisSet) {
-      canOpen = useEarnedSetPack(currentSet.id, setLanguage);
-      if (canOpen) {
-        wasPaidPack = false; // Used earned pack, not paid
-      }
-    } else if (isFreeEligible) {
-      // If no earned pack, check free daily packs
-      canOpen = useDailyFreePack(setLanguage);
-      if (canOpen) {
-        wasPaidPack = false; // Used free pack, not paid
-      } else {
-        // If no free packs, check daily cash + net return
-        [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
-        if (canOpen) {
-          wasPaidPack = false; // Used daily cash/net return, not paid
-        }
-      }
-    } else if (!skipGate) {
-      // Pack costs more than $20, so it isn't covered by the free daily allowance.
-      // Show a price-gate popup that lets the user pay to open it.
-      setPriceGateCost(setPrice);
-      setPendingOpenKind(openKindRef.current);
-      setShowPriceGateModal(true);
-      return;
-    } else {
-      // Not eligible for free packs, check daily cash + net return
-      [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
-      if (canOpen) {
-        wasPaidPack = false; // Used daily cash/net return, not paid
-      }
-    }
-
-    if (!canOpen) {
-      sound.playModalOpen();
-      setShowInsufficientCashModal(true);
-      return;
-    }
-
-    trackMissionProgress('open_pack', 1);
     sound.playPackOpen();
     setIsRevealingAll(false);
     setPackStage('unopened');
     setTearProgress(0);
     setBinderAddedIds(new Set());
-    setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
-    setPackCount(p => p + 1);
-    // Only add to sessionSpent if it was a paid pack
-    if (wasPaidPack) {
-      const price = getSetBoosterPrice(currentSet);
-      setSessionSpent(prev => prev + price);
-    }
-    // If we used net return, add that to sessionSpent
-    if (deductFromNetReturn > 0) {
-      setSessionSpent(prev => prev + deductFromNetReturn);
-    }
+    setPackArtIndex(prev => (prev + 1) % (currentPackArts.length || 1));
+
     // If opening a mystery pack, draw a new random set from the mystery pack pool on reset
     if (currentMysteryPack) {
       const result = rollMysteryPackResult(currentMysteryPack);
@@ -1762,13 +1701,8 @@ export default function App() {
   };
 
   const confirmPayPack = () => {
-    const kind = pendingOpenKind;
     setShowPriceGateModal(false);
-    if (kind === 'reset') {
-      void handleResetPack(true);
-    } else {
-      handleTearPack(true);
-    }
+    handleTearPack(true);
   };
 
   const handleResetStats = () => {
