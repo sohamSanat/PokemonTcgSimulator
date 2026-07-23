@@ -4,7 +4,8 @@ import {
   Video, Users, Flame, DollarSign, Package, Send, 
   Sparkles, ArrowLeft, MessageSquare, ShoppingCart, Award, CheckCircle2,
   Heart, Zap, Gift, Eye, EyeOff, ChevronUp, ChevronDown, Layers, RotateCw, Loader2,
-  X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen, MessageSquareOff
+  X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen, MessageSquareOff,
+  Truck, MapPin, ShieldCheck
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, saveCollectedCard, getStorageKey, syncToFirestore, type Card } from '../binder/types';
@@ -26,6 +27,7 @@ interface CardData {
   collected: boolean;
   value: number;
   pokemon: PokemonCard;
+  isMostExpensive?: boolean;
   isVendorCatalog?: boolean;
   vendorName?: string;
   vendorBooth?: string;
@@ -206,10 +208,11 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
 
 
 const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
-  if (cards.length <= 1) return cards;
-  let maxIdx = 1;
-  let maxVal = cards[1].value;
-  for (let i = 2; i < cards.length; i++) {
+  if (cards.length === 0) return cards;
+  cards.forEach(c => { c.isMostExpensive = false; });
+  let maxIdx = 0;
+  let maxVal = cards[0].value;
+  for (let i = 1; i < cards.length; i++) {
     if (cards[i].value >= maxVal) {
       maxVal = cards[i].value;
       maxIdx = i;
@@ -219,6 +222,7 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
     const [mostExpensive] = cards.splice(maxIdx, 1);
     cards.push(mostExpensive);
   }
+  cards[cards.length - 1].isMostExpensive = true;
   return cards;
 };
 
@@ -328,9 +332,20 @@ const Card = React.memo(({
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            border: '2px solid rgba(255, 255, 250, 0.4)'
+            border: card.isMostExpensive ? '3px solid rgba(6, 182, 212, 0.9)' : '2px solid rgba(255, 255, 250, 0.4)'
           }}
         >
+          {/* Ultra-Clear Penny Sleeve Layer for Top Hit */}
+          {card.isMostExpensive && (
+            <div className="absolute inset-0 rounded-xl pointer-events-none z-30 overflow-hidden bg-gradient-to-tr from-cyan-500/15 via-transparent to-blue-400/25 border-2 border-cyan-300/50 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-white/90 via-cyan-200 to-white/90 border-b border-cyan-300/70 shadow-sm" />
+              <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white font-black text-[9px] uppercase tracking-wider shadow-lg border border-cyan-200/60 flex items-center gap-1 animate-pulse">
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-200" />
+                <span>Sleeved Hit (${cardLiveValue.toFixed(2)})</span>
+              </div>
+            </div>
+          )}
+
           {/* Fallback for cards without images */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-4 text-center border-[8px] border-[#333344] rounded-2xl z-0">
             <span className="text-gray-500/80 font-black tracking-widest text-xl mb-3">{card.pokemon.id}</span>
@@ -355,7 +370,7 @@ const Card = React.memo(({
           />
 
           <div
-            className="absolute bottom-6 left-0 right-0 flex justify-center transition-all duration-300 pointer-events-none"
+            className="absolute bottom-6 left-0 right-0 flex justify-center transition-all duration-300 pointer-events-none z-30"
             style={{ opacity: (isTopCard && card.flipped) ? 1 : 0 }}
           >
             <span className="px-3.5 py-1 rounded-full bg-green-600/95 text-white text-[11px] font-bold uppercase tracking-wider shadow-[0_4px_15px_rgba(22,163,74,0.6)] border border-green-300/50 flex items-center gap-1.5 animate-pulse">
@@ -398,15 +413,25 @@ const RevealedCardItem = React.memo(({
         <InteractiveCard3D
           card={card}
           interactive={true}
-          className="w-full h-full shadow-[0_10px_25px_rgba(0,0,0,0.8)] border border-white/20 rounded-2xl group-hover:border-amber-400/60 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
+          className={`w-full h-full shadow-[0_10px_25px_rgba(0,0,0,0.8)] border rounded-2xl group-hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] ${
+            card.isMostExpensive ? 'border-cyan-400 ring-2 ring-cyan-400/60 shadow-[0_0_20px_rgba(6,182,212,0.4)]' : 'border-white/20 group-hover:border-amber-400/60'
+          }`}
         >
           {/* Price badge right above/on top of card art */}
           <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5 backdrop-blur-sm">
             <span>${displayPrice.toFixed(2)}</span>
           </div>
-          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/90 border border-white/20 text-[9px] font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            📊 Market Data
-          </div>
+
+          {card.isMostExpensive ? (
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 border border-cyan-200/80 text-[9px] font-black text-white shadow-lg z-20 flex items-center gap-1 animate-pulse">
+              <ShieldCheck className="w-3 h-3 text-cyan-200" />
+              <span>Sleeved Hit</span>
+            </div>
+          ) : (
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/90 border border-white/20 text-[9px] font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+              📊 Market Data
+            </div>
+          )}
         </InteractiveCard3D>
       </div>
 
@@ -451,6 +476,7 @@ interface RipNShipViewProps {
 interface CustomerOrder {
   id: string;
   username: string;
+  location: string;
   avatarColor: string;
   packName: string;
   setId: string; // The official TCGDex/Scrydex set ID
@@ -492,6 +518,19 @@ const getPackArtsForSet = (setId: string, manifest: Record<string, string[]> = {
   
   return DEFAULT;
 };
+
+const SAMPLE_LOCATIONS = [
+  'Los Angeles, California 🇺🇸',
+  'New York City, New York 🇺🇸',
+  'London, United Kingdom 🇬🇧',
+  'Toronto, Canada 🇨🇦',
+  'Tokyo, Japan 🇯🇵',
+  'Sydney, Australia 🇦🇺',
+  'Austin, Texas 🇺🇸',
+  'Miami, Florida 🇺🇸',
+  'Chicago, Illinois 🇺🇸',
+  'Seattle, Washington 🇺🇸'
+];
 
 export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
@@ -589,6 +628,69 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [isHoveringStack, setIsHoveringStack] = useState(false);
   const [sessionTotal, setSessionTotal] = useState(0);
   const flipTimesRef = useRef<Record<string | number, number>>({});
+
+  // Shipping Modal State
+  const [shippingModal, setShippingModal] = useState<{
+    id: string;
+    customer: string;
+    location: string;
+    trackingCode: string;
+    totalValue: number;
+    sleevedHitName: string;
+    sleevedHitValue: number;
+  } | null>(null);
+
+  const [shippingProgress, setShippingProgress] = useState(0);
+
+  const handleStartShipping = () => {
+    if (!activeOrder) return;
+    sound.playPackComplete();
+    const mostExp = cards.find(c => c.isMostExpensive) || cards[0];
+    const trackingCode = `USPS #9400 1092 8847 ${Math.floor(1000 + Math.random() * 9000)}`;
+    setShippingProgress(15);
+    setShippingModal({
+      id: activeOrder.id,
+      customer: activeOrder.username,
+      location: activeOrder.location || 'Los Angeles, California 🇺🇸',
+      trackingCode,
+      totalValue: cards.reduce((acc, c) => acc + c.value, 0),
+      sleevedHitName: mostExp?.pokemon.name || 'Top Hit',
+      sleevedHitValue: mostExp?.value || 0
+    });
+
+    let step = 15;
+    const interval = setInterval(() => {
+      step += 25;
+      setShippingProgress(Math.min(step, 100));
+      if (step >= 100) {
+        clearInterval(interval);
+      }
+    }, 400);
+  };
+
+  const completeShipping = (modalData: typeof shippingModal) => {
+    if (!modalData) return;
+    sound.playButtonClick();
+    sound.playCardCollect();
+
+    addChatMessage({
+      id: Date.now().toString() + "-shipped",
+      username: "SYSTEM 📦",
+      message: `🚚 PACKAGE DISPATCHED! Sleeved top hit (${modalData.sleevedHitName}) shipped to ${modalData.customer} in ${modalData.location}! Tracking: ${modalData.trackingCode}`,
+      badge: "SHIPPED",
+      color: "text-emerald-400 font-bold",
+      avatarColor: "from-emerald-400 to-teal-600"
+    });
+
+    if (activeOrder) {
+      const updated = { ...activeOrder, status: 'completed' as const };
+      setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
+    }
+
+    setShippingModal(null);
+    setPackStage('unopened');
+    setCards([]);
+  };
 
   const remainingCards = React.useMemo(() => cards.filter(c => !c.collected), [cards]);
   const revealedCards = React.useMemo(() => cards.filter(c => c.collected), [cards]);
@@ -699,6 +801,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     {
       id: 'ord-101',
       username: '@PokeKing99',
+      location: 'Los Angeles, California 🇺🇸',
       avatarColor: 'from-amber-400 to-orange-500',
       packName: '151 Booster Pack',
       setId: 'sv3',
@@ -709,6 +812,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     {
       id: 'ord-102',
       username: '@SlabKing',
+      location: 'New York City, New York 🇺🇸',
       avatarColor: 'from-purple-500 to-indigo-600',
       packName: 'Evolving Skies Pack',
       setId: 'swsh7',
@@ -719,6 +823,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     {
       id: 'ord-103',
       username: '@CharizardHunter',
+      location: 'London, United Kingdom 🇬🇧',
       avatarColor: 'from-red-500 to-rose-700',
       packName: 'Base Set Vintage Pack',
       setId: 'base1',
@@ -729,6 +834,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     {
       id: 'ord-100',
       username: '@VmaxCollector',
+      location: 'Toronto, Canada 🇨🇦',
       avatarColor: 'from-emerald-400 to-teal-600',
       packName: 'Crown Zenith Booster',
       setId: 'swsh12pt5',
@@ -748,6 +854,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   // Add Order Form State
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [newUsername, setNewUsername] = useState('');
+  const [newLocation, setNewLocation] = useState('Austin, Texas 🇺🇸');
   const [newPackName, setNewPackName] = useState('151 Booster Pack');
   const [newSetId, setNewSetId] = useState('sv3');
   const [newPackCount, setNewPackCount] = useState(1);
@@ -757,9 +864,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     e.preventDefault();
     if (!newUsername.trim()) return;
     sound.playButtonClick();
+    const randLoc = SAMPLE_LOCATIONS[Math.floor(Math.random() * SAMPLE_LOCATIONS.length)];
     const newOrd: CustomerOrder = {
       id: `ord-${Date.now()}`,
       username: newUsername.startsWith('@') ? newUsername.trim() : `@${newUsername.trim()}`,
+      location: newLocation.trim() || randLoc,
       avatarColor: 'from-blue-500 to-cyan-600',
       packName: newPackName,
       setId: newSetId,
@@ -1040,26 +1149,25 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   transition={{ type: 'spring', bounce: 0.5 }}
                   className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl max-w-md text-center shrink-0"
                 >
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-4 text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-                    <CheckCircle2 className="w-8 h-8" />
+                  <div className="w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                    <ShieldCheck className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Order Complete!</h3>
+                  <h3 className="text-2xl font-bold mb-1">Pack Ripped & Hit Sleeved!</h3>
+                  {cards.find(c => c.isMostExpensive) && (
+                    <div className="text-xs text-cyan-300 font-extrabold bg-cyan-950/80 border border-cyan-400/50 px-3.5 py-1.5 rounded-full mb-3 shadow-lg flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
+                      <span>Sleeved Hit: {cards.find(c => c.isMostExpensive)?.pokemon.name} (${cards.find(c => c.isMostExpensive)?.value.toFixed(2)})</span>
+                    </div>
+                  )}
                   <p className="text-gray-400 text-sm mb-6">
-                    Total Value: <span className="text-green-400 font-bold">${cards.reduce((acc, c) => acc + c.value, 0).toFixed(2)}</span>
+                    Total Value: <span className="text-emerald-400 font-bold">${cards.reduce((acc, c) => acc + c.value, 0).toFixed(2)}</span>
                   </p>
                   <button
-                    onClick={() => {
-                      sound.playButtonClick();
-                      setPackStage('unopened');
-                      setCards([]);
-                      if (activeOrder) {
-                        const updated = { ...activeOrder, status: 'completed' as const };
-                        setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
-                      }
-                    }}
-                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 font-extrabold text-white shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                    onClick={handleStartShipping}
+                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
                   >
-                    Finish Order
+                    <Truck className="w-5 h-5 text-white" />
+                    <span>SHIP TO {activeOrder?.username || 'CUSTOMER'} ({activeOrder?.location})</span>
                   </button>
                 </motion.div>
               )}
@@ -1492,6 +1600,88 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           isAddedToBinder={collectedCardIds.has(String(inspectedCard.pokemon.id || inspectedCard.id))}
         />
       )}
+
+      {/* ── 7. Shipping Animation Modal ── */}
+      <AnimatePresence>
+        {shippingModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl p-4 flex items-center justify-center pointer-events-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 30 }}
+              className="relative w-full max-w-lg bg-gradient-to-b from-[#131124] to-[#07050e] border-2 border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(245,158,11,0.35)] text-center flex flex-col items-center overflow-hidden text-white"
+            >
+              {/* Delivery Van / Truck Animation */}
+              <motion.div
+                animate={{ x: [-15, 15, -15] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-400 p-0.5 shadow-[0_0_30px_rgba(245,158,11,0.6)] mb-4 flex items-center justify-center"
+              >
+                <div className="w-full h-full rounded-full bg-[#0c0a18] flex items-center justify-center">
+                  <Truck className="w-10 h-10 text-amber-400 animate-bounce" />
+                </div>
+              </motion.div>
+
+              <div className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-black uppercase tracking-widest mb-2.5 flex items-center gap-1.5 shadow-md">
+                <Package className="w-4 h-4 text-amber-400" />
+                <span>PACKAGING & SHIPPING LIVE</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-black text-white mb-1">
+                Shipping to <span className="text-amber-300">{shippingModal.customer}</span>
+              </h2>
+              
+              <div className="text-sm font-extrabold text-emerald-400 mb-4 flex items-center justify-center gap-1.5">
+                <MapPin className="w-4 h-4 text-red-400 shrink-0" />
+                <span>{shippingModal.location}</span>
+              </div>
+
+              {/* Parcel Details Box */}
+              <div className="w-full bg-[#171429] border border-white/15 rounded-2xl p-4 mb-6 flex flex-col items-center relative overflow-hidden shadow-inner">
+                <div className="absolute top-2 right-2 px-2 py-0.5 rounded border border-red-500/60 bg-red-950/90 text-red-400 text-[9px] font-black uppercase tracking-widest rotate-3 shadow">
+                  FRAGILE &middot; SLEEVED HITS
+                </div>
+
+                <div className="text-xs text-cyan-300 font-bold flex items-center gap-1 mb-2">
+                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                  <span>Sleeved Hit: <strong>{shippingModal.sleevedHitName}</strong> (${shippingModal.sleevedHitValue.toFixed(2)})</span>
+                </div>
+
+                <div className="text-[11px] text-gray-400 font-mono">
+                  Tracking Code: <span className="text-gray-200 font-bold">{shippingModal.trackingCode}</span>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-black/60 rounded-full h-3 mt-4 overflow-hidden border border-white/10 p-0.5">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${shippingProgress}%` }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-gradient-to-r from-amber-500 via-emerald-400 to-cyan-400 h-full rounded-full shadow-[0_0_10px_rgba(52,211,153,0.8)]"
+                  />
+                </div>
+
+                <span className="text-[10px] font-mono text-amber-300 font-bold mt-2">
+                  {shippingProgress < 30 ? '🛡️ Sleeving Top Hits...' : shippingProgress < 70 ? '📦 Bubble Envelope Sealing...' : '🚚 Dispatched to Logistics Provider!'}
+                </span>
+              </div>
+
+              <button
+                onClick={() => completeShipping(shippingModal)}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black font-black text-sm uppercase tracking-wider shadow-[0_4px_25px_rgba(16,185,129,0.5)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-5 h-5 text-black" />
+                <span>CONFIRM PACKAGE DISPATCH</span>
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
