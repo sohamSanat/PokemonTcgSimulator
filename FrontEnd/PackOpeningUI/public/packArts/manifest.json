@@ -251,6 +251,36 @@
   "emerging powers": [
     "/packArts/Black-White/emerging-powers/emerging-powers.png"
   ],
+  "Energy-blackAndwhite": [
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-001-grass_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-002-fire_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-003-water_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-004-lightning_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-005-psychic_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-006-fighting_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-007-darkness_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-008-metal_energy.jpg"
+  ],
+  "energy-blackandwhite": [
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-001-grass_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-002-fire_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-003-water_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-004-lightning_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-005-psychic_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-006-fighting_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-007-darkness_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-008-metal_energy.jpg"
+  ],
+  "energyblackandwhite": [
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-001-grass_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-002-fire_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-003-water_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-004-lightning_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-005-psychic_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-006-fighting_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-007-darkness_energy.jpg",
+    "/packArts/Black-White/Energy-blackAndwhite/en_US-BW_Energy-008-metal_energy.jpg"
+  ],
   "legendary-treasures": [
     "/packArts/Black-White/legendary-treasures/legendary-treasures.png"
   ],
@@ -345,130 +375,160 @@
     "/packArts/Black-White/plasma-storm/plasma-storm.png"
   ],
   "diamon-pearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamonpearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "dp1": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "dp01": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamond & pearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamondpearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamond & pearl base set": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamondpearlbaseset": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamond-pearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamond and pearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
   ],
   "diamondandpearl": [
-    "/packArts/Diamon-Pearl/diamon-pearl/diamon-pearl.png"
+    "/packArts/Diamond-Pearl/diamon-pearl/diamon-pearl.png"
+  ],
+  "Energy-diamonAndpearl": [
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/darkness-energy-diamond-pearl-dp-129.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fighting-energy-diamond-pearl-dp-128.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fire-energy-diamond-pearl-dp-124.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/grass-energy-diamond-pearl-dp-123.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/lightning-energy-diamond-pearl-dp-126.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/metal-energy-diamond-pearl-dp-130.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/psychic-energy-diamond-pearl-dp-127.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/water-energy-diamond-pearl-dp-125.jpg"
+  ],
+  "energy-diamonandpearl": [
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/darkness-energy-diamond-pearl-dp-129.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fighting-energy-diamond-pearl-dp-128.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fire-energy-diamond-pearl-dp-124.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/grass-energy-diamond-pearl-dp-123.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/lightning-energy-diamond-pearl-dp-126.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/metal-energy-diamond-pearl-dp-130.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/psychic-energy-diamond-pearl-dp-127.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/water-energy-diamond-pearl-dp-125.jpg"
+  ],
+  "energydiamonandpearl": [
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/darkness-energy-diamond-pearl-dp-129.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fighting-energy-diamond-pearl-dp-128.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/fire-energy-diamond-pearl-dp-124.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/grass-energy-diamond-pearl-dp-123.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/lightning-energy-diamond-pearl-dp-126.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/metal-energy-diamond-pearl-dp-130.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/psychic-energy-diamond-pearl-dp-127.jpg",
+    "/packArts/Diamond-Pearl/Energy-diamonAndpearl/water-energy-diamond-pearl-dp-125.jpg"
   ],
   "great-encounters": [
-    "/packArts/Diamon-Pearl/great-encounters/great-encounters.png"
+    "/packArts/Diamond-Pearl/great-encounters/great-encounters.png"
   ],
   "greatencounters": [
-    "/packArts/Diamon-Pearl/great-encounters/great-encounters.png"
+    "/packArts/Diamond-Pearl/great-encounters/great-encounters.png"
   ],
   "dp4": [
-    "/packArts/Diamon-Pearl/great-encounters/great-encounters.png"
+    "/packArts/Diamond-Pearl/great-encounters/great-encounters.png"
   ],
   "dp04": [
-    "/packArts/Diamon-Pearl/great-encounters/great-encounters.png"
+    "/packArts/Diamond-Pearl/great-encounters/great-encounters.png"
   ],
   "great encounters": [
-    "/packArts/Diamon-Pearl/great-encounters/great-encounters.png"
+    "/packArts/Diamond-Pearl/great-encounters/great-encounters.png"
   ],
   "legend-awakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "legendawakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "dp6": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "dp06": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "legends awakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "legendsawakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "legend awakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "legends-awakened": [
-    "/packArts/Diamon-Pearl/legend-awakened/legend-awakened.png"
+    "/packArts/Diamond-Pearl/legend-awakened/legend-awakened.png"
   ],
   "majestic-dawn": [
-    "/packArts/Diamon-Pearl/majestic-dawn/majestic-dawn.png"
+    "/packArts/Diamond-Pearl/majestic-dawn/majestic-dawn.png"
   ],
   "majesticdawn": [
-    "/packArts/Diamon-Pearl/majestic-dawn/majestic-dawn.png"
+    "/packArts/Diamond-Pearl/majestic-dawn/majestic-dawn.png"
   ],
   "dp5": [
-    "/packArts/Diamon-Pearl/majestic-dawn/majestic-dawn.png"
+    "/packArts/Diamond-Pearl/majestic-dawn/majestic-dawn.png"
   ],
   "dp05": [
-    "/packArts/Diamon-Pearl/majestic-dawn/majestic-dawn.png"
+    "/packArts/Diamond-Pearl/majestic-dawn/majestic-dawn.png"
   ],
   "majestic dawn": [
-    "/packArts/Diamon-Pearl/majestic-dawn/majestic-dawn.png"
+    "/packArts/Diamond-Pearl/majestic-dawn/majestic-dawn.png"
   ],
   "mysterious-treasures": [
-    "/packArts/Diamon-Pearl/mysterious-treasures/mysterious-treasures.png"
+    "/packArts/Diamond-Pearl/mysterious-treasures/mysterious-treasures.png"
   ],
   "mysterioustreasures": [
-    "/packArts/Diamon-Pearl/mysterious-treasures/mysterious-treasures.png"
+    "/packArts/Diamond-Pearl/mysterious-treasures/mysterious-treasures.png"
   ],
   "dp2": [
-    "/packArts/Diamon-Pearl/mysterious-treasures/mysterious-treasures.png"
+    "/packArts/Diamond-Pearl/mysterious-treasures/mysterious-treasures.png"
   ],
   "dp02": [
-    "/packArts/Diamon-Pearl/mysterious-treasures/mysterious-treasures.png"
+    "/packArts/Diamond-Pearl/mysterious-treasures/mysterious-treasures.png"
   ],
   "mysterious treasures": [
-    "/packArts/Diamon-Pearl/mysterious-treasures/mysterious-treasures.png"
+    "/packArts/Diamond-Pearl/mysterious-treasures/mysterious-treasures.png"
   ],
   "secret-wonders": [
-    "/packArts/Diamon-Pearl/secret-wonders/secret-wonders.png"
+    "/packArts/Diamond-Pearl/secret-wonders/secret-wonders.png"
   ],
   "secretwonders": [
-    "/packArts/Diamon-Pearl/secret-wonders/secret-wonders.png"
+    "/packArts/Diamond-Pearl/secret-wonders/secret-wonders.png"
   ],
   "dp3": [
-    "/packArts/Diamon-Pearl/secret-wonders/secret-wonders.png"
+    "/packArts/Diamond-Pearl/secret-wonders/secret-wonders.png"
   ],
   "dp03": [
-    "/packArts/Diamon-Pearl/secret-wonders/secret-wonders.png"
+    "/packArts/Diamond-Pearl/secret-wonders/secret-wonders.png"
   ],
   "secret wonders": [
-    "/packArts/Diamon-Pearl/secret-wonders/secret-wonders.png"
+    "/packArts/Diamond-Pearl/secret-wonders/secret-wonders.png"
   ],
   "stormfront": [
-    "/packArts/Diamon-Pearl/stormfront/stormfront.png"
+    "/packArts/Diamond-Pearl/stormfront/stormfront.png"
   ],
   "dp7": [
-    "/packArts/Diamon-Pearl/stormfront/stormfront.png"
+    "/packArts/Diamond-Pearl/stormfront/stormfront.png"
   ],
   "dp07": [
-    "/packArts/Diamon-Pearl/stormfront/stormfront.png"
+    "/packArts/Diamond-Pearl/stormfront/stormfront.png"
   ],
   "crystal-guardians": [
     "/packArts/EX/crystal-guardians/crystal-guardians.png"
@@ -781,6 +841,36 @@
   ],
   "unseen forces": [
     "/packArts/EX/unseen-forces/unseen-forces.png"
+  ],
+  "Energy-HeartGoldandSoulSilver": [
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-115-grass_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-116-fire_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-117-water_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-118-lightning_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-119-psychic_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-120-fighting_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-121-darkness_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-122-metal_energy.jpg"
+  ],
+  "energy-heartgoldandsoulsilver": [
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-115-grass_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-116-fire_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-117-water_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-118-lightning_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-119-psychic_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-120-fighting_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-121-darkness_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-122-metal_energy.jpg"
+  ],
+  "energyheartgoldandsoulsilver": [
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-115-grass_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-116-fire_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-117-water_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-118-lightning_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-119-psychic_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-120-fighting_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-121-darkness_energy.jpg",
+    "/packArts/HeartGold-SoulSilver/Energy-HeartGoldandSoulSilver/en_US-HGSS1-122-metal_energy.jpg"
   ],
   "heartgold-soulsilver": [
     "/packArts/HeartGold-SoulSilver/heartgold-soulsilver/heartgold-soulsilver.png"

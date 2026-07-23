@@ -110,6 +110,7 @@ export interface PokemonCard {
 
 export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'high'): string => {
   if (!baseUrl) return '';
+  if (baseUrl.includes('/packArts/')) return baseUrl;
   
   if (quality === 'low') {
     if (baseUrl.includes('/high.png')) return baseUrl.replace('/high.png', '/low.png');
@@ -304,9 +305,15 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
 export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', rawNum: string | number = '1', onFailed?: () => void) {
   if (!img) return;
   const num = `${rawNum}`.trim();
+  const sLow = setId.toLowerCase();
+
+  // If energy card image failed or is missing, supply local era energy card image!
+  if (img.src.includes('energy') || img.src.includes('Energy') || sLow.includes('eng') || num.includes('eng') || num.startsWith('E')) {
+    img.src = '/packArts/ScarletAndViolet-Generation/SV-EnergyCards/1.webp';
+    return;
+  }
   const validAsset = getTCGDexValidAssetPath(setId, num);
   
-  const sLow = setId.toLowerCase();
   const isJapaneseSet = sLow.includes('_ja') || img.src.includes('_ja') || img.src.includes('/ja/');
   const cleanId = sLow.replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
   const cleanAsset = getTCGDexValidAssetPath(cleanId, num);
@@ -697,60 +704,60 @@ export type EnergyEra = 'base' | 'xy' | 'sm' | 'swsh' | 'sv' | 'me';
 
 export const ENERGY_POOLS_BY_ERA: Record<EnergyEra, TCGDexCardSummary[]> = {
   base: [
-    { id: "base-eng-1", localId: "E01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "base-eng-2", localId: "E02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "base-eng-3", localId: "E03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "base-eng-4", localId: "E04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "base-eng-5", localId: "E05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "base-eng-6", localId: "E06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" }
+    { id: "base-eng-1", localId: "E01", name: "Basic Grass Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/1.webp" },
+    { id: "base-eng-2", localId: "E02", name: "Basic Fire Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/2.webp" },
+    { id: "base-eng-3", localId: "E03", name: "Basic Water Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/3.webp" },
+    { id: "base-eng-4", localId: "E04", name: "Basic Lightning Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/4.webp" },
+    { id: "base-eng-5", localId: "E05", name: "Basic Psychic Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/5.webp" },
+    { id: "base-eng-6", localId: "E06", name: "Basic Fighting Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/6.webp" }
   ],
   me: [
-    { id: "me-eng-1", localId: "ME01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "me-eng-2", localId: "ME02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "me-eng-3", localId: "ME03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "me-eng-4", localId: "ME04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "me-eng-5", localId: "ME05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "me-eng-6", localId: "ME06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" },
-    { id: "me-eng-7", localId: "ME07", name: "Basic Darkness Energy", image: "https://images.scrydex.com/pokemon/sve-7/medium" },
-    { id: "me-eng-8", localId: "ME08", name: "Basic Metal Energy", image: "https://images.scrydex.com/pokemon/sve-8/medium" }
+    { id: "me-eng-1", localId: "ME01", name: "Basic Grass Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/1.webp" },
+    { id: "me-eng-2", localId: "ME02", name: "Basic Fire Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/2.webp" },
+    { id: "me-eng-3", localId: "ME03", name: "Basic Water Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/3.webp" },
+    { id: "me-eng-4", localId: "ME04", name: "Basic Lightning Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/4.webp" },
+    { id: "me-eng-5", localId: "ME05", name: "Basic Psychic Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/5.webp" },
+    { id: "me-eng-6", localId: "ME06", name: "Basic Fighting Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/6.webp" },
+    { id: "me-eng-7", localId: "ME07", name: "Basic Darkness Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/7.webp" },
+    { id: "me-eng-8", localId: "ME08", name: "Basic Metal Energy", image: "/packArts/MegaEvolution-Generation/ME-EnergyCards/8.webp" }
   ],
   sv: [
-    { id: "sv-eng-1", localId: "SV01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "sv-eng-2", localId: "SV02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "sv-eng-3", localId: "SV03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "sv-eng-4", localId: "SV04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "sv-eng-5", localId: "SV05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "sv-eng-6", localId: "SV06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" },
-    { id: "sv-eng-7", localId: "SV07", name: "Basic Darkness Energy", image: "https://images.scrydex.com/pokemon/sve-7/medium" }
+    { id: "sv-eng-1", localId: "SV01", name: "Basic Grass Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/1.webp" },
+    { id: "sv-eng-2", localId: "SV02", name: "Basic Fire Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp" },
+    { id: "sv-eng-3", localId: "SV03", name: "Basic Water Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/3.webp" },
+    { id: "sv-eng-4", localId: "SV04", name: "Basic Lightning Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/4.webp" },
+    { id: "sv-eng-5", localId: "SV05", name: "Basic Psychic Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/5.webp" },
+    { id: "sv-eng-6", localId: "SV06", name: "Basic Fighting Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/6.webp" },
+    { id: "sv-eng-7", localId: "SV07", name: "Basic Darkness Energy", image: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/7.webp" }
   ],
   sm: [
-    { id: "sm-eng-1", localId: "SM01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "sm-eng-2", localId: "SM02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "sm-eng-3", localId: "SM03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "sm-eng-4", localId: "SM04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "sm-eng-5", localId: "SM05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "sm-eng-6", localId: "SM06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" },
-    { id: "sm-eng-7", localId: "SM07", name: "Basic Darkness Energy", image: "https://images.scrydex.com/pokemon/sve-7/medium" },
-    { id: "sm-eng-8", localId: "SM08", name: "Basic Metal Energy", image: "https://images.scrydex.com/pokemon/sve-8/medium" }
+    { id: "sm-eng-1", localId: "SM01", name: "Basic Grass Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/1.webp" },
+    { id: "sm-eng-2", localId: "SM02", name: "Basic Fire Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/2.webp" },
+    { id: "sm-eng-3", localId: "SM03", name: "Basic Water Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/3.webp" },
+    { id: "sm-eng-4", localId: "SM04", name: "Basic Lightning Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/4.webp" },
+    { id: "sm-eng-5", localId: "SM05", name: "Basic Psychic Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/5.webp" },
+    { id: "sm-eng-6", localId: "SM06", name: "Basic Fighting Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/6.webp" },
+    { id: "sm-eng-7", localId: "SM07", name: "Basic Darkness Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/7.webp" },
+    { id: "sm-eng-8", localId: "SM08", name: "Basic Metal Energy", image: "/packArts/SunAndMoon-Generation/SM-EnergyCards/8.webp" }
   ],
   swsh: [
-    { id: "swsh-eng-1", localId: "SS01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "swsh-eng-2", localId: "SS02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "swsh-eng-3", localId: "SS03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "swsh-eng-4", localId: "SS04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "swsh-eng-5", localId: "SS05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "swsh-eng-6", localId: "SS06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" },
-    { id: "swsh-eng-7", localId: "SS07", name: "Basic Darkness Energy", image: "https://images.scrydex.com/pokemon/sve-7/medium" },
-    { id: "swsh-eng-8", localId: "SS08", name: "Basic Metal Energy", image: "https://images.scrydex.com/pokemon/sve-8/medium" }
+    { id: "swsh-eng-1", localId: "SS01", name: "Basic Grass Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/1.webp" },
+    { id: "swsh-eng-2", localId: "SS02", name: "Basic Fire Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/2.webp" },
+    { id: "swsh-eng-3", localId: "SS03", name: "Basic Water Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/3.webp" },
+    { id: "swsh-eng-4", localId: "SS04", name: "Basic Lightning Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/4.webp" },
+    { id: "swsh-eng-5", localId: "SS05", name: "Basic Psychic Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/5.webp" },
+    { id: "swsh-eng-6", localId: "SS06", name: "Basic Fighting Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/6.webp" },
+    { id: "swsh-eng-7", localId: "SS07", name: "Basic Darkness Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/7.webp" },
+    { id: "swsh-eng-8", localId: "SS08", name: "Basic Metal Energy", image: "/packArts/SwordAndShield-Generation/SS-EnergyCards/8.webp" }
   ],
   xy: [
-    { id: "xy-eng-1", localId: "XY01", name: "Basic Grass Energy", image: "https://images.scrydex.com/pokemon/sve-1/medium" },
-    { id: "xy-eng-2", localId: "XY02", name: "Basic Fire Energy", image: "https://images.scrydex.com/pokemon/sve-2/medium" },
-    { id: "xy-eng-3", localId: "XY03", name: "Basic Water Energy", image: "https://images.scrydex.com/pokemon/sve-3/medium" },
-    { id: "xy-eng-4", localId: "XY04", name: "Basic Lightning Energy", image: "https://images.scrydex.com/pokemon/sve-4/medium" },
-    { id: "xy-eng-5", localId: "XY05", name: "Basic Psychic Energy", image: "https://images.scrydex.com/pokemon/sve-5/medium" },
-    { id: "xy-eng-6", localId: "XY06", name: "Basic Fighting Energy", image: "https://images.scrydex.com/pokemon/sve-6/medium" },
-    { id: "xy-eng-7", localId: "XY07", name: "Basic Darkness Energy", image: "https://images.scrydex.com/pokemon/sve-7/medium" }
+    { id: "xy-eng-1", localId: "XY01", name: "Basic Grass Energy", image: "/packArts/XY-Generation/XY-EnergyCards/1.webp" },
+    { id: "xy-eng-2", localId: "XY02", name: "Basic Fire Energy", image: "/packArts/XY-Generation/XY-EnergyCards/2.webp" },
+    { id: "xy-eng-3", localId: "XY03", name: "Basic Water Energy", image: "/packArts/XY-Generation/XY-EnergyCards/3.webp" },
+    { id: "xy-eng-4", localId: "XY04", name: "Basic Lightning Energy", image: "/packArts/XY-Generation/XY-EnergyCards/4.webp" },
+    { id: "xy-eng-5", localId: "XY05", name: "Basic Psychic Energy", image: "/packArts/XY-Generation/XY-EnergyCards/5.webp" },
+    { id: "xy-eng-6", localId: "XY06", name: "Basic Fighting Energy", image: "/packArts/XY-Generation/XY-EnergyCards/6.webp" },
+    { id: "xy-eng-7", localId: "XY07", name: "Basic Darkness Energy", image: "/packArts/XY-Generation/XY-EnergyCards/7.webp" }
   ]
 };
 

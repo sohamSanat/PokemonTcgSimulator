@@ -94,7 +94,7 @@ const FALLBACK_POKEMON_CARDS: PokemonCard[] = [
     id: "sve-10",
     name: "Basic Fire Energy",
     rarity: "Common",
-    images: { small: "https://images.scrydex.com/pokemon/sve-10/medium", large: "https://images.scrydex.com/pokemon/sve-10/medium" },
+    images: { small: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp", large: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp" },
     tcgplayer: { prices: { normal: { market: 0.03 } } }
   }
 ];
@@ -342,6 +342,12 @@ const Card = React.memo(({
             alt={card.pokemon.name}
             className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
             onError={(e) => {
+              const nameLower = (card.pokemon.name || '').toLowerCase();
+              const idLower = (card.pokemon.id || '').toLowerCase();
+              if (nameLower.includes('energy') || idLower.includes('energy')) {
+                (e.target as HTMLImageElement).src = '/packArts/ScarletAndViolet-Generation/SV-EnergyCards/1.webp';
+                return;
+              }
               const num = card.pokemon.localId || card.pokemon.id?.split('-')[1] || '1';
               const setId = card.pokemon.id?.split('-')[0] || 'swsh3';
               handleCardImageError(e.target as HTMLImageElement, setId, num);
