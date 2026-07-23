@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, saveCollectedCard, getStorageKey, syncToFirestore, type Card } from '../binder/types';
-import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewer } from '../../services/geminiStreamChat';
+import { generateStreamViewerReply, getRandomStreamMessage, generateCardPullReaction, type StreamChatViewer } from '../../services/geminiStreamChat';
 
 
 import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull, orchestrateSetLoading, getRealCardPrice, onCardFullCacheUpdated } from '../../services/tcgdex';
@@ -776,6 +776,18 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const revealedCards = React.useMemo(() => cards.filter(c => c.collected), [cards]);
   const topCardId = React.useMemo(() => remainingCards.length > 0 ? remainingCards[remainingCards.length - 1].id : null, [remainingCards]);
 
+  const lastProcessedPackRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (packStage === 'opened' && cards.length > 0 && remainingCards.length === 0) {
+      const packSignature = cards.map(c => c.id).join(',');
+      if (lastProcessedPackRef.current === packSignature) return;
+      lastProcessedPackRef.current = packSignature;
+
+      handleFinishCurrentPack(cards);
+    }
+  }, [packStage, remainingCards.length, cards]);
+
   const handleTearPack = React.useCallback(() => {
     sound.playPackOpen();
     setPackStage('opened');
@@ -793,6 +805,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           flipTimesRef.current[id] = now;
           sound.playCardFlip(card.pokemon.rarity);
           setSessionTotal(s => Number((s + card.value).toFixed(2)));
+          if (typeof triggerCardReaction === 'function') triggerCardReaction(card);
           return { ...card, flipped: true };
         } else if (!card.collected) {
           sound.playCardCollect(card.value);
@@ -813,6 +826,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     orderedCards.forEach((card, idx) => {
       setTimeout(() => {
         sound.playRevealStep(idx, card.pokemon.rarity);
+        if (typeof triggerCardReaction === 'function') triggerCardReaction(card);
         setCards(prev => prev.map(c => {
           if (c.id === card.id && !c.flipped) {
             setSessionTotal(s => Number((s + c.value).toFixed(2)));
@@ -1132,6 +1146,31 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [hostInput, setHostInput] = useState<string>('');
   const [activeOrder, setActiveOrder] = useState<CustomerOrder | null>(orders[0] || null);
 
+  const triggerCardReaction = React.useCallback(async (card: CardData) => {
+    if (!card.isMostExpensive && card.value < 1.50 && !(card.pokemon.rarity || '').toLowerCase().includes('rare')) return;
+
+    try {
+      const { viewer, text } = await generateCardPullReaction({
+        cardName: card.pokemon.name,
+        cardValue: card.value,
+        rarity: card.pokemon.rarity || 'Card',
+        isMostExpensive: Boolean(card.isMostExpensive),
+        buyerUsername: activeOrder?.username
+      });
+
+      addChatMessage({
+        id: Date.now().toString() + Math.random(),
+        username: viewer.username,
+        message: text,
+        badge: viewer.badge,
+        color: viewer.color,
+        avatarColor: viewer.avatarColor
+      });
+    } catch {
+      // Silent catch
+    }
+  }, [activeOrder]);
+
   const [isChatTyping, setIsChatTyping] = useState(false);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
@@ -1425,26 +1464,51 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   transition={{ type: 'spring', bounce: 0.5 }}
                   className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl max-w-md text-center shrink-0"
                 >
-                  <div className="w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center mb-4 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                    <ShieldCheck className="w-8 h-8" />
+                  <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mb-3 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                    <Package className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-1">Pack Ripped & Hit Sleeved!</h3>
+
+                  <h3 className="text-xl font-extrabold mb-1">
+                    Pack {activeOrder?.openedPacks || 1} of {activeOrder?.packCount} Completed!
+                  </h3>
+
                   {cards.find(c => c.isMostExpensive) && (
                     <div className="text-xs text-cyan-300 font-extrabold bg-cyan-950/80 border border-cyan-400/50 px-3.5 py-1.5 rounded-full mb-3 shadow-lg flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
-                      <span>Sleeved Hit: {cards.find(c => c.isMostExpensive)?.pokemon.name} (${cards.find(c => c.isMostExpensive)?.value.toFixed(2)})</span>
+                      <span>Pack Top Hit: {cards.find(c => c.isMostExpensive)?.pokemon.name} (${cards.find(c => c.isMostExpensive)?.value.toFixed(2)})</span>
                     </div>
                   )}
-                  <p className="text-gray-400 text-sm mb-6">
-                    Total Value: <span className="text-emerald-400 font-bold">${cards.reduce((acc, c) => acc + c.value, 0).toFixed(2)}</span>
+
+                  <p className="text-gray-400 text-xs mb-5">
+                    Total Order Hits Value: <span className="text-emerald-400 font-bold">${((activeOrder?.pulledCards || []).reduce((acc, c) => acc + c.value, 0)).toFixed(2)}</span>
                   </p>
-                  <button
-                    onClick={handleStartShipping}
-                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    <Truck className="w-5 h-5 text-white" />
-                    <span>SHIP TO {activeOrder?.username || 'CUSTOMER'} ({activeOrder?.location})</span>
-                  </button>
+
+                  {(activeOrder?.openedPacks || 0) < (activeOrder?.packCount || 1) ? (
+                    <button
+                      onClick={() => activeOrder && loadAndRipPack(activeOrder)}
+                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <Package className="w-5 h-5 text-white" />
+                      <span>📦 RIP PACK {(activeOrder?.openedPacks || 0) + 1} OF {activeOrder?.packCount} FOR {activeOrder?.username} ⚡</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        sound.playButtonClick();
+                        if (activeOrder) {
+                          setCompletionModal({
+                            order: activeOrder,
+                            hits: activeOrder.pulledCards || [],
+                            totalValue: (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0)
+                          });
+                        }
+                      }}
+                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 font-black text-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2 animate-pulse"
+                    >
+                      <Truck className="w-5 h-5 text-black" />
+                      <span>🎉 ALL PACKS OPENED - SHIP ORDER TO LOGISTICS 📦</span>
+                    </button>
+                  )}
                 </motion.div>
               )}
 

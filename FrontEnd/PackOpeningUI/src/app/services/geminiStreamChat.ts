@@ -119,3 +119,101 @@ CRITICAL RULES:
 
   return { viewer, text: fallbackText };
 }
+
+export interface CardPullReactionContext {
+  cardName: string;
+  cardValue: number;
+  rarity: string;
+  isMostExpensive?: boolean;
+  buyerUsername?: string;
+}
+
+export async function generateCardPullReaction(context: CardPullReactionContext): Promise<{ viewer: StreamChatViewer; text: string }> {
+  const viewer = getRandomViewer();
+  const valStr = context.cardValue.toFixed(2);
+  const buyer = context.buyerUsername || 'buyer';
+
+  const systemPrompt = `You are a live stream chatter watching a Pokemon TCG Rip & Ship opening stream.
+Your Twitch/Whatnot username is "${viewer.username}".
+A card was just pulled for customer "${buyer}":
+- Card Name: "${context.cardName}"
+- Card Price: "$${valStr}"
+- Rarity: "${context.rarity}"
+- Top Hit of Pack: ${context.isMostExpensive ? 'YES' : 'NO'}
+
+CRITICAL INSTRUCTION:
+Write ONE energetic, authentic, real human live chat reaction (3-12 words max).
+React directly to the specific card name and price ($${valStr}).
+- If price > $40 or Top Hit: be HYPER, scream in caps, hype up the value, call it a GRAIL, tell them to sleeve it immediately!
+- If price $10-$40: hype the nice pull, comment on card art or price value, say W pull!
+- If price < $10: give a quick casual Twitch chat style reaction.
+Use stream slang (LFG, W, SHEESH, Grail, $${valStr}, sleeve it, 🔥, 💰, 📈, 👑, 😱).
+Do not use quotes or explanations. Return ONLY the chat message text.`;
+
+  if (GEMINI_API_KEY) {
+    const modelsToTry = ["gemini-2.0-flash", "gemini-1.5-flash"];
+    for (const model of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [{ role: 'user', parts: [{ text: `React to pulling ${context.cardName} worth $${valStr}` }] }],
+            generationConfig: { temperature: 0.95, maxOutputTokens: 50 }
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+          if (reply) {
+            return { viewer, text: reply.replace(/^["']|["']$/g, '') };
+          }
+        }
+      } catch (err) {
+        console.warn(`[StreamChat] Gemini card reaction error:`, err);
+      }
+    }
+  }
+
+  // Realistic Fallback Engine based on Card Value & Rarity
+  const v = context.cardValue;
+  const name = context.cardName;
+
+  if (v >= 40 || (context.isMostExpensive && v >= 15)) {
+    const grailReactions = [
+      `HOLY GRAIL OMG!! ${name} IS $${valStr}!! 😱🔥`,
+      `SHEESH!! @${buyer} JUST HIT THE $${valStr} ${name}!! 💰👑`,
+      `SLEEVE THAT NOW!! $${valStr} BANGER!! 🛡️⚡`,
+      `W IN THE CHAT BOYS!! ${name} GRAIL PULL!! 📈📈`,
+      `NO WAY!! $${valStr} ${name}!! BIGGEST HIT OF THE STREAM! 🎉🔥`
+    ];
+    return { viewer, text: grailReactions[Math.floor(Math.random() * grailReactions.length)] };
+  } else if (v >= 10) {
+    const midReactions = [
+      `Yo nice $${valStr} pull!! ${name} is clean AF ✨`,
+      `W hit for @${buyer}! $${valStr} ${name}! 🔥`,
+      `That ${name} art goes hard! Solid $${valStr} card 👏`,
+      `Let's gooo! $${valStr} ${name} in the pack! 📈`
+    ];
+    return { viewer, text: midReactions[Math.floor(Math.random() * midReactions.length)] };
+  } else if (v >= 2) {
+    const minorReactions = [
+      `Clean ${name}! ✨`,
+      `Solid holo pull, $${valStr} value! 🔥`,
+      `We take those! Nice ${name} 🍀`,
+      `Not bad at all! Moving up 📈`
+    ];
+    return { viewer, text: minorReactions[Math.floor(Math.random() * minorReactions.length)] };
+  } else {
+    const bulkReactions = [
+      `Warmup card, real hit incoming! ⚡`,
+      `Bulk for the binder! 📦`,
+      `Next card is the big hit chat! 🙏`,
+      `Send luck for the rare slot! 🍀`
+    ];
+    return { viewer, text: bulkReactions[Math.floor(Math.random() * bulkReactions.length)] };
+  }
+}
