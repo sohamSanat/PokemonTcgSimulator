@@ -978,7 +978,8 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   };
 
   const packs: EnglishBoxPackData[] = [];
-  const commonCount = boxEra === 'base' ? 5 : 4;
+  // pack_architecture.txt: SV/ME = 5 commons, SWSH/SM/XY = 4 commons, Base = 5 commons
+  const commonCount = (boxEra === 'sv' || boxEra === 'me' || boxEra === 'base') ? 5 : 4;
   const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh';
 
   for (let idx = 0; idx < packsPerBox; idx++) {
@@ -1132,6 +1133,8 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     }).catch(() => { });
 
     // Instantly categorize cards from `pool` (set.cards) for 0ms pack generation
+    // NOTE: TCGDex set-details endpoint returns cards WITHOUT rarity fields,
+    // so we MUST use position-based heuristics to build proper rarity pools.
     const cList: any[] = [];
     const uList: any[] = [];
     const rList: any[] = [];
@@ -1143,13 +1146,18 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     pool.forEach((c, idx) => {
       const r = (c.rarity || '').toLowerCase();
       const n = (c.name || '').toLowerCase();
-      if (r.includes('secret') || r.includes('illustration') || r.includes('hyper') || r.includes('gold') || r.includes('rainbow')) {
+      const cardNum = parseInt((c.localId || '0').match(/\d+/)?.[0] || '0', 10);
+      const isHitByName = n.includes(' ex') || n.includes(' v') || n.includes(' gx') || n.includes('vmax') || n.includes('vstar') || n.includes('mega ');
+      const isSecretByNum = officialCount > 0 && cardNum > officialCount;
+
+      if (r.includes('secret') || r.includes('illustration') || r.includes('hyper') || r.includes('gold') || r.includes('rainbow') || isSecretByNum) {
         srList.push(c);
-      } else if (r.includes('ultra') || r.includes('ex') || n.includes('ex') || n.includes('vmax') || n.includes('vstar') || n.includes('mega')) {
+      } else if (r.includes('ultra') || r.includes('ex') || isHitByName) {
         urList.push(c);
-      } else if (r.includes('holo') || r.includes('rare')) {
+      } else if (r.includes('holo') || r.includes('rare') || (idx > totalPool * 0.55 && idx <= totalPool * 0.7 && !isHitByName)) {
+        // Position-based: cards in the 55-70% range of a set are typically Rare / Holo Rare
         hList.push(c);
-      } else if (r.includes('uncommon') || (idx > totalPool * 0.5 && idx <= totalPool * 0.8)) {
+      } else if (r.includes('uncommon') || (idx > totalPool * 0.35 && idx <= totalPool * 0.55)) {
         uList.push(c);
       } else {
         cList.push(c);
@@ -1271,6 +1279,39 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     }
     if (nonHoloRarePool.length < 5) {
       nonHoloRarePool.push(...regularCards.slice(split2).filter(c => !nonHoloRarePool.some(existing => existing.id === c.id)));
+    }
+  }
+
+  // Ensure holoRarePool is populated — this is the DEFAULT hit tier (63.2% of packs).
+  // Without this, the default tier cascades into vPool/fullArtPool making every pack a "hit".
+  if (holoRarePool.length < 5) {
+    // Pull from nonHoloRarePool first (these are regular rares without explicit holo classification)
+    const candidates = nonHoloRarePool.filter(c => {
+      const n = c.name || '';
+      return !n.includes(' ex') && !n.includes(' V') && !n.includes(' GX') && !n.includes(' EX') && !n.includes('VMAX') && !n.includes('VSTAR');
+    });
+    if (candidates.length > 0) {
+      // Move up to half of nonHoloRarePool into holoRarePool so both pools have cards
+      const moveCount = Math.max(5, Math.floor(candidates.length * 0.6));
+      for (let i = 0; i < moveCount && i < candidates.length; i++) {
+        holoRarePool.push(candidates[i]);
+      }
+    }
+    // If still empty, use regular cards from the upper portion of the set
+    if (holoRarePool.length < 5) {
+      const regularCards = pool.filter(c => {
+        const n = c.name || '';
+        const num = parseInt((c.localId || '0').match(/\d+/)?.[0] || '0', 10);
+        const isHit = n.includes(' ex') || n.includes(' V') || n.includes(' GX') || n.includes(' EX') || n.includes('VMAX') || n.includes('VSTAR');
+        const isSecret = officialCount > 0 && num > officialCount;
+        return !isHit && !isSecret && !commonPool.some(e => e.id === c.id) && !uncommonPool.some(e => e.id === c.id);
+      });
+      // Sort by card number and take the upper-middle range
+      regularCards.sort((a, b) => parseInt((a.localId || '0').match(/\d+/)?.[0] || '0', 10) - parseInt((b.localId || '0').match(/\d+/)?.[0] || '0', 10));
+      const start = Math.floor(regularCards.length * 0.5);
+      const end = Math.floor(regularCards.length * 0.85);
+      const holoSlice = regularCards.slice(start, end).filter(c => !holoRarePool.some(e => e.id === c.id));
+      holoRarePool.push(...holoSlice.slice(0, Math.max(10, holoSlice.length)));
     }
   }
 

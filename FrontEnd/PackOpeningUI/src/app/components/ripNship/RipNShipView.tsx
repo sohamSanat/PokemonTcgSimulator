@@ -215,10 +215,11 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
   if (cards.length === 0) return cards;
   cards.forEach(c => { c.isMostExpensive = false; });
   let maxIdx = 0;
-  let maxVal = cards[0].value;
+  let maxVal = getRealCardPrice(cards[0].pokemon) || cards[0].value || 0;
   for (let i = 1; i < cards.length; i++) {
-    if (cards[i].value >= maxVal) {
-      maxVal = cards[i].value;
+    const val = getRealCardPrice(cards[i].pokemon) || cards[i].value || 0;
+    if (val >= maxVal) {
+      maxVal = val;
       maxIdx = i;
     }
   }
@@ -228,6 +229,27 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
   }
   cards[cards.length - 1].isMostExpensive = true;
   return cards;
+};
+
+const reorderCardsWithMostExpensiveLast = (cards: CardData[]): CardData[] => {
+  if (cards.length === 0) return cards;
+  if (cards.some(c => c.flipped || c.collected)) {
+    cards.forEach(c => { c.isMostExpensive = false; });
+    let maxIdx = 0;
+    let maxVal = cards[0].value;
+    for (let i = 1; i < cards.length; i++) {
+      if (cards[i].value >= maxVal) {
+        maxVal = cards[i].value;
+        maxIdx = i;
+      }
+    }
+    cards[maxIdx].isMostExpensive = true;
+    return cards;
+  }
+  const unreversed = [...cards].reverse();
+  ensureMostExpensiveLast(unreversed);
+  const reReversed = unreversed.reverse();
+  return reReversed.map((c, idx) => ({ ...c, originalIndex: idx }));
 };
 
 
@@ -605,7 +627,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           }
           return c;
         });
-        return changed ? updated : prevCards;
+        return changed ? reorderCardsWithMostExpensiveLast(updated) : prevCards;
       });
     };
     onCardFullCacheUpdated.add(handleCacheUpdate);
