@@ -19,7 +19,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'en_mystery_bronze',
     name: 'Bronze Starter Mystery Pack',
     price: 8.99,
-    description: 'High-value entry mystery pack featuring budget Scarlet & Violet, Mega Evolution, and Sword & Shield booster packs.',
+    description: 'High-value entry mystery pack featuring budget Scarlet & Violet, Mega Evolution, and Sword & Shield booster packs — with lucky hits into vintage grails!',
     language: 'en',
     badge: '🥉 BRONZE TIER',
     gradient: 'from-amber-900/40 via-stone-900/60 to-amber-950/80',
@@ -34,7 +34,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'en_mystery_silver',
     name: 'Silver Modern Mystery Pack',
     price: 14.99,
-    description: 'Feature-packed modern booster series including Paldea Evolved, Ascended Heroes, Obsidian Flames, and Twilight Masquerade!',
+    description: 'Feature-packed modern booster series including Paldea Evolved, Ascended Heroes, Obsidian Flames, and Twilight Masquerade — with lucky hit pulls into rare vintage!',
     language: 'en',
     badge: '🥈 SILVER TIER',
     gradient: 'from-slate-700/40 via-zinc-900/60 to-slate-900/80',
@@ -49,7 +49,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'en_mystery_gold',
     name: 'Gold Chase Mystery Pack',
     price: 24.99,
-    description: 'Chance to hit fan-favorite heavyweights: Pokémon 151, Prismatic Evolutions, Crown Zenith, Lost Origin, and Fusion Strike!',
+    description: 'Chance to hit fan-favorite heavyweights: Pokémon 151, Prismatic Evolutions, Crown Zenith, Lost Origin, and Fusion Strike plus lucky vintage grails!',
     language: 'en',
     badge: '🥇 GOLD TIER',
     gradient: 'from-amber-500/30 via-yellow-950/50 to-amber-900/80',
@@ -64,7 +64,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'en_mystery_diamond',
     name: 'Diamond High Roller Mystery Pack',
     price: 49.99,
-    description: 'High-stakes mystery box containing legendary grails like Evolving Skies, Celebrations, Hidden Fates, and Ultra Prism!',
+    description: 'High-stakes mystery box containing legendary grails like Evolving Skies, Emerging Powers, Dragon Vault, Celebrations, Hidden Fates, and Ultra Prism!',
     language: 'en',
     badge: '💎 DIAMOND TIER',
     gradient: 'from-cyan-500/30 via-blue-950/50 to-sky-900/80',
@@ -72,14 +72,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.5)]',
     icon: '💎',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/diamond.webp',
-    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault'],
-    highlightSets: ['Evolving Skies', 'Celebrations', 'Hidden Fates', 'Ultra Prism', 'Sun & Moon Base', 'Guardians Rising']
+    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault', 'bw2', 'dv1'],
+    highlightSets: ['Evolving Skies', 'Emerging Powers', 'Dragon Vault', 'Celebrations', 'Hidden Fates', 'Ultra Prism']
   },
   {
     id: 'en_mystery_vintage',
     name: 'Vintage Master Mystery Pack',
     price: 99.99,
-    description: 'Rare Sun & Moon & XY era sealed mystery packs including Shining Legends, Dragon Majesty, Cosmic Eclipse, and XY Base!',
+    description: 'Rare vintage mystery packs across Black & White, HGSS, Sun & Moon, & XY eras including Next Destinies, Plasma Blast, Legendary Treasures, Unleashed, & Cosmic Eclipse!',
     language: 'en',
     badge: '👑 VINTAGE MASTER',
     gradient: 'from-purple-600/30 via-indigo-950/50 to-purple-900/80',
@@ -87,14 +87,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(168,85,247,0.5)]',
     icon: '🔮',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/vintage.webp',
-    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12'],
-    highlightSets: ['Shining Legends', 'Dragon Majesty', 'Cosmic Eclipse', 'XY Base', 'Roaring Skies', 'XY Evolutions']
+    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12', 'bw3', 'bw4', 'bw7', 'bw10', 'bw11', 'hgss2', 'hgss3'],
+    highlightSets: ['Legendary Treasures', 'Next Destinies', 'Plasma Blast', 'Unleashed', 'Cosmic Eclipse', 'XY Evolutions']
   },
   {
     id: 'en_mystery_god',
     name: 'God Tier Grail Mystery Pack',
     price: 299.99,
-    description: 'The ultimate grail mystery box! Draw from Base Set, Jungle, Fossil, Team Rocket, Team Up, Flashfire, or Double Crisis!',
+    description: 'The ultimate grail mystery box! Draw from WOTC Base, EX Series, Diamond & Pearl, Platinum, HeartGold SoulSilver, Black & White Base, Team Up, or Flashfire!',
     language: 'en',
     badge: '⚡ GOD TIER GRAIL',
     gradient: 'from-rose-600/40 via-red-950/60 to-amber-950/90',
@@ -102,8 +102,15 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_40px_rgba(244,63,94,0.6)]',
     icon: '⚡',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/god-tier.webp',
-    setIds: ['base1', 'base2', 'base3', 'base4', 'base5', 'sm9', 'xy2', 'xy4', 'g1', 'dc1'],
-    highlightSets: ['WOTC Base Set', 'Jungle', 'Fossil', 'Team Rocket', 'Team Up', 'XY Flashfire', 'Double Crisis']
+    setIds: [
+      'base1', 'base2', 'base3', 'base4', 'base5', 'sm9', 'xy2', 'xy4', 'g1', 'dc1',
+      'bw1', 'bw5', 'bw6', 'bw8', 'bw9',
+      'dp1', 'dp2', 'dp3', 'dp4', 'dp5', 'dp6', 'dp7',
+      'pl1', 'pl2', 'pl3', 'pl4',
+      'hgss1', 'hgss4', 'col1',
+      'ex1', 'ex2', 'ex3', 'ex4', 'ex5', 'ex6', 'ex7', 'ex8', 'ex9', 'ex10', 'ex11', 'ex12', 'ex13', 'ex14', 'ex15', 'ex16'
+    ],
+    highlightSets: ['WOTC Base Set', 'EX Deoxys', 'EX Team Rocket Returns', 'Diamond & Pearl', 'Platinum', 'HeartGold SoulSilver', 'Black & White Base', 'EX Dragon Frontiers']
   }
 ];
 
@@ -188,6 +195,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
 export interface MysteryPackResult {
   setId: string;
   isHighTier: boolean;
+  isLuckyHit?: boolean;
   bonusPacksCount: number;
   tierGap: number;
 }
@@ -196,18 +204,41 @@ export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResul
   const packList = pack.language === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS;
   const tierIndex = packList.findIndex(p => p.id === pack.id);
 
-  if (tierIndex <= 0) {
-    const defaultSetId = !pack.setIds || pack.setIds.length === 0 ? (pack.language === 'ja' ? 'SV1S_ja' : 'me01') : pack.setIds[Math.floor(Math.random() * pack.setIds.length)];
-    return {
-      setId: defaultSetId,
-      isHighTier: true,
-      bonusPacksCount: 0,
-      tierGap: 0
-    };
-  }
+  // Lucky Hit rates for cheaper/lower mystery packs to hit higher vintage & grail tiers
+  // Bronze (Index 0): 6% chance for Lucky Hit
+  // Silver (Index 1): 9% chance for Lucky Hit
+  // Gold (Index 2): 12% chance for Lucky Hit
+  // Diamond (Index 3): 15% chance for Lucky Hit
+  // Vintage (Index 4): 18% chance for Lucky Hit (to hit God Tier)
+  const luckyHitChances = [0.06, 0.09, 0.12, 0.15, 0.18];
+  const luckyHitChance = (tierIndex >= 0 && tierIndex < luckyHitChances.length) ? luckyHitChances[tierIndex] : 0;
 
   const roll = Math.random();
-  if (roll < 0.60) {
+
+  // 1. Lucky Hit Jackpot check into higher tiers (e.g. hitting EX series, DP, HGSS, Vintage, God Tier!)
+  if (luckyHitChance > 0 && roll < luckyHitChance) {
+    const higherTiers = packList.slice(tierIndex + 1);
+    if (higherTiers.length > 0) {
+      // Pick a random higher tier (weighted towards top tiers for epic jackpot excitement)
+      const targetHigherTier = higherTiers[Math.floor(Math.random() * higherTiers.length)];
+      const targetSetIds = targetHigherTier.setIds;
+      if (targetSetIds && targetSetIds.length > 0) {
+        const luckySetId = targetSetIds[Math.floor(Math.random() * targetSetIds.length)];
+        return {
+          setId: luckySetId,
+          isHighTier: true,
+          isLuckyHit: true,
+          bonusPacksCount: 0,
+          tierGap: 0
+        };
+      }
+    }
+  }
+
+  // 2. Standard 60/40 tier roll
+  const standardRoll = Math.random();
+
+  if (tierIndex <= 0 || standardRoll < 0.60) {
     const randomIndex = Math.floor(Math.random() * pack.setIds.length);
     return {
       setId: pack.setIds[randomIndex],
@@ -216,7 +247,7 @@ export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResul
       tierGap: 0
     };
   } else {
-    // 40% chance: User loses the 60/40 roll and gets a lower tier set
+    // 40% chance: User loses the standard roll and gets a lower tier set with pity bonus packs
     const targetLowerTierIndex = Math.floor(Math.random() * tierIndex);
     const targetLowerPack = packList[targetLowerTierIndex];
     const lowerSetIds = (targetLowerPack.setIds && targetLowerPack.setIds.length > 0)
@@ -229,16 +260,12 @@ export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResul
     // Calculate pity bonus packs based on tier gap to compensate for the lower-tier roll
     let bonusPacksCount = 2;
     if (tierGap >= 4) {
-      // 4+ Tiers lower (e.g. $300 God Tier or $100 Vintage hitting Bronze/Starter)
       bonusPacksCount = Math.floor(Math.random() * 2) + 5; // 5 to 6 bonus packs
     } else if (tierGap === 3) {
-      // 3 Tiers lower (e.g. $300 God Tier hitting Silver)
       bonusPacksCount = Math.floor(Math.random() * 2) + 4; // 4 to 5 bonus packs
     } else if (tierGap === 2) {
-      // 2 Tiers lower
       bonusPacksCount = Math.floor(Math.random() * 2) + 3; // 3 to 4 bonus packs
     } else {
-      // 1 Tier lower
       bonusPacksCount = Math.floor(Math.random() * 2) + 2; // 2 to 3 bonus packs
     }
 

@@ -288,8 +288,11 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   else if (cleanSetId.startsWith('sm')) seriesPrefix = 'sm';
   else if (cleanSetId.startsWith('xy')) seriesPrefix = 'xy';
   else if (cleanSetId.startsWith('base')) seriesPrefix = 'base';
-  else if (cleanSetId.startsWith('bw')) seriesPrefix = 'bw';
+  else if (cleanSetId.startsWith('bw') || cleanSetId.startsWith('dv')) seriesPrefix = 'bw';
   else if (cleanSetId.startsWith('dp')) seriesPrefix = 'dp';
+  else if (cleanSetId.startsWith('pl')) seriesPrefix = 'pl';
+  else if (cleanSetId.startsWith('hgss')) seriesPrefix = 'hgss';
+  else if (cleanSetId.startsWith('col')) seriesPrefix = 'col';
   else if (cleanSetId.startsWith('ex')) seriesPrefix = 'ex';
 
   if (targetSetId.startsWith('me') || targetSetId.startsWith('sv')) {

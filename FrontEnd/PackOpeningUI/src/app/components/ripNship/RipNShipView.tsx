@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Video, Users, Flame, DollarSign, Package, Send, 
   Sparkles, ArrowLeft, MessageSquare, ShoppingCart, Award, CheckCircle2,
-  Heart, Zap, Gift, Eye, ChevronUp, ChevronDown, Layers, RotateCw, Loader2,
-  X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen
+  Heart, Zap, Gift, Eye, EyeOff, ChevronUp, ChevronDown, Layers, RotateCw, Loader2,
+  X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen, MessageSquareOff
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
@@ -661,6 +661,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [totalRevenue, setTotalRevenue] = useState<number>(1280.00);
   const [hypeLevel, setHypeLevel] = useState<number>(4);
   const [isQueueOpen, setIsQueueOpen] = useState<boolean>(false);
+  const [isChatVisible, setIsChatVisible] = useState<boolean>(true);
 
   // Manifests & Caches
   const [packArtsManifest, setPackArtsManifest] = useState<Record<string, string[]>>({});
@@ -984,6 +985,19 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
+            onClick={() => { sound.playButtonClick(); setIsChatVisible(prev => !prev); }}
+            className={`px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full border text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 ${
+              isChatVisible
+                ? 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-400/40 text-purple-300'
+                : 'bg-gray-800/60 hover:bg-gray-700/60 border-gray-600/40 text-gray-400'
+            }`}
+            title={isChatVisible ? "Hide Live Chat" : "Show Live Chat"}
+          >
+            {isChatVisible ? <MessageSquare className="w-3.5 h-3.5 text-purple-400" /> : <MessageSquareOff className="w-3.5 h-3.5 text-gray-400" />}
+            <span>{isChatVisible ? 'Hide Chat' : 'Show Chat'}</span>
+          </button>
+
+          <button
             onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
             className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
           >
@@ -1135,25 +1149,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                 </motion.div>
               )}
 
-            {!isLoadingPack && packStage === 'opened' && remainingCards.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="pt-2 pb-8 w-full flex justify-center min-h-[90px] relative z-[600] shrink-0"
-              >
-                <button
-                  onClick={handleRevealAll}
-                  disabled={isRevealingAll}
-                  className={`group relative px-10 py-4 rounded-2xl font-bold text-lg text-white shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all overflow-hidden ${isRevealingAll ? 'opacity-70 cursor-not-allowed scale-95' : 'hover:scale-[1.03] active:scale-[0.98] cursor-pointer'}`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 group-hover:from-amber-400 group-hover:to-orange-400" />
-                  <span className="relative flex items-center justify-center gap-3 font-black drop-shadow-md">
-                    <Sparkles className={`w-6 h-6 text-yellow-300 ${isRevealingAll ? 'animate-spin' : 'group-hover:rotate-12 group-hover:scale-110'}`} />
-                    <span>{isRevealingAll ? 'Revealing...' : 'Reveal All Cards ✨'}</span>
-                  </span>
-                </button>
-              </motion.div>
-            )}
+
 
             {!isLoadingPack && packStage === 'opened' && revealedCards.length > 0 && (
               <motion.div
@@ -1484,74 +1480,94 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       </div>
 
       {/* ── 6. Chat ── */}
-      <div className="absolute bottom-3 left-2 sm:left-4 right-2 sm:right-auto z-30 w-full sm:w-96 max-w-[calc(100vw-16px)] flex flex-col pointer-events-auto gap-2">
-        <div 
-          className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl"
-          style={{
-            maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
-          }}
-        >
-          {chatMessages.map(msg => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, x: -10, y: 10 }}
-              animate={{ opacity: 1, x: 0, y: 0 }}
-              className={`p-2 rounded-xl border backdrop-blur-md text-xs transition-all flex items-start gap-2 ${
-                msg.isOrderNotification 
-                  ? 'bg-amber-500/30 border-amber-400/60 text-white font-bold' 
-                  : 'bg-black/60 border-white/10 text-gray-100'
-              }`}
-            >
-              <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${msg.avatarColor || 'from-purple-500 to-indigo-600'} flex items-center justify-center text-[9px] font-black shrink-0 text-white shadow-sm mt-0.5`}>
-                {msg.username.substring(0, 2).toUpperCase()}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {msg.badge && (
-                    <span className="text-[8px] font-black px-1.5 py-0.2 rounded bg-amber-400 text-black uppercase tracking-wider">
-                      {msg.badge}
-                    </span>
-                  )}
-                  <span className={`font-extrabold text-[11px] ${msg.color || 'text-amber-300'}`}>
-                    {msg.username}
-                  </span>
-                </div>
-                <div className="text-[11px] leading-tight text-gray-100 mt-0.5 break-words">
-                  {msg.message}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-          <div ref={chatBottomRef} />
-        </div>
-
-        <div className="flex items-center gap-1.5">
-          <form onSubmit={handleSendHostMessage} className="flex-1 flex gap-1.5">
-            <input
-              type="text"
-              value={hostInput}
-              onChange={e => setHostInput(e.target.value)}
-              placeholder="Chat as Host..."
-              className="flex-1 px-3.5 py-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
-            />
-            <button
-              type="submit"
-              className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs flex items-center gap-1 hover:brightness-110 transition-all cursor-pointer shadow-lg shrink-0"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
-
-          <button
-            onClick={handleSpawnHeart}
-            className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 backdrop-blur-md text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
+      <AnimatePresence>
+        {isChatVisible ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-3 left-2 sm:left-4 right-2 sm:right-auto z-30 w-full sm:w-96 max-w-[calc(100vw-16px)] flex flex-col pointer-events-auto gap-2"
           >
-            <Heart className="w-4 h-4 fill-red-500" />
-          </button>
-        </div>
-      </div>
+            <div 
+              className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl"
+              style={{
+                maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
+              }}
+            >
+              {chatMessages.map(msg => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, x: -10, y: 10 }}
+                  animate={{ opacity: 1, x: 0, y: 0 }}
+                  className={`p-2 rounded-xl border backdrop-blur-md text-xs transition-all flex items-start gap-2 ${
+                    msg.isOrderNotification 
+                      ? 'bg-amber-500/30 border-amber-400/60 text-white font-bold' 
+                      : 'bg-black/60 border-white/10 text-gray-100'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${msg.avatarColor || 'from-purple-500 to-indigo-600'} flex items-center justify-center text-[9px] font-black shrink-0 text-white shadow-sm mt-0.5`}>
+                    {msg.username.substring(0, 2).toUpperCase()}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {msg.badge && (
+                        <span className="text-[8px] font-black px-1.5 py-0.2 rounded bg-amber-400 text-black uppercase tracking-wider">
+                          {msg.badge}
+                        </span>
+                      )}
+                      <span className={`font-extrabold text-[11px] ${msg.color || 'text-amber-300'}`}>
+                        {msg.username}
+                      </span>
+                    </div>
+                    <div className="text-[11px] leading-tight text-gray-100 mt-0.5 break-words">
+                      {msg.message}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              <div ref={chatBottomRef} />
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <form onSubmit={handleSendHostMessage} className="flex-1 flex gap-1.5">
+                <input
+                  type="text"
+                  value={hostInput}
+                  onChange={e => setHostInput(e.target.value)}
+                  placeholder="Chat as Host..."
+                  className="flex-1 px-3.5 py-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
+                />
+                <button
+                  type="submit"
+                  className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs flex items-center gap-1 hover:brightness-110 transition-all cursor-pointer shadow-lg shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+
+              <button
+                onClick={handleSpawnHeart}
+                className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 backdrop-blur-md text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
+              >
+                <Heart className="w-4 h-4 fill-red-500" />
+              </button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={() => { sound.playButtonClick(); setIsChatVisible(true); }}
+            className="absolute bottom-4 left-3 z-30 px-3.5 py-2 rounded-full bg-black/80 backdrop-blur-md border border-purple-500/40 text-purple-300 text-xs font-black flex items-center gap-2 shadow-2xl hover:bg-purple-950/60 hover:border-purple-400 transition-all cursor-pointer pointer-events-auto"
+          >
+            <MessageSquare className="w-4 h-4 text-purple-400" />
+            <span>Show Live Chat</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
