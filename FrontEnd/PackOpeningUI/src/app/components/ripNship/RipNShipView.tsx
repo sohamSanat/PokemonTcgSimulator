@@ -4,11 +4,607 @@ import {
   Video, Users, Flame, DollarSign, Package, Send, 
   Sparkles, ArrowLeft, MessageSquare, ShoppingCart, Award, CheckCircle2,
   Heart, Zap, Gift, Eye, ChevronUp, ChevronDown, Layers, RotateCw, Loader2,
-  X, Plus, FileText, Clock, Filter, CheckCircle
+  X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen
 } from 'lucide-react';
 import { sound } from '../../services/sound';
 import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
 import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewer } from '../../services/geminiStreamChat';
+
+
+import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull } from '../../services/tcgdex';
+import BoosterPackTear from '../BoosterPackTear';
+import InteractiveCard3D from '../binder/InteractiveCard3D';
+import setPackPricesData from '../../data/set_pack_prices.json';
+import { getJapaneseCardRealPrice } from '../../services/scrydex';
+const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
+
+interface CardData {
+  id: number | string;
+  originalIndex: number;
+  flipped: boolean;
+  collected: boolean;
+  value: number;
+  pokemon: PokemonCard;
+  isVendorCatalog?: boolean;
+  vendorName?: string;
+  vendorBooth?: string;
+  vendorRating?: string;
+}
+
+
+const FALLBACK_POKEMON_CARDS: PokemonCard[] = [
+  {
+    id: "me4-1",
+    name: "Weedle",
+    rarity: "Common",
+    images: { small: "https://images.scrydex.com/pokemon/me4-1/small", large: "https://images.scrydex.com/pokemon/me4-1/large" },
+    tcgplayer: { prices: { normal: { market: 0.45 } } }
+  },
+  {
+    id: "me4-2",
+    name: "Kakuna",
+    rarity: "Common",
+    images: { small: "https://images.scrydex.com/pokemon/me4-2/small", large: "https://images.scrydex.com/pokemon/me4-2/large" },
+    tcgplayer: { prices: { normal: { market: 0.80 } } }
+  },
+  {
+    id: "me4-3",
+    name: "Beedrill ex",
+    rarity: "Double Rare",
+    images: { small: "https://images.scrydex.com/pokemon/me4-3/small", large: "https://images.scrydex.com/pokemon/me4-3/large" },
+    tcgplayer: { prices: { holofoil: { market: 24.50 } } }
+  },
+  {
+    id: "me4-4",
+    name: "Carnivine",
+    rarity: "Common",
+    images: { small: "https://images.scrydex.com/pokemon/me4-4/small", large: "https://images.scrydex.com/pokemon/me4-4/large" },
+    tcgplayer: { prices: { normal: { market: 1.10 } } }
+  },
+  {
+    id: "me4-7",
+    name: "Chesnaught",
+    rarity: "Rare",
+    images: { small: "https://images.scrydex.com/pokemon/me4-7/small", large: "https://images.scrydex.com/pokemon/me4-7/large" },
+    tcgplayer: { prices: { holofoil: { market: 6.75 } } }
+  },
+  {
+    id: "me4-10",
+    name: "Ho-Oh",
+    rarity: "Rare",
+    images: { small: "https://images.scrydex.com/pokemon/me4-10/small", large: "https://images.scrydex.com/pokemon/me4-10/large" },
+    tcgplayer: { prices: { holofoil: { market: 18.90 } } }
+  },
+  {
+    id: "swsh3-154",
+    name: "Rookidee",
+    rarity: "Common",
+    images: { small: "https://assets.tcgdex.net/en/swsh/swsh3/154/low.webp", large: "https://assets.tcgdex.net/en/swsh/swsh3/154/high.webp" },
+    tcgplayer: { prices: { normal: { market: 0.04 } } }
+  },
+  {
+    id: "swsh3-155",
+    name: "Corvisquire",
+    rarity: "Uncommon",
+    images: { small: "https://assets.tcgdex.net/en/swsh/swsh3/155/low.webp", large: "https://assets.tcgdex.net/en/swsh/swsh3/155/high.webp" },
+    tcgplayer: { prices: { normal: { market: 0.15 } } }
+  },
+  {
+    id: "sve-10",
+    name: "Basic Fire Energy",
+    rarity: "Common",
+    images: { small: "https://images.scrydex.com/pokemon/sve-10/medium", large: "https://images.scrydex.com/pokemon/sve-10/medium" },
+    tcgplayer: { prices: { normal: { market: 0.03 } } }
+  }
+];
+
+
+const OVERRIDE_CARD_PRICES: Record<string, number> = {
+  "me4-1": 0.05,
+  "me4-2": 0.08,
+  "me4-3": 6.50,
+  "me4-4": 0.10,
+  "me4-5": 0.05,
+  "me4-6": 0.08,
+  "me4-7": 0.85,
+  "me4-8": 0.06,
+  "me4-9": 0.40,
+  "me4-10": 2.50
+};
+
+
+const NAME_OVERRIDE_PRICES: Record<string, number> = {
+  "Beedrill ex": 6.50,
+  "Mega Pyroar ex": 1.25,
+  "Mega Greninja ex": 1.75,
+  "Mega Floette ex": 0.57,
+  "Ho-Oh": 2.50,
+  "Keldeo": 1.10,
+  "Chesnaught": 0.85
+};
+
+
+const getRealCardPrice = (poke: PokemonCard): number => {
+  const isJapaneseCard = poke.id?.includes('_ja');
+
+  if (poke.id && isJapaneseCard) {
+    const rawSet = poke.id.split('-')[0] || '';
+    const localNum = poke.localId || poke.id.split('-')[1] || '';
+    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
+    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+      return Number(jaRealPrice.toFixed(2));
+    }
+  }
+
+  // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
+  // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
+  // and the error fallback would overwrite the correct Scrydex CDN image URL.
+  if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
+    fetchCardFull(poke.id).catch(() => { });
+  }
+  const cached = cardFullCache.get(poke.id);
+  const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
+  if (activePricing || cached?.tcgplayer || cached?.cardmarket || poke.tcgplayer) {
+    let foundPrice = 0;
+
+    // First establish Cardmarket bedrock price (converted to USD) if listed
+    let cmUsd = 0;
+    const cmObj = activePricing?.cardmarket || cached?.cardmarket || poke.cardmarket;
+    if (cmObj) {
+      const cmVal = cmObj.trend ?? cmObj.avg ?? cmObj['trend-holo'] ?? cmObj['avg-holo'] ?? cmObj.avg30 ?? cmObj.low;
+      if (typeof cmVal === 'number' && !isNaN(cmVal) && cmVal > 0) {
+        cmUsd = cmVal * (cmObj.unit === 'EUR' ? 1.08 : 1);
+      }
+    }
+
+    // Evaluate TCGplayer prices using the direct variant live price first
+    const tcgObj = activePricing?.tcgplayer || cached?.tcgplayer || (poke.tcgplayer?.prices || poke.tcgplayer);
+    if (tcgObj) {
+      const tcg = tcgObj;
+      const candidates: number[] = [];
+      for (const key of Object.keys(tcg)) {
+        if (typeof tcg[key] === 'object' && tcg[key] !== null) {
+          const sub = tcg[key];
+          const val = sub.marketPrice ?? sub.midPrice ?? sub.lowPrice ?? sub.highPrice ?? sub.market ?? sub.mid ?? sub.low;
+          if (typeof val === 'number' && !isNaN(val) && val > 0) {
+            candidates.push(val);
+          }
+        }
+      }
+
+      if (candidates.length > 0) {
+        // If drawn in Slot 9 Reverse Holo slot, prefer reverseHolofoil price if present
+        if (poke.isReverseHolo && (tcg.reverseHolofoil || tcg.reverse)) {
+          const rev = tcg.reverseHolofoil ?? tcg.reverse;
+          const rVal = rev.marketPrice ?? rev.midPrice ?? rev.lowPrice;
+          foundPrice = (typeof rVal === 'number' && !isNaN(rVal) && rVal > 0) ? rVal : candidates[0];
+        } else if (tcg.holofoil && typeof tcg.holofoil === 'object') {
+          const hVal = tcg.holofoil.marketPrice ?? tcg.holofoil.midPrice ?? tcg.holofoil.lowPrice;
+          foundPrice = (typeof hVal === 'number' && !isNaN(hVal) && hVal > 0) ? hVal : candidates[0];
+        } else if (tcg.normal && typeof tcg.normal === 'object') {
+          const nVal = tcg.normal.marketPrice ?? tcg.normal.midPrice ?? tcg.normal.lowPrice;
+          foundPrice = (typeof nVal === 'number' && !isNaN(nVal) && nVal > 0) ? nVal : candidates[0];
+        } else if (cmUsd > 0 && candidates.length > 1) {
+          let minDelta = Infinity;
+          for (const cand of candidates) {
+            const delta = Math.abs(cand - cmUsd);
+            if (delta < minDelta) {
+              minDelta = delta;
+              foundPrice = cand;
+            }
+          }
+        } else {
+          foundPrice = candidates[0];
+        }
+      }
+    }
+
+    // If no TCGplayer price was found, fallback directly to Cardmarket bedrock
+    if (foundPrice === 0 && cmUsd > 0) {
+      foundPrice = cmUsd;
+    }
+
+    if (foundPrice > 0) return Number(foundPrice.toFixed(2));
+  }
+
+  // 2. Check array prices
+  if (Array.isArray(poke.prices) && poke.prices.length > 0) {
+    let maxPrice = 0;
+    for (const item of poke.prices) {
+      if (item && typeof item === 'object') {
+        const val = item.market ?? item.marketPrice ?? item.price ?? item.value ?? item.amount ?? item.mid ?? item.low;
+        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
+          maxPrice = val;
+        }
+      } else if (typeof item === 'number' && !isNaN(item) && item > maxPrice) {
+        maxPrice = item;
+      }
+    }
+    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
+  }
+
+  // 3. Check legacy tcgplayer object
+  if (poke.tcgplayer?.prices) {
+    const p = poke.tcgplayer.prices as Record<string, any>;
+    let maxPrice = 0;
+    for (const key of Object.keys(p)) {
+      const sub = p[key];
+      if (sub && typeof sub === 'object') {
+        const val = sub.market ?? sub.mid ?? sub.low;
+        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
+          maxPrice = val;
+        }
+      }
+    }
+    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
+  }
+
+  if (OVERRIDE_CARD_PRICES[poke.id]) return OVERRIDE_CARD_PRICES[poke.id];
+  if (NAME_OVERRIDE_PRICES[poke.name]) return NAME_OVERRIDE_PRICES[poke.name];
+
+  let hash = 0;
+  const str = poke.id || poke.name || 'card';
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const normalizedHash = Math.abs(hash) % 100 / 100;
+
+  const isEnergy = poke.name?.toLowerCase().includes('energy') || poke.id?.toLowerCase().includes('energy');
+  const isExOrMega = poke.name?.includes('ex') || poke.name?.includes('MEGA') || poke.name?.includes('VMAX') || poke.name?.includes('VSTAR');
+  const rarity = poke.rarity || '';
+
+  // If it's an energy card or a common/uncommon card with no direct live market data, fix cost strictly between 1 to 10 cents ($0.01 - $0.10)
+  if (isEnergy || rarity.includes('Common') || rarity.includes('Uncommon') || !rarity) {
+    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+  }
+
+  const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
+  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold');
+  const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
+
+  if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
+    return Number((30.00 + normalizedHash * 60.00).toFixed(2));
+  } else if (isSecretOrAlt) {
+    return Number((15.00 + normalizedHash * 30.00).toFixed(2));
+  } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
+    return Number((2.00 + normalizedHash * 8.00).toFixed(2));
+  } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
+    return Number((0.50 + normalizedHash * 2.50).toFixed(2));
+  } else {
+    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+  }
+};
+
+
+const toTitleCase = (str: string) => str.replace(/\b\w+/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+
+
+const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; name?: string } | TCGDexSetSummary | TCGDexSet | null): CardData[] => {
+  const sourcePool = pool.length > 0 ? pool : FALLBACK_POKEMON_CARDS;
+
+  const commons = sourcePool.filter(c => c.rarity?.includes('Common') && !c.name.includes('Energy'));
+  const uncommons = sourcePool.filter(c => c.rarity?.includes('Uncommon') && !c.name.includes('Energy'));
+  const rares = sourcePool.filter(c => !c.rarity?.includes('Common') && !c.rarity?.includes('Uncommon') && !c.name.includes('Energy'));
+  const energy = sourcePool.filter(c => c.name.includes('Energy'));
+
+  const nonEnergySourcePool = sourcePool.filter(c => !c.name.includes('Energy'));
+  const fallbackCardPool = nonEnergySourcePool.length > 0 ? nonEnergySourcePool : sourcePool;
+
+  const pickedIds = new Set<string>();
+
+  const pickUnique = (candidates: PokemonCard[]): PokemonCard => {
+    const unpicked = candidates.filter(c => !pickedIds.has(c.id));
+    if (unpicked.length > 0) {
+      const chosen = unpicked[Math.floor(Math.random() * unpicked.length)];
+      if (chosen) {
+        pickedIds.add(chosen.id);
+        return chosen;
+      }
+    }
+    const rem = fallbackCardPool.filter(c => !pickedIds.has(c.id));
+    if (rem.length > 0) {
+      const chosen = rem[Math.floor(Math.random() * rem.length)];
+      if (chosen) {
+        pickedIds.add(chosen.id);
+        return chosen;
+      }
+    }
+    return fallbackCardPool[0] || sourcePool[0];
+  };
+
+  const getC = () => pickUnique(commons.length > 0 ? commons : fallbackCardPool);
+  const getU = () => pickUnique(uncommons.length > 0 ? uncommons : fallbackCardPool);
+  const getR = () => pickUnique(rares.length > 0 ? rares : fallbackCardPool);
+  const getE = (): PokemonCard => {
+    if (energy.length > 0) return energy[Math.floor(Math.random() * energy.length)];
+    const id = (fallbackSet?.id || '').toLowerCase();
+    const name = (fallbackSet?.name || '').toLowerCase();
+    const era: EnergyEra =
+      id.startsWith('me') || name.includes('mega evolution') || name.includes('phantasmal') || name.includes('ascended') || name.includes('perfect order') || name.includes('chaos rising') ? 'me' :
+        id.startsWith('sv') || name.includes('scarlet') || name.includes('paldea') || name.includes('obsidian') || name.includes('paradox') || name.includes('temporal') || name.includes('twilight') || name.includes('stellar') || name.includes('surging') || name.includes('151') || name.includes('prismatic') || name.includes('shrouded') ? 'sv' :
+          id.startsWith('sm') || name.includes('sun & moon') || name.includes('guardians rising') || name.includes('burning shadows') || name.includes('cosmic eclipse') || name.includes('hidden fates') ? 'sm' :
+            id.startsWith('xy') || name.includes('flashfire') || name.includes('furious fists') || name.includes('roaring skies') || name.includes('evolutions') || name.includes('phantom forces') ? 'xy' :
+              id.startsWith('base') || id === 'bs1' || id === 'bs2' || id === 'ju' || id === 'fo' || id === 'tr' || name.includes('base set') || name.includes('jungle') || name.includes('fossil') || name.includes('team rocket') ? 'base' : 'swsh';
+    const pool = ENERGY_POOLS_BY_ERA[era] || ENERGY_POOLS_BY_ERA.sv;
+    const chosen = pool[Math.floor(Math.random() * pool.length)];
+    return {
+      ...chosen,
+      images: {
+        small: chosen.image,
+        large: chosen.image
+      },
+      rarity: 'Basic Energy'
+    };
+  };
+
+  const selected: PokemonCard[] = [];
+  // Slot 1: 1 Basic Energy
+  selected.push(getE());
+  // Slots 2-6: 5 Commons
+  for (let i = 0; i < 5; i++) selected.push(getC());
+  // Slots 7-9: 3 Uncommons
+  for (let i = 0; i < 3; i++) selected.push(getU());
+  // Slot 10: 1 Reverse Holo
+  const revCard = getC();
+  selected.push({ ...revCard, isReverseHolo: true, rarity: 'Reverse Holo' });
+  // Slot 11: 1 Rare or higher
+  selected.push(getR());
+
+  const formatted = selected.map((poke, idx) => {
+    const val = getRealCardPrice(poke);
+    return {
+      id: Date.now() + idx + Math.floor(Math.random() * 1000),
+      originalIndex: idx,
+      flipped: false,
+      collected: false,
+      value: val,
+      pokemon: poke
+    };
+  });
+  const energyIdx = formatted.findIndex(c => c.pokemon.name?.toLowerCase().includes('energy') || c.pokemon.id?.toLowerCase().includes('energy'));
+  if (energyIdx > 0) {
+    const [energyCard] = formatted.splice(energyIdx, 1);
+    formatted.unshift(energyCard);
+  }
+  ensureMostExpensiveLast(formatted);
+  // Reverse array so Slot 1 (Basic Energy) is at index length-1 (top of DOM stack, revealed first) and Slot 11/10 (Rare hit) is at index 0 (bottom of stack, revealed last)
+  formatted.reverse();
+  return formatted.map((c, idx) => ({ ...c, originalIndex: idx }));
+};
+
+
+const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
+  if (cards.length <= 1) return cards;
+  let maxIdx = 1;
+  let maxVal = cards[1].value;
+  for (let i = 2; i < cards.length; i++) {
+    if (cards[i].value >= maxVal) {
+      maxVal = cards[i].value;
+      maxIdx = i;
+    }
+  }
+  if (maxIdx !== cards.length - 1) {
+    const [mostExpensive] = cards.splice(maxIdx, 1);
+    cards.push(mostExpensive);
+  }
+  return cards;
+};
+
+
+const formatAndSortCards = (newCards: PokemonCard[]): CardData[] => {
+  const formatted = newCards.map((poke, idx) => ({
+    id: `${poke.id || 'card'}-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 9)}`,
+    originalIndex: idx,
+    flipped: false,
+    collected: false,
+    value: getRealCardPrice(poke),
+    pokemon: poke
+  }));
+  const energyIdx = formatted.findIndex(c => c.pokemon.name?.toLowerCase().includes('energy') || c.pokemon.id?.toLowerCase().includes('energy'));
+  if (energyIdx > 0) {
+    const [energyCard] = formatted.splice(energyIdx, 1);
+    formatted.unshift(energyCard);
+  }
+  ensureMostExpensiveLast(formatted);
+  // Reverse array so Slot 1 (Basic Energy) is revealed first and Slot 11/10 is revealed last
+  formatted.reverse();
+  return formatted.map((c, idx) => ({ ...c, originalIndex: idx }));
+};
+
+
+const Card = React.memo(({
+  card,
+  rotation,
+  offsetX,
+  offsetY,
+  isTopCard,
+  isHovered,
+  setName
+}: {
+  card: CardData;
+  rotation: number;
+  offsetX: number;
+  offsetY: number;
+  isTopCard: boolean;
+  isHovered: boolean;
+  setName?: string;
+}) => {
+  const cardLiveValue = getRealCardPrice(card.pokemon);
+  return (
+    <motion.div
+      initial={{ y: 200, opacity: 0, scale: 0.8 }}
+      animate={{
+        y: card.flipped ? offsetY - 30 : offsetY,
+        opacity: 1,
+        scale: card.flipped ? 1.15 : 1,
+        rotateZ: card.flipped ? 0 : rotation,
+        x: card.flipped ? 0 : offsetX
+      }}
+      exit={{ x: 380, y: -160, opacity: 0, scale: 0.65, rotateZ: 25 }}
+      transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+      style={{
+        zIndex: card.originalIndex,
+        perspective: 1200,
+        position: 'absolute',
+      }}
+      className={`w-60 sm:w-68 aspect-[0.718] cursor-pointer select-none group ${isTopCard ? 'hover:scale-[1.18]' : ''} transition-transform duration-300`}
+    >
+      <motion.div
+        animate={{ rotateY: card.flipped ? 180 : 0 }}
+        transition={{ duration: 0.45, ease: "easeInOut" }}
+        style={{
+          width: '100%',
+          height: '100%',
+          transformStyle: 'preserve-3d',
+          position: 'relative'
+        }}
+      >
+        {/* FACE DOWN SIDE (Pokemon Card Back) */}
+        <div
+          className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden shadow-2xl pointer-events-none"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            background: 'radial-gradient(circle at center, #1c1c24 0%, #0d0d0f 100%)',
+            border: '3px solid rgba(245,158,11,0.4)'
+          }}
+        >
+          <div className="absolute inset-2 rounded-xl border-2 border-amber-500/30 flex flex-col items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/15 via-transparent to-transparent">
+            <div className="w-20 h-20 rounded-full border-4 border-amber-400/40 flex items-center justify-center shadow-[0_0_25px_rgba(245,158,11,0.4)] bg-[#14141c]/95">
+              <Sparkles className="w-10 h-10 text-amber-400 animate-pulse" />
+            </div>
+            <span className="mt-3 text-xs font-black tracking-wider text-amber-300 uppercase opacity-90 text-center px-2 line-clamp-2">
+              {setName || "POKÉMON TCG"}
+            </span>
+          </div>
+
+          <div
+            className="absolute bottom-6 left-0 right-0 flex justify-center transition-all duration-300 pointer-events-none"
+            style={{ opacity: (isTopCard && !card.flipped) ? 1 : 0 }}
+          >
+            <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold uppercase tracking-wider shadow-[0_4px 15px_rgba(245,158,11,0.6)] border border-amber-300/50 flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-amber-200" />
+              Click to Reveal
+            </span>
+          </div>
+        </div>
+
+        {/* Back side (Revealed Card Face) */}
+        <div
+          className="absolute inset-0 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.9)] bg-black"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+            border: '2px solid rgba(255, 255, 250, 0.4)'
+          }}
+        >
+          {/* Fallback for cards without images */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-4 text-center border-[8px] border-[#333344] rounded-2xl z-0">
+            <span className="text-gray-500/80 font-black tracking-widest text-xl mb-3">{card.pokemon.id}</span>
+            <h3 className="font-bold text-white text-lg px-2 drop-shadow-md">{card.pokemon.name}</h3>
+          </div>
+
+          <img
+            src={card.pokemon.images?.large || card.pokemon.images?.small || ((card.pokemon as any).image ? getCardImageUrl((card.pokemon as any).image, 'high') : `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`)}
+            alt={card.pokemon.name}
+            className="absolute inset-0 w-full h-full object-cover block rounded-2xl z-10"
+            onError={(e) => {
+              const num = card.pokemon.localId || card.pokemon.id?.split('-')[1] || '1';
+              const setId = card.pokemon.id?.split('-')[0] || 'swsh3';
+              handleCardImageError(e.target as HTMLImageElement, setId, num);
+            }}
+          />
+
+          <div
+            className="absolute bottom-6 left-0 right-0 flex justify-center transition-all duration-300 pointer-events-none"
+            style={{ opacity: (isTopCard && card.flipped) ? 1 : 0 }}
+          >
+            <span className="px-3.5 py-1 rounded-full bg-green-600/95 text-white text-[11px] font-bold uppercase tracking-wider shadow-[0_4px_15px_rgba(22,163,74,0.6)] border border-green-300/50 flex items-center gap-1.5 animate-pulse">
+              <CheckCircle2 className="w-3 h-3 text-green-200" />
+              Collect (${cardLiveValue.toFixed(2)})
+            </span>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+});
+
+
+const RevealedCardItem = React.memo(({
+  card,
+  isAdded,
+  onInspect,
+  onAddToBinder
+}: {
+  card: CardData;
+  isAdded: boolean;
+  onInspect: (card: CardData) => void;
+  onAddToBinder: (card: CardData) => void;
+}) => {
+  return (
+    <motion.div
+      onClick={() => onInspect(card)}
+      initial={{ scale: 0.3, opacity: 0, rotateY: 180, y: -50 }}
+      animate={{ scale: 1, opacity: 1, rotateY: 0, y: 0 }}
+      transition={{ type: 'spring', bounce: 0.4, duration: 0.6 }}
+      whileHover={{ scale: 1.05, y: -8 }}
+      className="flex flex-col items-center group w-36 sm:w-44 cursor-pointer"
+    >
+      <div
+        className="relative w-full aspect-[0.718] rounded-2xl overflow-visible transition-all duration-300 group-hover:scale-105 card-aspect-ratio"
+        style={{ aspectRatio: '63 / 88', minHeight: '190px', width: '100%' }}
+      >
+        <InteractiveCard3D
+          card={card}
+          interactive={true}
+          className="w-full h-full shadow-[0_10px_25px_rgba(0,0,0,0.8)] border border-white/20 rounded-2xl group-hover:border-amber-400/60 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
+        >
+          {/* Price badge right above/on top of card art */}
+          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5 backdrop-blur-sm">
+            <span>${card.value ? card.value.toFixed(2) : (setPackPrices[card.pokemon?.id?.split('-')[0] || 'swsh3'] || 5.99).toFixed(2)}</span>
+          </div>
+          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/90 border border-white/20 text-[9px] font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            📊 Market Data
+          </div>
+        </InteractiveCard3D>
+      </div>
+
+      <div className="mt-3 w-full px-2.5 py-2 rounded-xl bg-[#141620]/95 border border-white/10 flex flex-col items-center text-center transition-all group-hover:bg-[#1c1e2b]/95 group-hover:border-white/20 shadow-lg">
+        <span className="font-bold text-white text-xs truncate w-full">{card.pokemon.name}</span>
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="text-emerald-400 font-extrabold text-xs tracking-wide shadow-sm">${card.value.toFixed(2)}</span>
+          <span className="text-gray-400 text-[10px] uppercase font-semibold truncate">• {card.pokemon.rarity || 'Common'}</span>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToBinder(card);
+          }}
+          className={`mt-2.5 w-full py-1.5 px-2 rounded-lg text-[11px] font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md ${isAdded
+            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default'
+            : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-[0_0_12px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95'
+            }`}
+        >
+          {isAdded ? (
+            <>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline" />
+              <span>In Binder</span>
+            </>
+          ) : (
+            <>
+              <BookOpen className="w-3.5 h-3.5 text-white inline" />
+              <span>+ Add to Binder</span>
+            </>
+          )}
+        </button>
+      </div>
+    </motion.div>
+  );
+});
+
 
 interface RipNShipViewProps {
   onBackToPacks: () => void;
@@ -78,6 +674,111 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   }, []);
 
   const [reactions, setReactions] = useState<FloatingReaction[]>([]);
+
+  // Pack Opening State
+  const [packStage, setPackStage] = useState<'unopened' | 'tearing' | 'opened'>('unopened');
+  const [cards, setCards] = useState<CardData[]>([]);
+  const [currentPackArts, setCurrentPackArts] = useState<string[]>([]);
+  const [packArtIndex, setPackArtIndex] = useState(0);
+  const [isLoadingPack, setIsLoadingPack] = useState(false);
+  const [isRevealingAll, setIsRevealingAll] = useState(false);
+  const [isHoveringStack, setIsHoveringStack] = useState(false);
+  const [sessionTotal, setSessionTotal] = useState(0);
+  const flipTimesRef = useRef<Record<string | number, number>>({});
+
+  const remainingCards = React.useMemo(() => cards.filter(c => !c.collected), [cards]);
+  const revealedCards = React.useMemo(() => cards.filter(c => c.collected), [cards]);
+  const topCardId = React.useMemo(() => remainingCards.length > 0 ? remainingCards[remainingCards.length - 1].id : null, [remainingCards]);
+
+  const handleTearPack = React.useCallback(() => {
+    sound.playPackOpen();
+    setPackStage('opened');
+  }, []);
+
+  const handleCardClick = React.useCallback((id: string | number) => {
+    if (isRevealingAll) return;
+    const now = Date.now();
+    const lastFlip = flipTimesRef.current[id] || 0;
+    if (now - lastFlip < 160) return;
+
+    setCards(prev => prev.map(card => {
+      if (card.id === id) {
+        if (!card.flipped) {
+          flipTimesRef.current[id] = now;
+          sound.playCardFlip(card.pokemon.rarity);
+          setSessionTotal(s => Number((s + card.value).toFixed(2)));
+          return { ...card, flipped: true };
+        } else if (!card.collected) {
+          sound.playCardCollect(card.value);
+          return { ...card, collected: true };
+        }
+      }
+      return card;
+    }));
+  }, [isRevealingAll]);
+
+  const handleRevealAll = () => {
+    if (isRevealingAll || remainingCards.length === 0) return;
+    setIsRevealingAll(true);
+    sound.playButtonClick();
+
+    const orderedCards = [...remainingCards].reverse();
+
+    orderedCards.forEach((card, idx) => {
+      setTimeout(() => {
+        sound.playRevealStep(idx, card.pokemon.rarity);
+        setCards(prev => prev.map(c => {
+          if (c.id === card.id && !c.flipped) {
+            setSessionTotal(s => Number((s + c.value).toFixed(2)));
+            return { ...c, flipped: true };
+          }
+          return c;
+        }));
+      }, idx * 480);
+
+      setTimeout(() => {
+        sound.playCardCollect(card.value);
+        setCards(prev => prev.map(c => {
+          if (c.id === card.id) return { ...c, collected: true };
+          return c;
+        }));
+        if (idx === orderedCards.length - 1) {
+          setTimeout(() => {
+            sound.playPackComplete();
+            setIsRevealingAll(false);
+          }, 450);
+        }
+      }, idx * 480 + 620);
+    });
+  };
+
+  const loadAndRipPack = async (order: CustomerOrder) => {
+    sound.playButtonClick();
+    setIsLoadingPack(true);
+    setPackStage('unopened');
+    setCards([]);
+
+    try {
+      const arts = getPackArtsForSet(order.setId, packArtsManifest);
+      setCurrentPackArts(arts);
+      setPackArtIndex(0);
+
+      const setDetails = await fetchSetDetails(order.setId);
+      
+      let newCards: PokemonCard[] = [];
+      try {
+        newCards = await generatePackFromSet(setDetails);
+        setCards(formatAndSortCards(newCards));
+      } catch (e) {
+        setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails));
+      }
+    } catch (e) {
+      setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: order.setId }));
+    } finally {
+      setIsLoadingPack(false);
+    }
+  };
+
   
   // Real orders mapped to actual sets!
   const [orders, setOrders] = useState<CustomerOrder[]>([
@@ -322,7 +1023,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           </div>
 
           <button
-            onClick={() => {}}
+            onClick={() => activeOrder && loadAndRipPack(activeOrder)}
             className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 hover:brightness-110 text-white font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg border border-red-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5 shrink-0"
           >
             <Package className="w-3.5 h-3.5" />
@@ -336,12 +1037,152 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-start p-2 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="w-full h-full min-h-[380px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-start pt-2 sm:pt-4 pb-24 relative px-3 sm:px-4 overflow-visible">
 
-            {/* Pack System Placeholder */}
-            <div className="w-full h-full flex flex-col items-center justify-center text-amber-500/50">
-              <Package className="w-16 h-16 mb-4 opacity-50" />
-              <p className="text-sm font-bold uppercase tracking-widest text-center">Pack System Removed</p>
-              <p className="text-xs mt-2 max-w-xs text-center opacity-70">Ready to be built from scratch.</p>
+            
+            {/* Centerpiece: Card Stack or Tear Area */}
+            <div className="w-full flex flex-col items-center justify-center shrink-0 min-h-[380px] my-2">
+              {isLoadingPack ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl w-60 h-[21rem] text-center shrink-0"
+                >
+                  <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
+                  <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
+                  <span className="text-xs text-amber-300 font-semibold mt-1.5">{activeOrder?.setId || 'Loading Set'}</span>
+                </motion.div>
+              ) : packStage !== 'opened' ? (
+                cards.length > 0 ? (
+                  <div className="relative flex items-center justify-center min-w-[280px] sm:min-w-[320px] z-10 py-2">
+                    <BoosterPackTear
+                      packArts={currentPackArts}
+                      packArtIndex={packArtIndex}
+                      onPrevPackArt={() => setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length)}
+                      onNextPackArt={() => setPackArtIndex(prev => (prev + 1) % currentPackArts.length)}
+                      onTearComplete={handleTearPack}
+                      setName={activeOrder?.packName}
+                      packStage={packStage}
+                      remainingCardsCount={remainingCards.length}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-amber-500/50">
+                    <Package className="w-16 h-16 mb-4 opacity-50" />
+                    <p className="text-sm font-bold uppercase tracking-widest text-center">No Active Pack</p>
+                    <p className="text-xs mt-2 max-w-xs text-center opacity-70">Click 'RIP LIVE' to begin.</p>
+                  </div>
+                )
+              ) : remainingCards.length > 0 ? (
+                <div className="relative w-60 sm:w-68 h-[21rem] sm:h-[23.5rem] shrink-0 mt-6 mb-20 sm:mb-24 flex items-center justify-center">
+                  <div
+                    className="absolute -inset-8 z-[500] cursor-pointer rounded-3xl"
+                    onClick={() => topCardId !== null && handleCardClick(topCardId)}
+                    onMouseEnter={() => { setIsHoveringStack(true); sound.playCardSlide(true); }}
+                    onMouseLeave={() => setIsHoveringStack(false)}
+                  />
+                  <AnimatePresence>
+                    {cards.map((card) => {
+                      if (card.collected) return null;
+                      const midIdx = Math.floor(cards.length / 2);
+                      const baseRotation = (card.originalIndex - midIdx) * 3.8;
+                      const baseOffsetX = (card.originalIndex - midIdx) * 11;
+                      const baseOffsetY = Math.abs(card.originalIndex - midIdx) * 4;
+                      const rotation = isHoveringStack ? baseRotation * 1.5 : baseRotation;
+                      const offsetX = isHoveringStack ? baseOffsetX * 1.5 : baseOffsetX;
+                      return (
+                        <Card
+                          key={card.id}
+                          card={card}
+                          rotation={rotation}
+                          offsetX={offsetX}
+                          offsetY={baseOffsetY}
+                          isTopCard={card.id === topCardId}
+                          isHovered={isHoveringStack && card.id === topCardId}
+                          setName={activeOrder?.packName}
+                        />
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', bounce: 0.5 }}
+                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl max-w-md text-center shrink-0"
+                >
+                  <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-4 text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Order Complete!</h3>
+                  <p className="text-gray-400 text-sm mb-6">
+                    Total Value: <span className="text-green-400 font-bold">${cards.reduce((acc, c) => acc + c.value, 0).toFixed(2)}</span>
+                  </p>
+                  <button
+                    onClick={() => {
+                      sound.playButtonClick();
+                      setPackStage('unopened');
+                      setCards([]);
+                      if (activeOrder) {
+                        const updated = { ...activeOrder, status: 'completed' as const };
+                        setOrders(prev => prev.map(o => o.id === updated.id ? updated : o));
+                      }
+                    }}
+                    className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 font-extrabold text-white shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    Finish Order
+                  </button>
+                </motion.div>
+              )}
+
+            {!isLoadingPack && packStage === 'opened' && remainingCards.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="pt-2 pb-8 w-full flex justify-center min-h-[90px] relative z-[600] shrink-0"
+              >
+                <button
+                  onClick={handleRevealAll}
+                  disabled={isRevealingAll}
+                  className={`group relative px-10 py-4 rounded-2xl font-bold text-lg text-white shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all overflow-hidden ${isRevealingAll ? 'opacity-70 cursor-not-allowed scale-95' : 'hover:scale-[1.03] active:scale-[0.98] cursor-pointer'}`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 group-hover:from-amber-400 group-hover:to-orange-400" />
+                  <span className="relative flex items-center justify-center gap-3 font-black drop-shadow-md">
+                    <Sparkles className={`w-6 h-6 text-yellow-300 ${isRevealingAll ? 'animate-spin' : 'group-hover:rotate-12 group-hover:scale-110'}`} />
+                    <span>{isRevealingAll ? 'Revealing...' : 'Reveal All Cards ✨'}</span>
+                  </span>
+                </button>
+              </motion.div>
+            )}
+
+            {!isLoadingPack && packStage === 'opened' && revealedCards.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-5xl mt-4 px-4 shrink-0"
+              >
+                <div className="flex flex-col items-center mb-6">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    Revealed Cards ({revealedCards.length} / {cards.length})
+                  </h3>
+                </div>
+                <div className="flex flex-wrap items-stretch justify-center gap-6 sm:gap-8">
+                  <AnimatePresence>
+                    {revealedCards.map((card) => (
+                      <RevealedCardItem
+                        key={card.id}
+                        card={card}
+                        isAdded={false}
+                        onInspect={() => {}}
+                        onAddToBinder={() => {}}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
             </div>
+
           </div>
         </div>
       </div>
