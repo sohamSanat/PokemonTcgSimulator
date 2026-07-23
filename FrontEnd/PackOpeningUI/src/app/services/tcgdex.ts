@@ -902,45 +902,45 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
 
   if (boxEra === 'sv' || boxEra === 'me') {
     hitTable = [
-      { p: 0.008, label: 'Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.008, label: 'Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.sirPool, p.fullArtPool, p.irPool, p.vPool, p.holoRarePool] },
       { p: 0.03, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool] },
       { p: 0.06, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.irPool, p.vPool, p.holoRarePool] },
-      { p: 0.10, label: 'Illustration Rare', pool: p.irPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.17, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.10, label: 'Illustration Rare', pool: p.irPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.17, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
   } else if (boxEra === 'swsh') {
     hitTable = [
       { p: 0.007, label: 'Gold Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool] },
-      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.goldSecretPool, p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool] },
-      { p: 0.05, label: 'Full Art', pool: p.fullArtPool, fb: [p.vmaxPool, p.vPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.08, label: 'Pokémon VMAX / VSTAR', pool: p.vmaxPool, fb: [p.vPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.14, label: 'Pokémon V', pool: p.vPool, fb: [p.vmaxPool, p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.fullArtPool, p.vmaxPool, p.vPool, p.holoRarePool] },
+      { p: 0.05, label: 'Full Art', pool: p.fullArtPool, fb: [p.vmaxPool, p.vPool, p.holoRarePool] },
+      { p: 0.08, label: 'Pokémon VMAX / VSTAR', pool: p.vmaxPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.14, label: 'Pokémon V', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
   } else if (boxEra === 'sm') {
     hitTable = [
       { p: 0.008, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.goldSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.06, label: 'Full Art', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.12, label: 'Pokémon-GX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.06, label: 'Full Art', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.12, label: 'Pokémon-GX', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
   } else if (boxEra === 'xy') {
     hitTable = [
       { p: 0.01, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.05, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.08, label: 'Pokémon EX', pool: p.vPool, fb: [p.fullArtPool, p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.04, label: 'Pokémon BREAK', pool: p.breakPool, fb: [p.vPool, p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.05, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.08, label: 'Pokémon EX', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.04, label: 'Pokémon BREAK', pool: p.breakPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.vPool, pool] };
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
   } else {
     // Base / vintage: ~1/200 secret, ~1/3 holo rare, otherwise non-holo rare
     hitTable = [
-      { p: 0.005, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.holoRarePool, p.nonHoloRarePool, pool] },
-      { p: 0.33, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, pool] },
+      { p: 0.005, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.33, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool] },
     ];
-    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.holoRarePool, pool] };
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
   }
 
   type PoolPicker = (pl: TCGDexCardSummary[], fb?: TCGDexCardSummary[][]) => TCGDexCardSummary;
