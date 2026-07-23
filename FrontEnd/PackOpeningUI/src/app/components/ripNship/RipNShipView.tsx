@@ -980,14 +980,14 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   return (
     <div className="relative w-full h-[100dvh] bg-[#05040a] overflow-hidden text-white flex flex-col select-none">
       {/* ── 1. Top Spacious Stream Header HUD (Row 1) ── */}
-      <div className="relative w-full z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 bg-[#090712] border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
+      <div className="relative w-full z-40 px-2.5 sm:px-6 py-2 sm:py-3.5 bg-[#090712] border-b border-white/10 flex items-center justify-between gap-1.5 sm:gap-2.5 shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/25 border border-red-500/50 text-red-400 font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-md shrink-0">
+          <div className="flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full bg-red-600/25 border border-red-500/50 text-red-400 font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-md shrink-0">
             <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-pulse" />
             <span>LIVE &middot; {viewerCount.toLocaleString()}</span>
           </div>
 
-          <div className="bg-black/60 border border-amber-500/30 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-300 flex items-center gap-1 shadow-md shrink-0">
+          <div className="bg-black/60 border border-amber-500/30 px-2 py-1 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold text-amber-300 flex items-center gap-1 shadow-md shrink-0">
             <DollarSign className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span className="font-mono font-black">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
           </div>
@@ -996,23 +996,24 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             onClick={() => { sound.playButtonClick(); setIsChatVisible(prev => !prev); }}
-            className={`px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full border text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 ${
+            className={`p-1.5 sm:p-2 rounded-full border transition-all cursor-pointer shadow-md active:scale-95 flex items-center justify-center ${
               isChatVisible
                 ? 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-400/40 text-purple-300'
                 : 'bg-gray-800/60 hover:bg-gray-700/60 border-gray-600/40 text-gray-400'
             }`}
             title={isChatVisible ? "Hide Live Chat" : "Show Live Chat"}
+            aria-label={isChatVisible ? "Hide Live Chat" : "Show Live Chat"}
           >
-            {isChatVisible ? <MessageSquare className="w-3.5 h-3.5 text-purple-400" /> : <MessageSquareOff className="w-3.5 h-3.5 text-gray-400" />}
-            <span>{isChatVisible ? 'Hide Chat' : 'Show Chat'}</span>
+            {isChatVisible ? <MessageSquare className="w-4 h-4 text-purple-400" /> : <MessageSquareOff className="w-4 h-4 text-gray-400" />}
           </button>
 
           <button
             onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
-            className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+            className="px-2.5 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] sm:text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
+            title="Orders"
           >
-            <ShoppingCart className="w-3.5 h-3.5 text-amber-400" />
-            <span>Orders Ledger</span>
+            <ShoppingCart className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span>Orders</span>
             <span className="bg-amber-400 text-black px-1.5 py-0.2 rounded-full text-[9px] font-black leading-none">
               {orders.length}
             </span>
@@ -1020,10 +1021,11 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
           <button
             onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-            className="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+            className="p-1.5 sm:p-2 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 transition-all cursor-pointer shadow-md active:scale-95 flex items-center justify-center shrink-0"
+            title="Back to Packs"
+            aria-label="Back to Packs"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-red-400" />
-            <span>Exit</span>
+            <ArrowLeft className="w-4 h-4 text-red-400" />
           </button>
         </div>
       </div>
