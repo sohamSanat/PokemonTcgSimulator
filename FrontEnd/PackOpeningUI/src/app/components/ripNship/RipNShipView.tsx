@@ -429,7 +429,6 @@ const Card = React.memo(({
 
           {/* Fallback for cards without images */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#222230] to-[#12121a] flex flex-col items-center justify-center p-4 text-center border-[8px] border-[#333344] rounded-2xl z-0">
-            <span className="text-gray-500/80 font-black tracking-widest text-xl mb-3">{card.pokemon.id}</span>
             <h3 className="font-bold text-white text-lg px-2 drop-shadow-md">{card.pokemon.name}</h3>
           </div>
 
@@ -1867,8 +1866,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
                             <div className="text-xs text-gray-300 font-medium mt-0.5 flex items-center gap-2">
                               <span>Purchased: <strong className="text-amber-300 font-bold">{ord.packCount}x {ord.packName}</strong></span>
-                              <span className="text-gray-500">•</span>
-                              <span className="text-gray-400 font-mono">Set: {ord.setId}</span>
                             </div>
 
                             {/* Pack Opening Progress Bar */}

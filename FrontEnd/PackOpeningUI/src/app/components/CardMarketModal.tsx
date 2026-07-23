@@ -332,9 +332,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
                   <span className="text-[10px] uppercase tracking-widest text-amber-300/80 font-bold bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                     {poke.rarity || 'Common'}
                   </span>
-                  <span className="text-[10px] uppercase tracking-widest text-white/40 font-mono">
-                    {poke.id}
-                  </span>
+                  {/* ID text removed */}
                 </div>
               </div>
 
@@ -437,7 +435,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
             </div>
 
             <div className="mt-3 text-center text-[11px] text-gray-500">
-              Illustrated by <strong className="text-gray-300">{poke.illustrator || "Official Pokémon Artist"}</strong> • Card ID: <code className="text-amber-400">{poke.id}</code>
+              Illustrated by <strong className="text-gray-300">{poke.illustrator || "Official Pokémon Artist"}</strong>
             </div>
           </div>
         ) : (
@@ -518,8 +516,6 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
                   <div>
                     <h2 className="text-2xl font-extrabold text-white">{poke.name}</h2>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-400 uppercase font-semibold">ID: <code className="text-amber-300 font-mono">{poke.id}</code></span>
-                      <span className="text-gray-600">•</span>
                       <span className="text-xs text-amber-300 font-semibold bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-md">{poke.rarity || 'Common'}</span>
                       {poke.isReverseHolo && (
                         <span className="text-xs text-amber-300 font-bold bg-amber-500/20 border border-amber-400/40 px-2 py-0.5 rounded-md shadow-[0_0_10px_rgba(245,158,11,0.3)] animate-pulse">✨ Reverse Holo Slot</span>
