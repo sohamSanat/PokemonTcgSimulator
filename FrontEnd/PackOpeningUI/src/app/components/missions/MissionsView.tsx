@@ -172,11 +172,10 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
               <button
                 key={tab}
                 onClick={() => { sound.playTabSwitch(); setActiveTab(tab); }}
-                className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl font-mono font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer relative ${
-                  isSelected
+                className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl font-mono font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer relative ${isSelected
                     ? 'bg-gradient-to-r from-[#38bdf8] to-[#0284c7] text-white shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-white/30 scale-105'
                     : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-transparent'
-                }`}
+                  }`}
               >
                 {tab === 'daily' && <Clock className="w-4 h-4 text-emerald-400" />}
                 {tab === 'weekly' && <Zap className="w-4 h-4 text-amber-400" />}
@@ -220,11 +219,10 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                     onSelectEarnedPack(pack.setId, pack.language);
                   }
                 }}
-                className={`p-3 rounded-xl border text-center cursor-pointer hover:scale-105 transition-all shadow-md hover:shadow-lg ${
-                  pack.language === 'en'
+                className={`p-3 rounded-xl border text-center cursor-pointer hover:scale-105 transition-all shadow-md hover:shadow-lg ${pack.language === 'en'
                     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50'
                     : 'bg-rose-500/10 border-rose-500/30 text-rose-300 hover:bg-rose-500/20 hover:border-rose-500/50'
-                }`}
+                  }`}
               >
                 <div className="text-[10px] font-mono text-gray-400 uppercase">{pack.setName}</div>
                 <div className="text-lg font-black font-mono mt-1">{pack.count}</div>
@@ -245,13 +243,12 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
               key={mission.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`p-6 rounded-2xl border transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${
-                mission.claimed
+              className={`p-6 rounded-2xl border transition-all duration-300 flex flex-col justify-between relative overflow-hidden ${mission.claimed
                   ? 'bg-[#111827]/60 border-white/5 opacity-75'
                   : isReadyToClaim
                     ? 'bg-gradient-to-br from-[#111827] via-[#1a233a] to-[#111827] border-amber-400/80 shadow-[0_0_30px_rgba(245,158,11,0.25)] scale-[1.02]'
                     : 'bg-[#111827] border-white/10 hover:border-white/20 hover:shadow-xl'
-              }`}
+                }`}
             >
               {isReadyToClaim && (
                 <div className="absolute top-0 right-0 bg-amber-500 text-black text-[9px] font-mono font-black uppercase px-3 py-1 rounded-bl-xl shadow-md animate-pulse">
@@ -266,13 +263,12 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
 
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                    mission.claimed
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${mission.claimed
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                       : isReadyToClaim
                         ? 'bg-amber-500/20 text-amber-400 border border-amber-400 animate-bounce'
                         : 'bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30'
-                  }`}>
+                    }`}>
                     {mission.claimed ? <CheckCircle2 className="w-5 h-5" /> : <Award className="w-5 h-5" />}
                   </div>
                   <div>
@@ -294,11 +290,10 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                     {mission.rewardSetPacks.map((pack, idx) => (
                       <span
                         key={idx}
-                        className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm ${
-                          pack.language === 'en'
+                        className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm ${pack.language === 'en'
                             ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-300'
                             : 'bg-rose-500/15 border-rose-400/40 text-rose-300'
-                        }`}
+                          }`}
                       >
                         <Package className="w-3.5 h-3.5" /> +{pack.count} {pack.setName} ({pack.language.toUpperCase()})
                       </span>
@@ -326,13 +321,12 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
                   </div>
                   <div className="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden p-0.5 border border-white/5">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        mission.claimed
+                      className={`h-full rounded-full transition-all duration-500 ${mission.claimed
                           ? 'bg-gray-600'
                           : isReadyToClaim
                             ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.8)]'
                             : 'bg-gradient-to-r from-[#38bdf8] to-[#0284c7]'
-                      }`}
+                        }`}
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
