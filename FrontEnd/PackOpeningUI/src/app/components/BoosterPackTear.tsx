@@ -294,7 +294,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
             <img
               src={currentPackArt}
               fetchPriority="high"
-              decoding="sync"
+              decoding="async"
               onError={(e) => {
                 const img = e.target as HTMLImageElement;
                 const universalFallback = '/packArts/MegaEvolution-Generation/Ascended-heroes/1.webp';
