@@ -7,7 +7,7 @@
   </p>
 
   <p align="center">
-    <a href="https://pokemon-tcg-simulator-eight.vercel.app/">
+    <a href="https://pokemontcgsim.vercel.app/">
       <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-POKEMON_TCG_SIMULATOR-00E5FF?style=for-the-badge&labelColor=0d1117" alt="Live Demo" />
     </a>
   </p>
@@ -24,7 +24,7 @@
   </p>
 
   <p align="center">
-    <a href="https://pokemon-tcg-simulator-eight.vercel.app/"><b>✨ Launch App</b></a> •
+    <a href="https://pokemontcgsim.vercel.app/"><b>✨ Launch App</b></a> •
     <a href="#-key-features"><b>🔥 Features</b></a> •
     <a href="#-generation--set-coverage"><b>⚡ Sets & Eras</b></a> •
     <a href="#-quick-start"><b>🚀 Quick Start</b></a>
@@ -37,7 +37,7 @@
 ## 🌈 Highlights
 
 > [!TIP]
-> **Live Web Application**: Open packs in your browser right now at **[pokemon-tcg-simulator-eight.vercel.app](https://pokemon-tcg-simulator-eight.vercel.app/)** with zero installation required!
+> **Live Web Application**: Open packs in your browser right now at **[pokemontcgsim.vercel.app](https://pokemontcgsim.vercel.app/)** with zero installation required!
 
 ```
  ┌──────────────────────────────────────────────────────────────────────────┐
@@ -184,7 +184,7 @@ PokemonTcgSimulator/
 <div align="center">
   <p><b>Created with ❤️ for Pokémon TCG Collectors Worldwide</b></p>
   <p>
-    <a href="https://pokemon-tcg-simulator-eight.vercel.app/">
+    <a href="https://pokemontcgsim.vercel.app/">
       <img src="https://img.shields.io/badge/⚡_OPEN_PACKS_NOW-POKEMON_TCG_SIMULATOR-FFCB05?style=for-the-badge&labelColor=000&logo=pokemon" alt="Open Packs Now" />
     </a>
   </p>
