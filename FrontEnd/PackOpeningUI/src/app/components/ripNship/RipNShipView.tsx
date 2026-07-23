@@ -570,8 +570,14 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             const currentImageIsScrydex = c.pokemon.images?.large?.includes('scrydex.com') || c.pokemon.images?.small?.includes('scrydex.com');
             const cachedImageIsScrydex = cached.image?.includes('scrydex.com');
             const useImageFromCache = cached.image && (!currentImageIsScrydex || cachedImageIsScrydex);
+
+            const newName = (cached.name && !cached.name.startsWith('Pokémon Card') && cached.name !== 'Card') ? cached.name : c.pokemon.name;
+            const newRarity = (cached.rarity && cached.rarity !== 'Common') ? cached.rarity : (c.pokemon.rarity || cached.rarity);
+
             const updatedPoke = {
               ...c.pokemon,
+              name: newName,
+              rarity: newRarity,
               images: useImageFromCache && cached.image ? {
                 small: getCardImageUrl(cached.image, 'low'),
                 large: getCardImageUrl(cached.image, 'high'),
@@ -582,7 +588,13 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
               illustrator: cached.illustrator || c.pokemon.illustrator,
             };
             const newVal = getRealCardPrice(updatedPoke);
-            if (newVal !== c.value || !c.pokemon.pricing?.cardmarket || (useImageFromCache && cached.image && (!c.pokemon.images?.large || !c.pokemon.images.large.includes(cached.image)))) {
+            if (
+              newVal !== c.value ||
+              updatedPoke.name !== c.pokemon.name ||
+              updatedPoke.rarity !== c.pokemon.rarity ||
+              !c.pokemon.pricing?.cardmarket ||
+              (useImageFromCache && cached.image && (!c.pokemon.images?.large || !c.pokemon.images.large.includes(cached.image)))
+            ) {
               changed = true;
               return { ...c, value: newVal, pokemon: updatedPoke };
             }

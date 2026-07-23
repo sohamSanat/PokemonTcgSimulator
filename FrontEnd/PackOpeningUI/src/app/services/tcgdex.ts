@@ -206,20 +206,41 @@ export async function fetchSeriesDetails(seriesId: string): Promise<TCGDexSeries
   return data;
 }
 
+export function normalizeSetId(setId: string): string {
+  if (!setId) return setId;
+  const sLow = setId.trim().toLowerCase();
+  if (sLow.startsWith('sv')) {
+    if (sLow === 'sv1') return 'sv01';
+    if (sLow === 'sv2') return 'sv02';
+    if (sLow === 'sv3') return 'sv03';
+    if (sLow === 'sv3pt5' || sLow === 'sv3.5' || sLow === 'sv3pt5en') return 'sv03.5';
+    if (sLow === 'sv4') return 'sv04';
+    if (sLow === 'sv4pt5' || sLow === 'sv4.5') return 'sv04.5';
+    if (sLow === 'sv5') return 'sv05';
+    if (sLow === 'sv6') return 'sv06';
+    if (sLow === 'sv6pt5' || sLow === 'sv6.5') return 'sv06.5';
+    if (sLow === 'sv7') return 'sv07';
+    if (sLow === 'sv8') return 'sv08';
+    if (sLow === 'sv8pt5' || sLow === 'sv8.5') return 'sv08.5';
+  }
+  return setId;
+}
+
 export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
-  const cacheKey = setId.toLowerCase();
+  const normalizedId = normalizeSetId(setId);
+  const cacheKey = normalizedId.toLowerCase();
   if (setDetailsCache.has(cacheKey)) {
     return setDetailsCache.get(cacheKey)!;
   }
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/sets/${setId}`, 3500);
-    if (!res.ok) throw new Error(`Failed to fetch set details for ${setId}`);
+    const res = await fetchWithTimeout(`${API_BASE}/sets/${normalizedId}`, 3500);
+    if (!res.ok) throw new Error(`Failed to fetch set details for ${normalizedId}`);
     const data: TCGDexSet = await res.json();
-    if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${setId}`);
+    if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${normalizedId}`);
     // Map over cards and assign fallback image url if not provided in sets response
     data.cards = data.cards.map(c => {
       if (!c.image) {
-        c.image = getTCGDexValidAssetPath(setId, c.localId);
+        c.image = getTCGDexValidAssetPath(normalizedId, c.localId);
       }
       return c;
     });
@@ -227,21 +248,28 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     setDetailsCache.set(cacheKey, enriched);
     return enriched;
   } catch (err) {
-    console.warn(`Timeout/error fetching set details for ${setId}, using local fallback:`, err);
+    console.warn(`Timeout/error fetching set details for ${setId} (${normalizedId}), using local fallback:`, err);
     // Bulletproof fallback so pack opening never gets stuck on "Drawing Live Cards..."
     const fallbackSet: TCGDexSet = {
-      id: setId,
-      name: setId === 'swsh3' ? 'Darkness Ablaze' : setId === 'me02.5' ? 'Ascended Heroes' : setId.toUpperCase(),
-      logo: `https://assets.tcgdex.net/en/${setId.toLowerCase().startsWith('me') ? 'me' : setId.toLowerCase().startsWith('sv') ? 'sv' : setId.toLowerCase().startsWith('sm') ? 'sm' : setId.toLowerCase().startsWith('xy') ? 'xy' : setId.toLowerCase().startsWith('base') ? 'base' : 'swsh'}/${setId}/logo`,
+      id: normalizedId,
+      name: normalizedId === 'swsh3' ? 'Darkness Ablaze' : normalizedId === 'me02.5' ? 'Ascended Heroes' : normalizedId.toUpperCase(),
+      logo: `https://assets.tcgdex.net/en/${normalizedId.toLowerCase().startsWith('me') ? 'me' : normalizedId.toLowerCase().startsWith('sv') ? 'sv' : normalizedId.toLowerCase().startsWith('sm') ? 'sm' : normalizedId.toLowerCase().startsWith('xy') ? 'xy' : normalizedId.toLowerCase().startsWith('base') ? 'base' : 'swsh'}/${normalizedId}/logo`,
       cardCount: { total: 189, official: 189 },
       cards: Array.from({ length: 189 }, (_, i) => {
         const rawNum = `${i + 1}`;
-        const localNum = (setId.toLowerCase().startsWith('me') || setId.toLowerCase().startsWith('sv')) ? rawNum.padStart(3, '0') : rawNum;
+        const localNum = (normalizedId.toLowerCase().startsWith('me') || normalizedId.toLowerCase().startsWith('sv')) ? rawNum.padStart(3, '0') : rawNum;
+        let defaultRarity = 'Common';
+        if (i >= 180) defaultRarity = 'Secret Rare';
+        else if (i >= 170) defaultRarity = 'Ultra Rare';
+        else if (i >= 150) defaultRarity = 'Double Rare';
+        else if (i >= 120) defaultRarity = 'Rare Holo';
+        else if (i >= 70) defaultRarity = 'Uncommon';
         return {
-          id: `${setId}-${localNum}`,
+          id: `${normalizedId}-${localNum}`,
           localId: localNum,
           name: i === 135 ? 'Charizard VMAX' : i === 19 ? 'Butterfree V' : `Pokémon Card ${i + 1}`,
-          image: getTCGDexValidAssetPath(setId, localNum)
+          rarity: defaultRarity,
+          image: getTCGDexValidAssetPath(normalizedId, localNum)
         };
       })
     };
