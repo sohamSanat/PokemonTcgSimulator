@@ -945,36 +945,42 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
 
   type PoolPicker = (pl: TCGDexCardSummary[], fb?: TCGDexCardSummary[][]) => TCGDexCardSummary;
 
-  const rollHit = (getFromPool: PoolPicker): EnglishBoxSlotData => {
+  const rollHit = (getFromPool: PoolPicker, capHighTier: boolean = false): EnglishBoxSlotData => {
     const roll = Math.random();
     let cum = 0;
     for (const t of hitTable) {
       cum += t.p;
       if (roll < cum) {
         if (t.pool.length === 0) break; // set has no cards of this tier → degrade to default
+        // If slot 10 already pulled a special hit, cap slot 11 to Double Rare or Holo Rare (no double SIR/Gold)
+        if (capHighTier && (t.label.includes('Secret') || t.label.includes('Illustration') || t.label.includes('Hyper') || t.label.includes('Gold'))) {
+          const fallbackPool = p.vPool.length > 0 ? p.vPool : p.holoRarePool;
+          return { summary: getFromPool(fallbackPool, [p.holoRarePool, p.nonHoloRarePool]), defaultRarity: p.vPool.length > 0 ? 'Double Rare (ex)' : 'Holo Rare' };
+        }
         return { summary: getFromPool(t.pool, t.fb), defaultRarity: t.label };
       }
     }
     return { summary: getFromPool(defaultTier.pool, defaultTier.fb), defaultRarity: defaultTier.label };
   };
 
-  const rollSpecial = (getFromPool: PoolPicker): EnglishBoxSlotData => {
+  const rollSpecial = (getFromPool: PoolPicker): { slotData: EnglishBoxSlotData; isHit: boolean } => {
     if (boxEra === 'swsh') {
       if ((p.isTrainerGallerySet || p.isShinyVaultSet) && p.galleryPool.length > 0 && Math.random() < 0.12) {
-        return { summary: getFromPool(p.galleryPool, [p.reverseHoloPool, pool]), defaultRarity: p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', isReverseHolo: true };
+        return { slotData: { summary: getFromPool(p.galleryPool, [p.reverseHoloPool]), defaultRarity: p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', isReverseHolo: true }, isHit: true };
       }
     } else if (boxEra === 'sm') {
       if (p.isCosmicEclipse && p.characterRarePool.length > 0 && Math.random() < 0.08) {
-        return { summary: getFromPool(p.characterRarePool, [p.reverseHoloPool, pool]), defaultRarity: 'Character Rare (CHR)', isReverseHolo: true };
+        return { slotData: { summary: getFromPool(p.characterRarePool, [p.reverseHoloPool]), defaultRarity: 'Character Rare (CHR)', isReverseHolo: true }, isHit: true };
       }
       if (p.prismStarPool.length > 0 && Math.random() < 0.08) {
-        return { summary: getFromPool(p.prismStarPool, [p.reverseHoloPool, pool]), defaultRarity: 'Prism Star ♢', isReverseHolo: true };
+        return { slotData: { summary: getFromPool(p.prismStarPool, [p.reverseHoloPool]), defaultRarity: 'Prism Star ♢', isReverseHolo: true }, isHit: true };
       }
       if (p.galleryPool.length > 0 && Math.random() < 0.10) {
-        return { summary: getFromPool(p.galleryPool, [p.reverseHoloPool, pool]), defaultRarity: 'Shiny Vault', isReverseHolo: true };
+        return { slotData: { summary: getFromPool(p.galleryPool, [p.reverseHoloPool]), defaultRarity: 'Shiny Vault', isReverseHolo: true }, isHit: true };
       }
     }
-    return { summary: getFromPool(p.reverseHoloPool, [pool]), defaultRarity: 'Reverse Holo', isReverseHolo: true };
+    const rh = getFromPool(p.reverseHoloPool, [p.uncommonPool, p.commonPool]);
+    return { slotData: { summary: rh, isReverseHolo: true, defaultRarity: 'Reverse Holo' }, isHit: false };
   };
 
   const packs: EnglishBoxPackData[] = [];
@@ -1040,22 +1046,26 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
         slots.push({ summary: e2, defaultRarity: 'Basic Energy' });
         pickedIds.add(e2.id);
       } else {
-        const t = getFromPool(trainerPool, [p.uncommonPool, p.commonPool, pool]);
+        const t = getFromPool(trainerPool, [p.uncommonPool, p.commonPool]);
         slots.push({ summary: t, defaultRarity: 'Trainer / Energy' });
       }
+      const hit = rollHit(getFromPool);
+      slots.push(hit);
+      if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
     } else if (hasSpecialSlot) {
-      const sp = rollSpecial(getFromPool);
+      const { slotData: sp, isHit } = rollSpecial(getFromPool);
       slots.push(sp);
       if (sp.summary) { pickedIds.add(sp.summary.id); pickedNames.add(sp.summary.name); }
+      const hit = rollHit(getFromPool, isHit);
+      slots.push(hit);
+      if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
     } else {
-      const rh = getFromPool(p.reverseHoloPool, [pool]);
+      const rh = getFromPool(p.reverseHoloPool, [p.uncommonPool, p.commonPool]);
       slots.push({ summary: rh, isReverseHolo: true, defaultRarity: 'Reverse Holo' });
+      const hit = rollHit(getFromPool);
+      slots.push(hit);
+      if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
     }
-
-    // Rare-or-better hit slot — tier rolled per pack against realistic odds
-    const hit = rollHit(getFromPool);
-    slots.push(hit);
-    if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
 
     packs.push({ slots });
   }
@@ -1315,8 +1325,9 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     }
   }
 
-  // Reverse Holo slot can draw any Common, Uncommon, Non-Holo Rare, or Holo Rare
-  const reverseHoloPool = [...commonPool, ...uncommonPool, ...nonHoloRarePool, ...holoRarePool];
+  // Reverse Holo slot MUST draw ONLY Common, Uncommon, or Non-Holo Rare cards.
+  // CRITICAL FIX: NEVER include holoRarePool or high-rarity hit pools here to prevent 2 hits in 1 pack!
+  const reverseHoloPool = [...commonPool, ...uncommonPool, ...nonHoloRarePool];
 
   // Combine fetched gallery sub-set with inline TG/GG cards
   const isShinyVaultSet = setIdLower === 'swsh4.5sv' || setIdLower === 'swsh4pt5sv' || setIdLower === 'sma' || setIdLower === 'sm115sv' || setNameLower.includes('shiny vault');

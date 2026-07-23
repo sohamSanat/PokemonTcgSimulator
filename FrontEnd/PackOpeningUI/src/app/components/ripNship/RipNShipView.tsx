@@ -230,6 +230,36 @@ const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; 
 };
 
 
+const isActualHit = (card: CardData): boolean => {
+  if (!card || !card.pokemon) return false;
+  const val = card.value || 0;
+  const nameLower = (card.pokemon.name || '').toLowerCase();
+  const idLower = (card.pokemon.id || '').toLowerCase();
+  if (nameLower.includes('energy') || idLower.includes('energy')) return false;
+
+  const rarity = (card.pokemon.rarity || '').toLowerCase();
+  const isHitCategory = 
+    rarity.includes('special illustration') || 
+    rarity.includes('illustration rare') || 
+    rarity.includes('secret') || 
+    rarity.includes('gold') || 
+    rarity.includes('hyper') || 
+    rarity.includes('rainbow') || 
+    rarity.includes('full art') || 
+    rarity.includes('double rare') || 
+    rarity.includes('ultra rare') || 
+    rarity.includes('ex') || 
+    rarity.includes('vmax') || 
+    rarity.includes('vstar') || 
+    rarity.includes(' v') || 
+    rarity.includes('gx') || 
+    rarity.includes('shiny vault') || 
+    rarity.includes('trainer gallery') ||
+    rarity.includes('character rare');
+
+  return isHitCategory || val >= 4.50;
+};
+
 const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
   if (cards.length === 0) return cards;
   cards.forEach(c => { c.isMostExpensive = false; });
@@ -246,7 +276,11 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
     const [mostExpensive] = cards.splice(maxIdx, 1);
     cards.push(mostExpensive);
   }
-  cards[cards.length - 1].isMostExpensive = true;
+  
+  // ONLY mark as Most Expensive Hit IF the top card is a genuine high-tier hit!
+  if (isActualHit(cards[cards.length - 1])) {
+    cards[cards.length - 1].isMostExpensive = true;
+  }
   return cards;
 };
 
@@ -262,7 +296,9 @@ const reorderCardsWithMostExpensiveLast = (cards: CardData[]): CardData[] => {
         maxIdx = i;
       }
     }
-    cards[maxIdx].isMostExpensive = true;
+    if (isActualHit(cards[maxIdx])) {
+      cards[maxIdx].isMostExpensive = true;
+    }
     return cards;
   }
   const unreversed = [...cards].reverse();
@@ -856,9 +892,9 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const handleFinishCurrentPack = (currentCards: CardData[]) => {
     if (!activeOrder) return;
     
-    // Extract hits from current pack (value >= $1.50 or Holo/Rare/MostExpensive)
+    // Extract ONLY genuine hits from current pack
     const packHits = currentCards
-      .filter(c => c.value >= 1.50 || (c.pokemon.rarity || '').toLowerCase().includes('rare') || (c.pokemon.rarity || '').toLowerCase().includes('holo') || c.isMostExpensive)
+      .filter(c => isActualHit(c))
       .map(c => ({
         name: c.pokemon.name,
         value: c.value,
