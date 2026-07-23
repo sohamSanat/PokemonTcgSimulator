@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Sparkles, Eye, X, Calendar, Coins, MessageSquare, Layers, BookOpen, CheckCircle2,
@@ -50,13 +50,16 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
   const cm = rawCm?.prices || rawCm;
 
   const tcgVariants = tcg ? Object.keys(tcg).filter(k => typeof tcg[k] === 'object' && tcg[k] !== null && k !== 'prices') : [];
-  const activePoke: PokemonCard = liveCardFull ? {
-    ...poke,
-    pricing: liveCardFull.pricing || poke.pricing,
-    tcgplayer: liveCardFull.tcgplayer || liveCardFull.pricing?.tcgplayer ? { prices: liveCardFull.tcgplayer || liveCardFull.pricing?.tcgplayer, unit: 'USD' } : poke.tcgplayer,
-    cardmarket: liveCardFull.cardmarket || liveCardFull.pricing?.cardmarket || poke.cardmarket,
-    illustrator: liveCardFull.illustrator || poke.illustrator
-  } : poke;
+  const activePoke = useMemo<PokemonCard>(() => {
+    if (!liveCardFull) return poke;
+    return {
+      ...poke,
+      pricing: liveCardFull.pricing || poke.pricing,
+      tcgplayer: liveCardFull.tcgplayer || liveCardFull.pricing?.tcgplayer ? { prices: liveCardFull.tcgplayer || liveCardFull.pricing?.tcgplayer, unit: 'USD' } : poke.tcgplayer,
+      cardmarket: liveCardFull.cardmarket || liveCardFull.pricing?.cardmarket || poke.cardmarket,
+      illustrator: liveCardFull.illustrator || poke.illustrator
+    };
+  }, [poke, liveCardFull]);
   const liveCardPrice = getRealCardPrice(activePoke);
 
   const isFromVendor = Boolean(card.isVendorCatalog || poke.isVendorCatalog);
@@ -918,5 +921,11 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
       </AnimatePresence>
       </motion.div>
     </motion.div>
+  );
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.card.id === nextProps.card.id &&
+    prevProps.isAddedToBinder === nextProps.isAddedToBinder &&
+    prevProps.initialViewMode === nextProps.initialViewMode
   );
 });

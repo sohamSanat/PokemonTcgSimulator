@@ -1116,6 +1116,7 @@ export default function App() {
 
   useEffect(() => {
     // Aggressively preload all pack arts for the current set to ensure instant render
+    const injectedLinks: HTMLLinkElement[] = [];
     currentPackArts.forEach(src => {
       const img = new Image();
       img.fetchPriority = 'high';
@@ -1129,8 +1130,15 @@ export default function App() {
         link.href = src;
         link.fetchPriority = 'high';
         document.head.appendChild(link);
+        injectedLinks.push(link);
       }
     });
+
+    return () => {
+      injectedLinks.forEach(link => {
+        if (link.parentNode) link.parentNode.removeChild(link);
+      });
+    };
   }, [currentPackArts]);
 
   useEffect(() => {
@@ -2579,34 +2587,18 @@ export default function App() {
                   <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none -z-10 opacity-60" />
 
                   {/* Floating Holographic Energy Jewels (Left & Right of Pack) */}
-                  <motion.div
-                    animate={{ y: [-8, 8, -8], rotate: [-6, 6, -6] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute left-0 sm:-left-4 top-1/4 w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-600/10 border border-amber-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] pointer-events-none select-none z-0"
-                  >
+                  <div className="absolute left-0 sm:-left-4 top-1/4 w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-600/10 border border-amber-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] pointer-events-none select-none z-0 animate-jewel-1">
                     ⚡
-                  </motion.div>
-                  <motion.div
-                    animate={{ y: [10, -10, 10], rotate: [8, -8, 8] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                    className="absolute right-0 sm:-right-4 top-1/3 w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-600/10 border border-purple-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] pointer-events-none select-none z-0"
-                  >
+                  </div>
+                  <div className="absolute right-0 sm:-right-4 top-1/3 w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-600/10 border border-purple-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] pointer-events-none select-none z-0 animate-jewel-2">
                     💎
-                  </motion.div>
-                  <motion.div
-                    animate={{ y: [-10, 10, -10], scale: [0.95, 1.05, 0.95] }}
-                    transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-                    className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(10,185,129,0.3)] pointer-events-none select-none z-0"
-                  >
+                  </div>
+                  <div className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(10,185,129,0.3)] pointer-events-none select-none z-0 animate-jewel-3">
                     ✨
-                  </motion.div>
-                  <motion.div
-                    animate={{ y: [8, -8, 8], scale: [1.05, 0.95, 1.05] }}
-                    transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-                    className="absolute right-2 sm:-right-2 bottom-1/3 w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-400/20 to-pink-600/10 border border-rose-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] pointer-events-none select-none z-0"
-                  >
+                  </div>
+                  <div className="absolute right-2 sm:-right-2 bottom-1/3 w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-400/20 to-pink-600/10 border border-rose-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] pointer-events-none select-none z-0 animate-jewel-4">
                     🔥
-                  </motion.div>
+                  </div>
 
                   {/* Pity Protection Active Alert Banner */}
                   <AnimatePresence>

@@ -180,9 +180,9 @@
   }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes float-up {
@@ -191,6 +191,14 @@
 }
 
 .holo-shimmer {
+  position: relative;
+  isolation: isolate;
+}
+
+.holo-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: linear-gradient(
     105deg,
     transparent 20%,
@@ -202,5 +210,8 @@
     transparent 80%
   );
   background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
+  transform: translateX(-100%);
+  animation: shimmer-slide 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
 }

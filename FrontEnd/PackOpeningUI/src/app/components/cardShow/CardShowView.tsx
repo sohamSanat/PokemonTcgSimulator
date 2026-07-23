@@ -991,6 +991,8 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
               next.add(imgId);
               return next;
             });
+            // Stop observing elements once intersected to free memory & CPU
+            observer.unobserve(entry.target);
           }
         }
       });

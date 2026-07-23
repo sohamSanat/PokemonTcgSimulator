@@ -52,13 +52,18 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
     };
   }, []);
 
+  useEffect(() => {
+    if (!justClaimedId) return;
+    const timer = setTimeout(() => setJustClaimedId(null), 2500);
+    return () => clearTimeout(timer);
+  }, [justClaimedId]);
+
   const handleClaim = (mission: Mission) => {
     sound.playButtonClick();
     const result = claimMissionReward(mission.id);
     if (result.success) {
       sound.playLegendaryFanfare();
       setJustClaimedId(mission.id);
-      setTimeout(() => setJustClaimedId(null), 2500);
       setMissions(getMissions());
       setEarnedSetPacks(getEarnedSetPacks());
       if (result.rewardCard) {

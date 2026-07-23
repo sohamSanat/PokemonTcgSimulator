@@ -116,103 +116,107 @@ export function extractMajorityColor(
   img.src = imageUrl;
 
   img.onload = () => {
-    try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+    // Schedule canvas processing asynchronously so main thread doesn't lock Firefox UI
+    setTimeout(() => {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return;
 
-      const SIZE = 28;
-      canvas.width = SIZE;
-      canvas.height = SIZE;
-      ctx.drawImage(img, 0, 0, SIZE, SIZE);
+        const SIZE = 28;
+        canvas.width = SIZE;
+        canvas.height = SIZE;
+        ctx.drawImage(img, 0, 0, SIZE, SIZE);
 
-      const imageData = ctx.getImageData(0, 0, SIZE, SIZE).data;
-      const clusters = new Map<string, { sumR: number; sumG: number; sumB: number; count: number; score: number }>();
+        const imageData = ctx.getImageData(0, 0, SIZE, SIZE).data;
+        const clusters = new Map<string, { sumR: number; sumG: number; sumB: number; count: number; score: number }>();
 
-      for (let y = 0; y < SIZE; y++) {
-        for (let x = 0; x < SIZE; x++) {
-          const idx = (y * SIZE + x) * 4;
-          const r = imageData[idx];
-          const g = imageData[idx + 1];
-          const b = imageData[idx + 2];
-          const a = imageData[idx + 3];
+        for (let y = 0; y < SIZE; y++) {
+          for (let x = 0; x < SIZE; x++) {
+            const idx = (y * SIZE + x) * 4;
+            const r = imageData[idx];
+            const g = imageData[idx + 1];
+            const b = imageData[idx + 2];
+            const a = imageData[idx + 3];
 
-          if (a < 128) continue; // Skip transparent
+            if (a < 128) continue; // Skip transparent
 
-          const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-          const vibrancy = Math.max(r, g, b) - Math.min(r, g, b);
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            const vibrancy = Math.max(r, g, b) - Math.min(r, g, b);
 
-          // Skip pure black or pure white or extreme dark borders
-          if (brightness < 18 || brightness > 245) continue;
+            // Skip pure black or pure white or extreme dark borders
+            if (brightness < 18 || brightness > 245) continue;
 
-          // If near outer border (top/bottom 15%) and low saturation (grey/silver foil frame), apply heavy downweight
-          const isBorder = (y < SIZE * 0.15 || y > SIZE * 0.88 || x < SIZE * 0.08 || x > SIZE * 0.92);
-          if (isBorder && vibrancy < 35) continue;
+            // If near outer border (top/bottom 15%) and low saturation (grey/silver foil frame), apply heavy downweight
+            const isBorder = (y < SIZE * 0.15 || y > SIZE * 0.88 || x < SIZE * 0.08 || x > SIZE * 0.92);
+            if (isBorder && vibrancy < 35) continue;
 
-          // Group colors into quantized buckets of 24
-          const bucketR = Math.round(r / 24) * 24;
-          const bucketG = Math.round(g / 24) * 24;
-          const bucketB = Math.round(b / 24) * 24;
-          const bucketKey = `${bucketR},${bucketG},${bucketB}`;
+            // Group colors into quantized buckets of 24
+            const bucketR = Math.round(r / 24) * 24;
+            const bucketG = Math.round(g / 24) * 24;
+            const bucketB = Math.round(b / 24) * 24;
+            const bucketKey = `${bucketR},${bucketG},${bucketB}`;
 
-          const { h, s, l } = rgbToHsl(r, g, b);
+            const { h, s, l } = rgbToHsl(r, g, b);
+            
+            // Score formula: prioritize color frequency + vibrancy + pleasant mid-tone lightness
+            let score = (vibrancy * 2.5) + (100 - Math.abs(l - 55) * 1.2);
+            if (isBorder) score *= 0.3; // heavily penalize border pixels
+
+            if (!clusters.has(bucketKey)) {
+              clusters.set(bucketKey, { sumR: r, sumG: g, sumB: b, count: 1, score });
+            } else {
+              const c = clusters.get(bucketKey)!;
+              c.sumR += r;
+              c.sumG += g;
+              c.sumB += b;
+              c.count += 1;
+              c.score += score;
+            }
+          }
+        }
+
+        let maxScore = -1;
+        let bestCluster: { sumR: number; sumG: number; sumB: number; count: number; score: number } | null = null;
+
+        for (const cluster of clusters.values()) {
+          if (cluster.score > maxScore) {
+            maxScore = cluster.score;
+            bestCluster = cluster;
+          }
+        }
+
+        if (bestCluster && bestCluster.count > 0) {
+          const avgR = Math.round(bestCluster.sumR / bestCluster.count);
+          const avgG = Math.round(bestCluster.sumG / bestCluster.count);
+          const avgB = Math.round(bestCluster.sumB / bestCluster.count);
+
+          const { h, s, l } = rgbToHsl(avgR, avgG, avgB);
           
-          // Score formula: prioritize color frequency + vibrancy + pleasant mid-tone lightness
-          let weight = 1.0;
-          if (isBorder) weight *= 0.3;
-          if (s > 35) weight *= (1 + (s / 100) * 2.2); // Big boost for vibrant artwork colors
-          if (l >= 30 && l <= 75) weight *= 1.3;
+          // Ensure the edge outline is sharp, luminous and vivid
+          const edgeS = Math.min(100, Math.max(65, s + 20));
+          const edgeL = Math.min(84, Math.max(58, l + 15));
+          const glowS = Math.min(100, Math.max(60, s + 10));
+          const glowL = Math.min(78, Math.max(48, l));
 
-          const existing = clusters.get(bucketKey) || { sumR: 0, sumG: 0, sumB: 0, count: 0, score: 0 };
-          existing.sumR += r;
-          existing.sumG += g;
-          existing.sumB += b;
-          existing.count += 1;
-          existing.score += weight;
-          clusters.set(bucketKey, existing);
+          const extracted: ExtractedColor = {
+            edge: `hsl(${h}, ${edgeS}%, ${edgeL}%)`,
+            glow: `hsl(${h}, ${glowS}%, ${glowL}%)`,
+            rgb: `${avgR}, ${avgG}, ${avgB}`,
+            hex: `#${avgR.toString(16).padStart(2, '0')}${avgG.toString(16).padStart(2, '0')}${avgB.toString(16).padStart(2, '0')}`
+          };
+
+          colorCache.set(cacheKey, extracted);
+          if (onExtracted) onExtracted(extracted);
+        } else {
+          colorCache.set(cacheKey, fallback);
+          if (onExtracted) onExtracted(fallback);
         }
-      }
-
-      let bestCluster = null;
-      let maxScore = -1;
-      for (const cluster of clusters.values()) {
-        if (cluster.score > maxScore) {
-          maxScore = cluster.score;
-          bestCluster = cluster;
-        }
-      }
-
-      if (bestCluster && bestCluster.count > 0) {
-        const avgR = Math.round(bestCluster.sumR / bestCluster.count);
-        const avgG = Math.round(bestCluster.sumG / bestCluster.count);
-        const avgB = Math.round(bestCluster.sumB / bestCluster.count);
-
-        const { h, s, l } = rgbToHsl(avgR, avgG, avgB);
-        
-        // Ensure the edge outline is sharp, luminous and vivid
-        const edgeS = Math.min(100, Math.max(65, s + 20));
-        const edgeL = Math.min(84, Math.max(58, l + 15));
-        const glowS = Math.min(100, Math.max(60, s + 10));
-        const glowL = Math.min(78, Math.max(48, l));
-
-        const extracted: ExtractedColor = {
-          edge: `hsl(${h}, ${edgeS}%, ${edgeL}%)`,
-          glow: `hsl(${h}, ${glowS}%, ${glowL}%)`,
-          rgb: `${avgR}, ${avgG}, ${avgB}`,
-          hex: `#${avgR.toString(16).padStart(2, '0')}${avgG.toString(16).padStart(2, '0')}${avgB.toString(16).padStart(2, '0')}`
-        };
-
-        colorCache.set(cacheKey, extracted);
-        if (onExtracted) onExtracted(extracted);
-      } else {
+      } catch {
         colorCache.set(cacheKey, fallback);
         if (onExtracted) onExtracted(fallback);
       }
-    } catch (err) {
-      // CORS or canvas security restriction fallback
-      colorCache.set(cacheKey, fallback);
-      if (onExtracted) onExtracted(fallback);
-    }
+    }, 10);
   };
 
   img.onerror = () => {

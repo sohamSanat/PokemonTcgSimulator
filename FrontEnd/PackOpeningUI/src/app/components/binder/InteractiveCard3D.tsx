@@ -72,23 +72,25 @@ export const InteractiveCard3D: React.FC<Props> = ({
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const img = e.currentTarget;
     if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return;
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = 8;
-      canvas.height = 8;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.drawImage(img, 0, 0, 8, 8);
-      const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
-      if (r < 50 && g < 75 && b > 90) {
-        const cardIdStr = String(c?.pokemon?.id || c?.id || '');
-        const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
-        const setId = cardIdStr.split('-')[0] || 'swsh3';
-        handleCardImageError(img, setId, num);
+    setTimeout(() => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 8;
+        canvas.height = 8;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, 8, 8);
+        const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
+        if (r < 50 && g < 75 && b > 90) {
+          const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+          const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+          const setId = cardIdStr.split('-')[0] || 'swsh3';
+          handleCardImageError(img, setId, num);
+        }
+      } catch {
+        // ignore canvas CORS taint errors
       }
-    } catch {
-      // ignore canvas CORS taint errors
-    }
+    }, 0);
   };
 
   // Determine type
@@ -346,6 +348,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
                         className="w-full h-full object-contain block relative z-10"
                         src={imageUrl}
                         alt={name || 'Pokemon Card Front'}
+                        decoding="async"
                         onLoad={handleImageLoad}
                         onError={(e) => {
                           const img = e.target as HTMLImageElement;
@@ -385,6 +388,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
                     <img
                       src={imageUrl}
                       alt={name}
+                      decoding="async"
                       className="w-full h-full object-cover block rounded-[var(--card-radius)]"
                       onLoad={handleImageLoad}
                       onError={(e) => {

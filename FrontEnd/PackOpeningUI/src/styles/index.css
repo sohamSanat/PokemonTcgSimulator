@@ -54,43 +54,63 @@ html, body {
   }
 }
 
-/* 🦊 Firefox Performance Optimization Engine 🦊 */
-@supports (-moz-appearance: none) {
-  /* Disable expensive backdrop-filter blur rendering completely in Firefox Gecko engine */
+/* Floating Jewels CSS Keyframe Animations */
+@keyframes float-jewel-1 {
+  0%, 100% { transform: translateY(-8px) rotate(-6deg); }
+  50% { transform: translateY(8px) rotate(6deg); }
+}
+@keyframes float-jewel-2 {
+  0%, 100% { transform: translateY(10px) rotate(8deg); }
+  50% { transform: translateY(-10px) rotate(-8deg); }
+}
+@keyframes float-jewel-3 {
+  0%, 100% { transform: translateY(-10px) scale(0.95); }
+  50% { transform: translateY(10px) scale(1.05); }
+}
+@keyframes float-jewel-4 {
+  0%, 100% { transform: translateY(8px) scale(1.05); }
+  50% { transform: translateY(-8px) scale(0.95); }
+}
+
+.animate-jewel-1 { animation: float-jewel-1 5s ease-in-out infinite; }
+.animate-jewel-2 { animation: float-jewel-2 6s ease-in-out infinite 1s; }
+.animate-jewel-3 { animation: float-jewel-3 7s ease-in-out infinite 2s; }
+.animate-jewel-4 { animation: float-jewel-4 5.5s ease-in-out infinite 1.5s; }
+
+/* 🦊 Firefox Performance & Smooth Rendering Engine 🦊 */
+@supports (-moz-user-select: none) {
   * {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
   }
 
-  /* Fallback for backgrounds that relied heavily on blur for opacity */
-  .bg-black\/40, .bg-black\/50, .bg-black\/60, .bg-black\/80, .bg-white\/5 {
-    background-color: rgba(18, 18, 26, 0.96) !important;
+  /* Simplify 6-layer 3D box-shadows in Firefox to prevent GPU/CPU rasterization stalls */
+  .pkmn-card.active .pkmn-card__rotator,
+  .pkmn-card.interacting .pkmn-card__rotator,
+  .pkmn-card:hover .pkmn-card__rotator,
+  .pkmn-card__rotator:focus {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px var(--card-glow) !important;
   }
 
-  /* Disable expensive blend modes globally in Firefox */
+  /* Disable expensive blend modes in Firefox to prevent compositing locks */
   .mix-blend-overlay,
   .mix-blend-screen,
   .mix-blend-color-dodge,
   .mix-blend-multiply {
     mix-blend-mode: normal !important;
-    opacity: 0.5 !important;
+    opacity: 0.7 !important;
   }
 
-  /* Force hardware GPU acceleration on dynamic transform & clip-path elements */
-  [style*="clip-path"],
-  [style*="transform"],
-  .motion-gpu {
-    will-change: transform, opacity;
+  .pkmn-card__translater,
+  .pkmn-card__rotator,
+  img {
+    will-change: transform;
     transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
-  /* Strip all expensive drop-shadow filters from images (especially Pack Arts) */
+  /* Strip expensive SVG drop-shadow filter calculations from high-res card art */
   img[class*="drop-shadow"] {
-    filter: none !important;
-  }
-
-  /* Specifically target the Tailwind generated class if it escapes */
-  img.drop-shadow-\[0_25px_50px_rgba\(0\,0\,0\,0\.88\)\] {
     filter: none !important;
   }
 }
