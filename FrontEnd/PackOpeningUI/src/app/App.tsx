@@ -2280,12 +2280,6 @@ export default function App() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-amber-300 font-bold flex items-center gap-1">🎒 Inventory</span>
-                    <span className="text-sm font-black font-mono text-amber-300">
-                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)} Packs
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-300 font-bold">Cash</span>
                     <span className="text-sm font-black font-mono text-amber-400">
                       {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(2)}`}
