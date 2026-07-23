@@ -12,6 +12,7 @@ import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewe
 
 
 import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull, orchestrateSetLoading, getRealCardPrice, onCardFullCacheUpdated } from '../../services/tcgdex';
+import { CardMarketModal } from '../CardMarketModal';
 import BoosterPackTear from '../BoosterPackTear';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import setPackPricesData from '../../data/set_pack_prices.json';
@@ -374,6 +375,7 @@ const RevealedCardItem = React.memo(({
   onInspect: (card: CardData) => void;
   onAddToBinder: (card: CardData) => void;
 }) => {
+  const displayPrice = getRealCardPrice(card.pokemon) || card.value || 0;
   return (
     <motion.div
       onClick={() => onInspect(card)}
@@ -394,7 +396,7 @@ const RevealedCardItem = React.memo(({
         >
           {/* Price badge right above/on top of card art */}
           <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5 backdrop-blur-sm">
-            <span>${card.value ? card.value.toFixed(2) : (setPackPrices[card.pokemon?.id?.split('-')[0] || 'swsh3'] || 5.99).toFixed(2)}</span>
+            <span>${displayPrice.toFixed(2)}</span>
           </div>
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/90 border border-white/20 text-[9px] font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity z-20">
             📊 Market Data
@@ -405,7 +407,7 @@ const RevealedCardItem = React.memo(({
       <div className="mt-3 w-full px-2.5 py-2 rounded-xl bg-[#141620]/95 border border-white/10 flex flex-col items-center text-center transition-all group-hover:bg-[#1c1e2b]/95 group-hover:border-white/20 shadow-lg">
         <span className="font-bold text-white text-xs truncate w-full">{card.pokemon.name}</span>
         <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-emerald-400 font-extrabold text-xs tracking-wide shadow-sm">${card.value.toFixed(2)}</span>
+          <span className="text-emerald-400 font-extrabold text-xs tracking-wide shadow-sm">${displayPrice.toFixed(2)}</span>
           <span className="text-gray-400 text-[10px] uppercase font-semibold truncate">• {card.pokemon.rarity || 'Common'}</span>
         </div>
         <button
@@ -486,6 +488,40 @@ const getPackArtsForSet = (setId: string, manifest: Record<string, string[]> = {
 };
 
 export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
+  const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
+  const [collectedCardIds, setCollectedCardIds] = useState<Set<string>>(() => {
+    try {
+      const storageKey = getStorageKey('collected_cards');
+      const cards = getCollectedCards(storageKey);
+      return new Set(cards.map(c => String(c.id || c.pokemonId)));
+    } catch {
+      return new Set();
+    }
+  });
+
+  const handleAddToBinder = (cardData: CardData) => {
+    sound.playCardCollect();
+    const storageKey = getStorageKey('collected_cards');
+    const existing = getCollectedCards(storageKey);
+    const cardIdStr = String(cardData.pokemon.id || cardData.id);
+    if (!collectedCardIds.has(cardIdStr)) {
+      const newCard: Card = {
+        id: cardIdStr,
+        pokemonId: cardData.pokemon.id,
+        name: cardData.pokemon.name,
+        image: cardData.pokemon.images?.large || cardData.pokemon.images?.small || '',
+        rarity: cardData.pokemon.rarity || 'Common',
+        value: cardData.value,
+        dateCollected: new Date().toISOString(),
+        isReverseHolo: cardData.pokemon.isReverseHolo
+      };
+      existing.push(newCard);
+      localStorage.setItem(storageKey, JSON.stringify(existing));
+      syncToFirestore(storageKey, existing);
+      setCollectedCardIds(prev => new Set([...prev, cardIdStr]));
+    }
+  };
+
   useEffect(() => {
     const handleCacheUpdate = () => {
       setCards(prevCards => {
@@ -1049,9 +1085,9 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                       <RevealedCardItem
                         key={card.id}
                         card={card}
-                        isAdded={false}
-                        onInspect={() => {}}
-                        onAddToBinder={() => {}}
+                        isAdded={collectedCardIds.has(String(card.pokemon.id || card.id))}
+                        onInspect={(c) => { sound.playModalOpen(); setInspectedCard(c); }}
+                        onAddToBinder={(c) => handleAddToBinder(c)}
                       />
                     ))}
                   </AnimatePresence>
@@ -1448,6 +1484,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           </motion.button>
         )}
       </AnimatePresence>
+    
+      {inspectedCard && (
+        <CardMarketModal
+          card={inspectedCard}
+          onClose={() => setInspectedCard(null)}
+          onAddToBinder={(c) => handleAddToBinder(c)}
+          isAddedToBinder={collectedCardIds.has(String(inspectedCard.pokemon.id || inspectedCard.id))}
+        />
+      )}
+
     </div>
   );
 }
