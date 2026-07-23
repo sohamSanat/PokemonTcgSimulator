@@ -448,6 +448,7 @@ export function getDailyFreePacks(): { english: number; japanese: number } {
 // --- Get Daily Cash ---
 export function getDailyCash(): number {
   if (typeof window === 'undefined') return 80;
+  if (localStorage.getItem('is_admin_mode') === 'true') return 999999999;
   checkDailyReset();
   const cash = parseFloat(localStorage.getItem(lsKey(DAILY_CASH_KEY)) || '80');
   return isNaN(cash) ? 80 : cash;
@@ -458,6 +459,7 @@ export function getDailyCash(): number {
 // If using net return, amountToDeductFromNetReturn is the amount to add to sessionSpent to reduce net return
 export function useDailyCash(amount: number, netReturn: number = 0): [boolean, number] {
   if (typeof window === 'undefined') return [true, 0];
+  if (localStorage.getItem('is_admin_mode') === 'true') return [true, 0];
   const currentDailyCash = getDailyCash();
 
   let remainingAmount = amount;
@@ -491,6 +493,10 @@ export function useDailyCash(amount: number, netReturn: number = 0): [boolean, n
 // --- Add Daily Cash (mission cash rewards) ---
 export function addDailyCash(amount: number) {
   if (typeof window === 'undefined') return;
+  if (localStorage.getItem('is_admin_mode') === 'true') {
+    window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
+    return;
+  }
   const current = getDailyCash();
   const next = Number((current + amount).toFixed(2));
   localStorage.setItem(lsKey(DAILY_CASH_KEY), next.toString());

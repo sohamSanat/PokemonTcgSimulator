@@ -462,8 +462,19 @@ export function removeCollectedCard(cardId: string): void {
 
 // ── Shared cash register (used by vendor marketplace + auctions) ──────────────
 const DEFAULT_CASH = 128450;
+export const ADMIN_CASH_AMOUNT = 999999999;
+
+export function isAdminUser(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (localStorage.getItem('is_admin_mode') === 'true') return true;
+  const email = auth?.currentUser?.email?.toLowerCase();
+  return email === 'admin@gmail.com';
+}
 
 export function getCash(): number {
+  if (isAdminUser()) {
+    return ADMIN_CASH_AMOUNT;
+  }
   try {
     const data = localStorage.getItem(getStorageKey('tcg_cash'));
     if (data == null) {
@@ -478,6 +489,9 @@ export function getCash(): number {
 }
 
 export function spendCash(amount: number): number {
+  if (isAdminUser()) {
+    return ADMIN_CASH_AMOUNT;
+  }
   const next = Math.max(0, getCash() - Math.max(0, amount));
   try {
     localStorage.setItem(getStorageKey('tcg_cash'), JSON.stringify(next));
@@ -486,6 +500,9 @@ export function spendCash(amount: number): number {
 }
 
 export function addCash(amount: number): number {
+  if (isAdminUser()) {
+    return ADMIN_CASH_AMOUNT;
+  }
   const next = getCash() + Math.max(0, amount);
   try {
     localStorage.setItem(getStorageKey('tcg_cash'), JSON.stringify(next));

@@ -7,7 +7,7 @@ import {
   X, Plus, FileText, Clock, Filter, CheckCircle, BookOpen, MessageSquareOff
 } from 'lucide-react';
 import { sound } from '../../services/sound';
-import { addCash, getCollectedCards, getStorageKey, syncToFirestore, type Card } from '../binder/types';
+import { addCash, getCollectedCards, saveCollectedCard, getStorageKey, syncToFirestore, type Card } from '../binder/types';
 import { generateStreamViewerReply, getRandomStreamMessage, type StreamChatViewer } from '../../services/geminiStreamChat';
 
 
@@ -497,9 +497,16 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
   const [collectedCardIds, setCollectedCardIds] = useState<Set<string>>(() => {
     try {
-      const storageKey = getStorageKey('collected_cards');
-      const cards = getCollectedCards(storageKey);
-      return new Set(cards.map(c => String(c.id || c.pokemonId)));
+      const cards = getCollectedCards();
+      const ids = new Set<string>();
+      cards.forEach(c => {
+        ids.add(c.id);
+        const parts = c.id.split('-');
+        if (parts.length >= 2) {
+          ids.add(`${parts[0]}-${parts[1]}`);
+        }
+      });
+      return ids;
     } catch {
       return new Set();
     }
@@ -507,23 +514,9 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const handleAddToBinder = (cardData: CardData) => {
     sound.playCardCollect();
-    const storageKey = getStorageKey('collected_cards');
-    const existing = getCollectedCards(storageKey);
     const cardIdStr = String(cardData.pokemon.id || cardData.id);
     if (!collectedCardIds.has(cardIdStr)) {
-      const newCard: Card = {
-        id: cardIdStr,
-        pokemonId: cardData.pokemon.id,
-        name: cardData.pokemon.name,
-        image: cardData.pokemon.images?.large || cardData.pokemon.images?.small || '',
-        rarity: cardData.pokemon.rarity || 'Common',
-        value: cardData.value,
-        dateCollected: new Date().toISOString(),
-        isReverseHolo: cardData.pokemon.isReverseHolo
-      };
-      existing.push(newCard);
-      localStorage.setItem(storageKey, JSON.stringify(existing));
-      syncToFirestore(storageKey, existing);
+      saveCollectedCard(cardData, 'Rip & Ship Pack');
       setCollectedCardIds(prev => new Set([...prev, cardIdStr]));
     }
   };

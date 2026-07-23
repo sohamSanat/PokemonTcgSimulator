@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, Lock, LogIn, UserPlus, AlertCircle } from 'lucide-react';
+import { X, Mail, Lock, LogIn, UserPlus, AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider, signInWithPopup } from '../../services/firebase';
 
@@ -18,15 +18,43 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!auth) {
-      setError('Firebase is not configured. Please add your credentials in firebase.ts');
-      return;
-    }
+    const cleanEmail = email.trim().toLowerCase();
     
     setError(null);
     setLoading(true);
     
     try {
+      if (cleanEmail === 'admin@gmail.com') {
+        localStorage.setItem('is_admin_mode', 'true');
+        if (auth) {
+          try {
+            if (isLogin) {
+              await signInWithEmailAndPassword(auth, email, password);
+            } else {
+              await createUserWithEmailAndPassword(auth, email, password);
+            }
+          } catch (err: any) {
+            if (isLogin && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password')) {
+              try {
+                await createUserWithEmailAndPassword(auth, email, password);
+              } catch (createErr) {
+                console.warn('Firebase admin auto registration fallback', createErr);
+              }
+            }
+          }
+        }
+        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
+        onClose();
+        return;
+      }
+
+      localStorage.removeItem('is_admin_mode');
+      if (!auth) {
+        setError('Firebase is not configured. Please add your credentials in firebase.ts');
+        return;
+      }
+
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
@@ -85,7 +113,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="mb-8 text-center">
+              <div className="mb-6 text-center">
                 <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gradient-to-tr from-purple-600 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/20">
                   <LogIn className="w-8 h-8 text-white" />
                 </div>
@@ -97,6 +125,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                     ? 'Enter your details to access your collection.'
                     : 'Sign up to start saving your TCG binders.'}
                 </p>
+              </div>
+
+              <div className="p-3 mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2.5 text-xs text-amber-300 shadow-inner">
+                <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0" />
+                <span>
+                  <strong>Admin Account:</strong> Sign in with <code className="bg-black/60 px-1.5 py-0.5 rounded text-amber-200 font-mono font-bold">admin@gmail.com</code> for a never-ending money pool!
+                </span>
               </div>
 
               {error && (

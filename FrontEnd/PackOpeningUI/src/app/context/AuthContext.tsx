@@ -27,6 +27,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      if (user?.email?.toLowerCase() === 'admin@gmail.com') {
+        localStorage.setItem('is_admin_mode', 'true');
+        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
+      }
       if (user) {
         import('../components/binder/types').then(module => {
           module.listenToFirestore(user.uid);

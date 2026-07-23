@@ -2312,7 +2312,7 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-300 font-bold">Cash</span>
                     <span className="text-sm font-black font-mono text-amber-400">
-                      ${dailyCash.toFixed(2)}
+                      {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(2)}`}
                     </span>
                   </div>
                 </div>
