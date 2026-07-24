@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "set_name": "Temple of Anger",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/temple-of-anger/dp5t_ja",
+    "release_date": "2008/03/14",
+    "scraped_at": "2026-07-15T12:57:21.259431",
+    "elapsed_seconds": 19.51,
+    "total_cards_scraped": 8
+  },
+  "cards": [
+    {
+      "name": "Oddish #47",
+      "current_value": "$31.00",
+      "price_numeric": 31
+    },
+    {
+      "name": "Hitmonchan #117",
+      "current_value": "$65.00",
+      "price_numeric": 65
+    },
+    {
+      "name": "Shedinja #343",
+      "current_value": "$89.00",
+      "price_numeric": 89
+    },
+    {
+      "name": "Anorith #400",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Chinchou",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Exeggutor",
+      "current_value": "$18.00",
+      "price_numeric": 18
+    },
+    {
+      "name": "Magnezone LV.X",
+      "current_value": "$446.20",
+      "price_numeric": 446.2
+    },
+    {
+      "name": "Porygon-Z LV.X",
+      "current_value": "$308.94",
+      "price_numeric": 308.94
+    }
+  ]
+}

@@ -1,0 +1,412 @@
+{
+  "metadata": {
+    "set_name": "Beat of the Frontier",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/beat-of-the-frontier/pt3_ja",
+    "release_date": "2009/03/06",
+    "scraped_at": "2026-07-15T12:54:33.130071",
+    "elapsed_seconds": 17.41,
+    "total_cards_scraped": 80
+  },
+  "cards": [
+    {
+      "name": "Bulbasaur #1",
+      "current_value": "$10.97",
+      "price_numeric": 10.97
+    },
+    {
+      "name": "Ivysaur #2",
+      "current_value": "$4.33",
+      "price_numeric": 4.33
+    },
+    {
+      "name": "Venusaur #3",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Butterfree FB #4",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Paras #5",
+      "current_value": "$2.13",
+      "price_numeric": 2.13
+    },
+    {
+      "name": "Parasect #6",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Yanma #8",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Yanmega #10",
+      "current_value": "$6.27",
+      "price_numeric": 6.27
+    },
+    {
+      "name": "Surskit #11",
+      "current_value": "$2.98",
+      "price_numeric": 2.98
+    },
+    {
+      "name": "Masquerain #12",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Shroomish #13",
+      "current_value": "$5.75",
+      "price_numeric": 5.75
+    },
+    {
+      "name": "Nincada #14",
+      "current_value": "$2.63",
+      "price_numeric": 2.63
+    },
+    {
+      "name": "Ninjask #15",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Shedinja #16",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Magmar #17",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Magmortar #18",
+      "current_value": "$11.00",
+      "price_numeric": 11
+    },
+    {
+      "name": "Blaziken FB #19",
+      "current_value": "$13.36",
+      "price_numeric": 13.36
+    },
+    {
+      "name": "Numel #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Camerupt #22",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Seel #23",
+      "current_value": "$2.35",
+      "price_numeric": 2.35
+    },
+    {
+      "name": "Dewgong #24",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Goldeen #25",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Seaking #26",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Mudkip #27",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Marshtomp #28",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Swampert #29",
+      "current_value": "$18.39",
+      "price_numeric": 18.39
+    },
+    {
+      "name": "Wailmer #30",
+      "current_value": "$2.12",
+      "price_numeric": 2.12
+    },
+    {
+      "name": "Wailord #31",
+      "current_value": "$4.38",
+      "price_numeric": 4.38
+    },
+    {
+      "name": "Feebas #32",
+      "current_value": "$2.70",
+      "price_numeric": 2.7
+    },
+    {
+      "name": "Milotic #33",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Empoleon FB #35",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Minun #37",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Electivire FB #38",
+      "current_value": "$13.00",
+      "price_numeric": 13
+    },
+    {
+      "name": "Mime Jr. #40",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Mr. Mime #41",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Meditite #42",
+      "current_value": "$0.63",
+      "price_numeric": 0.63
+    },
+    {
+      "name": "Medicham #43",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Lunatone #44",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Solrock #45",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Chingling #48",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Chimecho #49",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Drifblim FB #50",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Dusknoir FB #51",
+      "current_value": "$1.95",
+      "price_numeric": 1.95
+    },
+    {
+      "name": "Sandshrew #52",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Sandslash #53",
+      "current_value": "$3.23",
+      "price_numeric": 3.23
+    },
+    {
+      "name": "Mankey #54",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Primeape #55",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Rhyhorn #56",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Rhydon #57",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Rhyperior #58",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Breloom #59",
+      "current_value": "$4.79",
+      "price_numeric": 4.79
+    },
+    {
+      "name": "Relicanth #60",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Murkrow #62",
+      "current_value": "$17.19",
+      "price_numeric": 17.19
+    },
+    {
+      "name": "Honchkrow #63",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Absol G #64",
+      "current_value": "$25.55",
+      "price_numeric": 25.55
+    },
+    {
+      "name": "Skarmory FB #66",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Mawile #67",
+      "current_value": "$3.66",
+      "price_numeric": 3.66
+    },
+    {
+      "name": "Beldum #68",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Metang #69",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Metagross #70",
+      "current_value": "$15.50",
+      "price_numeric": 15.5
+    },
+    {
+      "name": "Doduo #71",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Dragonite FB #73",
+      "current_value": "$13.89",
+      "price_numeric": 13.89
+    },
+    {
+      "name": "Whismur #74",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Loudred #75",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Exploud #76",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Spinda #77",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Rayquaza C #78",
+      "current_value": "$48.49",
+      "price_numeric": 48.49
+    },
+    {
+      "name": "Staraptor FB #80",
+      "current_value": "$13.30",
+      "price_numeric": 13.3
+    },
+    {
+      "name": "Staraptor FB LV.X #81",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Chatot G #82",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Gible #83",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Gabite #84",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Garchomp #85",
+      "current_value": "$36.00",
+      "price_numeric": 36
+    },
+    {
+      "name": "Lickilicky C #86",
+      "current_value": "$5.25",
+      "price_numeric": 5.25
+    },
+    {
+      "name": "Regigigas FB #87",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Cynthia's Guidance #92",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Champion's Room #93",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "SP Energy #95",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Metal Energy #97",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Moltres #98",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "set_name": "Dragon Blade",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/dragon-blade/bw5d_ja",
+    "release_date": "2012/03/16",
+    "scraped_at": "2026-07-15T12:45:16.480146",
+    "elapsed_seconds": 21.14,
+    "total_cards_scraped": 42
+  },
+  "cards": [
+    {
+      "name": "Skiploom #2",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Nincada #4",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Maractus #6",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Magmar #7",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Magmortar #8",
+      "current_value": "$67.77",
+      "price_numeric": 67.77
+    },
+    {
+      "name": "Ho-Oh-EX #9",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Feebas #10",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Milotic #11",
+      "current_value": "$19.42",
+      "price_numeric": 19.42
+    },
+    {
+      "name": "Spheal #12",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Sealeo #13",
+      "current_value": "$1.25",
+      "price_numeric": 1.25
+    },
+    {
+      "name": "Walrein #14",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Electrike #15",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Emolga #17",
+      "current_value": "$2.74",
+      "price_numeric": 2.74
+    },
+    {
+      "name": "Shedinja #18",
+      "current_value": "$1.55",
+      "price_numeric": 1.55
+    },
+    {
+      "name": "Gothita #19",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Gothorita #20",
+      "current_value": "$1.29",
+      "price_numeric": 1.29
+    },
+    {
+      "name": "Gothitelle #21",
+      "current_value": "$2.39",
+      "price_numeric": 2.39
+    },
+    {
+      "name": "Golett #22",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Golurk #23",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Cubone #24",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Marowak #25",
+      "current_value": "$1.73",
+      "price_numeric": 1.73
+    },
+    {
+      "name": "Nosepass #26",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Roggenrola #27",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Boldore #28",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Gigalith #29",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Throh #30",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Stunky #32",
+      "current_value": "$1.80",
+      "price_numeric": 1.8
+    },
+    {
+      "name": "Probopass #35",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Altaria #36",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Rayquaza-EX #37",
+      "current_value": "$8.99",
+      "price_numeric": 8.99
+    },
+    {
+      "name": "Gible #38",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Gabite #39",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Garchomp #40",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Slakoth #41",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Slaking #43",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Swablu #44",
+      "current_value": "$2.01",
+      "price_numeric": 2.01
+    },
+    {
+      "name": "Bouffalant #45",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Rufflet #46",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Braviary #47",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Registeel-EX #52",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Serperior #54",
+      "current_value": "$110.00",
+      "price_numeric": 110
+    },
+    {
+      "name": "Krookodile #55",
+      "current_value": "$54.50",
+      "price_numeric": 54.5
+    }
+  ]
+}

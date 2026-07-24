@@ -1,0 +1,342 @@
+{
+  "metadata": {
+    "set_name": "Clash at the Summit",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/clash-at-the-summit/l3_ja",
+    "release_date": "2010/07/08",
+    "scraped_at": "2026-07-15T12:51:10.674394",
+    "elapsed_seconds": 18.63,
+    "total_cards_scraped": 66
+  },
+  "cards": [
+    {
+      "name": "Bellsprout #1",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Weepinbell #2",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Victreebel #3",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Yanma #4",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Yanmega #5",
+      "current_value": "$5.25",
+      "price_numeric": 5.25
+    },
+    {
+      "name": "Yanmega #6",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Kricketot #8",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Kricketune #9",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Ponyta #10",
+      "current_value": "$5.07",
+      "price_numeric": 5.07
+    },
+    {
+      "name": "Rapidash #11",
+      "current_value": "$14.89",
+      "price_numeric": 14.89
+    },
+    {
+      "name": "Magby #12",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Magmar #13",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Magmortar #14",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Psyduck #15",
+      "current_value": "$25.22",
+      "price_numeric": 25.22
+    },
+    {
+      "name": "Golduck #16",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Tentacool #17",
+      "current_value": "$5.78",
+      "price_numeric": 5.78
+    },
+    {
+      "name": "Tentacruel #18",
+      "current_value": "$7.33",
+      "price_numeric": 7.33
+    },
+    {
+      "name": "Mamoswine #21",
+      "current_value": "$7.25",
+      "price_numeric": 7.25
+    },
+    {
+      "name": "Wailmer #22",
+      "current_value": "$6.95",
+      "price_numeric": 6.95
+    },
+    {
+      "name": "Wailord #23",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Luvdisc #24",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Electrode #26",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Electivire #30",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Nidoran ♀ #31",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Nidorina #32",
+      "current_value": "$1.35",
+      "price_numeric": 1.35
+    },
+    {
+      "name": "Nidoqueen #33",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Nidoran ♂ #34",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Nidorino #35",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Unown #36",
+      "current_value": "$5.85",
+      "price_numeric": 5.85
+    },
+    {
+      "name": "Spoink #38",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Nidoking #41",
+      "current_value": "$15.99",
+      "price_numeric": 15.99
+    },
+    {
+      "name": "Machop #42",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Machoke #43",
+      "current_value": "$4.40",
+      "price_numeric": 4.4
+    },
+    {
+      "name": "Machamp #44",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Machamp #45",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Cubone #46",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Marowak #47",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Lunatone #48",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Solrock #49",
+      "current_value": "$13.49",
+      "price_numeric": 13.49
+    },
+    {
+      "name": "Carvanha #50",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Sharpedo #51",
+      "current_value": "$2.25",
+      "price_numeric": 2.25
+    },
+    {
+      "name": "Aron #53",
+      "current_value": "$5.88",
+      "price_numeric": 5.88
+    },
+    {
+      "name": "Lairon #54",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Aggron #55",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Bronzor #56",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Bronzong #57",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Pidgey #58",
+      "current_value": "$2.83",
+      "price_numeric": 2.83
+    },
+    {
+      "name": "Pidgeotto #59",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Pidgeot #60",
+      "current_value": "$3.90",
+      "price_numeric": 3.9
+    },
+    {
+      "name": "Lickitung #61",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Lickilicky #62",
+      "current_value": "$2.95",
+      "price_numeric": 2.95
+    },
+    {
+      "name": "Kangaskhan #63",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Ditto #64",
+      "current_value": "$25.99",
+      "price_numeric": 25.99
+    },
+    {
+      "name": "Porygon #65",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Porygon2 #66",
+      "current_value": "$5.08",
+      "price_numeric": 5.08
+    },
+    {
+      "name": "Porygon-Z #67",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Aipom #68",
+      "current_value": "$3.49",
+      "price_numeric": 3.49
+    },
+    {
+      "name": "Ambipom #69",
+      "current_value": "$87.67",
+      "price_numeric": 87.67
+    },
+    {
+      "name": "Kyogre & Groudon LEGEND #70",
+      "current_value": "$105.00",
+      "price_numeric": 105
+    },
+    {
+      "name": "Kyogre & Groudon LEGEND #71",
+      "current_value": "$99.99",
+      "price_numeric": 99.99
+    },
+    {
+      "name": "Palkia & Dialga LEGEND #72",
+      "current_value": "$80.00",
+      "price_numeric": 80
+    },
+    {
+      "name": "Palkia & Dialga LEGEND #73",
+      "current_value": "$659.13",
+      "price_numeric": 659.13
+    },
+    {
+      "name": "Rayquaza & Deoxys LEGEND #74",
+      "current_value": "$995.88",
+      "price_numeric": 995.88
+    },
+    {
+      "name": "Rayquaza & Deoxys LEGEND #75",
+      "current_value": "$65.00",
+      "price_numeric": 65
+    },
+    {
+      "name": "Black Belt #77",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Twins #78",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    }
+  ]
+}

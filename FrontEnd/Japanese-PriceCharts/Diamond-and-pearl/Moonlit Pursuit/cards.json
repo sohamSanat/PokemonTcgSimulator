@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "set_name": "Moonlit Pursuit",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/moonlit-pursuit/dp4m_ja",
+    "release_date": "2007/10/26",
+    "scraped_at": "2026-07-15T12:58:49.030480",
+    "elapsed_seconds": 19.57,
+    "total_cards_scraped": 9
+  },
+  "cards": [
+    {
+      "name": "Eevee #157",
+      "current_value": "$200.48",
+      "price_numeric": 200.48
+    },
+    {
+      "name": "Vaporeon #160",
+      "current_value": "$64.93",
+      "price_numeric": 64.93
+    },
+    {
+      "name": "Wailmer #373",
+      "current_value": "$36.00",
+      "price_numeric": 36
+    },
+    {
+      "name": "Wailord #374",
+      "current_value": "$399.33",
+      "price_numeric": 399.33
+    },
+    {
+      "name": "Cresselia #527",
+      "current_value": "$208.55",
+      "price_numeric": 208.55
+    },
+    {
+      "name": "Honchkrow LV.X",
+      "current_value": "$405.80",
+      "price_numeric": 405.8
+    },
+    {
+      "name": "Garchomp LV.X",
+      "current_value": "$1,516.19",
+      "price_numeric": 1516.19
+    },
+    {
+      "name": "Helix Fossil",
+      "current_value": "$9.48",
+      "price_numeric": 9.48
+    },
+    {
+      "name": "Felicity's Drawing",
+      "current_value": "$89.90",
+      "price_numeric": 89.9
+    }
+  ]
+}

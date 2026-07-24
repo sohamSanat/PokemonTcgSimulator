@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "set_name": "Secret of the Lakes",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/secret-of-the-lakes/dp2_ja",
+    "release_date": "2007/03/02",
+    "scraped_at": "2026-07-15T12:59:46.854985",
+    "elapsed_seconds": 19.6,
+    "total_cards_scraped": 13
+  },
+  "cards": [
+    {
+      "name": "Sandshrew #29",
+      "current_value": "$49.35",
+      "price_numeric": 49.35
+    },
+    {
+      "name": "Nidoqueen #32",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Crobat #46",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    },
+    {
+      "name": "Happiny #126",
+      "current_value": "$25.01",
+      "price_numeric": 25.01
+    },
+    {
+      "name": "Magmar #150",
+      "current_value": "$189.00",
+      "price_numeric": 189
+    },
+    {
+      "name": "Croconaw #190",
+      "current_value": "$66.00",
+      "price_numeric": 66
+    },
+    {
+      "name": "Teddiursa #272",
+      "current_value": "$300.00",
+      "price_numeric": 300
+    },
+    {
+      "name": "Aron #355",
+      "current_value": "$29.00",
+      "price_numeric": 29
+    },
+    {
+      "name": "Tropius #414",
+      "current_value": "$19.95",
+      "price_numeric": 19.95
+    },
+    {
+      "name": "Chimecho #416",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Sealeo #422",
+      "current_value": "$41.33",
+      "price_numeric": 41.33
+    },
+    {
+      "name": "Electivire LV.X",
+      "current_value": "$254.88",
+      "price_numeric": 254.88
+    },
+    {
+      "name": "Lucario LV.X",
+      "current_value": "$1,261.69",
+      "price_numeric": 1261.69
+    }
+  ]
+}

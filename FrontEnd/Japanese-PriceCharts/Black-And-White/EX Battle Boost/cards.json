@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "set_name": "EX Battle Boost",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/ex-battle-boost/ebb1_ja",
+    "release_date": "2013/03/15",
+    "scraped_at": "2026-07-15T12:40:11.440042",
+    "elapsed_seconds": 26.49,
+    "total_cards_scraped": 10
+  },
+  "cards": [
+    {
+      "name": "Virizion #8",
+      "current_value": "$61.67",
+      "price_numeric": 61.67
+    },
+    {
+      "name": "Samurott #31",
+      "current_value": "$219.87",
+      "price_numeric": 219.87
+    },
+    {
+      "name": "Plusle #39",
+      "current_value": "$105.19",
+      "price_numeric": 105.19
+    },
+    {
+      "name": "Xatu #47",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    },
+    {
+      "name": "Toxicroak #51",
+      "current_value": "$99.99",
+      "price_numeric": 99.99
+    },
+    {
+      "name": "Gothorita #56",
+      "current_value": "$72.90",
+      "price_numeric": 72.9
+    },
+    {
+      "name": "Reuniclus #60",
+      "current_value": "$89.99",
+      "price_numeric": 89.99
+    },
+    {
+      "name": "Meloetta #70",
+      "current_value": "$150.00",
+      "price_numeric": 150
+    },
+    {
+      "name": "Zweilous #82",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    },
+    {
+      "name": "Bouffalant #91",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    }
+  ]
+}

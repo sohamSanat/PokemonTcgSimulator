@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "set_name": "Dragon Selection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/dragon-selection/ds1_ja",
+    "release_date": "2012/01/27",
+    "scraped_at": "2026-07-15T12:46:23.550735",
+    "elapsed_seconds": 19.11,
+    "total_cards_scraped": 20
+  },
+  "cards": [
+    {
+      "name": "Dratini #1",
+      "current_value": "$6.89",
+      "price_numeric": 6.89
+    },
+    {
+      "name": "Dratini #2",
+      "current_value": "$9.42",
+      "price_numeric": 9.42
+    },
+    {
+      "name": "Dragonair #3",
+      "current_value": "$5.82",
+      "price_numeric": 5.82
+    },
+    {
+      "name": "Dragonair #4",
+      "current_value": "$7.33",
+      "price_numeric": 7.33
+    },
+    {
+      "name": "Dragonite #5",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Bagon #6",
+      "current_value": "$3.89",
+      "price_numeric": 3.89
+    },
+    {
+      "name": "Shelgon #7",
+      "current_value": "$3.69",
+      "price_numeric": 3.69
+    },
+    {
+      "name": "Salamence #8",
+      "current_value": "$13.48",
+      "price_numeric": 13.48
+    },
+    {
+      "name": "Latias #9",
+      "current_value": "$15.84",
+      "price_numeric": 15.84
+    },
+    {
+      "name": "Latios #10",
+      "current_value": "$12.78",
+      "price_numeric": 12.78
+    },
+    {
+      "name": "Rayquaza #11",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Axew #12",
+      "current_value": "$4.81",
+      "price_numeric": 4.81
+    },
+    {
+      "name": "Axew #13",
+      "current_value": "$6.73",
+      "price_numeric": 6.73
+    },
+    {
+      "name": "Fraxure #14",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Fraxure #15",
+      "current_value": "$4.86",
+      "price_numeric": 4.86
+    },
+    {
+      "name": "Haxorus #16",
+      "current_value": "$6.28",
+      "price_numeric": 6.28
+    },
+    {
+      "name": "Druddigon #17",
+      "current_value": "$4.68",
+      "price_numeric": 4.68
+    },
+    {
+      "name": "Super Rod #18",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "First Ticket #19",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "EXP.ALL #20",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    }
+  ]
+}

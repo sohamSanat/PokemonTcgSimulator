@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "set_name": "Lost Link",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/lost-link/ll1_ja",
+    "release_date": "2010/04/16",
+    "scraped_at": "2026-07-15T12:51:36.674346",
+    "elapsed_seconds": 18.11,
+    "total_cards_scraped": 21
+  },
+  "cards": [
+    {
+      "name": "Venonat #1",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Tangela #3",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Tangrowth #4",
+      "current_value": "$2.86",
+      "price_numeric": 2.86
+    },
+    {
+      "name": "Relicanth #8",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Pachirisu #12",
+      "current_value": "$8.73",
+      "price_numeric": 8.73
+    },
+    {
+      "name": "Gastly #13",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Mime Jr. #16",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Mew #18",
+      "current_value": "$300.00",
+      "price_numeric": 300
+    },
+    {
+      "name": "Banette #21",
+      "current_value": "$9.64",
+      "price_numeric": 9.64
+    },
+    {
+      "name": "Spiritomb #22",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Diglett #23",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Dugtrio #24",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Riolu #25",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Lucario #26",
+      "current_value": "$15.55",
+      "price_numeric": 15.55
+    },
+    {
+      "name": "Absol #27",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Snorlax #28",
+      "current_value": "$170.09",
+      "price_numeric": 170.09
+    },
+    {
+      "name": "Dragonite #31",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Altaria #33",
+      "current_value": "$19.67",
+      "price_numeric": 19.67
+    },
+    {
+      "name": "Darkrai & Cresselia LEGEND #35",
+      "current_value": "$161.00",
+      "price_numeric": 161
+    },
+    {
+      "name": "Darkrai & Cresselia LEGEND #36",
+      "current_value": "$139.00",
+      "price_numeric": 139
+    },
+    {
+      "name": "Seeker #39",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    }
+  ]
+}

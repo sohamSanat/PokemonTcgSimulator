@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "set_name": "Shining Darkness",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/shining-darkness/dp3_ja",
+    "release_date": "2007/07/05",
+    "scraped_at": "2026-07-15T12:59:17.747004",
+    "elapsed_seconds": 21.27,
+    "total_cards_scraped": 11
+  },
+  "cards": [
+    {
+      "name": "Ivysaur #2",
+      "current_value": "$68.00",
+      "price_numeric": 68
+    },
+    {
+      "name": "Nidoking #35",
+      "current_value": "$29.00",
+      "price_numeric": 29
+    },
+    {
+      "name": "Shellder #98",
+      "current_value": "$31.00",
+      "price_numeric": 31
+    },
+    {
+      "name": "Corsola #279",
+      "current_value": "$54.99",
+      "price_numeric": 54.99
+    },
+    {
+      "name": "Breloom #337",
+      "current_value": "$169.99",
+      "price_numeric": 169.99
+    },
+    {
+      "name": "Banette #410",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Shelgon #430",
+      "current_value": "$10.50",
+      "price_numeric": 10.5
+    },
+    {
+      "name": "Darkrai #530",
+      "current_value": "$286.06",
+      "price_numeric": 286.06
+    },
+    {
+      "name": "Dialga LV.X",
+      "current_value": "$933.44",
+      "price_numeric": 933.44
+    },
+    {
+      "name": "Palkia LV.X",
+      "current_value": "$849.21",
+      "price_numeric": 849.21
+    },
+    {
+      "name": "Darkness Energy",
+      "current_value": "$4.01",
+      "price_numeric": 4.01
+    }
+  ]
+}

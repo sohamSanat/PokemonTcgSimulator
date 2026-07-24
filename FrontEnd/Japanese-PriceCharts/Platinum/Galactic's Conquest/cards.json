@@ -1,0 +1,422 @@
+{
+  "metadata": {
+    "set_name": "Galactic's Conquest",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/galactics-conquest/pt1_ja",
+    "release_date": "2008/10/10",
+    "scraped_at": "2026-07-15T12:55:29.294119",
+    "elapsed_seconds": 18.53,
+    "total_cards_scraped": 82
+  },
+  "cards": [
+    {
+      "name": "Wurmple #1",
+      "current_value": "$5.89",
+      "price_numeric": 5.89
+    },
+    {
+      "name": "Silcoon #2",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Beautifly #3",
+      "current_value": "$4.20",
+      "price_numeric": 4.2
+    },
+    {
+      "name": "Cascoon #4",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Lotad #5",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Lombre #7",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Ludicolo #8",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Cacnea #9",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Cacturne #10",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Kricketot #11",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Kricketune #12",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Carnivine #13",
+      "current_value": "$2.38",
+      "price_numeric": 2.38
+    },
+    {
+      "name": "Shaymin #14",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Vulpix #16",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Ninetales #18",
+      "current_value": "$19.54",
+      "price_numeric": 19.54
+    },
+    {
+      "name": "Houndoom G #19",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Torchic #20",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Combusken #21",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Blaziken #22",
+      "current_value": "$14.85",
+      "price_numeric": 14.85
+    },
+    {
+      "name": "Squirtle #23",
+      "current_value": "$16.33",
+      "price_numeric": 16.33
+    },
+    {
+      "name": "Wartortle #24",
+      "current_value": "$5.66",
+      "price_numeric": 5.66
+    },
+    {
+      "name": "Blastoise #25",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Psyduck #26",
+      "current_value": "$24.19",
+      "price_numeric": 24.19
+    },
+    {
+      "name": "Golduck #27",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Gyarados G #28",
+      "current_value": "$10.75",
+      "price_numeric": 10.75
+    },
+    {
+      "name": "Remoraid #29",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Octillery #30",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Luvdisc #31",
+      "current_value": "$3.33",
+      "price_numeric": 3.33
+    },
+    {
+      "name": "Palkia G #32",
+      "current_value": "$6.52",
+      "price_numeric": 6.52
+    },
+    {
+      "name": "Mareep #34",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Flaaffy #35",
+      "current_value": "$1.18",
+      "price_numeric": 1.18
+    },
+    {
+      "name": "Ampharos #36",
+      "current_value": "$13.38",
+      "price_numeric": 13.38
+    },
+    {
+      "name": "Manectric #38",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Grimer #39",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Muk #40",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Crobat G #41",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Ralts #43",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Kirlia #44",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Gardevoir #45",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Seviper #46",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Shuppet #47",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Banette #48",
+      "current_value": "$7.25",
+      "price_numeric": 7.25
+    },
+    {
+      "name": "Skuntank G #49",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Toxicroak G #50",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Giratina #51",
+      "current_value": "$99.99",
+      "price_numeric": 99.99
+    },
+    {
+      "name": "Giratina LV.X #52",
+      "current_value": "$54.99",
+      "price_numeric": 54.99
+    },
+    {
+      "name": "Diglett #53",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Dugtrio #54",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Cranidos #55",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Rampardos #56",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Poochyena #57",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Mightyena #58",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Honchkrow G #59",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Drapion LV.X #60",
+      "current_value": "$30.00",
+      "price_numeric": 30
+    },
+    {
+      "name": "Weavile G #61",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Shieldon #62",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Bastiodon #63",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Bronzong G #64",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Dialga G #65",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Dialga G LV.X #66",
+      "current_value": "$89.99",
+      "price_numeric": 89.99
+    },
+    {
+      "name": "Lickitung #67",
+      "current_value": "$5.60",
+      "price_numeric": 5.6
+    },
+    {
+      "name": "Lickilicky #68",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Happiny #69",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Chansey #70",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Blissey #71",
+      "current_value": "$8.52",
+      "price_numeric": 8.52
+    },
+    {
+      "name": "Slakoth #72",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Vigoroth #73",
+      "current_value": "$86.82",
+      "price_numeric": 86.82
+    },
+    {
+      "name": "Slaking #74",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Skitty #75",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Delcatty #76",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Swablu #77",
+      "current_value": "$3.83",
+      "price_numeric": 3.83
+    },
+    {
+      "name": "Altaria #79",
+      "current_value": "$7.63",
+      "price_numeric": 7.63
+    },
+    {
+      "name": "Zangoose #80",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Purugly G #81",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Team Galactic's Invention G-105 Poké Turn #83",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Skull Fossil #85",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Armor Fossil #86",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Memory Berry #87",
+      "current_value": "$1.83",
+      "price_numeric": 1.83
+    },
+    {
+      "name": "Team Galactic's Invention G-103 Power Spray #88",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Cyrus's Conspiracy #89",
+      "current_value": "$3.95",
+      "price_numeric": 3.95
+    },
+    {
+      "name": "Broken Time-Space #92",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Electabuzz #95",
+      "current_value": "$10.99",
+      "price_numeric": 10.99
+    }
+  ]
+}

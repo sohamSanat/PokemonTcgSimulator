@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "set_name": "Thunder Knuckle",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/thunder-knuckle/bw8t_ja",
+    "release_date": "2012/12/14",
+    "scraped_at": "2026-07-15T12:42:05.015428",
+    "elapsed_seconds": 24.25,
+    "total_cards_scraped": 38
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$4.63",
+      "price_numeric": 4.63
+    },
+    {
+      "name": "Beedrill #3",
+      "current_value": "$4.62",
+      "price_numeric": 4.62
+    },
+    {
+      "name": "Leafeon #6",
+      "current_value": "$4.87",
+      "price_numeric": 4.87
+    },
+    {
+      "name": "Reshiram #8",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Vaporeon #9",
+      "current_value": "$11.00",
+      "price_numeric": 11
+    },
+    {
+      "name": "Wooper #10",
+      "current_value": "$6.93",
+      "price_numeric": 6.93
+    },
+    {
+      "name": "Quagsire #11",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Vanillite #12",
+      "current_value": "$2.20",
+      "price_numeric": 2.2
+    },
+    {
+      "name": "Vanillish #13",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Vanilluxe #14",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Cryogonal #15",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Kyurem #16",
+      "current_value": "$9.33",
+      "price_numeric": 9.33
+    },
+    {
+      "name": "Electrode #18",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Pachirisu #19",
+      "current_value": "$9.95",
+      "price_numeric": 9.95
+    },
+    {
+      "name": "Thundurus-EX #20",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Nidoran ♂ #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Nidorino #22",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Grimer #23",
+      "current_value": "$4.45",
+      "price_numeric": 4.45
+    },
+    {
+      "name": "Muk #24",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Beldum #25",
+      "current_value": "$2.10",
+      "price_numeric": 2.1
+    },
+    {
+      "name": "Metagross #27",
+      "current_value": "$12.34",
+      "price_numeric": 12.34
+    },
+    {
+      "name": "Nidoking #28",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Umbreon #31",
+      "current_value": "$79.99",
+      "price_numeric": 79.99
+    },
+    {
+      "name": "Deino #34",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Hydreigon #36",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Mawile #37",
+      "current_value": "$2.73",
+      "price_numeric": 2.73
+    },
+    {
+      "name": "Dratini #38",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Dragonair #39",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Dragonite #40",
+      "current_value": "$41.30",
+      "price_numeric": 41.3
+    },
+    {
+      "name": "Latias-EX #41",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Eevee #42",
+      "current_value": "$7.67",
+      "price_numeric": 7.67
+    },
+    {
+      "name": "Tornadus-EX #46",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Team Plasma Ball #47",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Life Dew #50",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Plasma Energy #51",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Thundurus-EX #52",
+      "current_value": "$79.99",
+      "price_numeric": 79.99
+    },
+    {
+      "name": "Tornadus-EX #54",
+      "current_value": "$52.50",
+      "price_numeric": 52.5
+    },
+    {
+      "name": "Professor Juniper #55",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+{
+  "metadata": {
+    "set_name": "Reviving Legends",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/reviving-legends/l2_ja",
+    "release_date": "2010/02/11",
+    "scraped_at": "2026-07-15T12:52:07.973799",
+    "elapsed_seconds": 18.63,
+    "total_cards_scraped": 65
+  },
+  "cards": [
+    {
+      "name": "Oddish #1",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Gloom #2",
+      "current_value": "$3.27",
+      "price_numeric": 3.27
+    },
+    {
+      "name": "Vileplume #3",
+      "current_value": "$3.13",
+      "price_numeric": 3.13
+    },
+    {
+      "name": "Bellossom #4",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Scyther #5",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Pineco #6",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Flareon #9",
+      "current_value": "$14.66",
+      "price_numeric": 14.66
+    },
+    {
+      "name": "Slugma #10",
+      "current_value": "$5.16",
+      "price_numeric": 5.16
+    },
+    {
+      "name": "Magcargo #11",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Horsea #12",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Seadra #13",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Kingdra #14",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Kingdra #15",
+      "current_value": "$14.50",
+      "price_numeric": 14.5
+    },
+    {
+      "name": "Vaporeon #16",
+      "current_value": "$8.89",
+      "price_numeric": 8.89
+    },
+    {
+      "name": "Jolteon #17",
+      "current_value": "$7.60",
+      "price_numeric": 7.6
+    },
+    {
+      "name": "Lanturn #19",
+      "current_value": "$43.24",
+      "price_numeric": 43.24
+    },
+    {
+      "name": "Lanturn #20",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Rotom #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Grimer #22",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Muk #23",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Espeon #24",
+      "current_value": "$84.01",
+      "price_numeric": 84.01
+    },
+    {
+      "name": "Misdreavus #25",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Unown #27",
+      "current_value": "$4.78",
+      "price_numeric": 4.78
+    },
+    {
+      "name": "Drifloon #28",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Drifblim #29",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Onix #30",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Gligar #31",
+      "current_value": "$2.63",
+      "price_numeric": 2.63
+    },
+    {
+      "name": "Larvitar #33",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Makuhita #35",
+      "current_value": "$5.68",
+      "price_numeric": 5.68
+    },
+    {
+      "name": "Hariyama #36",
+      "current_value": "$4.49",
+      "price_numeric": 4.49
+    },
+    {
+      "name": "Murkrow #38",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Dodrio #39",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Sneasel #40",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Houndour #42",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Houndoom #43",
+      "current_value": "$17.00",
+      "price_numeric": 17
+    },
+    {
+      "name": "Tyranitar #44",
+      "current_value": "$165.00",
+      "price_numeric": 165
+    },
+    {
+      "name": "Sableye #45",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Forretress #46",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Steelix #47",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Scizor #48",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Skarmory #49",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Mawile #50",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Metagross #53",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Rattata #54",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Raticate #55",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Doduo #56",
+      "current_value": "$1.20",
+      "price_numeric": 1.2
+    },
+    {
+      "name": "Dodrio #57",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Eevee #58",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Togepi #59",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Togetic #60",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Togekiss #61",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Smeargle #62",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Entei & Raikou LEGEND #63",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Entei & Raikou LEGEND #64",
+      "current_value": "$329.02",
+      "price_numeric": 329.02
+    },
+    {
+      "name": "Suicune & Entei LEGEND #65",
+      "current_value": "$65.00",
+      "price_numeric": 65
+    },
+    {
+      "name": "Suicune & Entei LEGEND #66",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Raikou & Suicune LEGEND #67",
+      "current_value": "$60.00",
+      "price_numeric": 60
+    },
+    {
+      "name": "Raikou & Suicune LEGEND #68",
+      "current_value": "$252.40",
+      "price_numeric": 252.4
+    },
+    {
+      "name": "PlusPower #72",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Flower Shop Lady #74",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Sage's Training #75",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Team Rocket's Trickery #76",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Ruins of Alph #77",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Burned Tower #78",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Alph Lithograph #81",
+      "current_value": "$1,201.13",
+      "price_numeric": 1201.13
+    }
+  ]
+}

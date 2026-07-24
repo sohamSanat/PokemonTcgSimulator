@@ -1,0 +1,352 @@
+{
+  "metadata": {
+    "set_name": "Advent of Arceus",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/advent-of-arceus/pt4_ja",
+    "release_date": "2009/07/08",
+    "scraped_at": "2026-07-15T12:54:09.541705",
+    "elapsed_seconds": 20.5,
+    "total_cards_scraped": 68
+  },
+  "cards": [
+    {
+      "name": "Beedrill G #1",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Tangela #2",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Tangrowth #3",
+      "current_value": "$8.31",
+      "price_numeric": 8.31
+    },
+    {
+      "name": "Treecko #5",
+      "current_value": "$6.95",
+      "price_numeric": 6.95
+    },
+    {
+      "name": "Grovyle #6",
+      "current_value": "$1.71",
+      "price_numeric": 1.71
+    },
+    {
+      "name": "Sceptile #7",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Burmy Plant Cloak #8",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Burmy Sandy Cloak #9",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Burmy Trash Cloak #10",
+      "current_value": "$1.62",
+      "price_numeric": 1.62
+    },
+    {
+      "name": "Mothim #12",
+      "current_value": "$6.18",
+      "price_numeric": 6.18
+    },
+    {
+      "name": "Cherubi #13",
+      "current_value": "$3.33",
+      "price_numeric": 3.33
+    },
+    {
+      "name": "Cherrim #14",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Charmander #15",
+      "current_value": "$3.79",
+      "price_numeric": 3.79
+    },
+    {
+      "name": "Charmeleon #16",
+      "current_value": "$3.41",
+      "price_numeric": 3.41
+    },
+    {
+      "name": "Charizard #17",
+      "current_value": "$98.00",
+      "price_numeric": 98
+    },
+    {
+      "name": "Ponyta #18",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Rapidash #20",
+      "current_value": "$3.30",
+      "price_numeric": 3.3
+    },
+    {
+      "name": "Heatran #21",
+      "current_value": "$4.57",
+      "price_numeric": 4.57
+    },
+    {
+      "name": "Omanyte #22",
+      "current_value": "$1.86",
+      "price_numeric": 1.86
+    },
+    {
+      "name": "Wingull #24",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Pelipper #25",
+      "current_value": "$2.23",
+      "price_numeric": 2.23
+    },
+    {
+      "name": "Snorunt #26",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Froslass #28",
+      "current_value": "$22.17",
+      "price_numeric": 22.17
+    },
+    {
+      "name": "Arceus #29",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Pichu #30",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Pikachu #31",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Raichu #32",
+      "current_value": "$17.50",
+      "price_numeric": 17.5
+    },
+    {
+      "name": "Zapdos G #33",
+      "current_value": "$13.07",
+      "price_numeric": 13.07
+    },
+    {
+      "name": "Electrike #34",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Luxio #38",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Luxray #39",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Gastly #40",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Haunter #41",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "Gengar #42",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Gengar LV.X #43",
+      "current_value": "$179.99",
+      "price_numeric": 179.99
+    },
+    {
+      "name": "Gulpin #44",
+      "current_value": "$7.17",
+      "price_numeric": 7.17
+    },
+    {
+      "name": "Swalot #45",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Graveler #47",
+      "current_value": "$2.66",
+      "price_numeric": 2.66
+    },
+    {
+      "name": "Golem #48",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Kabuto #49",
+      "current_value": "$3.75",
+      "price_numeric": 3.75
+    },
+    {
+      "name": "Kabutops #50",
+      "current_value": "$11.99",
+      "price_numeric": 11.99
+    },
+    {
+      "name": "Aerodactyl #51",
+      "current_value": "$6.50",
+      "price_numeric": 6.5
+    },
+    {
+      "name": "Makuhita #52",
+      "current_value": "$0.98",
+      "price_numeric": 0.98
+    },
+    {
+      "name": "Nosepass #54",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Wormadam Sandy Cloak #55",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Croagunk #56",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Toxicroak #57",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Arceus #58",
+      "current_value": "$45.99",
+      "price_numeric": 45.99
+    },
+    {
+      "name": "Spiritomb #59",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Arceus #60",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    },
+    {
+      "name": "Wormadam Trash Cloak #61",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Bronzor #62",
+      "current_value": "$1.15",
+      "price_numeric": 1.15
+    },
+    {
+      "name": "Bronzong #63",
+      "current_value": "$0.95",
+      "price_numeric": 0.95
+    },
+    {
+      "name": "Probopass #64",
+      "current_value": "$6.05",
+      "price_numeric": 6.05
+    },
+    {
+      "name": "Arceus #65",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Rattata #66",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Raticate #67",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Bagon #68",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Salamence #71",
+      "current_value": "$24.50",
+      "price_numeric": 24.5
+    },
+    {
+      "name": "Salamence LV.X #72",
+      "current_value": "$22.50",
+      "price_numeric": 22.5
+    },
+    {
+      "name": "Buneary #73",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Lopunny #74",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Porygon-Z G #75",
+      "current_value": "$4.31",
+      "price_numeric": 4.31
+    },
+    {
+      "name": "Arceus #76",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Beginning Door #79",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Dome Fossil #82",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Lucky Egg #84",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Department Store Girl #88",
+      "current_value": "$3.55",
+      "price_numeric": 3.55
+    }
+  ]
+}

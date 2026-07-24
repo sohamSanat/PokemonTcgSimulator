@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "set_name": "Shiny Collection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/shiny-collection/sc1_ja",
+    "release_date": "2013/02/01",
+    "scraped_at": "2026-07-15T12:41:29.360597",
+    "elapsed_seconds": 23.06,
+    "total_cards_scraped": 25
+  },
+  "cards": [
+    {
+      "name": "Snivy #1",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Servine #2",
+      "current_value": "$8.21",
+      "price_numeric": 8.21
+    },
+    {
+      "name": "Serperior #3",
+      "current_value": "$13.73",
+      "price_numeric": 13.73
+    },
+    {
+      "name": "Growlithe #4",
+      "current_value": "$39.99",
+      "price_numeric": 39.99
+    },
+    {
+      "name": "Torchic #5",
+      "current_value": "$15.00",
+      "price_numeric": 15
+    },
+    {
+      "name": "Piplup #6",
+      "current_value": "$39.66",
+      "price_numeric": 39.66
+    },
+    {
+      "name": "Pikachu #7",
+      "current_value": "$96.66",
+      "price_numeric": 96.66
+    },
+    {
+      "name": "Ralts #8",
+      "current_value": "$24.99",
+      "price_numeric": 24.99
+    },
+    {
+      "name": "Kirlia #9",
+      "current_value": "$28.24",
+      "price_numeric": 28.24
+    },
+    {
+      "name": "Gardevoir #10",
+      "current_value": "$22.15",
+      "price_numeric": 22.15
+    },
+    {
+      "name": "Meloetta-EX #11",
+      "current_value": "$17.13",
+      "price_numeric": 17.13
+    },
+    {
+      "name": "Stunfisk #12",
+      "current_value": "$12.33",
+      "price_numeric": 12.33
+    },
+    {
+      "name": "Purrloin #13",
+      "current_value": "$19.57",
+      "price_numeric": 19.57
+    },
+    {
+      "name": "Eevee #14",
+      "current_value": "$57.49",
+      "price_numeric": 57.49
+    },
+    {
+      "name": "Teddiursa #15",
+      "current_value": "$14.78",
+      "price_numeric": 14.78
+    },
+    {
+      "name": "Ursaring #16",
+      "current_value": "$14.85",
+      "price_numeric": 14.85
+    },
+    {
+      "name": "Audino #17",
+      "current_value": "$12.04",
+      "price_numeric": 12.04
+    },
+    {
+      "name": "Minccino #18",
+      "current_value": "$21.39",
+      "price_numeric": 21.39
+    },
+    {
+      "name": "Cinccino #19",
+      "current_value": "$28.42",
+      "price_numeric": 28.42
+    },
+    {
+      "name": "Elesa #20",
+      "current_value": "$12.00",
+      "price_numeric": 12
+    },
+    {
+      "name": "Shaymin-EX #21",
+      "current_value": "$135.00",
+      "price_numeric": 135
+    },
+    {
+      "name": "Reshiram #22",
+      "current_value": "$300.00",
+      "price_numeric": 300
+    },
+    {
+      "name": "Emolga #23",
+      "current_value": "$1,633.98",
+      "price_numeric": 1633.98
+    },
+    {
+      "name": "Mew-EX #24",
+      "current_value": "$350.00",
+      "price_numeric": 350
+    },
+    {
+      "name": "Meloetta-EX #25",
+      "current_value": "$69.99",
+      "price_numeric": 69.99
+    }
+  ]
+}

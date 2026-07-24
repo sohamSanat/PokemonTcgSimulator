@@ -1,0 +1,237 @@
+{
+  "metadata": {
+    "set_name": "Psycho Drive",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/psycho-drive/bw3p_ja",
+    "release_date": "2011/09/16",
+    "scraped_at": "2026-07-15T12:48:01.410176",
+    "elapsed_seconds": 20.37,
+    "total_cards_scraped": 45
+  },
+  "cards": [
+    {
+      "name": "Pinsir #1",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Seedot #2",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Kricketot #3",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Kricketune #4",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Shaymin-EX #5",
+      "current_value": "$9.41",
+      "price_numeric": 9.41
+    },
+    {
+      "name": "Sewaddle #6",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Swadloon #7",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Leavanny #8",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Moltres #9",
+      "current_value": "$9.90",
+      "price_numeric": 9.9
+    },
+    {
+      "name": "Pansear #10",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Staryu #12",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Starmie #13",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Articuno #14",
+      "current_value": "$5.23",
+      "price_numeric": 5.23
+    },
+    {
+      "name": "Kyogre-EX #15",
+      "current_value": "$9.95",
+      "price_numeric": 9.95
+    },
+    {
+      "name": "Panpour #16",
+      "current_value": "$2.10",
+      "price_numeric": 2.1
+    },
+    {
+      "name": "Basculin #18",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Frillish #19",
+      "current_value": "$0.79",
+      "price_numeric": 0.79
+    },
+    {
+      "name": "Jellicent #20",
+      "current_value": "$0.49",
+      "price_numeric": 0.49
+    },
+    {
+      "name": "Shinx #21",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Luxio #22",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Luxray #23",
+      "current_value": "$3.25",
+      "price_numeric": 3.25
+    },
+    {
+      "name": "Blitzle #24",
+      "current_value": "$2.38",
+      "price_numeric": 2.38
+    },
+    {
+      "name": "Zebstrika #25",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Grimer #26",
+      "current_value": "$1.90",
+      "price_numeric": 1.9
+    },
+    {
+      "name": "Muk #27",
+      "current_value": "$4.89",
+      "price_numeric": 4.89
+    },
+    {
+      "name": "Mewtwo-EX #28",
+      "current_value": "$14.95",
+      "price_numeric": 14.95
+    },
+    {
+      "name": "Musharna #30",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Solosis #31",
+      "current_value": "$3.44",
+      "price_numeric": 3.44
+    },
+    {
+      "name": "Duosion #32",
+      "current_value": "$6.35",
+      "price_numeric": 6.35
+    },
+    {
+      "name": "Reuniclus #33",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Timburr #34",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Conkeldurr #36",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Scraggy #41",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Scrafty #42",
+      "current_value": "$7.07",
+      "price_numeric": 7.07
+    },
+    {
+      "name": "Meowth #45",
+      "current_value": "$2.79",
+      "price_numeric": 2.79
+    },
+    {
+      "name": "Persian #46",
+      "current_value": "$1.65",
+      "price_numeric": 1.65
+    },
+    {
+      "name": "Minccino #47",
+      "current_value": "$2.61",
+      "price_numeric": 2.61
+    },
+    {
+      "name": "Cinccino #48",
+      "current_value": "$6.56",
+      "price_numeric": 6.56
+    },
+    {
+      "name": "Skyarrow Bridge #51",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Prism Energy #52",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Shaymin-EX #53",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Kyogre-EX #54",
+      "current_value": "$90.00",
+      "price_numeric": 90
+    },
+    {
+      "name": "Mewtwo-EX #55",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Zoroark #56",
+      "current_value": "$105.00",
+      "price_numeric": 105
+    },
+    {
+      "name": "Hydreigon #57",
+      "current_value": "$146.66",
+      "price_numeric": 146.66
+    }
+  ]
+}

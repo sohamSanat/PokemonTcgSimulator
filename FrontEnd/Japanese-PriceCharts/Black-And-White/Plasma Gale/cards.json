@@ -1,0 +1,262 @@
+{
+  "metadata": {
+    "set_name": "Plasma Gale",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/plasma-gale/bw7_ja",
+    "release_date": "2012/09/14",
+    "scraped_at": "2026-07-15T12:43:39.716992",
+    "elapsed_seconds": 23.54,
+    "total_cards_scraped": 50
+  },
+  "cards": [
+    {
+      "name": "Turtwig #1",
+      "current_value": "$3.76",
+      "price_numeric": 3.76
+    },
+    {
+      "name": "Grotle #2",
+      "current_value": "$1.86",
+      "price_numeric": 1.86
+    },
+    {
+      "name": "Torterra #3",
+      "current_value": "$4.73",
+      "price_numeric": 4.73
+    },
+    {
+      "name": "Cherrim #5",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Maractus #6",
+      "current_value": "$1.75",
+      "price_numeric": 1.75
+    },
+    {
+      "name": "Foongus #7",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Amoonguss #8",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Chimchar #9",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Monferno #10",
+      "current_value": "$1.98",
+      "price_numeric": 1.98
+    },
+    {
+      "name": "Victini-EX #12",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Simisear #14",
+      "current_value": "$2.44",
+      "price_numeric": 2.44
+    },
+    {
+      "name": "Articuno-EX #16",
+      "current_value": "$10.60",
+      "price_numeric": 10.6
+    },
+    {
+      "name": "Lotad #17",
+      "current_value": "$5.07",
+      "price_numeric": 5.07
+    },
+    {
+      "name": "Lombre #18",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Ludicolo #19",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Cubchoo #21",
+      "current_value": "$3.22",
+      "price_numeric": 3.22
+    },
+    {
+      "name": "Beartic #22",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Magnemite #23",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Rotom #26",
+      "current_value": "$8.67",
+      "price_numeric": 8.67
+    },
+    {
+      "name": "Zubat #27",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Golbat #28",
+      "current_value": "$1.30",
+      "price_numeric": 1.3
+    },
+    {
+      "name": "Koffing #30",
+      "current_value": "$5.57",
+      "price_numeric": 5.57
+    },
+    {
+      "name": "Weezing #31",
+      "current_value": "$9.00",
+      "price_numeric": 9
+    },
+    {
+      "name": "Ralts #32",
+      "current_value": "$2.67",
+      "price_numeric": 2.67
+    },
+    {
+      "name": "Kirlia #33",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Gallade #34",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Giratina #35",
+      "current_value": "$9.49",
+      "price_numeric": 9.49
+    },
+    {
+      "name": "Trubbish #36",
+      "current_value": "$3.15",
+      "price_numeric": 3.15
+    },
+    {
+      "name": "Beheeyem #39",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Phanpy #40",
+      "current_value": "$3.59",
+      "price_numeric": 3.59
+    },
+    {
+      "name": "Donphan #41",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Riolu #42",
+      "current_value": "$4.91",
+      "price_numeric": 4.91
+    },
+    {
+      "name": "Lucario #43",
+      "current_value": "$11.30",
+      "price_numeric": 11.3
+    },
+    {
+      "name": "Scraggy #46",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Scrafty #47",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Cobalion-EX #49",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Clefairy #51",
+      "current_value": "$5.33",
+      "price_numeric": 5.33
+    },
+    {
+      "name": "Clefable #52",
+      "current_value": "$5.45",
+      "price_numeric": 5.45
+    },
+    {
+      "name": "Doduo #53",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Dodrio #54",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Snorlax #55",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Togepi #56",
+      "current_value": "$7.44",
+      "price_numeric": 7.44
+    },
+    {
+      "name": "Togetic #57",
+      "current_value": "$2.26",
+      "price_numeric": 2.26
+    },
+    {
+      "name": "Togekiss #58",
+      "current_value": "$4.75",
+      "price_numeric": 4.75
+    },
+    {
+      "name": "Lugia-EX #59",
+      "current_value": "$30.00",
+      "price_numeric": 30
+    },
+    {
+      "name": "Patrat #60",
+      "current_value": "$0.84",
+      "price_numeric": 0.84
+    },
+    {
+      "name": "Hypnotoxic Laser #63",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Dowsing Machine #69",
+      "current_value": "$0.50",
+      "price_numeric": 0.5
+    },
+    {
+      "name": "Victory Piece #70",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Charizard #77",
+      "current_value": "$449.99",
+      "price_numeric": 449.99
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "metadata": {
+    "set_name": "Dark Rush",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/dark-rush/bw4_ja",
+    "release_date": "2011/12/16",
+    "scraped_at": "2026-07-15T12:46:54.961519",
+    "elapsed_seconds": 21.29,
+    "total_cards_scraped": 37
+  },
+  "cards": [
+    {
+      "name": "Bulbasaur #1",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Venusaur #3",
+      "current_value": "$7.86",
+      "price_numeric": 7.86
+    },
+    {
+      "name": "Carnivine #4",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Flareon #8",
+      "current_value": "$6.75",
+      "price_numeric": 6.75
+    },
+    {
+      "name": "Entei-EX #9",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    },
+    {
+      "name": "Torchic #10",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Blaziken #12",
+      "current_value": "$12.42",
+      "price_numeric": 12.42
+    },
+    {
+      "name": "Larvesta #14",
+      "current_value": "$1.39",
+      "price_numeric": 1.39
+    },
+    {
+      "name": "Volcarona #15",
+      "current_value": "$3.66",
+      "price_numeric": 3.66
+    },
+    {
+      "name": "Slowpoke #16",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Slowbro #17",
+      "current_value": "$4.29",
+      "price_numeric": 4.29
+    },
+    {
+      "name": "Piplup #19",
+      "current_value": "$9.99",
+      "price_numeric": 9.99
+    },
+    {
+      "name": "Prinplup #20",
+      "current_value": "$1.59",
+      "price_numeric": 1.59
+    },
+    {
+      "name": "Empoleon #21",
+      "current_value": "$6.66",
+      "price_numeric": 6.66
+    },
+    {
+      "name": "Ducklett #22",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Jolteon #24",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Raikou-EX #25",
+      "current_value": "$8.13",
+      "price_numeric": 8.13
+    },
+    {
+      "name": "Minun #27",
+      "current_value": "$14.95",
+      "price_numeric": 14.95
+    },
+    {
+      "name": "Joltik #28",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Tynamo #30",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Espeon #33",
+      "current_value": "$9.69",
+      "price_numeric": 9.69
+    },
+    {
+      "name": "Slowking #34",
+      "current_value": "$5.60",
+      "price_numeric": 5.6
+    },
+    {
+      "name": "Woobat #35",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Swoobat #36",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Drilbur #40",
+      "current_value": "$5.16",
+      "price_numeric": 5.16
+    },
+    {
+      "name": "Excadrill #41",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Umbreon #42",
+      "current_value": "$32.14",
+      "price_numeric": 32.14
+    },
+    {
+      "name": "Sableye #43",
+      "current_value": "$5.24",
+      "price_numeric": 5.24
+    },
+    {
+      "name": "Krookodile #47",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Zorua #48",
+      "current_value": "$2.95",
+      "price_numeric": 2.95
+    },
+    {
+      "name": "Zoroark #49",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Blissey #57",
+      "current_value": "$7.74",
+      "price_numeric": 7.74
+    },
+    {
+      "name": "Eevee #58",
+      "current_value": "$9.50",
+      "price_numeric": 9.5
+    },
+    {
+      "name": "Lillipup #59",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Herdier #60",
+      "current_value": "$1.64",
+      "price_numeric": 1.64
+    },
+    {
+      "name": "Stoutland #61",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Tornadus-EX #62",
+      "current_value": "$3.79",
+      "price_numeric": 3.79
+    }
+  ]
+}

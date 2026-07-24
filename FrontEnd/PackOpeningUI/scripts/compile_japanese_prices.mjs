@@ -38,7 +38,27 @@ for (const s of jaSets) {
 
 // Map alias IDs between Scrydex swshX_ja and regular sX_ja
 const aliasMap = {
-  'swsh1s': ['s1w', 's1s', 'swsh1'],
+  // DP & Legend
+  'dp1': ['dp1d', 'dp1p'],
+  'dp4m': ['dp4'],
+  'dp5t': ['dp5'],
+  'l1hg': ['l1a'],
+  'l1ss': ['l1b'],
+  'll1': ['ll'],
+  
+  // XY
+  'xy1x': ['xy1a'],
+  'xy1y': ['xy1b'],
+  'xy5g': ['xy5a'],
+  'xy5t': ['xy5b'],
+  'xy8r': ['xy8b'],
+  'xy11f': ['xy11a'],
+  'xy11c': ['xy11b'],
+
+  // SWSH
+  'swsh1s': ['s1w', 's1s', 'swsh1', 's1h'],
+  'swsh1h': ['s1h', 'swsh1'],
+  'swsh1w': ['s1w', 'swsh1'],
   'swsh1a': ['s1a'],
   'swsh2': ['s2'],
   'swsh2a': ['s2a'],
@@ -49,18 +69,18 @@ const aliasMap = {
   'swsh5i': ['s5i'],
   'swsh5r': ['s5r'],
   'swsh5a': ['s5a'],
-  'swsh6H': ['s6h'],
-  'swsh6K': ['s6k'],
+  'swsh6h': ['s6h'],
+  'swsh6k': ['s6k'],
   'swsh6a': ['s6a'],
-  'swsh7R': ['s7r'],
-  'swsh7D': ['s7d'],
+  'swsh7r': ['s7r'],
+  'swsh7d': ['s7d'],
   'swsh8': ['s8'],
   'swsh8a': ['s8a'],
   'swsh8b': ['s8b'],
   'swsh9': ['s9'],
   'swsh9a': ['s9a'],
-  'swsh10P': ['s10p'],
-  'swsh10D': ['s10d'],
+  'swsh10p': ['s10p'],
+  'swsh10d': ['s10d'],
   'swsh10a': ['s10a'],
   'swsh10b': ['s10b'],
   'swsh11': ['s11'],
@@ -69,7 +89,11 @@ const aliasMap = {
   'swsh12a': ['s12a']
 };
 
-const generations = ['Scarlet & Violet', 'Sword & Shield', 'Sun & Moon'];
+const generations = fs.readdirSync(priceChartsDir, { withFileTypes: true })
+  .filter(d => d.isDirectory())
+  .map(d => d.name);
+
+console.log(`Found ${generations.length} generation folders: ${generations.join(', ')}`);
 const priceMap = {};
 let totalSets = 0;
 let totalCards = 0;

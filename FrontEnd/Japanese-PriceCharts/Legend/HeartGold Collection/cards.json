@@ -1,0 +1,232 @@
+{
+  "metadata": {
+    "set_name": "HeartGold Collection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/heartgold-collection/l1hg_ja",
+    "release_date": "2009/10/09",
+    "scraped_at": "2026-07-15T12:53:03.689610",
+    "elapsed_seconds": 17.89,
+    "total_cards_scraped": 44
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Kakuna #2",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Spinarak #4",
+      "current_value": "$3.83",
+      "price_numeric": 3.83
+    },
+    {
+      "name": "Hoppip #6",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Skiploom #7",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Sunflora #10",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Heracross #12",
+      "current_value": "$2.23",
+      "price_numeric": 2.23
+    },
+    {
+      "name": "Growlithe #13",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Ho-Oh LEGEND #15",
+      "current_value": "$805.79",
+      "price_numeric": 805.79
+    },
+    {
+      "name": "Ho-Oh LEGEND #16",
+      "current_value": "$55.00",
+      "price_numeric": 55
+    },
+    {
+      "name": "Slowpoke #17",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Totodile #22",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Croconaw #23",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Feraligatr #24",
+      "current_value": "$7.99",
+      "price_numeric": 7.99
+    },
+    {
+      "name": "Qwilfish #26",
+      "current_value": "$2.19",
+      "price_numeric": 2.19
+    },
+    {
+      "name": "Remoraid #28",
+      "current_value": "$0.99",
+      "price_numeric": 0.99
+    },
+    {
+      "name": "Mantine #30",
+      "current_value": "$8.00",
+      "price_numeric": 8
+    },
+    {
+      "name": "Mareep #31",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Flaaffy #32",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Ampharos #33",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Koffing #35",
+      "current_value": "$3.24",
+      "price_numeric": 3.24
+    },
+    {
+      "name": "Weezing #36",
+      "current_value": "$4.25",
+      "price_numeric": 4.25
+    },
+    {
+      "name": "Jynx #38",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Unown #40",
+      "current_value": "$3.48",
+      "price_numeric": 3.48
+    },
+    {
+      "name": "Mankey #42",
+      "current_value": "$3.62",
+      "price_numeric": 3.62
+    },
+    {
+      "name": "Phanpy #44",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Donphan #45",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Blissey #53",
+      "current_value": "$7.49",
+      "price_numeric": 7.49
+    },
+    {
+      "name": "Tauros #55",
+      "current_value": "$4.70",
+      "price_numeric": 4.7
+    },
+    {
+      "name": "Sentret #56",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Girafarig #60",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Dunsparce #61",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Stantler #62",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Energy Switch #63",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Pokémon Reversal #65",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Double Colorless Energy #70",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Grass Energy #72",
+      "current_value": "$49.99",
+      "price_numeric": 49.99
+    },
+    {
+      "name": "Fire Energy #73",
+      "current_value": "$141.49",
+      "price_numeric": 141.49
+    },
+    {
+      "name": "Water Energy #74",
+      "current_value": "$237.06",
+      "price_numeric": 237.06
+    },
+    {
+      "name": "Lightning Energy #75",
+      "current_value": "$86.40",
+      "price_numeric": 86.4
+    },
+    {
+      "name": "Psychic Energy #76",
+      "current_value": "$285.03",
+      "price_numeric": 285.03
+    },
+    {
+      "name": "Fighting Energy #77",
+      "current_value": "$66.00",
+      "price_numeric": 66
+    },
+    {
+      "name": "Darkness Energy #78",
+      "current_value": "$483.72",
+      "price_numeric": 483.72
+    },
+    {
+      "name": "Metal Energy #79",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    }
+  ]
+}

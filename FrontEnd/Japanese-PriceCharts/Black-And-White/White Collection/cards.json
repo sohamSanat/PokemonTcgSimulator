@@ -1,0 +1,187 @@
+{
+  "metadata": {
+    "set_name": "White Collection",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/white-collection/bw1w_ja",
+    "release_date": "2010/12/07",
+    "scraped_at": "2026-07-15T12:48:58.480112",
+    "elapsed_seconds": 18.61,
+    "total_cards_scraped": 35
+  },
+  "cards": [
+    {
+      "name": "Snivy #1",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Servine #2",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Serperior #3",
+      "current_value": "$6.33",
+      "price_numeric": 6.33
+    },
+    {
+      "name": "Simisage #5",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Petilil #6",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Lilligant #7",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Maractus #8",
+      "current_value": "$2.19",
+      "price_numeric": 2.19
+    },
+    {
+      "name": "Darumaka #9",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Darmanitan #10",
+      "current_value": "$2.79",
+      "price_numeric": 2.79
+    },
+    {
+      "name": "Oshawott #11",
+      "current_value": "$4.32",
+      "price_numeric": 4.32
+    },
+    {
+      "name": "Dewott #12",
+      "current_value": "$2.39",
+      "price_numeric": 2.39
+    },
+    {
+      "name": "Samurott #13",
+      "current_value": "$6.99",
+      "price_numeric": 6.99
+    },
+    {
+      "name": "Panpour #14",
+      "current_value": "$0.25",
+      "price_numeric": 0.25
+    },
+    {
+      "name": "Joltik #17",
+      "current_value": "$3.90",
+      "price_numeric": 3.9
+    },
+    {
+      "name": "Thundurus #19",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Zekrom #20",
+      "current_value": "$3.70",
+      "price_numeric": 3.7
+    },
+    {
+      "name": "Venipede #21",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Whirlipede #22",
+      "current_value": "$3.09",
+      "price_numeric": 3.09
+    },
+    {
+      "name": "Scolipede #23",
+      "current_value": "$2.82",
+      "price_numeric": 2.82
+    },
+    {
+      "name": "Solosis #25",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Duosion #26",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Reuniclus #27",
+      "current_value": "$2.55",
+      "price_numeric": 2.55
+    },
+    {
+      "name": "Timburr #28",
+      "current_value": "$1.01",
+      "price_numeric": 1.01
+    },
+    {
+      "name": "Sandile #31",
+      "current_value": "$1.49",
+      "price_numeric": 1.49
+    },
+    {
+      "name": "Krookodile #33",
+      "current_value": "$3.75",
+      "price_numeric": 3.75
+    },
+    {
+      "name": "Liepard #35",
+      "current_value": "$2.49",
+      "price_numeric": 2.49
+    },
+    {
+      "name": "Zorua #36",
+      "current_value": "$4.49",
+      "price_numeric": 4.49
+    },
+    {
+      "name": "Zoroark #37",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Patrat #40",
+      "current_value": "$1.85",
+      "price_numeric": 1.85
+    },
+    {
+      "name": "Lillipup #42",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Herdier #43",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Stoutland #44",
+      "current_value": "$4.65",
+      "price_numeric": 4.65
+    },
+    {
+      "name": "Rufflet #46",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Braviary #47",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Pikachu #56",
+      "current_value": "$1,486.43",
+      "price_numeric": 1486.43
+    }
+  ]
+}

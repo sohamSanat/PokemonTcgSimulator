@@ -1,0 +1,227 @@
+{
+  "metadata": {
+    "set_name": "Cold Flare",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/cold-flare/bw6c_ja",
+    "release_date": "2012/07/13",
+    "scraped_at": "2026-07-15T12:44:09.647137",
+    "elapsed_seconds": 18.99,
+    "total_cards_scraped": 43
+  },
+  "cards": [
+    {
+      "name": "Tangela #1",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Tangrowth #2",
+      "current_value": "$5.99",
+      "price_numeric": 5.99
+    },
+    {
+      "name": "Scyther #3",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Celebi-EX #4",
+      "current_value": "$21.00",
+      "price_numeric": 21
+    },
+    {
+      "name": "Swadloon #6",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Petilil #8",
+      "current_value": "$2.89",
+      "price_numeric": 2.89
+    },
+    {
+      "name": "Lilligant #9",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Numel #10",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Squirtle #12",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Wartortle #13",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Blastoise #14",
+      "current_value": "$30.00",
+      "price_numeric": 30
+    },
+    {
+      "name": "Psyduck #15",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Swanna #18",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Keldeo-EX #19",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Electivire #21",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Joltik #22",
+      "current_value": "$1.66",
+      "price_numeric": 1.66
+    },
+    {
+      "name": "Galvantula #23",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Duskull #24",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Croagunk #27",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Woobat #29",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Swoobat #30",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Sandshrew #31",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Sandslash #32",
+      "current_value": "$7.50",
+      "price_numeric": 7.5
+    },
+    {
+      "name": "Timburr #34",
+      "current_value": "$1.89",
+      "price_numeric": 1.89
+    },
+    {
+      "name": "Gurdurr #35",
+      "current_value": "$0.90",
+      "price_numeric": 0.9
+    },
+    {
+      "name": "Dwebble #37",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Crustle #38",
+      "current_value": "$2.42",
+      "price_numeric": 2.42
+    },
+    {
+      "name": "Scizor #39",
+      "current_value": "$4.78",
+      "price_numeric": 4.78
+    },
+    {
+      "name": "Skarmory #40",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "White Kyurem-EX #41",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Ditto #42",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Dunsparce #43",
+      "current_value": "$1.79",
+      "price_numeric": 1.79
+    },
+    {
+      "name": "Whismur #44",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Loudred #45",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Skitty #47",
+      "current_value": "$10.00",
+      "price_numeric": 10
+    },
+    {
+      "name": "Patrat #49",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Lillipup #51",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Herdier #52",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Stoutland #53",
+      "current_value": "$10.99",
+      "price_numeric": 10.99
+    },
+    {
+      "name": "Skyla #56",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Aspertia City Gym #57",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Crystal Edge #59",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Keldeo-EX #61",
+      "current_value": "$54.99",
+      "price_numeric": 54.99
+    }
+  ]
+}

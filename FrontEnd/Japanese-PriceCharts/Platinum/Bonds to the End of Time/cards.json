@@ -1,0 +1,387 @@
+{
+  "metadata": {
+    "set_name": "Bonds to the End of Time",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/bonds-to-the-end-of-time/pt2_ja",
+    "release_date": "2008/12/26",
+    "scraped_at": "2026-07-15T12:55:01.394764",
+    "elapsed_seconds": 18.14,
+    "total_cards_scraped": 75
+  },
+  "cards": [
+    {
+      "name": "Weedle #1",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Kakuna #2",
+      "current_value": "$1.99",
+      "price_numeric": 1.99
+    },
+    {
+      "name": "Beedrill #3",
+      "current_value": "$1.61",
+      "price_numeric": 1.61
+    },
+    {
+      "name": "Seedot #4",
+      "current_value": "$1.00",
+      "price_numeric": 1
+    },
+    {
+      "name": "Tropius #5",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Turtwig GL #6",
+      "current_value": "$5.64",
+      "price_numeric": 5.64
+    },
+    {
+      "name": "Roserade GL #7",
+      "current_value": "$15.99",
+      "price_numeric": 15.99
+    },
+    {
+      "name": "Leafeon #8",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Growlithe #9",
+      "current_value": "$3.50",
+      "price_numeric": 3.5
+    },
+    {
+      "name": "Arcanine #10",
+      "current_value": "$37.50",
+      "price_numeric": 37.5
+    },
+    {
+      "name": "Flareon #11",
+      "current_value": "$8.50",
+      "price_numeric": 8.5
+    },
+    {
+      "name": "Staryu #12",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Starmie #13",
+      "current_value": "$1.50",
+      "price_numeric": 1.5
+    },
+    {
+      "name": "Vaporeon #14",
+      "current_value": "$14.99",
+      "price_numeric": 14.99
+    },
+    {
+      "name": "Quagsire GL #15",
+      "current_value": "$4.83",
+      "price_numeric": 4.83
+    },
+    {
+      "name": "Spheal #16",
+      "current_value": "$4.89",
+      "price_numeric": 4.89
+    },
+    {
+      "name": "Sealeo #17",
+      "current_value": "$2.50",
+      "price_numeric": 2.5
+    },
+    {
+      "name": "Walrein #18",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Floatzel GL #19",
+      "current_value": "$17.03",
+      "price_numeric": 17.03
+    },
+    {
+      "name": "Floatzel GL LV.X #20",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Shellos West Sea #21",
+      "current_value": "$3.55",
+      "price_numeric": 3.55
+    },
+    {
+      "name": "Shellos East Sea #22",
+      "current_value": "$4.95",
+      "price_numeric": 4.95
+    },
+    {
+      "name": "Gastrodon East Sea #23",
+      "current_value": "$3.85",
+      "price_numeric": 3.85
+    },
+    {
+      "name": "Glaceon #24",
+      "current_value": "$14.50",
+      "price_numeric": 14.5
+    },
+    {
+      "name": "Mamoswine GL #25",
+      "current_value": "$1.97",
+      "price_numeric": 1.97
+    },
+    {
+      "name": "Froslass GL #26",
+      "current_value": "$9.26",
+      "price_numeric": 9.26
+    },
+    {
+      "name": "Raichu GL #27",
+      "current_value": "$3.99",
+      "price_numeric": 3.99
+    },
+    {
+      "name": "Jolteon #28",
+      "current_value": "$15.48",
+      "price_numeric": 15.48
+    },
+    {
+      "name": "Luxray GL #29",
+      "current_value": "$14.98",
+      "price_numeric": 14.98
+    },
+    {
+      "name": "Heat Rotom #31",
+      "current_value": "$19.99",
+      "price_numeric": 19.99
+    },
+    {
+      "name": "Wash Rotom #33",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Mow Rotom #35",
+      "current_value": "$20.00",
+      "price_numeric": 20
+    },
+    {
+      "name": "Nidoran ♀ #36",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Nidorina #37",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Nidoqueen #38",
+      "current_value": "$2.75",
+      "price_numeric": 2.75
+    },
+    {
+      "name": "Nidoran ♂ #39",
+      "current_value": "$2.99",
+      "price_numeric": 2.99
+    },
+    {
+      "name": "Nidorino #40",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Alakazam E4 #41",
+      "current_value": "$8.67",
+      "price_numeric": 8.67
+    },
+    {
+      "name": "Alakazam E4 LV.X #42",
+      "current_value": "$100.00",
+      "price_numeric": 100
+    },
+    {
+      "name": "Gengar GL #43",
+      "current_value": "$53.33",
+      "price_numeric": 53.33
+    },
+    {
+      "name": "Koffing #44",
+      "current_value": "$4.93",
+      "price_numeric": 4.93
+    },
+    {
+      "name": "Weezing #45",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Mismagius GL #46",
+      "current_value": "$21.97",
+      "price_numeric": 21.97
+    },
+    {
+      "name": "Nidoking #47",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Machamp GL #48",
+      "current_value": "$5.50",
+      "price_numeric": 5.5
+    },
+    {
+      "name": "Aerodactyl GL #49",
+      "current_value": "$2.83",
+      "price_numeric": 2.83
+    },
+    {
+      "name": "Trapinch #50",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Rampardos GL #51",
+      "current_value": "$27.40",
+      "price_numeric": 27.4
+    },
+    {
+      "name": "Gastrodon West Sea #52",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Lucario GL #53",
+      "current_value": "$9.67",
+      "price_numeric": 9.67
+    },
+    {
+      "name": "Hippopotas #54",
+      "current_value": "$4.99",
+      "price_numeric": 4.99
+    },
+    {
+      "name": "Hippowdon #55",
+      "current_value": "$5.00",
+      "price_numeric": 5
+    },
+    {
+      "name": "Hippowdon LV.X #56",
+      "current_value": "$44.00",
+      "price_numeric": 44
+    },
+    {
+      "name": "Nuzleaf #57",
+      "current_value": "$0.27",
+      "price_numeric": 0.27
+    },
+    {
+      "name": "Carvanha #59",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Sharpedo #60",
+      "current_value": "$4.32",
+      "price_numeric": 4.32
+    },
+    {
+      "name": "Forretress G #61",
+      "current_value": "$2.02",
+      "price_numeric": 2.02
+    },
+    {
+      "name": "Steelix GL #62",
+      "current_value": "$4.50",
+      "price_numeric": 4.5
+    },
+    {
+      "name": "Aron #63",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Lairon #64",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Aggron #65",
+      "current_value": "$4.00",
+      "price_numeric": 4
+    },
+    {
+      "name": "Jirachi #66",
+      "current_value": "$39.99",
+      "price_numeric": 39.99
+    },
+    {
+      "name": "Bastiodon GL #67",
+      "current_value": "$7.00",
+      "price_numeric": 7
+    },
+    {
+      "name": "Eevee #68",
+      "current_value": "$16.00",
+      "price_numeric": 16
+    },
+    {
+      "name": "Munchlax #69",
+      "current_value": "$35.00",
+      "price_numeric": 35
+    },
+    {
+      "name": "Snorlax #70",
+      "current_value": "$28.42",
+      "price_numeric": 28.42
+    },
+    {
+      "name": "Vibrava #71",
+      "current_value": "$3.00",
+      "price_numeric": 3
+    },
+    {
+      "name": "Flygon #72",
+      "current_value": "$29.99",
+      "price_numeric": 29.99
+    },
+    {
+      "name": "Flygon LV.X #73",
+      "current_value": "$40.00",
+      "price_numeric": 40
+    },
+    {
+      "name": "Kecleon #74",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Ambipom G #75",
+      "current_value": "$2.00",
+      "price_numeric": 2
+    },
+    {
+      "name": "Team Galactic's Invention G-109 SP Radar #76",
+      "current_value": "$0.75",
+      "price_numeric": 0.75
+    },
+    {
+      "name": "Charon's Choice #80",
+      "current_value": "$49.95",
+      "price_numeric": 49.95
+    },
+    {
+      "name": "Bebe's Search #81",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    },
+    {
+      "name": "Pokémon Contest Hall #83",
+      "current_value": "$0.35",
+      "price_numeric": 0.35
+    }
+  ]
+}

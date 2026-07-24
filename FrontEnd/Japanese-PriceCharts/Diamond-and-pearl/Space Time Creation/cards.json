@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "set_name": "Space Time Creation",
+    "redirect_link": "https://scrydex.com/pokemon/expansions/space-time-creation/dp1_ja",
+    "release_date": "2006/11/30",
+    "scraped_at": "2026-07-15T13:00:45.545378",
+    "elapsed_seconds": 20.89,
+    "total_cards_scraped": 12
+  },
+  "cards": [
+    {
+      "name": "Cleffa #36",
+      "current_value": "$61.00",
+      "price_numeric": 61
+    },
+    {
+      "name": "Machamp #74",
+      "current_value": "$53.00",
+      "price_numeric": 53
+    },
+    {
+      "name": "Noctowl #195",
+      "current_value": "$34.00",
+      "price_numeric": 34
+    },
+    {
+      "name": "Azurill #210",
+      "current_value": "$46.00",
+      "price_numeric": 46
+    },
+    {
+      "name": "Silcoon #316",
+      "current_value": "$6.00",
+      "price_numeric": 6
+    },
+    {
+      "name": "Meditite #358",
+      "current_value": "$41.33",
+      "price_numeric": 41.33
+    },
+    {
+      "name": "Dusclops #412",
+      "current_value": "$50.00",
+      "price_numeric": 50
+    },
+    {
+      "name": "Torterra #450",
+      "current_value": "$92.00",
+      "price_numeric": 92
+    },
+    {
+      "name": "Infernape #453",
+      "current_value": "$59.27",
+      "price_numeric": 59.27
+    },
+    {
+      "name": "Empoleon #456",
+      "current_value": "$261.59",
+      "price_numeric": 261.59
+    },
+    {
+      "name": "Stunky #496",
+      "current_value": "$41.33",
+      "price_numeric": 41.33
+    },
+    {
+      "name": "Hippowdon #508",
+      "current_value": "$25.00",
+      "price_numeric": 25
+    }
+  ]
+}
