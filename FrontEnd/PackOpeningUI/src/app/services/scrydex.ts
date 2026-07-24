@@ -452,7 +452,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   else if (sId === 'sm') seriesName = 'Sun & Moon';
   else if (sId === 'xy') seriesName = 'XY Series';
   else if (sId === 'bw') seriesName = 'Black & White';
-  else if (sId === 'hgss') seriesName = 'HeartGold & SoulSilver';
+  else if (sId === 'hgss') seriesName = 'Legend';
   else if (sId === 'pl') seriesName = 'Platinum';
   else if (sId === 'dp') seriesName = 'Diamond & Pearl';
   else if (sId === 'ex') seriesName = 'EX Series';

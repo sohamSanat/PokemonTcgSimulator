@@ -813,7 +813,7 @@ const JAPANESE_SERIES_TABS = [
   { id: 'sm_ja', name: 'Sun & Moon' },
   { id: 'xy_ja', name: 'XY Series' },
   { id: 'bw_ja', name: 'Black & White' },
-  { id: 'hgss_ja', name: 'HeartGold & SoulSilver' },
+  { id: 'hgss_ja', name: 'Legend' },
   { id: 'pl_ja', name: 'Platinum' },
   { id: 'dp_ja', name: 'Diamond & Pearl' },
   { id: 'ex_ja', name: 'EX Series' },

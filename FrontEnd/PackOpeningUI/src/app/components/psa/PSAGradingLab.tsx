@@ -617,14 +617,15 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto justify-start sm:justify-end">
           <button
             onClick={() => { sound.playTabSwitch(); setIsRestorationStudioOpen(true); }}
-            className="px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-amber-300 text-black font-black text-xs transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-[0_0_25px_rgba(45,212,191,0.5)] border border-teal-200 hover:brightness-110"
+            className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-teal-400 via-emerald-400 to-amber-300 hover:from-teal-300 hover:to-amber-200 text-black font-black text-xs sm:text-sm tracking-wide uppercase transition-all flex items-center gap-2 sm:gap-2.5 cursor-pointer shadow-[0_0_30px_rgba(45,212,191,0.75)] hover:shadow-[0_0_45px_rgba(45,212,191,0.95)] border-2 border-teal-200 hover:scale-[1.03] active:scale-95 shrink-0 animate-pulse"
           >
-            <span>🧹 Pre-PSA Cleaning & Restoration Studio</span>
-            <Sparkles className="w-4 h-4 text-black animate-pulse" />
+            <span className="text-base sm:text-lg">🧹</span>
+            <span>Pre-PSA Cleaning & Restoration Studio</span>
+            <Sparkles className="w-4 h-4 text-black animate-spin" />
           </button>
           <button
             onClick={() => { sound.playTabSwitch(); setStage('queue'); setFilterTab('vault'); }}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer border ${
+            className={`px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer border ${
               stage === 'queue' && filterTab === 'vault'
                 ? 'bg-red-500/20 border-red-500/50 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                 : 'bg-white/5 border-white/10 text-gray-300 hover:bg-white/10'
@@ -635,7 +636,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
           </button>
           <button
             onClick={() => { sound.playButtonClick(); onBackToPacks(); }}
-            className="px-3.5 sm:px-5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-lg"
+            className="px-3.5 sm:px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-extrabold text-xs transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-lg"
           >
             <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
             <span>Back to Packs</span>
@@ -647,6 +648,45 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
         {/* ──────────────── STAGE 1: SUBMISSION QUEUE OR VAULT ──────────────── */}
         {stage === 'queue' && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            
+            {/* Dedicated Hero Banner: Pre-PSA Card Restoration Studio */}
+            <div
+              onClick={() => { sound.playTabSwitch(); setIsRestorationStudioOpen(true); }}
+              className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-teal-950/60 via-emerald-950/40 to-[#0c181b] border-2 border-teal-400/60 shadow-[0_0_35px_rgba(45,212,191,0.25)] hover:shadow-[0_0_50px_rgba(45,212,191,0.4)] transition-all cursor-pointer relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 -mr-12 -mt-12 w-56 h-56 bg-teal-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-400 via-emerald-400 to-amber-300 p-0.5 shadow-[0_0_20px_rgba(45,212,191,0.6)] flex items-center justify-center shrink-0 text-black font-black text-xl group-hover:scale-110 transition-transform">
+                    🧹
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-teal-300 mb-0.5">
+                      <Sparkles className="w-4 h-4 animate-pulse text-amber-300" />
+                      <span>CARD PREP & RESTORATION SUITE</span>
+                      <span className="bg-teal-400/20 text-teal-200 text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-teal-400/40">
+                        RECOMMENDED BEFORE GRADING
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-black text-white group-hover:text-teal-200 transition-colors">
+                      Pre-PSA Cleaning & Micro-Scratch Restoration Studio
+                    </h3>
+                    <p className="text-xs text-gray-300 mt-0.5 max-w-xl">
+                      Buff micro-scratches, dust fingerprints & polish surfaces to boost your final PSA grade potential!
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setIsRestorationStudioOpen(true); }}
+                  className="w-full md:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-teal-400 via-emerald-400 to-amber-300 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(45,212,191,0.6)] hover:shadow-[0_0_35px_rgba(45,212,191,0.9)] transition-all flex items-center justify-center gap-2 group-hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+                >
+                  <Sparkles className="w-4 h-4 text-black animate-spin" />
+                  <span>Launch Cleaning Studio</span>
+                </button>
+              </div>
+            </div>
+
             {/* Quick Submit Sample Chase Cards Banner */}
             <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-red-950/40 via-purple-950/30 to-[#141420] border border-red-500/30 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />

@@ -300,22 +300,6 @@
     }
   },
   {
-    "id": "XY1a",
-    "name": "コレクションX",
-    "cardCount": {
-      "total": 60,
-      "official": 60
-    }
-  },
-  {
-    "id": "XY1b",
-    "name": "コレクションY",
-    "cardCount": {
-      "total": 60,
-      "official": 60
-    }
-  },
-  {
     "id": "XY2",
     "name": "ワイルドブレイズ",
     "cardCount": {
@@ -342,14 +326,6 @@
   {
     "id": "XY5b",
     "name": "タイダルストーム",
-    "cardCount": {
-      "total": 70,
-      "official": 70
-    }
-  },
-  {
-    "id": "XY5a",
-    "name": "ガイアボルケーノ",
     "cardCount": {
       "total": 70,
       "official": 70
@@ -425,22 +401,6 @@
     "cardCount": {
       "total": 131,
       "official": 131
-    }
-  },
-  {
-    "id": "XY11a",
-    "name": "爆熱の闘士",
-    "cardCount": {
-      "total": 54,
-      "official": 54
-    }
-  },
-  {
-    "id": "XY11b",
-    "name": "冷酷の反逆者",
-    "cardCount": {
-      "total": 54,
-      "official": 54
     }
   },
   {
@@ -676,7 +636,7 @@
     }
   },
   {
-    "id": "sn10a",
+    "id": "sm10a",
     "name": "ジージーエンド",
     "cardCount": {
       "total": 54,
@@ -700,7 +660,7 @@
     }
   },
   {
-    "id": "sn11",
+    "id": "sm11",
     "name": "ミラクルツイン",
     "cardCount": {
       "total": 94,
@@ -1299,29 +1259,212 @@
       "official": 54
     }
   },
-  { "id": "BW1w", "name": "ホワイトコレクション", "cardCount": { "total": 53, "official": 53 } },
-  { "id": "BW1b", "name": "ブラックコレクション", "cardCount": { "total": 53, "official": 53 } },
-  { "id": "BW2", "name": "レッドコレクション", "cardCount": { "total": 66, "official": 66 } },
-  { "id": "BW3h", "name": "サイコドライブ", "cardCount": { "total": 52, "official": 52 } },
-  { "id": "BW3d", "name": "ヘイルブリザード", "cardCount": { "total": 52, "official": 52 } },
-  { "id": "BW4", "name": "ダークラッシュ", "cardCount": { "total": 69, "official": 69 } },
-  { "id": "BW5g", "name": "ドラゴンブレード", "cardCount": { "total": 50, "official": 50 } },
-  { "id": "BW5z", "name": "ドラゴンセレクション", "cardCount": { "total": 20, "official": 20 } },
-  { "id": "BW6f", "name": "フリーズボルト", "cardCount": { "total": 59, "official": 59 } },
-  { "id": "BW6c", "name": "コールドフレア", "cardCount": { "total": 59, "official": 59 } },
-  { "id": "BW7", "name": "プラズマゲイル", "cardCount": { "total": 70, "official": 70 } },
-  { "id": "BW8v", "name": "スパイラルフォース", "cardCount": { "total": 51, "official": 51 } },
-  { "id": "BW8m", "name": "ライデンナックル", "cardCount": { "total": 51, "official": 51 } },
-  { "id": "BW9", "name": "メガロキャノン", "cardCount": { "total": 76, "official": 76 } },
-  { "id": "EBB", "name": "EXバトルブースト", "cardCount": { "total": 100, "official": 100 } },
-  { "id": "Pt1", "name": "銀河の覇者", "cardCount": { "total": 96, "official": 96 } },
-  { "id": "Pt2", "name": "時の果てへの絆", "cardCount": { "total": 90, "official": 90 } },
-  { "id": "Pt3", "name": "フロンティアの鼓動", "cardCount": { "total": 100, "official": 100 } },
-  { "id": "Pt4", "name": "アルセウス光臨", "cardCount": { "total": 90, "official": 90 } },
-  { "id": "DP1d", "name": "時空の創造 ダイヤモンド", "cardCount": { "total": 60, "official": 60 } },
-  { "id": "DP1p", "name": "時空の創造 パール", "cardCount": { "total": 60, "official": 60 } },
-  { "id": "DP2", "name": "湖の秘密", "cardCount": { "total": 60, "official": 60 } },
-  { "id": "DP3", "name": "ひかる闇", "cardCount": { "total": 75, "official": 75 } },
-  { "id": "DP4", "name": "月光の追跡", "cardCount": { "total": 80, "official": 80 } },
-  { "id": "DP5", "name": "怒りの神殿", "cardCount": { "total": 80, "official": 80 } }
+  {
+    "id": "BW1w",
+    "name": "ホワイトコレクション",
+    "cardCount": {
+      "total": 53,
+      "official": 53
+    }
+  },
+  {
+    "id": "BW1b",
+    "name": "ブラックコレクション",
+    "cardCount": {
+      "total": 53,
+      "official": 53
+    }
+  },
+  {
+    "id": "BW2",
+    "name": "レッドコレクション",
+    "cardCount": {
+      "total": 66,
+      "official": 66
+    }
+  },
+  {
+    "id": "BW3h",
+    "name": "サイコドライブ",
+    "cardCount": {
+      "total": 52,
+      "official": 52
+    }
+  },
+  {
+    "id": "BW3d",
+    "name": "ヘイルブリザード",
+    "cardCount": {
+      "total": 52,
+      "official": 52
+    }
+  },
+  {
+    "id": "BW4",
+    "name": "ダークラッシュ",
+    "cardCount": {
+      "total": 69,
+      "official": 69
+    }
+  },
+  {
+    "id": "BW5g",
+    "name": "ドラゴンブレード",
+    "cardCount": {
+      "total": 50,
+      "official": 50
+    }
+  },
+  {
+    "id": "BW5z",
+    "name": "ドラゴンセレクション",
+    "cardCount": {
+      "total": 20,
+      "official": 20
+    }
+  },
+  {
+    "id": "BW6f",
+    "name": "フリーズボルト",
+    "cardCount": {
+      "total": 59,
+      "official": 59
+    }
+  },
+  {
+    "id": "BW6c",
+    "name": "コールドフレア",
+    "cardCount": {
+      "total": 59,
+      "official": 59
+    }
+  },
+  {
+    "id": "BW7",
+    "name": "プラズマゲイル",
+    "cardCount": {
+      "total": 70,
+      "official": 70
+    }
+  },
+  {
+    "id": "BW8v",
+    "name": "スパイラルフォース",
+    "cardCount": {
+      "total": 51,
+      "official": 51
+    }
+  },
+  {
+    "id": "BW8m",
+    "name": "ライデンナックル",
+    "cardCount": {
+      "total": 51,
+      "official": 51
+    }
+  },
+  {
+    "id": "BW9",
+    "name": "メガロキャノン",
+    "cardCount": {
+      "total": 76,
+      "official": 76
+    }
+  },
+  {
+    "id": "SC",
+    "name": "コンセプトパック シャイニーコレクション",
+    "cardCount": {
+      "total": 25,
+      "official": 20
+    }
+  },
+  {
+    "id": "EBB",
+    "name": "EXバトルブースト",
+    "cardCount": {
+      "total": 100,
+      "official": 100
+    }
+  },
+  {
+    "id": "Pt1",
+    "name": "銀河の覇者",
+    "cardCount": {
+      "total": 96,
+      "official": 96
+    }
+  },
+  {
+    "id": "Pt2",
+    "name": "時の果てへの絆",
+    "cardCount": {
+      "total": 90,
+      "official": 90
+    }
+  },
+  {
+    "id": "Pt3",
+    "name": "フロンティアの鼓動",
+    "cardCount": {
+      "total": 100,
+      "official": 100
+    }
+  },
+  {
+    "id": "Pt4",
+    "name": "アルセウス光臨",
+    "cardCount": {
+      "total": 90,
+      "official": 90
+    }
+  },
+  {
+    "id": "DP1d",
+    "name": "時空の創造 ダイヤモンド",
+    "cardCount": {
+      "total": 60,
+      "official": 60
+    }
+  },
+  {
+    "id": "DP1p",
+    "name": "時空の創造 パール",
+    "cardCount": {
+      "total": 60,
+      "official": 60
+    }
+  },
+  {
+    "id": "DP2",
+    "name": "湖の秘密",
+    "cardCount": {
+      "total": 60,
+      "official": 60
+    }
+  },
+  {
+    "id": "DP3",
+    "name": "ひかる闇",
+    "cardCount": {
+      "total": 75,
+      "official": 75
+    }
+  },
+  {
+    "id": "DP4",
+    "name": "月光の追跡",
+    "cardCount": {
+      "total": 80,
+      "official": 80
+    }
+  },
+  {
+    "id": "DP5",
+    "name": "怒りの神殿",
+    "cardCount": {
+      "total": 80,
+      "official": 80
+    }
+  }
 ]
