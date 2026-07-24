@@ -332,6 +332,42 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
   }
 }
 
+export const JAPANESE_VINTAGE_SET_MAP: Record<string, string> = {
+  // Black & White Series
+  'bw8v': 'bw9', 'bw8m': 'bw9', 'bw5z': 'ex3', 'bw5g': 'bw6', 'bw3d': 'bw3', 'bw3h': 'bw3',
+  'sc': 'bw11/RC', 'ebb': 'bw11', 'bw1w': 'bw1', 'bw1b': 'bw1', 'bw2': 'bw2', 'bw4': 'bw5',
+  'bw6f': 'bw7', 'bw6c': 'bw7', 'bw7': 'bw8', 'bw9': 'bw10',
+
+  // Legend / HGSS Series
+  'l1a': 'hgss1', 'l1b': 'hgss1', 'l2': 'hgss3', 'll': 'hgss4', 'l3': 'hgss4',
+
+  // Platinum Series
+  'pt1': 'pl1', 'pt2': 'pl2', 'pt3': 'pl3', 'pt4': 'pl4',
+
+  // Diamond & Pearl Series
+  'dp1d': 'dp1', 'dp1p': 'dp1', 'dp2': 'dp2', 'dp3': 'dp3', 'dp4': 'dp4', 'dp5': 'dp5', 'dp6': 'dp6', 'dp7': 'dp7',
+
+  // Base Set / PMCG / E-Series
+  'pmcg1': 'base1', 'pmcg2': 'base2', 'pmcg3': 'base3', 'pmcg4': 'base5', 'pmcg5': 'gym1', 'pmcg6': 'gym2',
+  'e1': 'ecard1', 'e2': 'ecard1', 'e3': 'ecard2', 'e4': 'ecard2', 'e5': 'ecard3',
+
+  // ADV / EX Series
+  'adv1': 'ex1', 'adv2': 'ex2', 'adv3': 'ex3', 'adv4': 'ex4', 'adv5': 'ex5',
+  'pcg1': 'ex6', 'pcg2': 'ex7', 'pcg3': 'ex8', 'pcg4': 'ex9', 'pcg5': 'ex10',
+  'pcg6': 'ex11', 'pcg7': 'ex12', 'pcg8': 'ex13', 'pcg9': 'ex14', 'pcg10': 'ex15'
+};
+
+export function getJapaneseVintageCardImageUrl(cleanSetId: string, rawNum: string | number): string | null {
+  const sLow = cleanSetId.toLowerCase().replace(/_ja$/i, '').replace(/_ja_ja$/i, '');
+  const mappedEn = JAPANESE_VINTAGE_SET_MAP[sLow];
+  if (!mappedEn) return null;
+  const numStr = `${rawNum}`.trim().replace(/^0+([1-9])/, '$1');
+  if (mappedEn.startsWith('bw11/RC')) {
+    return `https://images.pokemontcg.io/bw11/RC${numStr}_hires.png`;
+  }
+  return `https://images.pokemontcg.io/${mappedEn}/${numStr}_hires.png`;
+}
+
 export function getTCGDexValidAssetPath(setId: string, rawNum: string | number): string {
   const sLow = setId.toLowerCase();
   const isJpn = sLow.endsWith('_ja') || sLow.includes('_ja_') || sLow.includes('_ja');
@@ -341,6 +377,9 @@ export function getTCGDexValidAssetPath(setId: string, rawNum: string | number):
   let numStr = `${rawNum}`.trim();
 
   if (isJpn) {
+    const vintageUrl = getJapaneseVintageCardImageUrl(cleanSetId, numStr);
+    if (vintageUrl) return vintageUrl;
+
     const isSwshCleanId = cleanSetId.startsWith('s') && !cleanSetId.startsWith('sv') && !cleanSetId.startsWith('sm') && !cleanSetId.startsWith('sn');
     const scrydexId = isSwshCleanId ? `swsh${cleanSetId.slice(1)}` : cleanSetId;
     const cleanNum = numStr.replace(/^0+([1-9])/, '$1');
@@ -414,7 +453,9 @@ export function handleCardImageError(img: HTMLImageElement, setId = 'swsh3', raw
   // For Japanese sets we append the English-set equivalent (same localId) at the end: the
   // "_ja" scans generated for SWSH/SV/SM ids (e.g. swsh7_ja-215) do not exist on
   // Scrydex and return a placeholder card-back, so we must fall back to the real EN card.
+  const vintageUrl = getJapaneseVintageCardImageUrl(cleanId, num);
   const specificFallbacks = (isJapaneseSet ? [
+    ...(vintageUrl ? [vintageUrl] : []),
     `https://images.scrydex.com/pokemon/${swshScrydexId}_ja-${num}/large`,
     `https://images.scrydex.com/pokemon/${cleanId}_ja-${num}/large`,
     `https://images.pokemontcg.io/${cleanId === 'sv3pt5' || cleanId === 'sv2a' ? 'sv3pt5' : cleanId}/${num}_hires.png`,

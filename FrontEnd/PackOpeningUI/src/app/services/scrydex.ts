@@ -1,4 +1,4 @@
-import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary } from './tcgdex';
+import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary, getJapaneseVintageCardImageUrl } from './tcgdex';
 
 export const getScrydexApiBase = () => `https://api.scrydex.com/pokemon/v1/ja`;
 
@@ -727,8 +727,9 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
       updated: new Date().toISOString(),
       normal: { marketPrice: realPrice, midPrice: Number((realPrice * 1.05).toFixed(2)), lowPrice: Number((realPrice * 0.85).toFixed(2)), highPrice: Number((realPrice * 1.4).toFixed(2)) }
     };
-    // Use the correct Scrydex prefix: swsh for SWSH sets, sm/sv as-is for others
-    const scrydexImgUrl = `https://images.scrydex.com/pokemon/${scrydexSetPrefix}_ja-${cardNum}/large`;
+    // Use PokemonTCG.io for vintage Japanese sets where Scrydex lacks artwork, else Scrydex
+    const vintageUrl = getJapaneseVintageCardImageUrl(prefixLow, cardNum);
+    const scrydexImgUrl = vintageUrl || `https://images.scrydex.com/pokemon/${scrydexSetPrefix}_ja-${cardNum}/large`;
     cards.push({
       id: `${prefixLow}_ja-${cardNum}`,
       localId: cardNum,
@@ -1372,6 +1373,8 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
 
     const getRegularSetImgUrl = (cleanSet: string, num: string) => {
       const low = cleanSet.toLowerCase();
+      const vintageUrl = getJapaneseVintageCardImageUrl(low, num);
+      if (vintageUrl) return vintageUrl;
       return `https://images.scrydex.com/pokemon/${low}_ja-${num}/large`;
     };
 
@@ -1446,7 +1449,7 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
             grade: grade,
             price: displayPrice,
             change: `+${(Math.random() * 12 + 1.5).toFixed(1)}%`,
-            img: `https://images.scrydex.com/pokemon/${cleanScrydexKey}/large`
+            img: getJapaneseVintageCardImageUrl(cleanSet, numStr) || `https://images.scrydex.com/pokemon/${cleanScrydexKey}/large`
           });
         }
       }
