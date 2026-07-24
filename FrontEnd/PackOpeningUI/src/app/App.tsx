@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box } from 'lucide-react';
-import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
+import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
@@ -1388,6 +1388,7 @@ export default function App() {
     const langToUse = forceLanguage || (mysteryPack ? mysteryPack.language : selectedLanguage);
     sound.playPackOpen();
     setIsLoadingPack(true);
+    setIsChaseCardsReady(false);
     setIsSetSelectorOpen(false);
     setPackStage('unopened');
     setTearProgress(0);
@@ -1424,6 +1425,7 @@ export default function App() {
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generateJapanesePackFromSet(setDetails);
+        await preloadPackImages(newCards);
         setCards(formatAndSortCards(newCards));
         setIsChaseCardsReady(true);
       } else {
@@ -1439,11 +1441,18 @@ export default function App() {
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generatePackFromSet(setDetails);
+        
+        // PRIORITY #1: Download and cache pack card images FIRST before background set warmup
+        await preloadPackImages(newCards);
         setCards(formatAndSortCards(newCards));
         setIsChaseCardsReady(false);
-        orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
-          setIsChaseCardsReady(true);
-        });
+
+        // NOW that pack and contents are fully ready, trigger low-priority background chase card warmup
+        setTimeout(() => {
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+            setIsChaseCardsReady(true);
+          });
+        }, 200);
       }
 
       // Check if mystery pack pity protection was triggered
@@ -1704,8 +1713,11 @@ export default function App() {
         const newCards = isJaSet
           ? await generateJapanesePackFromSet(currentSet)
           : await generatePackFromSet(currentSet);
+        await preloadPackImages(newCards);
         setCards(formatAndSortCards(newCards));
-        orchestrateSetLoading(currentSet, newCards.map(c => c.id));
+        setTimeout(() => {
+          orchestrateSetLoading(currentSet, newCards.map(c => c.id));
+        }, 200);
       } catch {
         setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet));
       } finally {

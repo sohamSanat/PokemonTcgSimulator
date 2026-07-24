@@ -136,6 +136,51 @@ export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'hig
   return baseUrl;
 };
 
+export function preloadPackImages(cards: PokemonCard[]): Promise<void> {
+  return new Promise((resolve) => {
+    if (!cards || cards.length === 0) {
+      resolve();
+      return;
+    }
+    const urls: string[] = [];
+    cards.forEach(c => {
+      const cardAny = c as any;
+      if (c.images?.large) urls.push(c.images.large);
+      if (c.images?.small) urls.push(c.images.small);
+      if (cardAny.image) {
+        urls.push(getCardImageUrl(cardAny.image, 'high'));
+        urls.push(getCardImageUrl(cardAny.image, 'low'));
+      }
+      if (c.id) {
+        urls.push(`https://images.scrydex.com/pokemon/${c.id.toLowerCase()}/large`);
+      }
+    });
+
+    const uniqueUrls = Array.from(new Set(urls.filter(Boolean)));
+    if (uniqueUrls.length === 0) {
+      resolve();
+      return;
+    }
+
+    let loaded = 0;
+    const checkDone = () => {
+      loaded++;
+      if (loaded >= uniqueUrls.length) resolve();
+    };
+
+    uniqueUrls.forEach(url => {
+      const img = new Image();
+      (img as any).fetchPriority = 'high';
+      img.onload = checkDone;
+      img.onerror = checkDone;
+      img.src = url;
+    });
+
+    // Safety fallback timeout: resolve after 1200ms max so pack opening UI is never blocked
+    setTimeout(resolve, 1200);
+  });
+}
+
 const API_BASE = 'https://api.tcgdex.net/v2/en';
 
 export async function fetchSeriesList(): Promise<TCGDexSeries[]> {
@@ -505,9 +550,7 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
     }
   }
 
-  if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
-    fetchCardFull(poke.id).catch(() => { });
-  }
+  // Synchronous price lookup - do not trigger background fetch side-effects inside render loops
   const cached = cardFullCache.get(poke.id);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
 
