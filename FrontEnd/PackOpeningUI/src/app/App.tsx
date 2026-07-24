@@ -2390,57 +2390,105 @@ export default function App() {
             {/* Standalone Row: Tasks & Missions Hub */}
             <div
               onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-              className="bg-gradient-to-r from-[#38bdf8]/15 via-[#0284c7]/10 to-indigo-900/20 border border-[#38bdf8]/40 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 mb-4 relative z-10 flex flex-col sm:flex-row items-center justify-between gap-3 cursor-pointer transition-all shadow-[inset_0_1px_2px_rgba(56,189,248,0.2),0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.25)] group"
+              className="bg-gradient-to-r from-[#38bdf8]/15 via-[#0284c7]/10 to-indigo-900/20 border border-[#38bdf8]/40 hover:border-[#38bdf8] rounded-2xl p-3.5 sm:p-4 mb-4 relative z-10 flex flex-col gap-3 cursor-pointer transition-all shadow-[inset_0_1px_2px_rgba(56,189,248,0.2),0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.25)] group"
             >
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border border-white/40 flex items-center justify-center text-white shadow-[0_0_15px_rgba(56,189,248,0.5)] shrink-0 group-hover:scale-105 transition-transform">
-                  <ListChecks className="w-5 h-5 text-white" />
+              {/* Header: Title & Action Button */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 w-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border border-white/40 flex items-center justify-center text-white shadow-[0_0_15px_rgba(56,189,248,0.5)] shrink-0 group-hover:scale-105 transition-transform">
+                    <ListChecks className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-white text-sm sm:text-base font-black uppercase tracking-wider group-hover:text-[#38bdf8] transition-colors">
+                        Tasks & Free Packs Hub
+                      </span>
+                      <span className="bg-[#38bdf8]/20 text-[#38bdf8] text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-[#38bdf8]/40 uppercase tracking-widest">
+                        Daily Free Allowances
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-300 font-medium mt-0.5">
+                      Earn free daily booster passes, complete missions & claim bonus rewards
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white text-xs sm:text-sm font-black uppercase tracking-wider group-hover:text-[#38bdf8] transition-colors">
-                      Tasks & Missions Hub
-                    </span>
-                    <span className="bg-[#38bdf8]/20 text-[#38bdf8] text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-[#38bdf8]/40 uppercase tracking-widest">
-                      Daily & Weekly
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] text-gray-300 font-medium">
-                    <span className="flex items-center gap-1">
-                      <span className="text-gray-400">🇺🇸 EN:</span>
-                      <strong className="text-white font-mono">{dailyFreePacks.english}/5</strong>
-                    </span>
-                    <span className="text-gray-600">•</span>
-                    <span className="flex items-center gap-1">
-                      <span className="text-gray-400">🇯🇵 JP:</span>
-                      <strong className="text-white font-mono">{dailyFreePacks.japanese}/5</strong>
-                    </span>
-                    <span className="text-gray-600">•</span>
-                    <span className="flex items-center gap-1">
-                      <span className="text-amber-300">🎒 Packs:</span>
-                      <strong className="text-amber-300 font-mono">
-                        {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
-                      </strong>
-                    </span>
-                    <span className="text-gray-600">•</span>
-                    <span className="flex items-center gap-1">
-                      <span className="text-emerald-400">💰 Cash:</span>
-                      <strong className="text-emerald-300 font-mono">
-                        {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
-                      </strong>
-                    </span>
-                  </div>
+
+                <div className="w-full sm:w-auto flex justify-end shrink-0 pt-1 sm:pt-0">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setActiveTab('missions'); }}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-indigo-600 hover:from-[#38bdf8]/90 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.6)] active:scale-95"
+                  >
+                    <ListChecks className="w-4 h-4" />
+                    <span>Open Tasks & Missions</span>
+                  </button>
                 </div>
               </div>
 
-              <div className="w-full sm:w-auto flex justify-end shrink-0">
-                <button
-                  onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setActiveTab('missions'); }}
-                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-indigo-600 hover:from-[#38bdf8]/90 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.6)] active:scale-95"
-                >
-                  <ListChecks className="w-3.5 h-3.5" />
-                  <span>Tasks & Missions</span>
-                </button>
+              {/* 4 Prominent Stat Badges Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full pt-1">
+                {/* Stat 1: EN Free Packs */}
+                <div className="bg-black/50 hover:bg-black/70 border border-[#38bdf8]/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">🇺🇸</span>
+                    <div>
+                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-gray-300">
+                        Free EN Packs
+                      </div>
+                      <div className="text-[9px] text-gray-400 font-semibold">Daily Limit</div>
+                    </div>
+                  </div>
+                  <span className="text-sm sm:text-base font-black font-mono text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
+                    {dailyFreePacks.english}/5
+                  </span>
+                </div>
+
+                {/* Stat 2: JP Free Packs */}
+                <div className="bg-black/50 hover:bg-black/70 border border-[#38bdf8]/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">🇯🇵</span>
+                    <div>
+                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-gray-300">
+                        Free JP Packs
+                      </div>
+                      <div className="text-[9px] text-gray-400 font-semibold">Daily Limit</div>
+                    </div>
+                  </div>
+                  <span className="text-sm sm:text-base font-black font-mono text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
+                    {dailyFreePacks.japanese}/5
+                  </span>
+                </div>
+
+                {/* Stat 3: Unopened Packs Inventory */}
+                <div className="bg-black/50 hover:bg-black/70 border border-amber-500/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">🎒</span>
+                    <div>
+                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300/90">
+                        Saved Packs
+                      </div>
+                      <div className="text-[9px] text-gray-400 font-semibold">In Inventory</div>
+                    </div>
+                  </div>
+                  <span className="text-sm sm:text-base font-black font-mono text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]">
+                    {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
+                  </span>
+                </div>
+
+                {/* Stat 4: Daily Cash Balance */}
+                <div className="bg-black/50 hover:bg-black/70 border border-emerald-500/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">💰</span>
+                    <div>
+                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300/90">
+                        Daily Cash
+                      </div>
+                      <div className="text-[9px] text-gray-400 font-semibold">Opening Fund</div>
+                    </div>
+                  </div>
+                  <span className="text-sm sm:text-base font-black font-mono text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)] truncate">
+                    {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
+                  </span>
+                </div>
               </div>
             </div>
 
