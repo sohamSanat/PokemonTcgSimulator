@@ -12,20 +12,17 @@ class SoundEngine {
     if (typeof window !== 'undefined') {
       this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
     }
-    // Mobile hardware typically needs a higher base gain for web audio API
-    this.volume = this.isMobile ? 2.5 : 0.8;
+    // Gentle base volume so SFX won't hurt users' ears
+    this.volume = this.isMobile ? 0.5 : 0.25;
 
     // Restore settings from localStorage if available
     try {
-      const savedEnabled = localStorage.getItem('tcg_sound_enabled');
-      if (savedEnabled !== null) {
-        this.enabled = savedEnabled === 'true';
-      }
+      this.enabled = true; // Always keep SFX active since toggle UI is removed
       const savedVolume = localStorage.getItem('tcg_sound_volume');
       if (savedVolume !== null) {
         const parsed = parseFloat(savedVolume);
-        // Allow much higher volume limits, especially on mobile
-        this.volume = Math.max(0, Math.min(3.0, parsed));
+        // Cap overall volume to pleasant level
+        this.volume = Math.max(0, Math.min(0.35, parsed));
       }
     } catch {
       // Ignore storage errors

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -2030,34 +2030,22 @@ export default function App() {
           </div>
 
           {/* Right: Utilities */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-1.5 w-full lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0 shrink-0">
-            <button
-              onClick={toggleSound}
-              className={`px-3 lg:px-2 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-start lg:justify-center gap-2 lg:gap-1 cursor-pointer shrink-0 ${soundEnabled
-                ? 'bg-[#1f1f2e] lg:bg-transparent border-amber-500/40 lg:border-amber-500/20 text-amber-300 hover:bg-amber-500/10'
-                : 'bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-500 hover:bg-white/10 hover:text-gray-300'
-                }`}
-              title={soundEnabled ? "Sound Effects ON" : "Sound Effects MUTED"}
-            >
-              {soundEnabled ? <Volume2 className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" /> : <VolumeX className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />}
-              <span className="lg:hidden xl:inline text-[11px]">{soundEnabled ? 'SFX' : 'Muted'}</span>
-            </button>
-
+          <div className="flex flex-row items-center gap-1.5 w-auto mt-0 pt-0 border-none pb-0 shrink-0">
             {currentUser ? (
-              <div className="flex items-center gap-1.5 w-full lg:w-auto">
+              <div className="flex items-center gap-1.5 w-auto">
                 <button
                   onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
-                  className={`flex-1 lg:flex-none px-3 lg:px-2.5 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-start lg:justify-center gap-2 lg:gap-1.5 cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
+                  className={`p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
+                  title={currentUser.email || "Profile"}
                 >
-                  <UserCircle className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
-                  <span className="truncate max-w-[100px] text-[11px]">{currentUser.email?.split('@')[0] || 'User'}</span>
+                  <UserCircle className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
                 </button>
                 <button
                   onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
-                  className="px-2.5 lg:px-2 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+                  className="p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
                   title="Logout"
                 >
-                  <LogOut className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
+                  <LogOut className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
                 </button>
               </div>
             ) : (
