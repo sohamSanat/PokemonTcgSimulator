@@ -2184,7 +2184,7 @@ export default function App() {
           />
         </div>
       ) : (activeTab === 'cardShow' || activeTab === 'auctions') ? (
-        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
+        <div className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden min-h-0 w-full">
           <CardShowView
             initialShowAuction={activeTab === 'auctions'}
             onBackToPacks={() => setActiveTab('pack')}

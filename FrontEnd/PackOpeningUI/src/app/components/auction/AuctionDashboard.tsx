@@ -1255,7 +1255,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
   }, [normalLot.cardIndex, normalCard]);
 
   return (
-    <div className="absolute inset-0 z-50 bg-[#050914] text-slate-200 font-sans overflow-hidden flex flex-col items-center justify-start">
+    <div className="relative w-full h-full flex-1 min-h-0 bg-[#050914] text-slate-200 font-sans overflow-hidden flex flex-col items-center justify-start">
       
       {/* Ambient background glow effects */}
       <div className="absolute top-[-15%] left-[-10%] w-[45vw] h-[45vw] bg-amber-900/15 rounded-full blur-[140px] pointer-events-none" />
