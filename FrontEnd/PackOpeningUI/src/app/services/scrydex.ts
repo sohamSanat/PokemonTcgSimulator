@@ -16,131 +16,121 @@ export let jaCardPricesCache: Record<string, number> | null = null;
 export let enCardPricesCache: Record<string, number> | null = null;
 export let jaTopCardsCache: any[] | null = null;
 
-export async function loadJapaneseMetadata() {
-  if (!jaTopCardsCache) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}ja-top-cards.json`);
-      if (res.ok) {
-        const rawCache = await res.json();
-        const seenJaIds = new Set<string>();
-        const cleaned: any[] = [];
-        if (Array.isArray(rawCache)) {
-          for (const c of rawCache) {
-            if (!c || !c.id) continue;
-            const isScrydex = c.img && c.img.includes('scrydex.com');
-            const hasJa = c.id.includes('_ja');
-            const isVint = c.id.startsWith('base') || c.id.startsWith('neo') || c.id.startsWith('fo') || c.id.startsWith('ju');
-            if (isScrydex && !hasJa && !isVint) {
-              const parts = c.id.split('-');
-              if (parts.length >= 2) {
-                const setCode = parts[0];
-                const numCode = parts.slice(1).join('-');
-                const jaId = `${setCode}_ja-${numCode}`;
-                if (seenJaIds.has(jaId)) continue;
-                seenJaIds.add(jaId);
-                cleaned.push({
-                  ...c,
-                  id: jaId,
-                  setId: `${setCode}_ja`,
-                  img: c.img.replace(`/pokemon/${setCode}-${numCode}`, `/pokemon/${setCode}_ja-${numCode}`)
-                });
-                continue;
+let metadataLoadingPromise: Promise<void> | null = null;
+
+export async function loadJapaneseMetadata(): Promise<void> {
+  if (jaSetsCache && jaEnNamesCache && jaCardPricesCache && jaTopCardsCache) {
+    return;
+  }
+  if (metadataLoadingPromise) {
+    return metadataLoadingPromise;
+  }
+
+  metadataLoadingPromise = (async () => {
+    const rawBase = import.meta.env.BASE_URL || '/';
+    const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
+    // Phase 1: High priority lightweight sets and name mappings (needed immediately for series selection)
+    const setsPromise = jaSetsCache
+      ? Promise.resolve()
+      : fetch(`${base}ja-sets.json`)
+          .then(res => res.ok ? res.json() : [])
+          .then(data => { jaSetsCache = data; })
+          .catch(e => console.error('Failed to load ja-sets.json:', e));
+
+    const enNamesPromise = jaEnNamesCache
+      ? Promise.resolve()
+      : fetch(`${base}ja-en-names.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { jaEnNamesCache = data; })
+          .catch(e => console.error('Failed to load ja-en-names.json:', e));
+
+    // Wait for critical sets/names to resolve first so UI doesn't stall
+    await Promise.all([setsPromise, enNamesPromise]);
+
+    // Phase 2: Parallel fetch of heavier card metadata
+    const topCardsPromise = jaTopCardsCache
+      ? Promise.resolve()
+      : fetch(`${base}ja-top-cards.json`)
+          .then(res => res.ok ? res.json() : [])
+          .then(rawCache => {
+            const seenJaIds = new Set<string>();
+            const cleaned: any[] = [];
+            if (Array.isArray(rawCache)) {
+              for (const c of rawCache) {
+                if (!c || !c.id) continue;
+                const isScrydex = c.img && c.img.includes('scrydex.com');
+                const hasJa = c.id.includes('_ja');
+                const isVint = c.id.startsWith('base') || c.id.startsWith('neo') || c.id.startsWith('fo') || c.id.startsWith('ju');
+                if (isScrydex && !hasJa && !isVint) {
+                  const parts = c.id.split('-');
+                  if (parts.length >= 2) {
+                    const setCode = parts[0];
+                    const numCode = parts.slice(1).join('-');
+                    const jaId = `${setCode}_ja-${numCode}`;
+                    if (seenJaIds.has(jaId)) continue;
+                    seenJaIds.add(jaId);
+                    cleaned.push({
+                      ...c,
+                      id: jaId,
+                      setId: `${setCode}_ja`,
+                      img: c.img.replace(`/pokemon/${setCode}-${numCode}`, `/pokemon/${setCode}_ja-${numCode}`)
+                    });
+                    continue;
+                  }
+                }
+                if (!seenJaIds.has(c.id)) {
+                  seenJaIds.add(c.id);
+                  cleaned.push(c);
+                }
               }
             }
-            if (!seenJaIds.has(c.id)) {
-              seenJaIds.add(c.id);
-              cleaned.push(c);
-            }
-          }
-        }
-        jaTopCardsCache = cleaned;
-      }
-    } catch (e) {
-      console.error('Failed to load /ja-top-cards.json:', e);
-    }
-  }
-  if (!jaSetsCache) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}ja-sets.json`);
-      if (res.ok) jaSetsCache = await res.json();
-    } catch (e) {
-      console.error('Failed to load /ja-sets.json:', e);
-    }
-  }
-  if (!jaEnNamesCache) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}ja-en-names.json`);
-      if (res.ok) jaEnNamesCache = await res.json();
-    } catch (e) {
-      console.error('Failed to load /ja-en-names.json:', e);
-    }
-  }
-  if (!jaCardNamesCache || Object.keys(jaCardNamesCache).length === 0) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}ja-card-names.json`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Object.keys(data).length > 0) {
-          jaCardNamesCache = data;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load /ja-card-names.json:', e);
-    }
-  }
-  if (!pokeSpeciesDictCache || Object.keys(pokeSpeciesDictCache).length === 0) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}pokemon-ja-en-dict.json`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Object.keys(data).length > 0) {
-          pokeSpeciesDictCache = data;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load /pokemon-ja-en-dict.json:', e);
-    }
-  }
-  if (!jaCardPricesCache || Object.keys(jaCardPricesCache).length === 0) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}ja-card-prices.json`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Object.keys(data).length > 0) {
-          jaCardPricesCache = data;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load /ja-card-prices.json:', e);
-    }
-  }
-  if (!enCardPricesCache || Object.keys(enCardPricesCache).length === 0) {
-    try {
-      const base = import.meta.env.BASE_URL || '/';
-      const res = await fetch(`${base}en-card-prices.json`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Object.keys(data).length > 0) {
-          enCardPricesCache = data;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load /en-card-prices.json:', e);
-    }
-  }
-  if (!jaSetsCache) jaSetsCache = [];
-  if (!jaEnNamesCache) jaEnNamesCache = {};
-  if (!jaCardNamesCache) jaCardNamesCache = {};
-  if (!pokeSpeciesDictCache) pokeSpeciesDictCache = {};
-  if (!jaCardPricesCache) jaCardPricesCache = {};
-  if (!enCardPricesCache) enCardPricesCache = {};
-  if (!jaTopCardsCache) jaTopCardsCache = [];
+            jaTopCardsCache = cleaned;
+          })
+          .catch(e => console.error('Failed to load ja-top-cards.json:', e));
+
+    const cardNamesPromise = (jaCardNamesCache && Object.keys(jaCardNamesCache).length > 0)
+      ? Promise.resolve()
+      : fetch(`${base}ja-card-names.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { if (Object.keys(data).length > 0) jaCardNamesCache = data; })
+          .catch(e => console.error('Failed to load ja-card-names.json:', e));
+
+    const dictPromise = (pokeSpeciesDictCache && Object.keys(pokeSpeciesDictCache).length > 0)
+      ? Promise.resolve()
+      : fetch(`${base}pokemon-ja-en-dict.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { if (Object.keys(data).length > 0) pokeSpeciesDictCache = data; })
+          .catch(e => console.error('Failed to load pokemon-ja-en-dict.json:', e));
+
+    const jaPricesPromise = (jaCardPricesCache && Object.keys(jaCardPricesCache).length > 0)
+      ? Promise.resolve()
+      : fetch(`${base}ja-card-prices.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { if (Object.keys(data).length > 0) jaCardPricesCache = data; })
+          .catch(e => console.error('Failed to load ja-card-prices.json:', e));
+
+    const enPricesPromise = (enCardPricesCache && Object.keys(enCardPricesCache).length > 0)
+      ? Promise.resolve()
+      : fetch(`${base}en-card-prices.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { if (Object.keys(data).length > 0) enCardPricesCache = data; })
+          .catch(e => console.error('Failed to load en-card-prices.json:', e));
+
+    await Promise.all([topCardsPromise, cardNamesPromise, dictPromise, jaPricesPromise, enPricesPromise]);
+
+    if (!jaSetsCache) jaSetsCache = [];
+    if (!jaEnNamesCache) jaEnNamesCache = {};
+    if (!jaCardNamesCache) jaCardNamesCache = {};
+    if (!pokeSpeciesDictCache) pokeSpeciesDictCache = {};
+    if (!jaCardPricesCache) jaCardPricesCache = {};
+    if (!enCardPricesCache) enCardPricesCache = {};
+    if (!jaTopCardsCache) jaTopCardsCache = [];
+  })().finally(() => {
+    metadataLoadingPromise = null;
+  });
+
+  return metadataLoadingPromise;
 }
 
 export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: string | number): number | undefined {
@@ -451,44 +441,46 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   await loadJapaneseMetadata();
   const allSets = jaSetsCache || [];
   const nameMap = jaEnNamesCache || {};
+  const sId = (seriesId || '').toLowerCase().replace(/_ja$/, '');
 
   const filteredSets = allSets.filter(s => {
     const id = s.id;
-    if (seriesId === 'me_ja') {
-      return !!id.match(/^M\d/);
+    const idLow = id.toLowerCase();
+    if (sId === 'me') {
+      return !!id.match(/^M\d/i);
     }
-    if (seriesId === 'sv_ja') {
-      if (id.startsWith('SVK') || id.startsWith('SVLS') || id.startsWith('SVLN')) return false;
+    if (sId === 'sv') {
+      if (idLow.startsWith('svk') || idLow.startsWith('svls') || idLow.startsWith('svln')) return false;
       const nameLow = (nameMap[id] || s.name || '').toLowerCase();
       if (nameLow.includes('starter set') || nameLow.includes('deck build box') || nameLow.includes('starter deck') || nameLow.includes('build & battle') || s.name.includes('スターターセット') || s.name.includes('デッキビルド')) return false;
-      return id.startsWith('SV');
+      return idLow.startsWith('sv');
     }
-    if (seriesId === 'swsh_ja') {
-      return (id.startsWith('S') && !id.startsWith('SV') && !id.startsWith('SM') && !id.startsWith('SVK')) || id.startsWith('sn');
+    if (sId === 'swsh') {
+      return (idLow.startsWith('s') && !idLow.startsWith('sv') && !idLow.startsWith('sm') && !idLow.startsWith('svk')) || idLow.startsWith('sn');
     }
-    if (seriesId === 'sm_ja') {
-      return id.startsWith('SM') || id.startsWith('SMP');
+    if (sId === 'sm') {
+      return idLow.startsWith('sm') || idLow.startsWith('smp');
     }
-    if (seriesId === 'xy_ja') {
-      return id.startsWith('XY') || id.startsWith('CP');
+    if (sId === 'xy') {
+      return idLow.startsWith('xy') || idLow.startsWith('cp');
     }
-    if (seriesId === 'bw_ja') {
-      return id.startsWith('BW') || id.startsWith('EBB') || id.startsWith('SC') || id.startsWith('BK');
+    if (sId === 'bw') {
+      return idLow.startsWith('bw') || idLow.startsWith('ebb') || idLow.startsWith('sc') || idLow.startsWith('bk');
     }
-    if (seriesId === 'hgss_ja') {
-      return id.startsWith('L') || id.startsWith('LL');
+    if (sId === 'hgss') {
+      return idLow.startsWith('l') || idLow.startsWith('ll');
     }
-    if (seriesId === 'pl_ja') {
-      return id.startsWith('Pt');
+    if (sId === 'pl') {
+      return idLow.startsWith('pt');
     }
-    if (seriesId === 'dp_ja') {
-      return id.startsWith('DP');
+    if (sId === 'dp') {
+      return idLow.startsWith('dp');
     }
-    if (seriesId === 'ex_ja') {
-      return id.startsWith('ADV') || id.startsWith('PCG');
+    if (sId === 'ex') {
+      return idLow.startsWith('adv') || idLow.startsWith('pcg');
     }
-    if (seriesId === 'classic_ja') {
-      return id.startsWith('PMCG') || id.startsWith('neo') || id.startsWith('VS') || id.startsWith('web') || id.startsWith('E');
+    if (sId === 'classic' || sId === 'base') {
+      return idLow.startsWith('pmcg') || idLow.startsWith('neo') || idLow.startsWith('vs') || idLow.startsWith('web') || idLow.startsWith('e');
     }
     return false;
   });
@@ -514,12 +506,17 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
   });
 
   let seriesName = 'Japanese Series';
-  if (seriesId === 'me_ja') seriesName = 'Mega Evolution';
-  else if (seriesId === 'sv_ja') seriesName = 'Scarlet & Violet';
-  else if (seriesId === 'swsh_ja') seriesName = 'Sword & Shield';
-  else if (seriesId === 'sm_ja') seriesName = 'Sun & Moon';
-  else if (seriesId === 'xy_ja') seriesName = 'XY Series';
-  else if (seriesId === 'classic_ja') seriesName = 'Original / Base / Classic';
+  if (sId === 'me') seriesName = 'Mega Evolution';
+  else if (sId === 'sv') seriesName = 'Scarlet & Violet';
+  else if (sId === 'swsh') seriesName = 'Sword & Shield';
+  else if (sId === 'sm') seriesName = 'Sun & Moon';
+  else if (sId === 'xy') seriesName = 'XY Series';
+  else if (sId === 'bw') seriesName = 'Black & White';
+  else if (sId === 'hgss') seriesName = 'HeartGold & SoulSilver';
+  else if (sId === 'pl') seriesName = 'Platinum';
+  else if (sId === 'dp') seriesName = 'Diamond & Pearl';
+  else if (sId === 'ex') seriesName = 'EX Series';
+  else if (sId === 'classic' || sId === 'base') seriesName = 'Original / Base / Classic';
 
   return {
     id: seriesId,

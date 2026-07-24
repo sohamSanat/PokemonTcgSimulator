@@ -3056,7 +3056,12 @@ export default function App() {
                     onClick={() => {
                       sound.playTabSwitch();
                       setSelectedLanguage('en');
-                      setSelectedSeriesId(prev => prev.startsWith('mystery') ? 'mystery_en' : ENGLISH_SERIES_TABS[0].id);
+                      setSelectedSeriesId(prev => {
+                        if (prev.startsWith('mystery')) return 'mystery_en';
+                        const clean = prev.replace(/_ja$/, '');
+                        const match = ENGLISH_SERIES_TABS.find(t => t.id === clean);
+                        return match ? match.id : ENGLISH_SERIES_TABS[0].id;
+                      });
                     }}
                     className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'en'
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
@@ -3069,7 +3074,12 @@ export default function App() {
                     onClick={() => {
                       sound.playTabSwitch();
                       setSelectedLanguage('ja');
-                      setSelectedSeriesId(prev => prev.startsWith('mystery') ? 'mystery_ja' : JAPANESE_SERIES_TABS[0].id);
+                      setSelectedSeriesId(prev => {
+                        if (prev.startsWith('mystery')) return 'mystery_ja';
+                        const jaId = prev.endsWith('_ja') ? prev : `${prev}_ja`;
+                        const match = JAPANESE_SERIES_TABS.find(t => t.id === jaId || t.id === prev);
+                        return match ? match.id : JAPANESE_SERIES_TABS[1]?.id || JAPANESE_SERIES_TABS[0].id;
+                      });
                     }}
                     className={`px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer ${selectedLanguage === 'ja'
                         ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]'
