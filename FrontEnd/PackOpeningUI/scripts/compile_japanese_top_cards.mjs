@@ -112,10 +112,38 @@ const folderToIdMap = {
   "dream league": "sm11b",
   "alter genesis": "sm12",
   "tag team gx_ tag all stars": "sm12a",
-  "gx ultra shiny": "sm8b"
+  "gx ultra shiny": "sm8b",
+  "awakening super psychic king": "xy10",
+  "awakening psychic king": "xy10",
+  "bandit ring": "xy7",
+  "blue shock": "xy8a",
+  "collection x": "xy1a",
+  "collection y": "xy1b",
+  "emerald break": "xy6",
+  "explosvie warrior": "xy11f",
+  "gaia volcano": "xy5g",
+  "pokékyun collection": "cp3",
+  "premium champion": "cp4",
+  "red flash": "xy8r",
+  "rising fist": "xy3",
+  "ruthless rebel": "xy11c",
+  "team magma vs team aqua": "cp1",
+  "tidal storm": "xy5t",
+  "outrageous anger": "xy9",
+  "dragon blade": "bw5g",
+  "dragon selection": "bw5z",
+  "hail blizzard": "bw3d",
+  "plasma gale": "bw7",
+  "psycho drive": "bw3h",
+  "shiny collection": "sc",
+  "spiral force": "bw8v",
+  "ex battle boost": "ebb",
+  "heartgold collection": "l1a",
+  "soulsilver collection": "l1b",
+  "lost link": "ll"
 };
 
-const generations = ['Scarlet & Violet', 'Sword & Shield', 'Sun & Moon'];
+const generations = ['Scarlet & Violet', 'Sword & Shield', 'Sun & Moon', 'XY', 'Black-And-White', 'Legend', 'Diamond-and-pearl', 'Platinum', 'MegaEvolution'];
 
 // Collect candidate cards first (no network), then bulk-validate images
 const candidates = []; // { id, setId, num, name, rawPrice, img }

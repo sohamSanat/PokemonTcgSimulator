@@ -688,28 +688,7 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     // ignore
   }
 
-  const enSetAliasMap: Record<string, string> = {
-    'sv2a': 'sv03.5', 'sv1s': 'sv01', 'sv1v': 'sv01', 'sv2d': 'sv02', 'sv2p': 'sv02',
-    'sv3': 'sv03', 'sv4a': 'sv04.5', 'sv4k': 'sv04', 'sv4m': 'sv04', 'sv5a': 'sv05',
-    'sv5k': 'sv05', 'sv5m': 'sv05', 'sv6': 'sv06', 'sv6a': 'sv06.5', 'sv7': 'sv07',
-    'sv8': 'sv08', 'sv8a': 'sv08.5'
-  };
-  try {
-    const enAlias = enSetAliasMap[prefixLow] || prefixLow;
-    const resEn = await fetch(`https://api.tcgdex.net/v2/en/sets/${enAlias}`);
-    if (resEn.ok) {
-      const dataEn = await resEn.json();
-      if (Array.isArray(dataEn?.cards)) {
-        for (const c of dataEn.cards) {
-          if (c.localId && c.name && !resolvedCardNamesMap.has(parseInt(c.localId, 10).toString())) {
-            resolvedCardNamesMap.set(parseInt(c.localId, 10).toString(), c.name);
-          }
-        }
-      }
-    }
-  } catch {
-    // ignore
-  }
+
 
   const offlineNames = jaCardNamesCache || {};
   // Determine the correct Scrydex set ID prefix.
