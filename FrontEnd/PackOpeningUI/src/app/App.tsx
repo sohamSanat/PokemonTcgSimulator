@@ -389,11 +389,6 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   }
 
   // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
-  // Skip fetchCardFull for Japanese cards (sv2a_ja etc.) — they don't exist in TCGDex API
-  // and the error fallback would overwrite the correct Scrydex CDN image URL.
-  if (!isJapaneseCard && !cardFullCache.has(poke.id) && !poke.pricing && !poke.prices && !poke.tcgplayer?.prices && poke.id) {
-    fetchCardFull(poke.id).catch(() => { });
-  }
   const cached = cardFullCache.get(poke.id);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
   if (activePricing || cached?.tcgplayer || cached?.cardmarket || poke.tcgplayer) {
@@ -905,6 +900,22 @@ export default function App() {
   const [isSetSelectorOpen, setIsSetSelectorOpen] = useState<boolean>(false);
   const [showChaseModal, setShowChaseModal] = useState<boolean>(false);
   const [cacheTick, setCacheTick] = useState<number>(0);
+  const debouncedCacheTickRef = useRef<number | null>(null);
+  useEffect(() => {
+    const handleCacheUpdate = () => {
+      if (debouncedCacheTickRef.current) return;
+      debouncedCacheTickRef.current = window.setTimeout(() => {
+        debouncedCacheTickRef.current = null;
+        setCacheTick(t => t + 1);
+      }, 350);
+    };
+
+    onCardFullCacheUpdated.add(handleCacheUpdate);
+    return () => {
+      onCardFullCacheUpdated.delete(handleCacheUpdate);
+      if (debouncedCacheTickRef.current) clearTimeout(debouncedCacheTickRef.current);
+    };
+  }, []);
   const [selectedSeriesId, setSelectedSeriesId] = useState<string>('mystery_en');
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ja'>('en');
   const [currentSeriesData, setCurrentSeriesData] = useState<TCGDexSeries | null>(null);
@@ -1221,8 +1232,8 @@ export default function App() {
   }, [currentPackArts]);
 
   useEffect(() => {
-    // We only want to preload if we have the manifest
-    if (Object.keys(setLogosManifest).length === 0) return;
+    // Only preload set logos when Set Selector modal is open to keep initial load lightweight
+    if (!isSetSelectorOpen || Object.keys(setLogosManifest).length === 0) return;
 
     let isActive = true;
 
@@ -1292,7 +1303,7 @@ export default function App() {
     return () => {
       isActive = false;
     };
-  }, [setLogosManifest, selectedSeriesId, selectedLanguage]);
+  }, [setLogosManifest, selectedSeriesId, selectedLanguage, isSetSelectorOpen]);
 
   useEffect(() => {
     // Stagger preload all card images inside the freshly generated pack
@@ -1525,8 +1536,8 @@ export default function App() {
           setCurrentPackArts(refinedArts);
         }
         const newCards = await generateJapanesePackFromSet(setDetails);
-        await preloadPackImages(newCards);
         setCards(formatAndSortCards(newCards));
+        preloadPackImages(newCards).catch(() => {});
         setIsChaseCardsReady(true);
       } else {
         const setDetails = await fetchSetDetails(setId);
@@ -1542,9 +1553,9 @@ export default function App() {
         }
         const newCards = await generatePackFromSet(setDetails);
         
-        // PRIORITY #1: Download and cache pack card images FIRST before background set warmup
-        await preloadPackImages(newCards);
+        // Render pack cards immediately, and trigger background image preload non-blockingly
         setCards(formatAndSortCards(newCards));
+        preloadPackImages(newCards).catch(() => {});
         setIsChaseCardsReady(false);
 
         // NOW that pack and contents are fully ready, trigger low-priority background chase card warmup
@@ -1813,8 +1824,8 @@ export default function App() {
         const newCards = isJaSet
           ? await generateJapanesePackFromSet(currentSet)
           : await generatePackFromSet(currentSet);
-        await preloadPackImages(newCards);
         setCards(formatAndSortCards(newCards));
+        preloadPackImages(newCards).catch(() => {});
         setTimeout(() => {
           orchestrateSetLoading(currentSet, newCards.map(c => c.id));
         }, 200);

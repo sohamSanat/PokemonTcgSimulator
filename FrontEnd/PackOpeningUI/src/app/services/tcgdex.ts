@@ -145,14 +145,9 @@ export function preloadPackImages(cards: PokemonCard[]): Promise<void> {
     const urls: string[] = [];
     cards.forEach(c => {
       const cardAny = c as any;
-      if (c.images?.large) urls.push(c.images.large);
-      if (c.images?.small) urls.push(c.images.small);
-      if (cardAny.image) {
-        urls.push(getCardImageUrl(cardAny.image, 'high'));
-        urls.push(getCardImageUrl(cardAny.image, 'low'));
-      }
-      if (c.id) {
-        urls.push(`https://images.scrydex.com/pokemon/${c.id.toLowerCase()}/large`);
+      const primaryUrl = c.images?.large || c.images?.small || cardAny.image;
+      if (primaryUrl) {
+        urls.push(getCardImageUrl(primaryUrl, 'high'));
       }
     });
 
@@ -168,16 +163,18 @@ export function preloadPackImages(cards: PokemonCard[]): Promise<void> {
       if (loaded >= uniqueUrls.length) resolve();
     };
 
-    uniqueUrls.forEach(url => {
-      const img = new Image();
-      (img as any).fetchPriority = 'high';
-      img.onload = checkDone;
-      img.onerror = checkDone;
-      img.src = url;
+    // Stagger image requests by 16ms to keep UI thread buttery smooth
+    uniqueUrls.forEach((url, idx) => {
+      setTimeout(() => {
+        const img = new Image();
+        img.onload = checkDone;
+        img.onerror = checkDone;
+        img.src = url;
+      }, idx * 16);
     });
 
-    // Safety fallback timeout: resolve after 1200ms max so pack opening UI is never blocked
-    setTimeout(resolve, 1200);
+    // Resolve after 800ms max so pack opening UI is never blocked
+    setTimeout(resolve, 800);
   });
 }
 
