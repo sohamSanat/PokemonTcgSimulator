@@ -36,7 +36,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
   style = {},
   showcase = false,
   onClick,
-  disableTilt = false,
+  disableTilt = true,
   children,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -119,10 +119,10 @@ export const InteractiveCard3D: React.FC<Props> = ({
     };
   }, [imageUrl, cardType, name]);
 
-  // Zero-latency GPU position updates for personalized cursor & touch reactive rim lighting & 3D tilt
+  // Position updates for lighting & 3D tilt (bypassed if tilt is disabled)
   const updateTiltAndLighting = useCallback(
     (clientX: number, clientY: number) => {
-      if (!cardRef.current || !interactive) return;
+      if (!cardRef.current || !interactive || !tiltEnabled) return;
       const rect = cardRef.current.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
       
@@ -134,7 +134,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
       cardRef.current.style.setProperty('--pointer-x', `${x}%`);
       cardRef.current.style.setProperty('--pointer-y', `${y}%`);
 
-      if (tiltEnabled && tiltRef.current) {
+      if (tiltRef.current) {
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         const maxAngleX = 16;
@@ -153,6 +153,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!tiltEnabled) return;
       const clientX = e.clientX;
       const clientY = e.clientY;
       if (rafMoveId.current !== null) return;
@@ -161,7 +162,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
         rafMoveId.current = null;
       });
     },
-    [updateTiltAndLighting]
+    [updateTiltAndLighting, tiltEnabled]
   );
 
   const handleMouseEnter = useCallback(() => {
@@ -172,6 +173,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
+      if (!tiltEnabled) return;
       const touch = e.touches[0] || e.changedTouches[0];
       if (!touch) return;
       const clientX = touch.clientX;
@@ -182,10 +184,11 @@ export const InteractiveCard3D: React.FC<Props> = ({
         rafMoveId.current = null;
       });
     },
-    [updateTiltAndLighting]
+    [updateTiltAndLighting, tiltEnabled]
   );
 
   const handleMouseLeave = useCallback(() => {
+    if (!tiltEnabled) return;
     if (rafMoveId.current !== null) {
       cancelAnimationFrame(rafMoveId.current);
       rafMoveId.current = null;
@@ -194,7 +197,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
     cardRef.current.style.setProperty('--pointer-x', '50%');
     cardRef.current.style.setProperty('--pointer-y', '50%');
 
-    if (tiltEnabled && tiltRef.current) {
+    if (tiltRef.current) {
       tiltRef.current.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
       tiltRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
     }
@@ -221,7 +224,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
           '--card-glow': majorityColor.glow,
           '--pointer-x': '50%',
           '--pointer-y': '50%',
-          perspective: '1000px',
+          ...(tiltEnabled ? { perspective: '1000px' } : {}),
         } as React.CSSProperties
       }
       data-type={cardType}
@@ -236,12 +239,16 @@ export const InteractiveCard3D: React.FC<Props> = ({
       <div
         ref={tiltRef}
         className="w-full h-full rounded-xl overflow-hidden relative"
-        style={{
-          transform: 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-          transformStyle: 'preserve-3d',
-          willChange: 'transform',
-          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
+        style={
+          tiltEnabled
+            ? {
+                transform: 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+                transformStyle: 'preserve-3d',
+                willChange: 'transform',
+                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+              }
+            : undefined
+        }
       >
         <div className="pkmn-card__translater w-full h-full" data-type={cardType}>
           <div className="pkmn-card__rotator w-full h-full relative cursor-pointer">

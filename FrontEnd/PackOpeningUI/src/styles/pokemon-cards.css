@@ -99,12 +99,12 @@
 .pkmn-card:not(.interactive):hover {
   --pointer-x: 25% !important;
   --pointer-y: 10% !important;
-  --card-scale: 1.06 !important;
+  --card-scale: 1.02 !important;
   --card-opacity: 1 !important;
   --translate-x: 0px !important;
-  --translate-y: -6px !important;
-  --rotate-x: 7deg !important;
-  --rotate-y: -15deg !important;
+  --translate-y: -4px !important;
+  --rotate-x: 0deg !important;
+  --rotate-y: 0deg !important;
   --background-x: 44% !important;
   --background-y: 36% !important;
   --pointer-from-center: .9 !important;
@@ -144,14 +144,8 @@
 .pkmn-card__translater,
 .pkmn-card__rotator {
   display: grid;
-  perspective: 600px;
-  /* Removed will-change: auto which is a no-op */
   transform-origin: center;
   -webkit-transform-origin: center;
-  transform-style: preserve-3d;
-  /* Force hardware acceleration for Firefox */
-  -webkit-transform: translate3d(0, 0, 0.01px);
-  transform: translate3d(0, 0, 0.01px);
 }
 
 .pkmn-card:hover .pkmn-card__translater,
@@ -160,23 +154,16 @@
 .pkmn-card.interacting .pkmn-card__rotator,
 .pkmn-card.active .pkmn-card__translater,
 .pkmn-card.active .pkmn-card__rotator {
-  /* Removed will-change: transform, box-shadow which causes layer thrashing in Firefox */
-  transform: translateZ(0);
+  transform: none;
 }
 
 .pkmn-card__translater {
   width: auto;
   position: relative;
-  --translate-z: calc(var(--card-scale) * 150px + 0.01px);
-  -webkit-transform: translate3d(var(--translate-x), var(--translate-y), var(--translate-z)) scale(var(--card-scale));
-  transform: translate3d(var(--translate-x), var(--translate-y), var(--translate-z)) scale(var(--card-scale));
 }
 
 .pkmn-card__rotator {
-  -webkit-transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
-  -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  transform: rotateY(var(--rotate-x)) rotateX(var(--rotate-y));
+  transform: none;
   pointer-events: auto;
 }
 

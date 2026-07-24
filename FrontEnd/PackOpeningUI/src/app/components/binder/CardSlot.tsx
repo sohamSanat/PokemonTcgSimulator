@@ -256,6 +256,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           <InteractiveCard3D
             card={card}
             interactive={true}
+            disableTilt={true}
             className="w-full h-full rounded-[6px]"
             style={{ width: "100%", height: "100%", borderRadius: 6 }}
           >
