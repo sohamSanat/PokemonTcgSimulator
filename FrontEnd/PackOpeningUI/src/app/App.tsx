@@ -1239,7 +1239,7 @@ export default function App() {
     const preloadSeriesLogos = async (seriesId: string, lang: 'en' | 'ja' = 'en') => {
       if (!isActive) return;
       try {
-        const seriesData = await fetchSeriesDetails(seriesId);
+        const seriesData = lang === 'ja' ? await fetchJapaneseSeriesDetails(seriesId) : await fetchSeriesDetails(seriesId);
         if (!isActive || !seriesData || !seriesData.sets) return;
 
         const logos = seriesData.sets

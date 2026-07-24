@@ -396,7 +396,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
       return idLow.startsWith('sv');
     }
     if (sId === 'swsh') {
-      return (idLow.startsWith('s') && !idLow.startsWith('sv') && !idLow.startsWith('sm') && !idLow.startsWith('svk')) || idLow.startsWith('sn');
+      return (idLow.startsWith('s') && !idLow.startsWith('sv') && !idLow.startsWith('sm') && !idLow.startsWith('svk') && !idLow.startsWith('sc')) || idLow.startsWith('sn');
     }
     if (sId === 'sm') {
       return idLow.startsWith('sm') || idLow.startsWith('smp');
