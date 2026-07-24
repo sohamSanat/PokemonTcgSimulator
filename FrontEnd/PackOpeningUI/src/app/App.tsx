@@ -2581,18 +2581,25 @@ export default function App() {
             {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
             <div className="grid grid-cols-3 gap-2 w-full relative">
               {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
-                Array.from({ length: 3 }).map((_, idx) => (
-                  <div
-                    key={`skeleton-mobile-${idx}`}
-                    className="flex flex-col items-center p-2 rounded-xl bg-[#14141c]/90 border border-white/15 shadow-md relative overflow-hidden"
-                    style={{ minHeight: '135px' }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
-                    <div className="w-8 h-3 rounded bg-white/10 mt-1 mb-1" />
-                    <div className="w-14 sm:w-16 h-20 sm:h-22 rounded-md bg-black/40 border border-white/10 my-1" />
-                    <div className="w-12 h-2.5 rounded bg-white/10 mt-1" />
+                <div className="col-span-3 flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b from-[#181824]/95 via-[#12121c]/95 to-[#0b0b10]/95 border border-amber-500/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-md min-h-[135px]">
+                  {/* Ambient Shimmer Light Effect */}
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.12),transparent_70%)] animate-pulse pointer-events-none" />
+                  <div className="flex items-center gap-2 mb-2 relative z-10">
+                    <RefreshCcw className="w-4 h-4 text-amber-400 animate-spin" />
+                    <span className="text-xs font-black tracking-wider uppercase bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
+                      Loading Chase Cards...
+                    </span>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
                   </div>
-                ))
+                  <div className="w-full grid grid-cols-3 gap-2 relative z-10 opacity-70">
+                    {Array.from({ length: 3 }).map((_, idx) => (
+                      <div key={`curtain-mob-${idx}`} className="flex flex-col items-center p-1.5 rounded-xl bg-black/40 border border-amber-500/20 relative overflow-hidden">
+                        <div className="w-10 h-14 rounded-md bg-white/10 animate-pulse my-1" />
+                        <div className="w-12 h-2 rounded bg-amber-400/20 mt-1 animate-pulse" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                 <div
                   key={card.id || idx}
@@ -2701,23 +2708,30 @@ export default function App() {
                     {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
                     <div className="space-y-2 relative">
                       {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
-                        Array.from({ length: 3 }).map((_, idx) => (
-                          <div
-                            key={`skeleton-desktop-${idx}`}
-                            className="flex items-center justify-between p-2 rounded-xl bg-black/40 border border-white/10 relative overflow-hidden"
-                            style={{ minHeight: '56px' }}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
-                            <div className="flex items-center gap-2.5">
-                              <div className="w-9 h-12 rounded-md bg-white/10 shrink-0" />
-                              <div className="flex flex-col gap-1.5">
-                                <div className="w-24 h-3 rounded bg-white/10" />
-                                <div className="w-14 h-2.5 rounded bg-white/5" />
-                              </div>
-                            </div>
-                            <div className="w-10 h-4 rounded bg-white/10" />
+                        <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-gradient-to-b from-[#181824]/95 via-[#12121c]/95 to-[#0b0b10]/95 border border-amber-500/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-md min-h-[180px]">
+                          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.12),transparent_70%)] animate-pulse pointer-events-none" />
+                          <div className="flex items-center gap-2 mb-3 relative z-10">
+                            <RefreshCcw className="w-4 h-4 text-amber-400 animate-spin" />
+                            <span className="text-xs font-black tracking-wider uppercase bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
+                              Loading Chase Cards...
+                            </span>
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                           </div>
-                        ))
+                          <div className="w-full space-y-2 relative z-10 opacity-75">
+                            {Array.from({ length: 3 }).map((_, idx) => (
+                              <div key={`curtain-desk-${idx}`} className="flex items-center justify-between p-2 rounded-xl bg-black/40 border border-amber-500/20 relative overflow-hidden">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-8 h-10 rounded-md bg-white/10 animate-pulse shrink-0" />
+                                  <div className="flex flex-col gap-1.5">
+                                    <div className="w-20 h-2.5 rounded bg-amber-300/20 animate-pulse" />
+                                    <div className="w-12 h-2 rounded bg-white/10 animate-pulse" />
+                                  </div>
+                                </div>
+                                <div className="w-8 h-3 rounded bg-emerald-400/20 animate-pulse" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
                         <div
                           key={card.id || idx}
@@ -3790,24 +3804,42 @@ export default function App() {
               {/* Chase Cards Grid */}
               <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar min-h-[300px]">
                 {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
-                  Array.from({ length: 8 }).map((_, idx) => (
-                    <div
-                      key={`skeleton-${idx}`}
-                      className="relative rounded-2xl bg-[#1c1e2d]/60 border border-white/5 p-3 flex flex-col items-center justify-between overflow-hidden"
-                      style={{ minHeight: '235px' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse -translate-x-full" />
-                      <div className="w-full flex items-center justify-between mb-2 gap-1.5">
-                        <div className="w-16 h-5 rounded-md bg-white/10" />
-                        <div className="w-12 h-5 rounded-md bg-white/10" />
+                  <>
+                    {/* Animated Loading Header Banner */}
+                    <div className="col-span-full py-5 px-4 flex flex-col items-center justify-center bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border border-amber-400/35 rounded-2xl mb-3 shadow-[0_10px_30px_rgba(245,158,11,0.15)] relative overflow-hidden backdrop-blur-md">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent animate-pulse -translate-x-full" />
+                      <div className="flex items-center gap-2.5 mb-1 z-10">
+                        <RefreshCcw className="w-5 h-5 text-amber-400 animate-spin" />
+                        <h3 className="text-sm sm:text-base font-black tracking-widest uppercase bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
+                          Loading Chase Cards...
+                        </h3>
+                        <Sparkles className="w-4 h-4 text-amber-400 animate-bounce" />
                       </div>
-                      <div className="w-24 h-36 rounded-lg bg-black/40 border border-white/10 my-1" />
-                      <div className="w-full flex flex-col items-center gap-1.5 mt-2">
-                        <div className="w-20 h-4 rounded-full bg-white/10" />
-                        <div className="w-14 h-3 rounded-full bg-white/5" />
-                      </div>
+                      <p className="text-[11px] text-gray-300 font-semibold tracking-wide z-10 text-center">
+                        Warming up real market prices & high-resolution artwork for <span className="text-amber-300 font-bold">{currentSet?.name || 'Active Set'}</span>
+                      </p>
                     </div>
-                  ))
+
+                    {/* Shimmering Skeleton Curtain Cards */}
+                    {Array.from({ length: 8 }).map((_, idx) => (
+                      <div
+                        key={`curtain-modal-${idx}`}
+                        className="relative rounded-2xl bg-[#181824]/80 border border-amber-500/20 p-3 flex flex-col items-center justify-between overflow-hidden shadow-lg"
+                        style={{ minHeight: '235px' }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/10 to-transparent animate-pulse -translate-x-full" />
+                        <div className="w-full flex items-center justify-between mb-2 gap-1.5">
+                          <div className="w-14 h-5 rounded-md bg-amber-400/20 animate-pulse" />
+                          <div className="w-12 h-5 rounded-md bg-emerald-400/20 animate-pulse" />
+                        </div>
+                        <div className="w-24 h-36 rounded-lg bg-black/50 border border-white/10 my-1 animate-pulse" />
+                        <div className="w-full flex flex-col items-center gap-1.5 mt-2">
+                          <div className="w-20 h-3 rounded-full bg-white/15 animate-pulse" />
+                          <div className="w-14 h-2.5 rounded-full bg-amber-400/10 animate-pulse" />
+                        </div>
+                      </div>
+                    ))}
+                  </>
                 ) : chaseCardsForActiveSet.length > 0 ? (
                   chaseCardsForActiveSet.map(({ card, value }, idx) => (
                     <div
