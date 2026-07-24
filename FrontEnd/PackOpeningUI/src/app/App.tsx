@@ -2267,29 +2267,8 @@ export default function App() {
       ) : (
         <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
-          {/* Title Row with Small Circle Missions & Checklist Symbol */}
-          <div className="w-full max-w-4xl mx-auto flex items-center justify-between sm:justify-center gap-4 mb-5 px-2 relative shrink-0">
-            <motion.h1
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400 text-center"
-            >
-              {currentMysteryPack ? (
-                <span className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
-                  <span className="text-amber-400 font-extrabold flex items-center gap-1.5">
-                    <span>{currentMysteryPack.icon}</span>
-                    <span>{currentMysteryPack.name}</span>
-                  </span>
-                  <span className="text-xs sm:text-sm px-3 py-1 rounded-full bg-white/10 text-gray-300 font-medium border border-white/15">
-                    Set: {currentSet?.name || 'Loading'}
-                  </span>
-                </span>
-              ) : (
-                currentSet?.name || 'Live Cards'
-              )}
-            </motion.h1>
-
+          {/* Top Bar Action Buttons */}
+          <div className="w-full max-w-4xl mx-auto flex items-center justify-end gap-3 mb-3 px-2 relative shrink-0">
             {/* ACTION BUTTONS: TASKS & 5-MIN LUCKY DROP CIRCLE BUTTONS */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {/* SMALL CIRCLE WITH CHECKLIST SYMBOL (TASKS) */}
@@ -2341,131 +2320,149 @@ export default function App() {
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Top Grid: Financial Performance, Missions & Lucky Drop Pods */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-4 relative z-10">
-              {/* Pod 1: Pack Price */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 relative z-10">
+              {/* Pod 1: Pack Cost & Total Spent (Combined Column) */}
               <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
-                <div className="flex items-center justify-between text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5"><Package className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" /> Pack Cost</span>
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <span className="flex items-center gap-1.5 text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
+                    <Package className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+                    Pack Cost
+                  </span>
+                  <span className="text-sm sm:text-base font-black font-mono tracking-tight text-white">
+                    ${getSetBoosterPrice(currentSet).toFixed(2)}
+                  </span>
                 </div>
-                <div className="text-base sm:text-lg font-black font-mono tracking-tight text-white mt-1.5">
-                  ${getSetBoosterPrice(currentSet).toFixed(2)}
-                </div>
-              </div>
-
-              {/* Pod 2: Total Spent */}
-              <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
-                <div className="flex items-center justify-between text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5"><Coins className="w-3.5 h-3.5 text-blue-400 group-hover:scale-110 transition-transform" /> Total Spent</span>
-                </div>
-                <div className="text-base sm:text-lg font-black font-mono tracking-tight text-gray-200 mt-1.5">
-                  ${sessionSpent.toFixed(2)}
-                </div>
-              </div>
-
-              {/* Pod 3: Total Value Opened */}
-              <div className="bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent border border-amber-500/35 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between relative overflow-hidden shadow-[inset_0_1px_2px_rgba(245,158,11,0.2)] group">
-                <div className="flex items-center justify-between text-amber-300/90 text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> Value Opened</span>
-                </div>
-                <div className="text-lg sm:text-xl font-black font-mono tracking-tight text-amber-300 mt-1.5 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)]">
-                  ${sessionTotal.toFixed(2)}
+                <div className="flex items-center justify-between pt-2">
+                  <span className="flex items-center gap-1.5 text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
+                    <Coins className="w-3.5 h-3.5 text-blue-400 group-hover:scale-110 transition-transform" />
+                    Total Spent
+                  </span>
+                  <span className="text-sm sm:text-base font-black font-mono tracking-tight text-gray-200">
+                    ${sessionSpent.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
-              {/* Pod 4: Net Return */}
-              <div className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all relative overflow-hidden ${(sessionTotal - sessionSpent) >= 0
-                ? 'bg-gradient-to-br from-emerald-500/15 via-emerald-500/5 to-transparent border border-emerald-500/40 text-emerald-300 shadow-[inset_0_1px_2px_rgba(16,185,129,0.2)]'
-                : 'bg-gradient-to-br from-rose-500/15 via-rose-500/5 to-transparent border border-rose-500/40 text-rose-300 shadow-[inset_0_1px_2px_rgba(244,63,94,0.2)]'
-                }`}>
-                <div className="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wider opacity-90">
-                  <span className="flex items-center gap-1.5">
+              {/* Pod 2: Value Opened & Net Return (Combined Column) */}
+              <div className="bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-500/30 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group shadow-[inset_0_1px_2px_rgba(245,158,11,0.15)]">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <span className="flex items-center gap-1.5 text-amber-300/90 text-[11px] font-extrabold uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                    Value Opened
+                  </span>
+                  <span className="text-sm sm:text-base font-black font-mono tracking-tight text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]">
+                    ${sessionTotal.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider opacity-90">
                     {(sessionTotal - sessionSpent) >= 0 ? (
                       <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
                     ) : (
                       <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
                     )}
-                    Net Return
+                    <span className={(sessionTotal - sessionSpent) >= 0 ? 'text-emerald-300' : 'text-rose-300'}>
+                      Net Return
+                    </span>
                   </span>
-                </div>
-                <div className={`text-lg sm:text-xl font-black font-mono tracking-tight mt-1.5 ${(sessionTotal - sessionSpent) >= 0
-                  ? 'text-emerald-400 drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]'
-                  : 'text-rose-400 drop-shadow-[0_0_12px_rgba(244,63,94,0.4)]'
-                  }`}>
-                  {(sessionTotal - sessionSpent) >= 0 ? '+' : '-'}${Math.abs(sessionTotal - sessionSpent).toFixed(2)}
+                  <span className={`text-sm sm:text-base font-black font-mono tracking-tight ${(sessionTotal - sessionSpent) >= 0
+                    ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                    : 'text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]'
+                    }`}>
+                    {(sessionTotal - sessionSpent) >= 0 ? '+' : '-'}${Math.abs(sessionTotal - sessionSpent).toFixed(2)}
+                  </span>
                 </div>
               </div>
 
-              {/* Pod 5: Missions & Free Packs */}
+              {/* Pod 3: Missions & Free Packs */}
               <div
                 onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-                className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group col-span-2 sm:col-span-1"
+                className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group"
               >
                 <div className="flex items-center justify-between text-[#38bdf8] text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5">
-                    <ListChecks className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform animate-pulse" />
-                    Free Packs & Missions
+                  <span className="flex items-center gap-1.5 truncate">
+                    <ListChecks className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform animate-pulse shrink-0" />
+                    <span className="truncate">Free Packs & Missions</span>
                   </span>
-                  <span className="w-4 h-4 rounded-full bg-[#38bdf8] text-black text-[9px] font-black flex items-center justify-center animate-bounce">
+                  <span className="w-4 h-4 rounded-full bg-[#38bdf8] text-black text-[9px] font-black flex items-center justify-center shrink-0">
                     ✓
                   </span>
                 </div>
-                <div className="flex flex-col gap-1 mt-1.5">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 my-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-300 font-bold">🇺🇸 English</span>
-                    <span className="text-sm font-black font-mono text-white">
+                    <span className="text-[11px] text-gray-300 font-bold">🇺🇸 EN:</span>
+                    <span className="text-xs font-black font-mono text-white">
                       {dailyFreePacks.english}/5
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-300 font-bold">🇯🇵 Japanese</span>
-                    <span className="text-sm font-black font-mono text-white">
+                    <span className="text-[11px] text-gray-300 font-bold">🇯🇵 JP:</span>
+                    <span className="text-xs font-black font-mono text-white">
                       {dailyFreePacks.japanese}/5
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-amber-300 font-bold flex items-center gap-1">🎒 Inventory</span>
-                    <span className="text-sm font-black font-mono text-amber-300">
-                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)} Packs
+                    <span className="text-[11px] text-amber-300 font-bold">🎒 Packs:</span>
+                    <span className="text-xs font-black font-mono text-amber-300">
+                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-300 font-bold">Cash</span>
-                    <span className="text-sm font-black font-mono text-amber-400">
-                      {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(2)}`}
+                    <span className="text-[11px] text-gray-300 font-bold">💰 Cash:</span>
+                    <span className="text-xs font-black font-mono text-amber-400 truncate">
+                      {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Pod 6: 5-Min Lucky Drop */}
+              {/* Pod 4: 5-Min Lucky Drop */}
               <div
                 onClick={handleLuckyDropClick}
-                className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group col-span-2 sm:col-span-1 ${
+                className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group ${
                   luckyDropSeconds === 0
-                    ? 'bg-gradient-to-br from-amber-500/30 via-orange-500/20 to-purple-900/60 border border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.5)] animate-pulse'
-                    : 'bg-gradient-to-br from-purple-900/30 via-slate-900/40 to-indigo-950/40 border border-purple-500/30 hover:border-purple-400 shadow-[inset_0_1px_2px_rgba(168,85,247,0.2)]'
+                    ? 'bg-gradient-to-br from-amber-500/25 via-orange-500/20 to-purple-900/50 border border-amber-400/80 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)]'
+                    : 'bg-gradient-to-br from-purple-900/25 via-slate-900/40 to-indigo-950/40 border border-purple-500/30 hover:border-purple-400 shadow-[inset_0_1px_2px_rgba(168,85,247,0.2)]'
                 }`}
               >
                 <div className="flex items-center justify-between text-purple-300 text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5">
-                    <Gift className={`w-3.5 h-3.5 ${luckyDropSeconds === 0 ? 'text-amber-300 animate-bounce' : 'text-purple-400 group-hover:scale-110 transition-transform'}`} />
-                    5-Min Lucky Drop
+                  <span className="flex items-center gap-1.5 truncate">
+                    <Gift className={`w-3.5 h-3.5 shrink-0 ${luckyDropSeconds === 0 ? 'text-amber-300 animate-bounce' : 'text-purple-400 group-hover:scale-110 transition-transform'}`} />
+                    <span className="truncate">5-Min Lucky Drop</span>
                   </span>
-                  <span className={`text-[9px] font-mono font-black px-1.5 py-0.2 rounded-full border ${
-                    luckyDropSeconds === 0 ? 'bg-amber-400 text-black border-black animate-pulse' : 'bg-black/60 text-purple-300 border-purple-500/40'
+                  <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded-full border shrink-0 ${
+                    luckyDropSeconds === 0 ? 'bg-amber-400 text-black border-black animate-pulse shadow-sm' : 'bg-black/60 text-purple-300 border-purple-500/40'
                   }`}>
-                    {luckyDropSeconds === 0 ? 'READY!' : '5-MIN'}
+                    {luckyDropSeconds === 0 ? 'READY!' : 'IN PROGRESS'}
                   </span>
                 </div>
-                <div className="flex flex-col gap-1 mt-1.5">
-                  <div className="text-sm sm:text-base font-black font-mono tracking-tight text-white flex items-center justify-between">
-                    <span>{luckyDropSeconds === 0 ? '🎁 CLAIM DROP!' : formatTimer(luckyDropSeconds)}</span>
-                  </div>
-                  {/* Live Progress Bar */}
-                  <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden mt-1 border border-white/10">
+
+                <div className="my-1.5">
+                  {luckyDropSeconds === 0 ? (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleLuckyDropClick(); }}
+                      className="w-full py-1.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-black font-black text-[11px] uppercase tracking-wider shadow-[0_2px_10px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 animate-pulse"
+                    >
+                      <span>🎁</span>
+                      <span>Claim Free Drop!</span>
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-gray-400 font-semibold">Next Drop:</span>
+                      <span className="text-sm font-black font-mono text-purple-200 tracking-tight">
+                        {formatTimer(luckyDropSeconds)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-full">
+                  <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/10">
                     <div
                       className={`h-full transition-all duration-1000 ${
-                        luckyDropSeconds === 0 ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-purple-500 shadow-[0_0_10px_rgba(245,158,11,0.9)]' : 'bg-purple-500'
+                        luckyDropSeconds === 0
+                          ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-purple-500 shadow-[0_0_10px_rgba(245,158,11,0.9)]'
+                          : 'bg-gradient-to-r from-purple-500 to-indigo-400'
                       }`}
                       style={{ width: `${Math.round(((300 - luckyDropSeconds) / 300) * 100)}%` }}
                     />
