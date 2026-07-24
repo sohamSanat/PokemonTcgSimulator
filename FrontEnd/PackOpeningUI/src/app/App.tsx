@@ -816,7 +816,6 @@ const JAPANESE_SERIES_TABS = [
   { id: 'hgss_ja', name: 'Legend' },
   { id: 'pl_ja', name: 'Platinum' },
   { id: 'dp_ja', name: 'Diamond & Pearl' },
-  { id: 'ex_ja', name: 'EX Series' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
 ];
 

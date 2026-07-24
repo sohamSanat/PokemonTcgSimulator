@@ -416,11 +416,8 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
     if (sId === 'dp') {
       return idLow.startsWith('dp');
     }
-    if (sId === 'ex') {
-      return idLow.startsWith('adv') || idLow.startsWith('pcg');
-    }
-    if (sId === 'classic' || sId === 'base') {
-      return idLow.startsWith('pmcg') || idLow.startsWith('neo') || idLow.startsWith('vs') || idLow.startsWith('web') || idLow.startsWith('e');
+    if (sId === 'classic' || sId === 'base' || sId === 'ex') {
+      return idLow.startsWith('pmcg') || idLow.startsWith('neo') || idLow.startsWith('vs') || idLow.startsWith('web') || idLow.startsWith('e') || idLow.startsWith('adv') || idLow.startsWith('pcg');
     }
     return false;
   });
