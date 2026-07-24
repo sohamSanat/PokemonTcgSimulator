@@ -26,11 +26,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const [isSimulatingLoad, setIsSimulatingLoad] = useState<boolean>(true);
 
   useEffect(() => {
-    // Simulate loading cards and fetching prices when the binder section is first clicked
-    const t = setTimeout(() => {
-      setIsSimulatingLoad(false);
-    }, 1200);
-    return () => clearTimeout(t);
+    setIsSimulatingLoad(false);
   }, []);
 
   const refreshData = useCallback(() => {
