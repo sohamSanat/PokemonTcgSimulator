@@ -123,7 +123,7 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
       </div>
 
       {/* Mission Category Tabs */}
-      <div className="flex items-center justify-between flex-wrap gap-4 mb-8 bg-[#111827]/80 p-2 rounded-2xl border border-white/10 backdrop-blur-md">
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-8 bg-[#111827]/80 p-2 rounded-2xl border border-white/10">
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {(['daily', 'weekly', 'monthly'] as const).map(tab => {
             const isSelected = activeTab === tab;
@@ -166,7 +166,7 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
       </div>
 
       {/* Pack Inventory / Pack Vault Access Card replacing Earned Set Packs */}
-      <div className="mb-8 bg-gradient-to-r from-[#1b152d] via-[#141024] to-[#100d1e] p-5 sm:p-6 rounded-2xl border-2 border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.2)] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="mb-8 bg-gradient-to-r from-[#1b152d] via-[#141024] to-[#100d1e] p-5 sm:p-6 rounded-2xl border-2 border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.2)] flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] shrink-0">
             <Box className="w-6 h-6 animate-pulse" />
@@ -331,7 +331,7 @@ export const MissionsView: React.FC<MissionsViewProps> = ({ onBackToPacks, onOpe
         {claimedCardReward && (
           <div
             onClick={() => setClaimedCardReward(null)}
-            className="fixed inset-0 z-[300] bg-black/85 backdrop-blur-lg flex items-center justify-center p-4"
+            className="fixed inset-0 z-[300] bg-black/85 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0, rotateY: 30 }}

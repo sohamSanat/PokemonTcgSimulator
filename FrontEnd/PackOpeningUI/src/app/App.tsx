@@ -661,7 +661,7 @@ const formatAndSortCards = (newCards: PokemonCard[]): CardData[] => {
 };
 
 const StatsPill = React.memo(({ label, value, highlight = false, colorClass }: { label: string; value: string; highlight?: boolean; colorClass?: string }) => (
-  <div className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl border backdrop-blur-xl transition-all ${highlight
+  <div className={`flex items-center gap-2.5 px-5 py-2.5 rounded-2xl border transition-all ${highlight
     ? 'bg-gradient-to-r from-[#1f1f2e] via-[#1a1a24] to-[#14141c] border-amber-500/50 shadow-[0_8px_20px_rgba(0,0,0,0.7),inset_0_1px_2px_rgba(245,158,11,0.25)]'
     : 'bg-[#14141c]/90 border-white/15 shadow-[0_6px_16px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)]'
     }`}>
@@ -851,7 +851,7 @@ const RevealedCardItem = React.memo(({
           className="w-full h-full shadow-[0_10px_25px_rgba(0,0,0,0.8)] border border-white/20 rounded-2xl group-hover:border-amber-400/60 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
         >
           {/* Price badge right above/on top of card art */}
-          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5 backdrop-blur-sm">
+          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5">
             <span>${card.value ? card.value.toFixed(2) : (setPackPrices[card.pokemon?.id?.split('-')[0] || 'swsh3'] || 5.99).toFixed(2)}</span>
           </div>
           <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/90 border border-white/20 text-[9px] font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity z-20">
@@ -1185,26 +1185,36 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // Aggressively preload all pack arts for the current set to ensure instant render
+    // Stagger preload of pack arts for the current set to avoid blocking first paint
+    let isActive = true;
     const injectedLinks: HTMLLinkElement[] = [];
-    currentPackArts.forEach(src => {
-      const img = new Image();
-      img.fetchPriority = 'high';
-      img.src = src;
+    
+    const ric = (window as any).requestIdleCallback || ((cb: any) => setTimeout(cb, 100));
+    ric(() => {
+      if (!isActive) return;
+      currentPackArts.forEach((src, idx) => {
+        setTimeout(() => {
+          if (!isActive) return;
+          const img = new Image();
+          img.fetchPriority = 'high';
+          img.src = src;
 
-      // Inject network-level preload links to bypass React rendering delays
-      if (!document.querySelector(`link[href="${src}"]`)) {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'image';
-        link.href = src;
-        link.fetchPriority = 'high';
-        document.head.appendChild(link);
-        injectedLinks.push(link);
-      }
+          // Inject network-level preload links to bypass React rendering delays
+          if (!document.querySelector(`link[href="${src}"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = src;
+            link.fetchPriority = 'high';
+            document.head.appendChild(link);
+            injectedLinks.push(link);
+          }
+        }, idx * 50); // Stagger by 50ms
+      });
     });
 
     return () => {
+      isActive = false;
       injectedLinks.forEach(link => {
         if (link.parentNode) link.parentNode.removeChild(link);
       });
@@ -1251,14 +1261,30 @@ export default function App() {
       // 1. First, load the logos of sets of the generation the user has currently selected
       await preloadSeriesLogos(selectedSeriesId, selectedLanguage);
 
-      // 2. Only when that loading is finished, start loading up other generation's sets' logos in the background
+      // 2. Only when that loading is finished, start loading up other generation's sets' logos in the background.
+      //    Deferred to browser idle time so this aggressive multi-series fetch+decode
+      //    storm does NOT compete with first paint and the initial pack load (the
+      //    #1 cause of the "jammed on first load" symptom). We yield to whatever
+      //    the user is actually interacting with first.
       const activeTabs = ENGLISH_SERIES_TABS;
       const otherSeries = activeTabs.map(t => t.id).filter(id => id !== selectedSeriesId && !id.startsWith('mystery'));
-      for (const seriesId of otherSeries) {
-        if (!isActive) break;
-        await preloadSeriesLogos(seriesId, selectedLanguage);
-        // Small delay between series preloads to keep network free for user interactions
-        await new Promise(r => setTimeout(r, 100));
+      const preloadOtherSeries = async () => {
+        for (const seriesId of otherSeries) {
+          if (!isActive) break;
+          await preloadSeriesLogos(seriesId, selectedLanguage);
+          // Small delay between series preloads to keep network free for user interactions
+          await new Promise(r => setTimeout(r, 100));
+        }
+      };
+
+      // requestIdleCallback with a 2s fallback timeout; some browsers lack it.
+      type IdleCB = (cb: (deadline: { timeRemaining: () => number; didTimeout: boolean }) => void, options?: { timeout: number }) => number;
+      const ric: IdleCB | undefined =
+        (window as any).requestIdleCallback ? (window as any).requestIdleCallback.bind(window) : undefined;
+      if (ric) {
+        ric(() => { void preloadOtherSeries(); }, { timeout: 2000 });
+      } else {
+        setTimeout(preloadOtherSeries, 1200);
       }
     };
 
@@ -1270,25 +1296,30 @@ export default function App() {
   }, [setLogosManifest, selectedSeriesId, selectedLanguage]);
 
   useEffect(() => {
-    // Aggressively preload all card images inside the freshly generated pack
+    // Stagger preload all card images inside the freshly generated pack
     // while the pack is sitting on the table unopened, so they load instantly when revealed
+    let isActive = true;
     if (cards.length > 0 && packStage === 'unopened') {
-      cards.forEach(card => {
-        let imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
-        if (!imgUrl && (card.pokemon as any).image) {
-          imgUrl = getCardImageUrl((card.pokemon as any).image, 'high');
-        } else if (!imgUrl) {
-          imgUrl = `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`;
-        }
+      cards.forEach((card, idx) => {
+        setTimeout(() => {
+          if (!isActive) return;
+          let imgUrl = card.pokemon.images?.large || card.pokemon.images?.small;
+          if (!imgUrl && (card.pokemon as any).image) {
+            imgUrl = getCardImageUrl((card.pokemon as any).image, 'high');
+          } else if (!imgUrl) {
+            imgUrl = `https://images.scrydex.com/pokemon/${(card.pokemon.id || 'swsh3-1').toLowerCase()}/large`;
+          }
 
-        if (imgUrl) {
-          const img = new Image();
-          // Use low priority so it doesn't block UI threads, since they have time before opening
-          (img as any).fetchPriority = 'low';
-          img.src = imgUrl;
-        }
+          if (imgUrl) {
+            const img = new Image();
+            // Use low priority so it doesn't block UI threads, since they have time before opening
+            (img as any).fetchPriority = 'low';
+            img.src = imgUrl;
+          }
+        }, idx * 100); // 100ms stagger between each of the 11 cards
       });
     }
+    return () => { isActive = false; };
   }, [cards, packStage]);
 
   useEffect(() => {
@@ -1831,7 +1862,7 @@ export default function App() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Premium Leather-Bound Header */}
-      <header className="w-full py-2 px-2.5 sm:py-2.5 sm:px-5 flex flex-col lg:flex-row items-center justify-between gap-2.5 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+      <header className="w-full py-2 px-2.5 sm:py-2.5 sm:px-5 flex flex-col lg:flex-row items-center justify-between gap-2.5 z-[60] relative border-b border-white/10 bg-[#14141c]/95 shadow-[0_10px_30px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
         {/* Mobile Header Background Overlay to prevent scroll bleeding */}
         <div className={`absolute inset-0 bg-[#14141c] z-[65] lg:hidden transition-opacity duration-300 pointer-events-none border-b border-white/10 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} />
 
@@ -1866,7 +1897,7 @@ export default function App() {
 
         {/* Navigation Container (Full Screen on Mobile, High-Density Inline Dock on Desktop) */}
         <div className={`
-          fixed inset-0 z-[60] w-full h-[100dvh] bg-[#14141c]/98 backdrop-blur-3xl p-6 flex flex-col gap-6 transform transition-all duration-300 ease-in-out pt-24 overflow-y-auto
+          fixed inset-0 z-[60] w-full h-[100dvh] bg-[#14141c]/98 p-6 flex flex-col gap-6 transform transition-all duration-300 ease-in-out pt-24 overflow-y-auto
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
           lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-2 lg:transition-none lg:ml-2 lg:opacity-100 lg:pointer-events-auto
         `}>
@@ -1888,7 +1919,7 @@ export default function App() {
           </div>
 
           {/* Center: Sleek High-Density Pill Dock (Desktop) / Vertical List (Mobile) */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-1.5 lg:gap-0.5 w-full lg:w-auto lg:bg-[#0a0a0f]/80 lg:backdrop-blur-xl lg:p-1 lg:rounded-xl lg:border lg:border-white/10 lg:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.6)] shrink-0 min-w-0">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-1.5 lg:gap-0.5 w-full lg:w-auto lg:bg-[#0a0a0f]/80 lg:p-1 lg:rounded-xl lg:border lg:border-white/10 lg:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.6)] shrink-0 min-w-0">
 
             {/* Packs Tab */}
             <button
@@ -2316,7 +2347,7 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="w-full max-w-4xl mx-auto mb-6 shrink-0 rounded-3xl bg-gradient-to-b from-[#161622]/90 via-[#101018]/90 to-[#0a0a10]/95 border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.12)] backdrop-blur-2xl p-4 sm:p-5 relative overflow-hidden z-20"
+            className="w-full max-w-4xl mx-auto mb-6 shrink-0 rounded-3xl bg-gradient-to-b from-[#161622]/90 via-[#101018]/90 to-[#0a0a10]/95 border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.12)] p-4 sm:p-5 relative overflow-hidden z-20"
           >
             {/* Subtle ambient glowing background glow */}
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -2499,7 +2530,7 @@ export default function App() {
           {/* 📱 Mobile-Only Set Intelligence & Top Chase Grails Bar (Hidden on Desktop >= lg) */}
           <div className="flex lg:hidden flex-col gap-2.5 w-full max-w-md mx-auto px-3 my-3 shrink-0">
             {/* Top Row: Active Set Info + View All Chase Modal Button */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-[#1a1a26]/95 via-[#181824]/95 to-[#14141c]/95 border border-amber-500/40 shadow-[0_6px_25px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl">
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-[#1a1a26]/95 via-[#181824]/95 to-[#14141c]/95 border border-amber-500/40 shadow-[0_6px_25px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(255,255,255,0.15)]">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 shrink-0 shadow-sm">
                   🔥
@@ -2600,7 +2631,7 @@ export default function App() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="hidden lg:flex flex-col w-60 xl:w-72 shrink-0 bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 rounded-3xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl relative overflow-hidden group select-none self-center"
+                  className="hidden lg:flex flex-col w-60 xl:w-72 shrink-0 bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 rounded-3xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.65)] relative overflow-hidden group select-none self-center"
                 >
                   <div className="absolute top-0 right-0 -mr-12 -mt-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-amber-500/20 transition-all duration-500" />
 
@@ -2745,16 +2776,16 @@ export default function App() {
                   <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none -z-10 opacity-60" />
 
                   {/* Floating Holographic Energy Jewels (Left & Right of Pack) */}
-                  <div className="absolute left-0 sm:-left-4 top-1/4 w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-600/10 border border-amber-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] pointer-events-none select-none z-0 animate-jewel-1">
+                  <div className="absolute left-0 sm:-left-4 top-1/4 w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-600/10 border border-amber-400/30 hidden sm:flex items-center justify-center text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)] pointer-events-none select-none z-0 animate-jewel-1">
                     ⚡
                   </div>
-                  <div className="absolute right-0 sm:-right-4 top-1/3 w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-600/10 border border-purple-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] pointer-events-none select-none z-0 animate-jewel-2">
+                  <div className="absolute right-0 sm:-right-4 top-1/3 w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-400/20 to-indigo-600/10 border border-purple-400/30 hidden sm:flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] pointer-events-none select-none z-0 animate-jewel-2">
                     💎
                   </div>
-                  <div className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(10,185,129,0.3)] pointer-events-none select-none z-0 animate-jewel-3">
+                  <div className="absolute left-2 sm:-left-2 bottom-1/4 w-8 h-8 rounded-2xl bg-gradient-to-br from-emerald-400/20 to-teal-600/10 border border-emerald-400/30 hidden sm:flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(10,185,129,0.3)] pointer-events-none select-none z-0 animate-jewel-3">
                     ✨
                   </div>
-                  <div className="absolute right-2 sm:-right-2 bottom-1/3 w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-400/20 to-pink-600/10 border border-rose-400/30 backdrop-blur-md hidden sm:flex items-center justify-center text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] pointer-events-none select-none z-0 animate-jewel-4">
+                  <div className="absolute right-2 sm:-right-2 bottom-1/3 w-8 h-8 rounded-2xl bg-gradient-to-br from-rose-400/20 to-pink-600/10 border border-rose-400/30 hidden sm:flex items-center justify-center text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.3)] pointer-events-none select-none z-0 animate-jewel-4">
                     🔥
                   </div>
 
@@ -2765,7 +2796,7 @@ export default function App() {
                         initial={{ opacity: 0, y: -20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                        className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 sm:w-96 p-3 rounded-2xl bg-gradient-to-r from-amber-950/95 via-purple-950/95 to-slate-900/95 border-2 border-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.6)] backdrop-blur-xl z-30 text-left select-none"
+                        className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 sm:w-96 p-3 rounded-2xl bg-gradient-to-r from-amber-950/95 via-purple-950/95 to-slate-900/95 border-2 border-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.6)] z-30 text-left select-none"
                       >
                         <div className="flex items-start justify-between gap-2.5">
                           <div className="flex items-center gap-2.5">
@@ -2802,7 +2833,7 @@ export default function App() {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl w-60 h-[21rem] text-center shrink-0"
+                      className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
                     >
                       <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
                       <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
@@ -2833,7 +2864,7 @@ export default function App() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="hidden lg:flex flex-col w-60 xl:w-72 shrink-0 bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 rounded-3xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.65)] backdrop-blur-xl relative overflow-hidden group select-none self-center"
+                  className="hidden lg:flex flex-col w-60 xl:w-72 shrink-0 bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 rounded-3xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.65)] relative overflow-hidden group select-none self-center"
                 >
                   <div className="absolute top-0 left-0 -ml-12 -mt-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/20 transition-all duration-500" />
 
@@ -2948,7 +2979,7 @@ export default function App() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring', bounce: 0.5 }}
-                className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl max-w-md text-center shrink-0"
+                className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl max-w-md text-center shrink-0"
               >
                 <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-4 text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
                   <CheckCircle2 className="w-8 h-8" />
@@ -3046,7 +3077,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[100] bg-black/85 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -3153,7 +3184,7 @@ export default function App() {
                         className={`p-5 rounded-3xl border bg-gradient-to-br ${pack.gradient} ${pack.borderColor} ${pack.glowColor} transition-all duration-300 cursor-pointer flex flex-col justify-between group hover:scale-[1.03] relative overflow-hidden shadow-2xl`}
                       >
                         <div className="flex items-center justify-between mb-3 z-10">
-                          <span className="px-3 py-1 rounded-full bg-black/70 border border-white/20 text-[11px] font-black text-white tracking-wide backdrop-blur-md shadow-md flex items-center gap-1.5">
+                          <span className="px-3 py-1 rounded-full bg-black/70 border border-white/20 text-[11px] font-black text-white tracking-wide shadow-md flex items-center gap-1.5">
                             <span>{pack.icon}</span>
                             <span>{pack.badge}</span>
                           </span>
@@ -3426,7 +3457,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowPriceGateModal(false)}
-            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[300] bg-black/80 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
@@ -3478,7 +3509,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setBinderSelectModal(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -3694,7 +3725,7 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[350] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl"
+            className="fixed inset-0 z-[350] flex items-center justify-center p-4 bg-black/85"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 30 }}
@@ -3861,7 +3892,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowOutofPassesModal(false)}
-            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[300] bg-black/80 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
@@ -3915,7 +3946,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowInsufficientCashModal(false)}
-            className="fixed inset-0 z-[300] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-[300] bg-black/80 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}

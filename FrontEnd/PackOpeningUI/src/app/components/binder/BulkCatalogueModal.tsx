@@ -262,14 +262,14 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 z-[9999] flex flex-col items-center justify-center p-6 bg-black/80 backdrop-blur-md rounded-3xl"
+                className="absolute inset-0 z-[9999] flex flex-col items-center justify-center p-6 bg-black/80 rounded-3xl"
                 onClick={() => setPreviewCard(null)}
               >
                 <div className="absolute top-4 right-4 flex items-center justify-between w-full px-8 pointer-events-none">
                   <div />
                   <button
                     onClick={() => setPreviewCard(null)}
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-red-500/80 transition-colors pointer-events-auto shadow-lg backdrop-blur-xl"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-red-500/80 transition-colors pointer-events-auto shadow-lg"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -290,7 +290,7 @@ export default function BulkCatalogueModal({ isOpen, onClose }: BulkCatalogueMod
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="mt-6 text-center bg-[#111827]/90 px-8 py-4 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl w-full max-w-[90%]">
+                  <div className="mt-6 text-center bg-[#111827]/90 px-8 py-4 rounded-3xl border border-white/10 shadow-2xl w-full max-w-[90%]">
                     <h3 className="text-xl font-bold text-white mb-1">{previewCard.name}</h3>
                     <div className="flex items-center justify-center gap-3 text-sm">
                       <span className="text-gray-400">{previewCard.setName}</span>

@@ -77,31 +77,19 @@ html, body {
 .animate-jewel-3 { animation: float-jewel-3 7s ease-in-out infinite 2s; }
 .animate-jewel-4 { animation: float-jewel-4 5.5s ease-in-out infinite 1.5s; }
 
-/* 🦊 Firefox Performance & Smooth Rendering Engine 🦊 */
-@supports (-moz-user-select: none) {
-  /* 1. Bypass heavy offscreen backdrop-filter compositing passes in Firefox.
-     Firefox's backdrop-filter implementation is extremely expensive and causes
-     severe jank on scroll and animation. Disable on all variants. */
-  [class*="backdrop-blur"],
-  [class*="backdrop-filter"],
-  .glass-panel,
-  .glass-panel-highlight,
-  [class*="bg-black/"],
-  [class*="bg-white/"],
-  [class*="bg-[#"],
-  [class*="bg-gradient-to-b"],
-  [class*="bg-gradient-to-r"],
-  [class*="bg-gradient-to-t"],
-  [class*="bg-gradient-to-l"],
-  [class*="bg-gradient-to-br"],
-  [class*="bg-gradient-to-tl"],
-  [class*="bg-gradient-to-tr"],
-  [class*="bg-gradient-to-bl"] {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
+/* PSA Lab — Rotary buffer spin (replaces a per-frame requestAnimationFrame +
+   setState loop with a zero-cost pure CSS animation). Duration is set inline
+   from the live RPM value (60 / rpm seconds per revolution). */
+@keyframes psa-buffer-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-  /* 2. Simplify 6-layer 3D box-shadows in Firefox to prevent GPU/CPU rasterization stalls.
+/* =========================================================================
+   🦊 Firefox Performance & Smooth Rendering Engine 🦊 
+   ========================================================================= */
+@supports (-moz-user-select: none) {
+  /* 1. Simplify 6-layer 3D box-shadows in Firefox to prevent GPU/CPU rasterization stalls.
      Firefox struggles with multiple box-shadow layers on 3D-transformed elements. */
   .pkmn-card.active .pkmn-card__rotator,
   .pkmn-card.interacting .pkmn-card__rotator,

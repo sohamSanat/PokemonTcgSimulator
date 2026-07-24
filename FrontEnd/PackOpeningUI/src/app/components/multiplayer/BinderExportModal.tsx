@@ -33,7 +33,7 @@ export const BinderExportModal: React.FC<BinderExportModalProps> = ({ bookletCar
   };
 
   return (
-    <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 md:p-8">
+    <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 md:p-8">
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -86,7 +86,7 @@ export const BinderExportModal: React.FC<BinderExportModalProps> = ({ bookletCar
                       />
                     </div>
                     {isSelected && (
-                      <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center backdrop-blur-[1px]">
+                      <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center]">
                         <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
                           <Check className="w-6 h-6 text-white" />
                         </div>

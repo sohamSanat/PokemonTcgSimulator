@@ -310,7 +310,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={() => { sound.playModalClose(); onClose(); }}
-      className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-[3px] flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-[100] bg-black/85] flex items-center justify-center p-4 overflow-y-auto"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -341,7 +341,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
 
               <button
                 onClick={() => { sound.playModalClose(); onClose(); }}
-                className="p-2.5 rounded-full bg-black/40 hover:bg-black border border-white/10 hover:border-amber-500/50 text-white/60 hover:text-amber-400 transition-all cursor-pointer backdrop-blur-md shadow-xl"
+                className="p-2.5 rounded-full bg-black/40 hover:bg-black border border-white/10 hover:border-amber-500/50 text-white/60 hover:text-amber-400 transition-all cursor-pointer shadow-xl"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -463,7 +463,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
                   showcase={true}
                   className="w-full h-full shadow-[0_0_30px_rgba(0,0,0,0.8)] border border-white/20 rounded-2xl"
                 >
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-3 text-center backdrop-blur-[2px] z-20">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-3 text-center] z-20">
                     <Eye className="w-8 h-8 text-amber-400 mb-1.5 animate-bounce" />
                     <span className="text-xs font-extrabold text-white">✨ Admire Art Studio</span>
                     <span className="text-[10px] text-gray-300 mt-0.5">Click for High-Res Art Studio</span>
@@ -687,7 +687,7 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={(e) => { e.stopPropagation(); sound.playModalClose(); setShowSellerChat(false); }}
-              className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+              className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4"
             >
               <motion.div
                 initial={{ scale: 0.9, y: 20 }}

@@ -336,7 +336,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
     <ErrorBoundary>
     <div className="relative min-h-full w-full bg-[#0d0d0f] flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
+      <div className="sticky top-0 z-50 h-16 border-b border-white/10 bg-black/80 flex items-center justify-between px-6 shrink-0">
         <button onClick={() => setShowExportModal(true)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold text-sm">
           <LogOut className="w-4 h-4" /> Leave Room
         </button>
@@ -367,7 +367,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
       {/* Split Screen Arena */}
       <div className="flex-1 flex flex-col md:flex-row relative">
         {(match.status === 'finished' || match.status === 'revealed') && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
             <motion.div 
               initial={{ scale: 0, y: 50, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -413,7 +413,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
 
         {/* Picking Phase Overlay */}
         {isPicking && (
-          <div className="absolute inset-0 z-50 flex flex-col items-center justify-start bg-black/90 backdrop-blur-md pt-24 px-8 overflow-y-auto">
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-start bg-black/90 pt-24 px-8 overflow-y-auto">
             {!canPick ? (
               <div className="text-center mt-32 max-w-2xl mx-auto">
                 <h2 className="text-3xl font-black text-amber-400 animate-pulse mb-4">
@@ -455,7 +455,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
                           <span className="text-xs font-mono text-amber-400 font-bold shrink-0">${(card.value || 0).toFixed(2)}</span>
                         </div>
                         {isDisabled && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/50]">
                             <span className="bg-red-500 text-white font-black text-xs px-2 py-1 rounded">LOCKED</span>
                           </div>
                         )}
@@ -495,7 +495,7 @@ export const PackOffArena: React.FC<PackOffArenaProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] bg-black/90 backdrop-blur-md flex flex-col p-4 md:p-8"
+            className="fixed inset-0 z-[70] bg-black/90 flex flex-col p-4 md:p-8"
           >
             <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto w-full shrink-0">
               <div>

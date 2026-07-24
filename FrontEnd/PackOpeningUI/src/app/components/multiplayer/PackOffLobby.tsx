@@ -61,7 +61,7 @@ export const PackOffLobby: React.FC<PackOffLobbyProps> = ({ onBack, onEnterArena
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-      <div className="w-full max-w-md bg-[#14141c]/90 border border-amber-500/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(245,158,11,0.15)] backdrop-blur-xl">
+      <div className="w-full max-w-md bg-[#14141c]/90 border border-amber-500/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(245,158,11,0.15)]">
         <div className="flex items-center gap-3 mb-8">
           <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <ArrowLeft className="w-5 h-5 text-gray-400" />

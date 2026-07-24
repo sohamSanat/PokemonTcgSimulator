@@ -94,7 +94,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
           onClick={onClose}
         >
           <motion.div
@@ -102,7 +102,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.95, y: 20, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="w-full max-w-md overflow-hidden border shadow-2xl bg-zinc-900/90 border-zinc-800 rounded-2xl backdrop-blur-xl"
+            className="w-full max-w-md overflow-hidden border shadow-2xl bg-zinc-900/90 border-zinc-800 rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative p-6">

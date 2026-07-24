@@ -63,7 +63,6 @@ export default function PrePSARestorationStudio({
   // Station 3: Electric Rotary Buffer
   const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
   const [bufferRPM, setBufferRPM] = useState<number>(3500); // 1000 - 8000 RPM
-  const [bufferRotation, setBufferRotation] = useState<number>(0);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
   // Station 4: High-Tech Card Saver 1 Encapsulation
@@ -137,16 +136,10 @@ export default function PrePSARestorationStudio({
     return () => clearInterval(interval);
   }, [isPressing, targetTemp, steamLevel]);
 
-  // Rotary Buffer Spinning Animation Loop
-  useEffect(() => {
-    let animationFrame: number;
-    const spin = () => {
-      setBufferRotation(r => (r + bufferRPM / 100) % 360);
-      animationFrame = requestAnimationFrame(spin);
-    };
-    animationFrame = requestAnimationFrame(spin);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [bufferRPM]);
+  // NOTE: The rotary buffer no longer uses a JS requestAnimationFrame loop
+  // (which previously called setState on EVERY animation frame while this view
+  // was mounted). It is now a pure CSS rotation driven by bufferRPM via the
+  // inline animation-duration, so it costs zero main-thread time.
 
   // Station 4: Laser sealing animation
   useEffect(() => {
@@ -532,7 +525,7 @@ export default function PrePSARestorationStudio({
 
                     {/* Station 1: Thermal Steam Effect */}
                     {station === 'press' && steamLevel > 0 && (
-                      <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px] pointer-events-none animate-pulse flex items-center justify-center">
+                      <div className="absolute inset-0 bg-white/20] pointer-events-none animate-pulse flex items-center justify-center">
                         <span className="text-[10px] font-bold text-black bg-white/90 px-2.5 py-0.5 rounded-full shadow-lg">
                           ♨️ Steam Applied ({steamLevel}%)
                         </span>
@@ -623,10 +616,14 @@ export default function PrePSARestorationStudio({
                           style={{
                             left: `${mousePos.x}%`,
                             top: `${mousePos.y}%`,
-                            transform: `translate(-50%, -50%) rotate(${bufferRotation}deg)`
                           }}
                         >
-                          <div className="w-12 h-12 rounded-full border-4 border-dashed border-purple-400 bg-purple-600/40 shadow-[0_0_25px_rgba(168,85,247,0.8)] flex items-center justify-center">
+                          <div
+                            className="w-12 h-12 rounded-full border-4 border-dashed border-purple-400 bg-purple-600/40 shadow-[0_0_25px_rgba(168,85,247,0.8)] flex items-center justify-center"
+                            style={{
+                              animation: `psa-buffer-spin ${(60 / Math.max(1, bufferRPM)).toFixed(3)}s linear infinite`,
+                            }}
+                          >
                             <Disc className="w-6 h-6 text-purple-200" />
                           </div>
                         </div>
@@ -640,8 +637,8 @@ export default function PrePSARestorationStudio({
                           sleeveStyle === 'gold' 
                             ? 'border-amber-400 bg-amber-500/20' 
                             : sleeveStyle === 'holo' 
-                            ? 'border-purple-400 bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-cyan-500/20 backdrop-blur-[1px]' 
-                            : 'border-emerald-400/80 bg-emerald-400/20 backdrop-blur-[1px]'
+                            ? 'border-purple-400 bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-cyan-500/20]' 
+                            : 'border-emerald-400/80 bg-emerald-400/20]'
                         }`}
                         style={{ height: `${sleeveSlideProgress}%` }}
                       >
@@ -670,7 +667,7 @@ export default function PrePSARestorationStudio({
                           ⭐ PSA PREP - CARD SAVER 1 SEALED ⭐
                         </div>
 
-                        <div className="px-3 py-1.5 rounded-xl bg-black/90 border border-amber-400/60 shadow-2xl flex flex-col items-center gap-1 backdrop-blur-md">
+                        <div className="px-3 py-1.5 rounded-xl bg-black/90 border border-amber-400/60 shadow-2xl flex flex-col items-center gap-1">
                           <span className="text-[10px] font-black text-amber-300 flex items-center gap-1">
                             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                             CARD SAVER 1 ENCAPSULATED

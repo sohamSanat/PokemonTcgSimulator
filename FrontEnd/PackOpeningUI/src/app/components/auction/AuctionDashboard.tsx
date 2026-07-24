@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, Clock, Trophy, Zap, Coins, ArrowLeft, Star, SlidersHorizontal, Activity, Sparkles, TrendingUp, TrendingDown, Award, CheckCircle2, HelpCircle, X, Eye, Users, Package } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -341,23 +341,47 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   defaultBidIncrement,
   theme
 }) => {
-  const [rotationX, setRotationX] = useState(0);
-  const [rotationY, setRotationY] = useState(0);
-  const [loadedImg, setLoadedImg] = useState<string>('');
-  const isImageReady = Boolean(currentCard?.img && loadedImg === currentCard.img);
+  // Zero-latency GPU tilt driven directly via the DOM transform (no React
+  // re-render per frame). Previously this called setState on every mousemove,
+  // which re-rendered the entire ( heavy) auction card on every
+  // pixel of cursor movement — the single worst desktop-only lag source here.
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const target = tiltRef.current;
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    setRotationX(-y / 10);
-    setRotationY(x / 10);
-  };
+    const rotX = -y / 10;
+    const rotY = x / 10;
+    // Coalesce to one rAF per frame — drop intermediate moves.
+    if (rafIdRef.current !== null) return;
+    rafIdRef.current = requestAnimationFrame(() => {
+      rafIdRef.current = null;
+      if (tiltRef.current) {
+        tiltRef.current.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      }
+    });
+  }, []);
 
-  const handleMouseLeave = () => {
-    setRotationX(0);
-    setRotationY(0);
-  };
+  const handleMouseLeave = useCallback(() => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    if (tiltRef.current) {
+      tiltRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    }
+  }, []);
+
+  useEffect(() => () => {
+    if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+  }, []);
+
+  const [loadedImg, setLoadedImg] = useState<string>('');
+  const isImageReady = Boolean(currentCard?.img && loadedImg === currentCard.img);
 
   // Flash a "time extended" banner whenever a late bid triggers anti-sniping.
   const extRef = useRef(extendedCount);
@@ -386,7 +410,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col md:flex-row h-full rounded-2xl overflow-hidden bg-slate-900/50 backdrop-blur-xl border transition-all duration-300 shadow-2xl relative min-h-0",
+      "flex flex-col md:flex-row h-full rounded-2xl overflow-hidden bg-slate-900/50 border transition-all duration-300 shadow-2xl relative min-h-0",
       theme.cardBorder
     )}>
       {/* Subtle grid texture */}
@@ -421,7 +445,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl p-4 sm:p-6 flex flex-col items-center justify-center text-center overflow-y-auto"
+            className="absolute inset-0 z-50 bg-slate-950/95 p-4 sm:p-6 flex flex-col items-center justify-center text-center overflow-y-auto"
           >
             {/* Winner Stamp */}
             <div className={cn(
@@ -563,9 +587,10 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
         <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/90 shadow-lg shrink-0">
           
           {/* Card Image Thumbnail */}
-          <motion.div 
-            className="w-[110px] h-[154px] sm:w-[130px] sm:h-[182px] shrink-0 rounded-lg overflow-hidden shadow-2xl border border-slate-600/70 bg-slate-800 relative cursor-grab active:cursor-grabbing"
-            style={{ rotateX: rotationX, rotateY: rotationY, transformStyle: "preserve-3d" }}
+          <motion.div
+            ref={tiltRef}
+            className="w-[110px] h-[154px] sm:w-[130px] sm:h-[182px] shrink-0 rounded-lg overflow-hidden shadow-2xl border border-slate-600/70 bg-slate-800 relative cursor-grab active:cursor-grabbing will-change-transform"
+            style={{ transformStyle: "preserve-3d", transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)', transition: 'transform 0.25s ease-out' }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
@@ -605,7 +630,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               }}
             />
             {!isImageReady && (
-              <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-lg z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
+              <div className="absolute inset-0 bg-[#0b0e14]/95 rounded-lg z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
                 <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
                   <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
                 </div>
@@ -783,18 +808,16 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 
           {/* Time floating indicator inside circle */}
           <div className="absolute top-1 w-full flex justify-center pointer-events-none z-20">
-            <div className="flex items-center gap-1 bg-slate-950/90 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-slate-700/60 shadow-lg">
+            <div className="flex items-center gap-1 bg-slate-950/90 px-2.5 py-0.5 rounded-full border border-slate-700/60 shadow-lg">
               <Clock className={cn("w-3 h-3 animate-pulse", theme.badgeText)} />
               <span className="font-mono text-xs text-slate-100 font-semibold tracking-wider">{formatTime(timeLeftSeconds)}</span>
             </div>
           </div>
 
           {/* Card Image */}
-          <motion.div 
-            className="relative w-[120px] sm:w-[135px] h-[165px] sm:h-[188px] rounded-xl overflow-hidden shadow-2xl border border-slate-600/60 bg-slate-800 cursor-grab active:cursor-grabbing z-10 flex items-center justify-center"
-            style={{ rotateX: rotationX, rotateY: rotationY, transformStyle: "preserve-3d" }}
-            animate={{ rotateX: rotationX, rotateY: rotationY, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          <motion.div
+            className="relative w-[120px] sm:w-[135px] h-[165px] sm:h-[188px] rounded-xl overflow-hidden shadow-2xl border border-slate-600/60 bg-slate-800 cursor-grab active:cursor-grabbing z-10 flex items-center justify-center will-change-transform"
+            style={{ transformStyle: "preserve-3d", transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)', transition: 'transform 0.25s ease-out' }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
@@ -834,7 +857,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
               }}
             />
             {!isImageReady && (
-              <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-xl z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
+              <div className="absolute inset-0 bg-[#0b0e14]/95 rounded-xl z-30 flex flex-col items-center justify-center p-2 text-center border border-white/10 animate-pulse">
                 <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
                   <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
                 </div>
@@ -926,7 +949,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
         </div>
 
         {/* Bidding Action Area */}
-        <div className="p-2.5 bg-slate-950/90 border-t border-slate-700/50 backdrop-blur-md shrink-0">
+        <div className="p-2.5 bg-slate-950/90 border-t border-slate-700/50 shrink-0">
           <div className="flex gap-1.5 mb-2">
             {bidIncrements.map((inc) => (
               <button 
@@ -1246,7 +1269,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+            className="absolute inset-0 z-50 bg-slate-950/85 flex items-center justify-center p-4 overflow-y-auto"
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
@@ -1311,7 +1334,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
       <div className="w-full max-w-[1920px] h-full p-2 sm:p-4 flex flex-col gap-2.5 relative z-10 min-h-0 overflow-y-auto xl:overflow-hidden">
         
         {/* RESPONSIVE HEADER */}
-        <header className="flex-none flex flex-wrap items-center justify-between gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-900/80 backdrop-blur-md border border-slate-700/70 rounded-xl shadow-lg shrink-0">
+        <header className="flex-none flex flex-wrap items-center justify-between gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-900/80 border border-slate-700/70 rounded-xl shadow-lg shrink-0">
           
           <div className="flex items-center gap-2">
             <button 
@@ -1508,7 +1531,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className="pointer-events-auto w-full flex items-start gap-2 px-4 py-3 rounded-xl border-2 border-red-500/80 bg-red-950/90 backdrop-blur-md shadow-[0_0_30px_rgba(239,68,68,0.45)]"
+              className="pointer-events-auto w-full flex items-start gap-2 px-4 py-3 rounded-xl border-2 border-red-500/80 bg-red-950/90 shadow-[0_0_30px_rgba(239,68,68,0.45)]"
             >
               <div className="flex-1">
                 <p className="text-red-200 font-extrabold text-sm leading-snug">

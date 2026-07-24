@@ -1024,7 +1024,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
       <div className="w-full h-full min-h-[calc(100vh-5rem)] bg-[#090a0c] text-[#f8fafc] flex flex-col font-sans overflow-hidden">
 
         {/* Slim Top Bar */}
-        <header className="h-10 sm:h-12 border-b border-[#1e293b]/50 bg-[#111418]/95 backdrop-blur-md flex items-center justify-between px-3 sm:px-5 shrink-0 z-30">
+        <header className="h-10 sm:h-12 border-b border-[#1e293b]/50 bg-[#111418]/95 flex items-center justify-between px-3 sm:px-5 shrink-0 z-30">
           <div className="flex items-center gap-3">
             {onBackToPacks && (
               <button
@@ -1226,7 +1226,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                           onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
                         />
                         {!isCardCompleted(card.id, card.originalId, card.img) && (
-                          <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-md rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
+                          <div className="absolute inset-0 bg-[#0b0e14]/95 rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
                             <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
                               <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
                             </div>
@@ -1356,7 +1356,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
 
               {/* Floating Cyberpunk HUD Tooltip when hovering over any booth */}
               {hoveredBooth && (
-                <div className="absolute top-12 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] backdrop-blur-md flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
+                <div className="absolute top-12 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
                   <div className="flex items-center gap-3 min-w-0 pr-2">
                     <span className="px-2 py-0.5 rounded bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-xs font-mono font-black text-[#38bdf8] shrink-0">
                       {hoveredBooth.booth}
@@ -1849,7 +1849,7 @@ export const CardShowView: React.FC<CardShowViewProps> = ({
                                 onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
                               />
                               {!isCardCompleted(item.id, item.originalId, item.img) && (
-                                <div className="absolute inset-0 bg-[#0b0e14]/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
+                                <div className="absolute inset-0 bg-[#0b0e14]/95 z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
                                   <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce mb-0.5" />
                                   <span className="text-[7px] font-mono text-[#38bdf8] font-bold leading-tight">Retrieving...</span>
                                 </div>
@@ -2048,7 +2048,7 @@ export const TradeModal: React.FC<{ target: any; vendorName?: string; onClose: (
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[500] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-[500] bg-black/80 flex items-center justify-center p-3 sm:p-4">
       <div className="w-full max-w-3xl max-h-[92vh] bg-[#0b0e13] border border-[#1e293b] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e293b] bg-[#0e1117] shrink-0">

@@ -927,11 +927,11 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
                         <span className="text-xs font-black text-amber-950 transform rotate-45">〰️ LINT</span>
                       </div>
                     ) : speck.type === 'fingerprint' ? (
-                      <div className="w-11 h-11 rounded-full bg-cyan-500/50 border-2 border-cyan-300/90 backdrop-blur-sm flex flex-col items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.9)]">
+                      <div className="w-11 h-11 rounded-full bg-cyan-500/50 border-2 border-cyan-300/90 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.9)]">
                         <span className="text-lg">👆</span>
                       </div>
                     ) : (
-                      <div className="w-14 h-10 rounded-full bg-gradient-to-br from-amber-500/80 to-purple-600/80 border-2 border-amber-300 backdrop-blur-sm flex items-center justify-center shadow-[0_0_22px_rgba(245,158,11,0.9)]">
+                      <div className="w-14 h-10 rounded-full bg-gradient-to-br from-amber-500/80 to-purple-600/80 border-2 border-amber-300 flex items-center justify-center shadow-[0_0_22px_rgba(245,158,11,0.9)]">
                         <span className="text-[10px] text-white font-mono font-black tracking-wider">💧 SMUDGE</span>
                       </div>
                     )}
@@ -981,7 +981,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="absolute top-4 inset-x-4 z-50 bg-red-950/95 border border-red-500/80 text-red-200 text-[10px] font-bold p-2.5 rounded-xl shadow-2xl flex items-center justify-center text-center backdrop-blur-md"
+                    className="absolute top-4 inset-x-4 z-50 bg-red-950/95 border border-red-500/80 text-red-200 text-[10px] font-bold p-2.5 rounded-xl shadow-2xl flex items-center justify-center text-center"
                   >
                     {smudgeWarning}
                   </motion.div>
@@ -989,7 +989,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
               </AnimatePresence>
 
               {/* Tool instructions banner on preview */}
-              <div className="absolute bottom-2 inset-x-2 bg-black/80 backdrop-blur-md border border-emerald-500/40 py-1.5 px-3 rounded-xl flex items-center justify-between text-[10px] z-20 pointer-events-none">
+              <div className="absolute bottom-2 inset-x-2 bg-black/80 border border-emerald-500/40 py-1.5 px-3 rounded-xl flex items-center justify-between text-[10px] z-20 pointer-events-none">
                 <span className="text-emerald-300 font-bold flex items-center gap-1.5">
                   {prepTool === 'blower' ? <Wind className="w-3.5 h-3.5 text-cyan-400" /> : <Sparkles className="w-3.5 h-3.5 text-amber-400" />}
                   {prepTool === 'blower' ? 'Click or drag across card to blow air' : 'Wipe with microfiber cloth over smudges'}
@@ -1292,7 +1292,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
                     key={zone.id}
                     onClick={() => handleScanZone(zone.id)}
                     whileHover={{ scale: 1.04 }}
-                    className={`p-2.5 rounded-xl border backdrop-blur-md transition-all cursor-pointer flex items-center justify-between ${
+                    className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                       zone.checked
                         ? zone.defectFound
                           ? 'bg-red-950/90 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]'
@@ -1318,7 +1318,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
               </div>
 
               {/* Tool banner */}
-              <div className="absolute bottom-2 inset-x-2 bg-black/80 backdrop-blur-md py-1 px-2.5 rounded-xl border border-purple-500/40 flex items-center justify-between text-[10px] z-20 pointer-events-none">
+              <div className="absolute bottom-2 inset-x-2 bg-black/80 py-1 px-2.5 rounded-xl border border-purple-500/40 flex items-center justify-between text-[10px] z-20 pointer-events-none">
                 <span className="text-purple-300 font-mono font-bold flex items-center gap-1">
                   ⚡ {surfaceTool === 'uv' ? '365nm UV BLACKLIGHT ACTIVE' : 'HALOGEN GLARE REFLECTION ACTIVE'}
                 </span>

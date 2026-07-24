@@ -501,7 +501,7 @@ const RevealedCardItem = React.memo(({
           }`}
         >
           {/* Price badge right above/on top of card art */}
-          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5 backdrop-blur-sm">
+          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-950/90 border border-emerald-500/60 text-emerald-300 font-black text-xs shadow-lg z-20 flex items-center gap-0.5">
             <span>${displayPrice.toFixed(2)}</span>
           </div>
 
@@ -1244,12 +1244,27 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isVisibleRef = useRef(true);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisibleRef.current = entry.isIntersecting;
+    }, { threshold: 0.1 });
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const viewerInterval = setInterval(() => {
+      if (!isVisibleRef.current || document.hidden) return;
       setViewerCount(prev => prev + Math.floor(Math.random() * 7) - 3);
     }, 3000);
 
     const reactionInterval = setInterval(() => {
+      if (!isVisibleRef.current || document.hidden) return;
       const emojis = ['❤️', '🔥', '💎', '🚀', '⭐', '⚡', '🎉'];
       const emoji = emojis[Math.floor(Math.random() * emojis.length)];
       setReactions(prev => [
@@ -1260,6 +1275,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
     // Live background stream chatter generator
     const streamChatInterval = setInterval(() => {
+      if (!isVisibleRef.current || document.hidden) return;
       const { viewer, text } = getRandomStreamMessage();
       addChatMessage({
         id: Date.now().toString() + Math.random(),
@@ -1341,7 +1357,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#05040a] overflow-hidden text-white flex flex-col select-none">
+    <div ref={containerRef} className="relative w-full h-[100dvh] bg-[#05040a] overflow-hidden text-white flex flex-col select-none">
       {/* ── 1. Top Spacious Stream Header HUD (Row 1) ── */}
       <div className="relative w-full z-40 px-2.5 sm:px-6 py-2 sm:py-3.5 bg-[#090712] border-b border-white/10 flex items-center justify-between gap-1.5 sm:gap-2.5 shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
@@ -1395,7 +1411,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
       {/* ── 2. Active Customer Order Banner (Row 2) ── */}
       {activeOrder && (
-        <div className="relative w-full z-30 px-3 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="relative w-full z-30 px-3 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 flex flex-wrap items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md ring-2 ring-amber-400/50`}>
               {activeOrder.username.substring(1, 3).toUpperCase()}
@@ -1477,7 +1493,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl w-60 h-[21rem] text-center shrink-0"
+                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
                 >
                   <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
                   <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
@@ -1542,7 +1558,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: 'spring', bounce: 0.5 }}
-                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl max-w-md text-center shrink-0"
+                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl max-w-md text-center shrink-0"
                 >
                   <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mb-3 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                     <Package className="w-8 h-8" />
@@ -1643,7 +1659,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2.5 sm:p-3.5 rounded-2xl bg-black/90 backdrop-blur-xl border border-white/15 shadow-2xl flex flex-col gap-2 pointer-events-auto"
+            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2.5 sm:p-3.5 rounded-2xl bg-black/90 border border-white/15 shadow-2xl flex flex-col gap-2 pointer-events-auto"
           >
             <div className="flex items-center justify-between text-[10px] font-extrabold text-amber-400 uppercase tracking-widest px-1">
               <span className="flex items-center gap-1">
@@ -1697,7 +1713,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl p-3 sm:p-6 flex items-center justify-center pointer-events-auto"
+            className="fixed inset-0 z-50 bg-black/80 p-3 sm:p-6 flex items-center justify-center pointer-events-auto"
           >
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
@@ -1959,7 +1975,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             className="absolute bottom-3 left-2 sm:left-4 right-2 sm:right-auto z-30 w-full sm:w-96 max-w-[calc(100vw-16px)] flex flex-col pointer-events-auto gap-2"
           >
             <div 
-              className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl"
+              className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 border border-white/10 shadow-2xl"
               style={{
                 maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
@@ -1970,7 +1986,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   key={msg.id}
                   initial={{ opacity: 0, x: -10, y: 10 }}
                   animate={{ opacity: 1, x: 0, y: 0 }}
-                  className={`p-2 rounded-xl border backdrop-blur-md text-xs transition-all flex items-start gap-2 ${
+                  className={`p-2 rounded-xl border text-xs transition-all flex items-start gap-2 ${
                     msg.isOrderNotification 
                       ? 'bg-amber-500/30 border-amber-400/60 text-white font-bold' 
                       : 'bg-black/60 border-white/10 text-gray-100'
@@ -2007,7 +2023,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                   value={hostInput}
                   onChange={e => setHostInput(e.target.value)}
                   placeholder="Chat as Host..."
-                  className="flex-1 px-3.5 py-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
+                  className="flex-1 px-3.5 py-2 rounded-full bg-black/60 border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
                 />
                 <button
                   type="submit"
@@ -2019,7 +2035,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
 
               <button
                 onClick={handleSpawnHeart}
-                className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 backdrop-blur-md text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
+                className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
               >
                 <Heart className="w-4 h-4 fill-red-500" />
               </button>
@@ -2031,7 +2047,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => { sound.playButtonClick(); setIsChatVisible(true); }}
-            className="absolute bottom-4 left-3 z-30 px-3.5 py-2 rounded-full bg-black/80 backdrop-blur-md border border-purple-500/40 text-purple-300 text-xs font-black flex items-center gap-2 shadow-2xl hover:bg-purple-950/60 hover:border-purple-400 transition-all cursor-pointer pointer-events-auto"
+            className="absolute bottom-4 left-3 z-30 px-3.5 py-2 rounded-full bg-black/80 border border-purple-500/40 text-purple-300 text-xs font-black flex items-center gap-2 shadow-2xl hover:bg-purple-950/60 hover:border-purple-400 transition-all cursor-pointer pointer-events-auto"
           >
             <MessageSquare className="w-4 h-4 text-purple-400" />
             <span>Show Live Chat</span>
@@ -2055,7 +2071,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl p-4 flex items-center justify-center pointer-events-auto"
+            className="fixed inset-0 z-50 bg-black/90 p-4 flex items-center justify-center pointer-events-auto"
           >
             <motion.div
               initial={{ scale: 0.8, y: 30 }}
@@ -2140,7 +2156,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl pointer-events-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 pointer-events-auto"
           >
             <motion.div
               initial={{ scale: 0.85, y: 30 }}
