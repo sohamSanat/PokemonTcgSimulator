@@ -1409,221 +1409,244 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         </div>
       </div>
 
-      {/* ── 2. Active Customer Order Banner (Row 2) ── */}
-      {activeOrder && (
-        <div className="relative w-full z-30 px-3 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border-b border-amber-500/30 flex flex-wrap items-center justify-between gap-3 shrink-0">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md ring-2 ring-amber-400/50`}>
-              {activeOrder.username.substring(1, 3).toUpperCase()}
-            </div>
-            <div className="min-w-0 text-left flex-1 max-w-md">
-              <div className="flex items-center gap-2 truncate">
-                <span className="text-xs font-black text-amber-300 truncate">{activeOrder.username}</span>
-                <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
-                <span className="text-[9px] font-bold text-gray-400 truncate hidden sm:inline">• {activeOrder.location}</span>
-              </div>
+      {/* ── 3. Overhead Camera Stage & Side Chat Panel Container ── */}
+      <div className="relative flex-1 w-full bg-[#07050d] overflow-hidden min-h-0 p-2 sm:p-4">
+        <div className="w-full h-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-4 items-stretch justify-center overflow-hidden relative">
 
-              {/* Customer Pack Progress Bar */}
-              <div className="w-full flex items-center gap-2 mt-1">
-                <div className="flex-1 bg-black/60 rounded-full h-2 border border-white/10 overflow-hidden">
-                  <motion.div
-                    initial={{ width: '0%' }}
-                    animate={{ width: `${Math.min(100, Math.round(((activeOrder.openedPacks || 0) / activeOrder.packCount) * 100))}%` }}
-                    transition={{ duration: 0.4 }}
-                    className="bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 h-full rounded-full shadow-[0_0_10px_rgba(245,158,11,0.8)]"
-                  />
+          {/* LEFT / CENTER: Stream Camera Viewport & Revealed Cards */}
+          <div className="flex-1 flex flex-col items-center justify-start overflow-y-auto custom-scrollbar min-w-0 pr-1">
+
+            {/* Active Customer Order Banner */}
+            {activeOrder && (
+              <div className="w-full max-w-4xl mb-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-amber-500/15 border border-amber-500/30 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-lg">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className={`w-8 h-8 rounded-full bg-gradient-to-tr ${activeOrder.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md ring-2 ring-amber-400/50`}>
+                    {activeOrder.username.substring(1, 3).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 text-left flex-1 max-w-md">
+                    <div className="flex items-center gap-2 truncate">
+                      <span className="text-xs font-black text-amber-300 truncate">{activeOrder.username}</span>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold shrink-0">${activeOrder.totalPaid.toFixed(2)}</span>
+                      <span className="text-[9px] font-bold text-gray-400 truncate hidden sm:inline">• {activeOrder.location}</span>
+                    </div>
+
+                    {/* Customer Pack Progress Bar */}
+                    <div className="w-full flex items-center gap-2 mt-1">
+                      <div className="flex-1 bg-black/60 rounded-full h-2 border border-white/10 overflow-hidden">
+                        <motion.div
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${Math.min(100, Math.round(((activeOrder.openedPacks || 0) / activeOrder.packCount) * 100))}%` }}
+                          transition={{ duration: 0.4 }}
+                          className="bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 h-full rounded-full shadow-[0_0_10px_rgba(245,158,11,0.8)]"
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono text-amber-300 font-bold shrink-0">
+                        {activeOrder.openedPacks || 0} / {activeOrder.packCount} Packs
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <span className="text-[10px] font-mono text-amber-300 font-bold shrink-0">
-                  {activeOrder.openedPacks || 0} / {activeOrder.packCount} Packs
-                </span>
+
+                {activeOrder.status === 'completed' ? (
+                  <button
+                    onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
+                    className="px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow hover:bg-emerald-500/30 transition-all cursor-pointer shrink-0"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>ORDER SHIPPED 🚚</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (!activeOrder) return;
+                      if ((activeOrder.openedPacks || 0) >= activeOrder.packCount) {
+                        sound.playButtonClick();
+                        const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
+                        setCompletionModal({
+                          order: activeOrder,
+                          hits: activeOrder.pulledCards || [],
+                          totalValue: orderTotalVal
+                        });
+                      } else {
+                        loadAndRipPack(activeOrder);
+                      }
+                    }}
+                    className={`px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                      (activeOrder.openedPacks || 0) >= activeOrder.packCount
+                        ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black border border-emerald-300 animate-pulse'
+                        : 'bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 text-white border border-red-300'
+                    }`}
+                  >
+                    <Package className="w-4 h-4" />
+                    <span>
+                      {(activeOrder.openedPacks || 0) >= activeOrder.packCount
+                        ? `📦 ALL PACKS RIPPED - SHIP ORDER`
+                        : `📦 RIP PACK ${(activeOrder.openedPacks || 0) + 1}/${activeOrder.packCount} ⚡`}
+                    </span>
+                  </button>
+                )}
               </div>
-            </div>
-          </div>
+            )}
 
-          {activeOrder.status === 'completed' ? (
-            <button
-              onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
-              className="px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow hover:bg-emerald-500/30 transition-all cursor-pointer shrink-0"
-            >
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>ORDER SHIPPED 🚚</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                if (!activeOrder) return;
-                if ((activeOrder.openedPacks || 0) >= activeOrder.packCount) {
-                  sound.playButtonClick();
-                  const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
-                  setCompletionModal({
-                    order: activeOrder,
-                    hits: activeOrder.pulledCards || [],
-                    totalValue: orderTotalVal
-                  });
-                } else {
-                  loadAndRipPack(activeOrder);
-                }
-              }}
-              className={`px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider shadow-lg transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                (activeOrder.openedPacks || 0) >= activeOrder.packCount
-                  ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-black border border-emerald-300 animate-pulse'
-                  : 'bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 text-white border border-red-300'
-              }`}
-            >
-              <Package className="w-4 h-4" />
-              <span>
-                {(activeOrder.openedPacks || 0) >= activeOrder.packCount
-                  ? `📦 ALL PACKS RIPPED - SHIP ORDER`
-                  : `📦 RIP PACK ${(activeOrder.openedPacks || 0) + 1}/${activeOrder.packCount} ⚡`}
-              </span>
-            </button>
-          )}
-        </div>
-      )}
+            {/* Pro Stream Viewport Frame */}
+            <div className="w-full max-w-4xl rounded-3xl bg-gradient-to-b from-[#18142a] via-[#100c1e] to-[#0a0814] border border-purple-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.12)] p-4 sm:p-6 relative flex flex-col items-center justify-center min-h-[420px] shrink-0">
+              
+              {/* Studio Overhead Camera Indicator Badges */}
+              <div className="w-full flex items-center justify-between mb-2 text-xs font-mono px-2">
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 font-bold">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    LIVE OVERHEAD CAM
+                  </span>
+                  <span className="hidden sm:inline-block px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-gray-400">
+                    1080P • 60 FPS
+                  </span>
+                </div>
+                {activeOrder && (
+                  <span className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold">
+                    {activeOrder.packName}
+                  </span>
+                )}
+              </div>
 
-      {/* ── 3. Overhead Camera & Playmat Arena ── */}
-      <div className="relative flex-1 w-full bg-[#0c0915] flex flex-col items-center justify-start overflow-hidden min-h-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1e1733_0%,#07050d_100%)] flex flex-col items-center justify-start p-2 sm:p-4 overflow-y-auto custom-scrollbar">
-          <div className="w-full h-full min-h-[380px] border border-dashed border-purple-500/20 rounded-3xl flex flex-col items-center justify-start pt-2 sm:pt-4 pb-24 relative px-3 sm:px-4 overflow-visible">
-
-            
-            {/* Centerpiece: Card Stack or Tear Area */}
-            <div className="w-full flex flex-col items-center justify-center shrink-0 min-h-[380px] my-2">
-              {isLoadingPack ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
-                >
-                  <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
-                  <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
-                  <span className="text-xs text-amber-300 font-semibold mt-1.5">{activeOrder?.setId || 'Loading Set'}</span>
-                </motion.div>
-              ) : packStage !== 'opened' ? (
-                cards.length > 0 ? (
-                  <div className="relative flex items-center justify-center min-w-[280px] sm:min-w-[320px] z-10 py-2">
-                    <BoosterPackTear
-                      packArts={currentPackArts}
-                      packArtIndex={packArtIndex}
-                      onPrevPackArt={() => setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length)}
-                      onNextPackArt={() => setPackArtIndex(prev => (prev + 1) % currentPackArts.length)}
-                      onTearComplete={handleTearPack}
-                      setName={activeOrder?.packName}
-                      packStage={packStage}
-                      remainingCardsCount={remainingCards.length}
-                      hideTearButton={true}
+              {/* Center Stage: Card Stack / Booster Pack Tear */}
+              <div className="w-full flex flex-col items-center justify-center shrink-0 min-h-[360px] my-2">
+                {isLoadingPack ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
+                  >
+                    <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
+                    <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
+                    <span className="text-xs text-amber-300 font-semibold mt-1.5">{activeOrder?.setId || 'Loading Set'}</span>
+                  </motion.div>
+                ) : packStage !== 'opened' ? (
+                  cards.length > 0 ? (
+                    <div className="relative flex items-center justify-center min-w-[280px] sm:min-w-[320px] z-10 py-2">
+                      <BoosterPackTear
+                        packArts={currentPackArts}
+                        packArtIndex={packArtIndex}
+                        onPrevPackArt={() => setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length)}
+                        onNextPackArt={() => setPackArtIndex(prev => (prev + 1) % currentPackArts.length)}
+                        onTearComplete={handleTearPack}
+                        setName={activeOrder?.packName}
+                        packStage={packStage}
+                        remainingCardsCount={remainingCards.length}
+                        hideTearButton={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-amber-500/50 py-12">
+                      <Package className="w-16 h-16 mb-4 opacity-50" />
+                      <p className="text-sm font-bold uppercase tracking-widest text-center">No Active Pack</p>
+                      <p className="text-xs mt-2 max-w-xs text-center opacity-70">Click 'RIP LIVE' to begin.</p>
+                    </div>
+                  )
+                ) : remainingCards.length > 0 ? (
+                  <div className="relative w-60 sm:w-68 h-[21rem] sm:h-[23.5rem] shrink-0 my-4 flex items-center justify-center">
+                    <div
+                      className="absolute -inset-8 z-[500] cursor-pointer rounded-3xl"
+                      onClick={() => topCardId !== null && handleCardClick(topCardId)}
+                      onMouseEnter={() => { setIsHoveringStack(true); sound.playCardSlide(true); }}
+                      onMouseLeave={() => setIsHoveringStack(false)}
                     />
+                    <AnimatePresence>
+                      {cards.map((card) => {
+                        if (card.collected) return null;
+                        const midIdx = Math.floor(cards.length / 2);
+                        const baseRotation = (card.originalIndex - midIdx) * 3.8;
+                        const baseOffsetX = (card.originalIndex - midIdx) * 11;
+                        const baseOffsetY = Math.abs(card.originalIndex - midIdx) * 4;
+                        const rotation = isHoveringStack ? baseRotation * 1.5 : baseRotation;
+                        const offsetX = isHoveringStack ? baseOffsetX * 1.5 : baseOffsetX;
+                        return (
+                          <Card
+                            key={card.id}
+                            card={card}
+                            rotation={rotation}
+                            offsetX={offsetX}
+                            offsetY={baseOffsetY}
+                            isTopCard={card.id === topCardId}
+                            isHovered={isHoveringStack && card.id === topCardId}
+                            setName={activeOrder?.packName}
+                          />
+                        );
+                      })}
+                    </AnimatePresence>
                   </div>
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-amber-500/50">
-                    <Package className="w-16 h-16 mb-4 opacity-50" />
-                    <p className="text-sm font-bold uppercase tracking-widest text-center">No Active Pack</p>
-                    <p className="text-xs mt-2 max-w-xs text-center opacity-70">Click 'RIP LIVE' to begin.</p>
-                  </div>
-                )
-              ) : remainingCards.length > 0 ? (
-                <div className="relative w-60 sm:w-68 h-[21rem] sm:h-[23.5rem] shrink-0 mt-6 mb-20 sm:mb-24 flex items-center justify-center">
-                  <div
-                    className="absolute -inset-8 z-[500] cursor-pointer rounded-3xl"
-                    onClick={() => topCardId !== null && handleCardClick(topCardId)}
-                    onMouseEnter={() => { setIsHoveringStack(true); sound.playCardSlide(true); }}
-                    onMouseLeave={() => setIsHoveringStack(false)}
-                  />
-                  <AnimatePresence>
-                    {cards.map((card) => {
-                      if (card.collected) return null;
-                      const midIdx = Math.floor(cards.length / 2);
-                      const baseRotation = (card.originalIndex - midIdx) * 3.8;
-                      const baseOffsetX = (card.originalIndex - midIdx) * 11;
-                      const baseOffsetY = Math.abs(card.originalIndex - midIdx) * 4;
-                      const rotation = isHoveringStack ? baseRotation * 1.5 : baseRotation;
-                      const offsetX = isHoveringStack ? baseOffsetX * 1.5 : baseOffsetX;
-                      return (
-                        <Card
-                          key={card.id}
-                          card={card}
-                          rotation={rotation}
-                          offsetX={offsetX}
-                          offsetY={baseOffsetY}
-                          isTopCard={card.id === topCardId}
-                          isHovered={isHoveringStack && card.id === topCardId}
-                          setName={activeOrder?.packName}
-                        />
-                      );
-                    })}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', bounce: 0.5 }}
-                  className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl max-w-md text-center shrink-0"
-                >
-                  <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mb-3 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                    <Package className="w-8 h-8" />
-                  </div>
-
-                  <h3 className="text-xl font-extrabold mb-1">
-                    Pack {activeOrder?.openedPacks || 1} of {activeOrder?.packCount} Completed!
-                  </h3>
-
-                  {cards.find(c => c.isMostExpensive) && (
-                    <div className="text-xs text-cyan-300 font-extrabold bg-cyan-950/80 border border-cyan-400/50 px-3.5 py-1.5 rounded-full mb-3 shadow-lg flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
-                      <span>Pack Top Hit: {cards.find(c => c.isMostExpensive)?.pokemon.name} (${cards.find(c => c.isMostExpensive)?.value.toFixed(2)})</span>
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', bounce: 0.5 }}
+                    className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl max-w-md text-center shrink-0 my-4"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mb-3 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                      <Package className="w-8 h-8" />
                     </div>
-                  )}
 
-                  <p className="text-gray-400 text-xs mb-5">
-                    Total Pulled Value (All Cards): <span className="text-emerald-400 font-bold">${(activeOrder?.totalPulledValue ?? (activeOrder?.pulledCards || []).reduce((acc, c) => acc + c.value, 0)).toFixed(2)}</span>
-                  </p>
+                    <h3 className="text-xl font-extrabold mb-1">
+                      Pack {activeOrder?.openedPacks || 1} of {activeOrder?.packCount} Completed!
+                    </h3>
 
-                  {activeOrder?.status === 'completed' ? (
-                    <button
-                      onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
-                      className="px-8 py-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 hover:bg-emerald-500/30 transition-all cursor-pointer"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                      <span>✅ ORDER SHIPPED - SELECT NEXT ORDER 📦</span>
-                    </button>
-                  ) : (activeOrder?.openedPacks || 0) < (activeOrder?.packCount || 1) ? (
-                    <button
-                      onClick={() => activeOrder && loadAndRipPack(activeOrder)}
-                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-                    >
-                      <Package className="w-5 h-5 text-white" />
-                      <span>📦 RIP PACK {(activeOrder?.openedPacks || 0) + 1} OF {activeOrder?.packCount} FOR {activeOrder?.username} ⚡</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        sound.playButtonClick();
-                        if (activeOrder) {
-                          const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
-                          setCompletionModal({
-                            order: activeOrder,
-                            hits: activeOrder.pulledCards || [],
-                            totalValue: orderTotalVal
-                          });
-                        }
-                      }}
-                      className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 font-black text-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2 animate-pulse"
-                    >
-                      <Truck className="w-5 h-5 text-black" />
-                      <span>🎉 ALL PACKS OPENED - SHIP ORDER TO LOGISTICS 📦</span>
-                    </button>
-                  )}
-                </motion.div>
-              )}
+                    {cards.find(c => c.isMostExpensive) && (
+                      <div className="text-xs text-cyan-300 font-extrabold bg-cyan-950/80 border border-cyan-400/50 px-3.5 py-1.5 rounded-full mb-3 shadow-lg flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
+                        <span>Pack Top Hit: {cards.find(c => c.isMostExpensive)?.pokemon.name} (${cards.find(c => c.isMostExpensive)?.value.toFixed(2)})</span>
+                      </div>
+                    )}
 
+                    <p className="text-gray-400 text-xs mb-5">
+                      Total Pulled Value (All Cards): <span className="text-emerald-400 font-bold">${(activeOrder?.totalPulledValue ?? (activeOrder?.pulledCards || []).reduce((acc, c) => acc + c.value, 0)).toFixed(2)}</span>
+                    </p>
 
+                    {activeOrder?.status === 'completed' ? (
+                      <button
+                        onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); }}
+                        className="px-8 py-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 hover:bg-emerald-500/30 transition-all cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <span>✅ ORDER SHIPPED - SELECT NEXT ORDER 📦</span>
+                      </button>
+                    ) : (activeOrder?.openedPacks || 0) < (activeOrder?.packCount || 1) ? (
+                      <button
+                        onClick={() => activeOrder && loadAndRipPack(activeOrder)}
+                        className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 font-black text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <Package className="w-5 h-5 text-white" />
+                        <span>📦 RIP PACK {(activeOrder?.openedPacks || 0) + 1} OF {activeOrder?.packCount} FOR {activeOrder?.username} ⚡</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          sound.playButtonClick();
+                          if (activeOrder) {
+                            const orderTotalVal = activeOrder.totalPulledValue ?? (activeOrder.pulledCards || []).reduce((acc, c) => acc + c.value, 0);
+                            setCompletionModal({
+                              order: activeOrder,
+                              hits: activeOrder.pulledCards || [],
+                              totalValue: orderTotalVal
+                            });
+                          }
+                        }}
+                        className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 font-black text-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.5)] transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2 animate-pulse"
+                      >
+                        <Truck className="w-5 h-5 text-black" />
+                        <span>🎉 ALL PACKS OPENED - SHIP ORDER TO LOGISTICS 📦</span>
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </div>
 
+            {/* Revealed Cards Gallery */}
             {!isLoadingPack && packStage === 'opened' && revealedCards.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-5xl mt-4 px-4 shrink-0"
+                className="w-full max-w-4xl mt-6 px-2 shrink-0 pb-12"
               >
                 <div className="flex flex-col items-center mb-6">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-2">
@@ -1631,7 +1654,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                     Revealed Cards ({revealedCards.length} / {cards.length})
                   </h3>
                 </div>
-                <div className="flex flex-wrap items-stretch justify-center gap-6 sm:gap-8">
+                <div className="flex flex-wrap items-stretch justify-center gap-4 sm:gap-6">
                   <AnimatePresence>
                     {revealedCards.map((card) => (
                       <RevealedCardItem
@@ -1646,310 +1669,104 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                 </div>
               </motion.div>
             )}
-            </div>
-
           </div>
+
+          {/* RIGHT: Dedicated Live Chat Side Panel */}
+          <AnimatePresence>
+            {isChatVisible && (
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 30 }}
+                className="w-full lg:w-80 xl:w-96 shrink-0 h-[450px] lg:h-full bg-[#110e20]/90 border border-white/15 rounded-3xl p-3 sm:p-4 flex flex-col shadow-2xl relative overflow-hidden"
+              >
+                {/* Chat Header */}
+                <div className="pb-3 mb-2 border-b border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-white">
+                    <MessageSquare className="w-4 h-4 text-purple-400" />
+                    <span className="font-extrabold text-xs uppercase tracking-wider">Live Stream Chat</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/40 text-[10px] text-red-400 font-mono font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    <span>1,413 LIVE</span>
+                  </div>
+                </div>
+
+                {/* Messages Feed */}
+                <div 
+                  className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1 my-1"
+                  style={{
+                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 8%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 8%)'
+                  }}
+                >
+                  {chatMessages.map(msg => (
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className={`p-2.5 rounded-xl border text-xs transition-all flex items-start gap-2 ${
+                        msg.isOrderNotification 
+                          ? 'bg-amber-500/30 border-amber-400/60 text-white font-bold' 
+                          : 'bg-black/50 border-white/10 text-gray-100'
+                      }`}
+                    >
+                      <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${msg.avatarColor || 'from-purple-500 to-indigo-600'} flex items-center justify-center text-[9px] font-black shrink-0 text-white shadow-sm mt-0.5`}>
+                        {msg.username.substring(0, 2).toUpperCase()}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {msg.badge && (
+                            <span className="text-[8px] font-black px-1.5 py-0.2 rounded bg-amber-400 text-black uppercase tracking-wider">
+                              {msg.badge}
+                            </span>
+                          )}
+                          <span className={`font-extrabold text-[11px] ${msg.color || 'text-amber-300'}`}>
+                            {msg.username}
+                          </span>
+                        </div>
+                        <div className="text-[11px] leading-tight text-gray-100 mt-0.5 break-words">
+                          {msg.message}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                  <div ref={chatBottomRef} />
+                </div>
+
+                {/* Host Input & Reactions */}
+                <div className="pt-2 border-t border-white/10 flex items-center gap-1.5">
+                  <form onSubmit={handleSendHostMessage} className="flex-1 flex gap-1.5">
+                    <input
+                      type="text"
+                      value={hostInput}
+                      onChange={e => setHostInput(e.target.value)}
+                      placeholder="Chat as Host..."
+                      className="flex-1 px-3.5 py-2 rounded-full bg-black/60 border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
+                    />
+                    <button
+                      type="submit"
+                      className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs flex items-center gap-1 hover:brightness-110 transition-all cursor-pointer shadow-lg shrink-0"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                    </button>
+                  </form>
+
+                  <button
+                    onClick={handleSpawnHeart}
+                    className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
+                  >
+                    <Heart className="w-4 h-4 fill-red-500" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* ── 4. Customer Order Queue Drawer ── */}
-      <AnimatePresence>
-        {isQueueOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 sm:top-20 inset-x-2 sm:inset-x-6 z-50 p-2.5 sm:p-3.5 rounded-2xl bg-black/90 border border-white/15 shadow-2xl flex flex-col gap-2 pointer-events-auto"
-          >
-            <div className="flex items-center justify-between text-[10px] font-extrabold text-amber-400 uppercase tracking-widest px-1">
-              <span className="flex items-center gap-1">
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span>Customer Queue ({orders.filter(o => o.status === 'pending').length} Pending)</span>
-              </span>
-              <button
-                onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(true); setIsQueueOpen(false); }}
-                className="text-[10px] text-amber-300 hover:underline cursor-pointer flex items-center gap-1"
-              >
-                <span>View All Orders Ledger &rarr;</span>
-              </button>
-            </div>
-            <div className="flex overflow-x-auto gap-2 custom-scrollbar pb-1">
-              {orders.map(ord => (
-                <button
-                  key={ord.id}
-                  onClick={() => { sound.playButtonClick(); setActiveOrder(ord); }}
-                  className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all shrink-0 cursor-pointer ${
-                    activeOrder?.id === ord.id
-                      ? 'border-amber-400 bg-amber-500/25 text-white shadow-lg ring-1 ring-amber-400/50'
-                      : ord.status === 'completed'
-                      ? 'border-white/5 bg-white/5 opacity-50'
-                      : 'border-white/10 bg-white/10 hover:bg-white/15'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${ord.avatarColor} flex items-center justify-center font-black text-xs text-white shrink-0 shadow-md`}>
-                    {ord.username.substring(1, 3).toUpperCase()}
-                  </div>
-                  <div className="text-left">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-black truncate max-w-[110px] text-white">{ord.username}</span>
-                      <span className="text-[10px] font-mono font-black text-emerald-400">${ord.totalPaid.toFixed(2)}</span>
-                    </div>
-                    <div className="text-[10px] text-gray-300 font-bold flex items-center gap-1 mt-0.5">
-                      <span>{ord.packCount}x {ord.packName}</span>
-                      {ord.status === 'completed' && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── 4B. Full Stream Orders Ledger Modal ── */}
-      <AnimatePresence>
-        {isOrdersModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 p-3 sm:p-6 flex items-center justify-center pointer-events-auto"
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 10 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 10 }}
-              className="relative w-full max-w-4xl max-h-[90vh] bg-[#0c0915] border border-white/20 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-white"
-            >
-              {/* Modal Header */}
-              <div className="p-4 sm:p-6 bg-[#130f24] border-b border-white/10 flex items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-                    <ShoppingCart className="w-5 h-5 text-amber-400" />
-                    <span>Live Stream Orders Ledger</span>
-                  </h2>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    Track customer purchases, total spent, pack counts, and active order status.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { sound.playButtonClick(); setIsAddFormOpen(!isAddFormOpen); }}
-                    className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add Order</span>
-                  </button>
-
-                  <button
-                    onClick={() => { sound.playButtonClick(); setIsOrdersModalOpen(false); }}
-                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Add Order Collapsible Form */}
-              {isAddFormOpen && (
-                <form onSubmit={handleAddNewOrder} className="p-4 bg-amber-500/10 border-b border-amber-500/30 flex flex-wrap gap-3 items-end">
-                  <div className="flex-1 min-w-[140px]">
-                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Customer Username</label>
-                    <input
-                      type="text"
-                      placeholder="@Username"
-                      value={newUsername}
-                      onChange={e => setNewUsername(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="flex-1 min-w-[160px]">
-                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Pack Name</label>
-                    <input
-                      type="text"
-                      value={newPackName}
-                      onChange={e => setNewPackName(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="w-24">
-                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Set ID</label>
-                    <input
-                      type="text"
-                      value={newSetId}
-                      onChange={e => setNewSetId(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="w-20">
-                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Count</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={newPackCount}
-                      onChange={e => setNewPackCount(Number(e.target.value))}
-                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="w-24">
-                    <label className="text-[10px] font-black uppercase text-amber-300 block mb-1">Total ($)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={newTotalPaid}
-                      onChange={e => setNewTotalPaid(Number(e.target.value))}
-                      className="w-full px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs text-white focus:outline-none focus:border-amber-400"
-                      required
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs uppercase cursor-pointer"
-                  >
-                    Save Order
-                  </button>
-                </form>
-              )}
-
-              {/* Summary Stats Row & Filters */}
-              <div className="px-4 sm:px-6 py-3 bg-black/40 border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  {(['all', 'pending', 'completed'] as const).map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => { sound.playButtonClick(); setOrdersFilter(tab); }}
-                      className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                        ordersFilter === tab
-                          ? 'bg-amber-400 text-black shadow-md'
-                          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      {tab} ({tab === 'all' ? orders.length : orders.filter(o => o.status === tab).length})
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-4 text-xs font-mono">
-                  <div className="text-gray-400">
-                    Total Revenue: <span className="font-black text-emerald-400">${orders.reduce((acc, o) => acc + o.totalPaid, 0).toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Orders Table List */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar space-y-3">
-                {orders
-                  .filter(o => ordersFilter === 'all' || o.status === ordersFilter)
-                  .map(ord => {
-                    const isActive = activeOrder?.id === ord.id;
-                    return (
-                      <div
-                        key={ord.id}
-                        className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                          isActive
-                            ? 'bg-amber-500/20 border-amber-400 shadow-xl ring-1 ring-amber-400/40'
-                            : 'bg-white/5 border-white/10 hover:bg-white/10'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3.5 min-w-0">
-                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${ord.avatarColor} flex items-center justify-center font-black text-sm text-white shrink-0 shadow-md`}>
-                            {ord.username.substring(1, 3).toUpperCase()}
-                          </div>
-
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-extrabold text-sm text-white truncate">{ord.username}</span>
-                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                ord.status === 'completed'
-                                  ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400'
-                                  : ord.status === 'ripping'
-                                  ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400 animate-pulse'
-                                  : 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
-                              }`}>
-                                {ord.status}
-                              </span>
-                            </div>
-
-                            <div className="text-xs text-gray-300 font-medium mt-0.5 flex items-center gap-2">
-                              <span>Purchased: <strong className="text-amber-300 font-bold">{ord.packCount}x {ord.packName}</strong></span>
-                            </div>
-
-                            {/* Pack Opening Progress Bar */}
-                            <div className="mt-1.5 w-full max-w-sm">
-                              <div className="flex items-center justify-between text-[10px] text-gray-300 font-extrabold mb-0.5">
-                                <span>Pack Progress</span>
-                                <span className="text-amber-300 font-mono">{ord.openedPacks || 0} / {ord.packCount} Packs ({Math.round(((ord.openedPacks || 0) / ord.packCount) * 100)}%)</span>
-                              </div>
-                              <div className="w-full bg-black/60 rounded-full h-1.5 border border-white/10 overflow-hidden">
-                                <div
-                                  style={{ width: `${Math.min(100, Math.round(((ord.openedPacks || 0) / ord.packCount) * 100))}%` }}
-                                  className="bg-gradient-to-r from-amber-400 via-yellow-400 to-emerald-400 h-full rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6)]"
-                                />
-                              </div>
-                            </div>
-
-                            {/* Full Customer Shipping Address */}
-                            <div className="mt-1 text-[11px] text-gray-300 font-sans flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-lg border border-white/10">
-                              <MapPin className="w-3.5 h-3.5 text-red-400 shrink-0" />
-                              <span className="truncate">{ord.address || ord.location}</span>
-                            </div>
-
-                            {ord.pulledCards && ord.pulledCards.length > 0 && (
-                              <div className="mt-2 text-[11px] text-emerald-400 flex items-center gap-1.5 flex-wrap">
-                                <Award className="w-3.5 h-3.5" />
-                                <span>Pulled Hits:</span>
-                                {ord.pulledCards.map((c, i) => (
-                                  <span key={i} className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-bold">
-                                    {c.name} (${c.value.toFixed(2)})
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/10">
-                          <div className="text-right">
-                            <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Total Paid</div>
-                            <div className="text-base font-mono font-black text-emerald-400">${ord.totalPaid.toFixed(2)}</div>
-                          </div>
-
-                          <button
-                            onClick={() => {
-                              sound.playButtonClick();
-                              setActiveOrder(ord);
-                              setIsOrdersModalOpen(false);
-                            }}
-                            disabled={isActive}
-                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                              isActive
-                                ? 'bg-amber-400 text-black opacity-80 cursor-default'
-                                : 'bg-white/10 hover:bg-amber-400 hover:text-black text-white border border-white/20'
-                            }`}
-                          >
-                            {isActive ? 'Active Order' : 'Set Active'}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── 5. Floating Reactions ── */}
+      {/* ── 5. Floating Reactions Overlay ── */}
       <div className="absolute inset-y-16 right-4 w-20 pointer-events-none z-30 overflow-hidden">
         {reactions.map(r => (
           <motion.div
@@ -1965,96 +1782,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         ))}
       </div>
 
-      {/* ── 6. Chat ── */}
-      <AnimatePresence>
-        {isChatVisible ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-3 left-2 sm:left-4 right-2 sm:right-auto z-30 w-full sm:w-96 max-w-[calc(100vw-16px)] flex flex-col pointer-events-auto gap-2"
-          >
-            <div 
-              className="max-h-48 sm:max-h-56 overflow-y-auto custom-scrollbar flex flex-col space-y-1.5 p-2 rounded-2xl bg-black/40 border border-white/10 shadow-2xl"
-              style={{
-                maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
-              }}
-            >
-              {chatMessages.map(msg => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, x: -10, y: 10 }}
-                  animate={{ opacity: 1, x: 0, y: 0 }}
-                  className={`p-2 rounded-xl border text-xs transition-all flex items-start gap-2 ${
-                    msg.isOrderNotification 
-                      ? 'bg-amber-500/30 border-amber-400/60 text-white font-bold' 
-                      : 'bg-black/60 border-white/10 text-gray-100'
-                  }`}
-                >
-                  <div className={`w-6 h-6 rounded-full bg-gradient-to-tr ${msg.avatarColor || 'from-purple-500 to-indigo-600'} flex items-center justify-center text-[9px] font-black shrink-0 text-white shadow-sm mt-0.5`}>
-                    {msg.username.substring(0, 2).toUpperCase()}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      {msg.badge && (
-                        <span className="text-[8px] font-black px-1.5 py-0.2 rounded bg-amber-400 text-black uppercase tracking-wider">
-                          {msg.badge}
-                        </span>
-                      )}
-                      <span className={`font-extrabold text-[11px] ${msg.color || 'text-amber-300'}`}>
-                        {msg.username}
-                      </span>
-                    </div>
-                    <div className="text-[11px] leading-tight text-gray-100 mt-0.5 break-words">
-                      {msg.message}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-              <div ref={chatBottomRef} />
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <form onSubmit={handleSendHostMessage} className="flex-1 flex gap-1.5">
-                <input
-                  type="text"
-                  value={hostInput}
-                  onChange={e => setHostInput(e.target.value)}
-                  placeholder="Chat as Host..."
-                  className="flex-1 px-3.5 py-2 rounded-full bg-black/60 border border-white/20 text-white text-xs placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-all shadow-lg"
-                />
-                <button
-                  type="submit"
-                  className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black font-black text-xs flex items-center gap-1 hover:brightness-110 transition-all cursor-pointer shadow-lg shrink-0"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-
-              <button
-                onClick={handleSpawnHeart}
-                className="w-9 h-9 rounded-full bg-red-600/30 border border-red-500/60 text-red-400 flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0 shadow-lg"
-              >
-                <Heart className="w-4 h-4 fill-red-500" />
-              </button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            onClick={() => { sound.playButtonClick(); setIsChatVisible(true); }}
-            className="absolute bottom-4 left-3 z-30 px-3.5 py-2 rounded-full bg-black/80 border border-purple-500/40 text-purple-300 text-xs font-black flex items-center gap-2 shadow-2xl hover:bg-purple-950/60 hover:border-purple-400 transition-all cursor-pointer pointer-events-auto"
-          >
-            <MessageSquare className="w-4 h-4 text-purple-400" />
-            <span>Show Live Chat</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-    
       {inspectedCard && (
         <CardMarketModal
           card={inspectedCard}
