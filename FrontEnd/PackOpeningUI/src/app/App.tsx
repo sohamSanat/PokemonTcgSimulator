@@ -1496,6 +1496,7 @@ export default function App() {
   const loadSetAndGeneratePack = useCallback(async (setId: string, forceLanguage?: 'en' | 'ja', mysteryPack?: MysteryPackConfig | null, mysteryResult?: MysteryPackResult | null) => {
     if (isLoadingPackRef.current) return;
     isLoadingPackRef.current = true;
+    const loadStartTime = Date.now();
     const langToUse = forceLanguage || (mysteryPack ? mysteryPack.language : selectedLanguage);
     sound.playPackOpen();
     setIsLoadingPack(true);
@@ -1505,6 +1506,15 @@ export default function App() {
     setTearProgress(0);
     setBinderAddedIds(new Set());
     setPityNotification(null);
+
+    const finishCurtainReady = () => {
+      const elapsed = Date.now() - loadStartTime;
+      const minCurtainTime = 1200; // Guaranteed 1.2s curtain display for EVERY set load
+      const remainingDelay = Math.max(0, minCurtainTime - elapsed);
+      setTimeout(() => {
+        setIsChaseCardsReady(true);
+      }, remainingDelay);
+    };
 
     if (mysteryPack !== undefined) {
       setCurrentMysteryPack(mysteryPack);
@@ -1538,12 +1548,9 @@ export default function App() {
         const newCards = await generateJapanesePackFromSet(setDetails);
         setCards(formatAndSortCards(newCards));
         preloadPackImages(newCards).catch(() => {});
-        setIsChaseCardsReady(false);
 
         setTimeout(() => {
-          orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
-            setIsChaseCardsReady(true);
-          });
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id), finishCurtainReady);
         }, 200);
       } else {
         const setDetails = await fetchSetDetails(setId);
@@ -1562,13 +1569,10 @@ export default function App() {
         // Render pack cards immediately, and trigger background image preload non-blockingly
         setCards(formatAndSortCards(newCards));
         preloadPackImages(newCards).catch(() => {});
-        setIsChaseCardsReady(false);
 
         // NOW that pack and contents are fully ready, trigger low-priority background chase card warmup
         setTimeout(() => {
-          orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
-            setIsChaseCardsReady(true);
-          });
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id), finishCurtainReady);
         }, 200);
       }
 
@@ -1591,6 +1595,7 @@ export default function App() {
     } catch (error) {
       console.error('Failed to load set pack:', error);
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
+      setIsChaseCardsReady(true);
     } finally {
       isLoadingPackRef.current = false;
       setIsLoadingPack(false);
