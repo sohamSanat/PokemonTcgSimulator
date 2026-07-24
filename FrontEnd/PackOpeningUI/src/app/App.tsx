@@ -2267,48 +2267,6 @@ export default function App() {
       ) : (
         <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
-          {/* Top Bar Action Buttons */}
-          <div className="w-full max-w-4xl mx-auto flex items-center justify-end gap-3 mb-3 px-2 relative shrink-0">
-            {/* ACTION BUTTONS: TASKS & 5-MIN LUCKY DROP CIRCLE BUTTONS */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* SMALL CIRCLE WITH CHECKLIST SYMBOL (TASKS) */}
-              <motion.button
-                onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-                whileHover={{ scale: 1.15, rotate: 6 }}
-                whileTap={{ scale: 0.9 }}
-                title="Daily, Weekly & Monthly Missions Checklist"
-                className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_25px_rgba(56,189,248,0.7)] cursor-pointer shrink-0 relative group animate-bounce"
-              >
-                <ListChecks className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-                <span className="absolute -top-1 -right-1 bg-amber-400 text-black font-mono font-black text-[9px] px-1.5 py-0.2 rounded-full border border-black shadow-md animate-pulse">
-                  TASKS
-                </span>
-              </motion.button>
-
-              {/* 5-MIN LUCKY DROP CIRCLE BUTTON */}
-              <motion.button
-                onClick={handleLuckyDropClick}
-                whileHover={{ scale: 1.15, rotate: -6 }}
-                whileTap={{ scale: 0.9 }}
-                title={luckyDropSeconds === 0 ? "5-Min Lucky Drop Ready! Click to Claim Free Mystery Pack!" : `Next Lucky Drop in ${formatTimer(luckyDropSeconds)}`}
-                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-white flex items-center justify-center text-white cursor-pointer shrink-0 relative group transition-all duration-300 ${
-                  luckyDropSeconds === 0
-                    ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-purple-600 shadow-[0_0_30px_rgba(245,158,11,0.9)] animate-bounce'
-                    : 'bg-gradient-to-tr from-purple-900/80 via-slate-900 to-indigo-950 border-white/40 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                }`}
-              >
-                <Gift className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform ${luckyDropSeconds === 0 ? 'animate-pulse scale-110 text-amber-200' : 'text-purple-300 group-hover:scale-110'}`} />
-                <span className={`absolute -top-1 -right-1 font-mono font-black text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-full border shadow-md ${
-                  luckyDropSeconds === 0
-                    ? 'bg-amber-300 text-black border-black animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.8)]'
-                    : 'bg-black/90 text-amber-300 border-amber-400/60'
-                }`}>
-                  {luckyDropSeconds === 0 ? 'DROP!' : formatTimer(luckyDropSeconds)}
-                </span>
-              </motion.button>
-            </div>
-          </div>
-
           {/* Unified Command & Stats Console HUD */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -2319,8 +2277,8 @@ export default function App() {
             {/* Subtle ambient glowing background glow */}
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Top Grid: Financial Performance, Missions & Lucky Drop Pods */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 relative z-10">
+            {/* Top Grid: Financial Performance & 5-Min Lucky Drop Pods */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3.5 relative z-10">
               {/* Pod 1: Pack Cost & Total Spent (Combined Column) */}
               <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
@@ -2374,49 +2332,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Pod 3: Missions & Free Packs */}
-              <div
-                onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-                className="bg-gradient-to-br from-[#38bdf8]/20 via-[#0284c7]/10 to-transparent border border-[#38bdf8]/50 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer shadow-[inset_0_1px_2px_rgba(56,189,248,0.3)] group"
-              >
-                <div className="flex items-center justify-between text-[#38bdf8] text-[11px] font-extrabold uppercase tracking-wider">
-                  <span className="flex items-center gap-1.5 truncate">
-                    <ListChecks className="w-3.5 h-3.5 text-[#38bdf8] group-hover:scale-110 transition-transform animate-pulse shrink-0" />
-                    <span className="truncate">Free Packs & Missions</span>
-                  </span>
-                  <span className="w-4 h-4 rounded-full bg-[#38bdf8] text-black text-[9px] font-black flex items-center justify-center shrink-0">
-                    ✓
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-x-2 gap-y-1 my-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-gray-300 font-bold">🇺🇸 EN:</span>
-                    <span className="text-xs font-black font-mono text-white">
-                      {dailyFreePacks.english}/5
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-gray-300 font-bold">🇯🇵 JP:</span>
-                    <span className="text-xs font-black font-mono text-white">
-                      {dailyFreePacks.japanese}/5
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-amber-300 font-bold">🎒 Packs:</span>
-                    <span className="text-xs font-black font-mono text-amber-300">
-                      {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-gray-300 font-bold">💰 Cash:</span>
-                    <span className="text-xs font-black font-mono text-amber-400 truncate">
-                      {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pod 4: 5-Min Lucky Drop */}
+              {/* Pod 3: 5-Min Lucky Drop */}
               <div
                 onClick={handleLuckyDropClick}
                 className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group ${
@@ -2468,6 +2384,63 @@ export default function App() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Standalone Row: Tasks & Missions Hub */}
+            <div
+              onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
+              className="bg-gradient-to-r from-[#38bdf8]/15 via-[#0284c7]/10 to-indigo-900/20 border border-[#38bdf8]/40 hover:border-[#38bdf8] rounded-2xl p-3 sm:p-3.5 mb-4 relative z-10 flex flex-col sm:flex-row items-center justify-between gap-3 cursor-pointer transition-all shadow-[inset_0_1px_2px_rgba(56,189,248,0.2),0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.25)] group"
+            >
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border border-white/40 flex items-center justify-center text-white shadow-[0_0_15px_rgba(56,189,248,0.5)] shrink-0 group-hover:scale-105 transition-transform">
+                  <ListChecks className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white text-xs sm:text-sm font-black uppercase tracking-wider group-hover:text-[#38bdf8] transition-colors">
+                      Tasks & Missions Hub
+                    </span>
+                    <span className="bg-[#38bdf8]/20 text-[#38bdf8] text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-[#38bdf8]/40 uppercase tracking-widest">
+                      Daily & Weekly
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] text-gray-300 font-medium">
+                    <span className="flex items-center gap-1">
+                      <span className="text-gray-400">🇺🇸 EN:</span>
+                      <strong className="text-white font-mono">{dailyFreePacks.english}/5</strong>
+                    </span>
+                    <span className="text-gray-600">•</span>
+                    <span className="flex items-center gap-1">
+                      <span className="text-gray-400">🇯🇵 JP:</span>
+                      <strong className="text-white font-mono">{dailyFreePacks.japanese}/5</strong>
+                    </span>
+                    <span className="text-gray-600">•</span>
+                    <span className="flex items-center gap-1">
+                      <span className="text-amber-300">🎒 Packs:</span>
+                      <strong className="text-amber-300 font-mono">
+                        {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
+                      </strong>
+                    </span>
+                    <span className="text-gray-600">•</span>
+                    <span className="flex items-center gap-1">
+                      <span className="text-emerald-400">💰 Cash:</span>
+                      <strong className="text-emerald-300 font-mono">
+                        {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
+                      </strong>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full sm:w-auto flex justify-end shrink-0">
+                <button
+                  onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setActiveTab('missions'); }}
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-indigo-600 hover:from-[#38bdf8]/90 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.6)] active:scale-95"
+                >
+                  <ListChecks className="w-3.5 h-3.5" />
+                  <span>Tasks & Missions</span>
+                </button>
               </div>
             </div>
 
