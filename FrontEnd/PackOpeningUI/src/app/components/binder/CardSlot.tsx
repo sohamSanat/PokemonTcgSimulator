@@ -61,7 +61,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
     transition,
     zIndex: isDragging ? 50 : (hovered ? 100 : 1),
     opacity: isDragging ? 0.8 : 1,
-    touchAction: "none",
+    touchAction: "pan-y" as const,
   };
 
   if (!card) {
@@ -101,7 +101,7 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.09) 100%)",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 80%, rgba(255,255,255,0.06) 100%)",
           pointerEvents: "none"
         }} />
 
@@ -166,10 +166,10 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           border: "2px solid rgba(255,255,255,0.22)",
           padding: "6px",
           boxShadow: hovered
-            ? `0 16px 40px rgba(0,0,0,0.85), 0 0 24px rgba(255,255,255,0.15), ${RARITY_GLOW[card.rarity] || "none"}`
-            : `0 6px 20px rgba(0,0,0,0.55), inset 0 1px 1px rgba(255,255,255,0.18), ${RARITY_GLOW[card.rarity] || "none"}`,
+            ? "0 12px 30px rgba(0,0,0,0.8)"
+            : "0 4px 14px rgba(0,0,0,0.5)",
           transform: hovered ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
-          transition: "transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease",
+          transition: "transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease",
           cursor: "pointer",
           position: "relative",
           overflow: "hidden",

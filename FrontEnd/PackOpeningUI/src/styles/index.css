@@ -98,28 +98,6 @@ html, body {
     box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.85), 0 0 12px var(--card-glow) !important;
   }
 
-  /* 3. Contain paint and layout on scroll containers to prevent full-page repaints.
-     Removed will-change: scroll-position which is an anti-pattern in Firefox that
-     can actually cause performance degradation by forcing layer creation. */
-  .overflow-y-auto,
-  .overflow-x-auto,
-  .custom-scrollbar,
-  [class*="overflow-y-auto"],
-  [class*="overflow-x-auto"] {
-    contain: layout paint;
-  }
-
-  /* 4. Layer promotion and paint containment on card elements.
-     Use transform: translateZ(0) for hardware acceleration instead of will-change
-     which Firefox handles poorly when toggled frequently. */
-  .pkmn-card,
-  .card-slot,
-  [class*="pkmn-card"],
-  [class*="card-slot"] {
-    transform: translateZ(0);
-    contain: layout paint;
-  }
-
   /* 5. Strip expensive SVG drop-shadow filter calculations from high-res card art.
      Firefox's filter implementation is significantly slower than Chrome/Edge. */
   img[class*="drop-shadow"],

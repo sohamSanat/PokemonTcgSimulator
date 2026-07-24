@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { Card } from './types';
 import { getTCGDexValidAssetPath, getCardImageUrl, handleCardImageError, type PokemonCard } from '../../services/tcgdex';
 import { extractMajorityColor, getFallbackColor, type ExtractedColor } from '../../services/colorExtractor';
@@ -103,21 +103,11 @@ export const InteractiveCard3D: React.FC<Props> = ({
 
   const tiltEnabled = interactive && !showcase && !disableTilt;
 
-  // Dynamically extract the majority color available on the card illustration
-  const [majorityColor, setMajorityColor] = useState<ExtractedColor>(() =>
-    getFallbackColor(cardType, name)
+  // Synchronously compute dynamic color tokens from card type & name (zero async re-renders or canvas overhead)
+  const majorityColor = useMemo<ExtractedColor>(() =>
+    getFallbackColor(cardType, name),
+    [cardType, name]
   );
-
-  useEffect(() => {
-    let isMounted = true;
-    const initial = extractMajorityColor(imageUrl, cardType, name, (color) => {
-      if (isMounted) setMajorityColor(color);
-    });
-    setMajorityColor(initial);
-    return () => {
-      isMounted = false;
-    };
-  }, [imageUrl, cardType, name]);
 
   // Position updates for lighting & 3D tilt (bypassed if tilt is disabled)
   const updateTiltAndLighting = useCallback(
