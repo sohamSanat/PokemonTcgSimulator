@@ -27,90 +27,115 @@ async function downloadLogo(url, filepath) {
 }
 
 async function run() {
-  console.log('Fetching all series & sets from TCGdex...');
+  console.log('Fetching English series & sets from TCGdex...');
+  const manifestPath = path.join(publicSetLogosDir, 'manifest.json');
+  let manifest = {};
+  if (fs.existsSync(manifestPath)) {
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch {}
+  }
+
+  let downloadedCount = 0;
+  let cachedCount = 0;
+  let failedCount = 0;
+
   try {
     const setsRes = await fetch(`${API_BASE}/sets`);
-    if (!setsRes.ok) {
-      throw new Error(`Failed to fetch sets: ${setsRes.status}`);
-    }
-    const sets = await setsRes.json();
-    console.log(`Found ${sets.length} total sets across all generations! Predownloading logos...`);
+    if (setsRes.ok) {
+      const sets = await setsRes.json();
+      console.log(`Found ${sets.length} total English sets! Predownloading logos...`);
 
-    const manifest = {};
-    let downloadedCount = 0;
-    let cachedCount = 0;
-    let failedCount = 0;
+      const batchSize = 15;
+      for (let i = 0; i < sets.length; i += batchSize) {
+        const batch = sets.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (set) => {
+          if (!set.logo) return;
 
-    // We process in batches of 10 to be fast and not overload TCGdex CDN
-    const batchSize = 15;
-    for (let i = 0; i < sets.length; i += batchSize) {
-      const batch = sets.slice(i, i + batchSize);
-      await Promise.all(batch.map(async (set) => {
-        if (!set.logo) {
-          return;
-        }
+          const safeId = set.id.replace(/[^a-z0-9.-]/gi, '_');
+          const pngPath = path.join(publicSetLogosDir, `${safeId}.png`);
+          const webpPath = path.join(publicSetLogosDir, `${safeId}.webp`);
 
-        const safeId = set.id.replace(/[^a-z0-9.-]/gi, '_');
-        const pngPath = path.join(publicSetLogosDir, `${safeId}.png`);
-        const webpPath = path.join(publicSetLogosDir, `${safeId}.webp`);
-
-        // Check if already downloaded
-        if (fs.existsSync(pngPath) && fs.statSync(pngPath).size > 100) {
-          manifest[set.id] = `/setLogos/${safeId}.png`;
-          manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.png`;
-          cachedCount++;
-          return;
-        }
-        if (fs.existsSync(webpPath) && fs.statSync(webpPath).size > 100) {
-          manifest[set.id] = `/setLogos/${safeId}.webp`;
-          manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.webp`;
-          cachedCount++;
-          return;
-        }
-
-        // Try downloading .png from set.logo + '.png'
-        const pngUrl = `${set.logo}.png`;
-        let success = await downloadLogo(pngUrl, pngPath);
-        if (success) {
-          manifest[set.id] = `/setLogos/${safeId}.png`;
-          manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.png`;
-          downloadedCount++;
-        } else {
-          // Try .webp if .png fails
-          const webpUrl = `${set.logo}.webp`;
-          success = await downloadLogo(webpUrl, webpPath);
-          if (success) {
+          if (fs.existsSync(pngPath) && fs.statSync(pngPath).size > 100) {
+            manifest[set.id] = `/setLogos/${safeId}.png`;
+            manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.png`;
+            cachedCount++;
+            return;
+          }
+          if (fs.existsSync(webpPath) && fs.statSync(webpPath).size > 100) {
             manifest[set.id] = `/setLogos/${safeId}.webp`;
             manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.webp`;
+            cachedCount++;
+            return;
+          }
+
+          const pngUrl = `${set.logo}.png`;
+          let success = await downloadLogo(pngUrl, pngPath);
+          if (success) {
+            manifest[set.id] = `/setLogos/${safeId}.png`;
+            manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.png`;
             downloadedCount++;
           } else {
-            // Also try fetching without extension or with .jpg
-            const jpgPath = path.join(publicSetLogosDir, `${safeId}.jpg`);
-            success = await downloadLogo(`${set.logo}.jpg`, jpgPath);
+            const webpUrl = `${set.logo}.webp`;
+            success = await downloadLogo(webpUrl, webpPath);
             if (success) {
-              manifest[set.id] = `/setLogos/${safeId}.jpg`;
-              manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.jpg`;
+              manifest[set.id] = `/setLogos/${safeId}.webp`;
+              manifest[set.id.toLowerCase()] = `/setLogos/${safeId}.webp`;
               downloadedCount++;
             } else {
               failedCount++;
             }
           }
-        }
-      }));
-      console.log(`Progress: ${Math.min(i + batchSize, sets.length)} / ${sets.length} sets processed...`);
+        }));
+      }
     }
-
-    const manifestPath = path.join(publicSetLogosDir, 'manifest.json');
-    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-    console.log(`\n✅ Predownload Complete!`);
-    console.log(`New downloaded: ${downloadedCount}`);
-    console.log(`Already cached: ${cachedCount}`);
-    console.log(`No logo / failed: ${failedCount}`);
-    console.log(`Manifest saved with ${Object.keys(manifest).length} entries at: ${manifestPath}`);
   } catch (err) {
-    console.error('Error in predownload script:', err);
-    process.exit(1);
+    console.error('Error fetching English sets:', err);
   }
+
+  // Next, download Japanese set logos from Scrydex using ja-sets.json
+  const jaSetsPath = path.resolve(__dirname, '../public/ja-sets.json');
+  if (fs.existsSync(jaSetsPath)) {
+    try {
+      const jaSets = JSON.parse(fs.readFileSync(jaSetsPath, 'utf8'));
+      console.log(`Found ${jaSets.length} Japanese sets! Predownloading logos...`);
+      const batchSize = 15;
+      for (let i = 0; i < jaSets.length; i += batchSize) {
+        const batch = jaSets.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (set) => {
+          const rawId = set.id.toLowerCase();
+          const jaId = `${rawId}_ja`;
+          const pngPath = path.join(publicSetLogosDir, `${rawId}_ja.png`);
+
+          if (fs.existsSync(pngPath) && fs.statSync(pngPath).size > 100) {
+            manifest[jaId] = `/setLogos/${rawId}_ja.png`;
+            manifest[`${set.id}_ja`] = `/setLogos/${rawId}_ja.png`;
+            cachedCount++;
+            return;
+          }
+
+          const url = `https://images.scrydex.com/pokemon/${rawId}_ja-logo/logo`;
+          const success = await downloadLogo(url, pngPath);
+          if (success) {
+            manifest[jaId] = `/setLogos/${rawId}_ja.png`;
+            manifest[`${set.id}_ja`] = `/setLogos/${rawId}_ja.png`;
+            downloadedCount++;
+          } else {
+            failedCount++;
+          }
+        }));
+      }
+    } catch (err) {
+      console.error('Error processing Japanese set logos:', err);
+    }
+  }
+
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  console.log(`\n✅ Predownload Complete!`);
+  console.log(`New downloaded: ${downloadedCount}`);
+  console.log(`Already cached: ${cachedCount}`);
+  console.log(`Failed: ${failedCount}`);
+  console.log(`Manifest saved with ${Object.keys(manifest).length} entries at: ${manifestPath}`);
 }
 
 run();

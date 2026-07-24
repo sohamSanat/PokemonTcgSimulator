@@ -356,141 +356,25 @@ export function getMaxCardNumForJapaneseSet(setId: string): number {
 }
 
 export function getJapaneseSetDefaultLogo(setId: string): string {
-  const rawId = setId.replace(/_ja$/i, '').toUpperCase();
+  const rawId = setId.replace(/_ja$/i, '').toLowerCase();
   const rawBase = import.meta.env.BASE_URL || '/';
   const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
-  if (rawId === 'SV2A') return `${base}setLogos/sv2a_ja.png`;
-  if (rawId.startsWith('SV') || rawId.startsWith('SVK')) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
+  if (rawId === 'sv2a') {
+    return `${base}setLogos/sv2a_ja.png`;
   }
-  if (rawId.startsWith('SM') || rawId.startsWith('SMP')) {
-    if (rawId === 'SMP2') return `${base}setLogos/det1.png`;
-    if (rawId === 'SM1+') return `${base}setLogos/sm1.png`;
-    if (rawId === 'SM2+') return `${base}setLogos/sm2.png`;
-    if (rawId === 'SM3+') return `${base}setLogos/sm3.png`;
-    if (rawId === 'SM4+') return `${base}setLogos/sm4.png`;
-    if (rawId === 'SM5+') return `${base}setLogos/sm5.png`;
-    return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId.toLowerCase())}_ja-logo/logo`;
-  }
-  if ((rawId.startsWith('S') && !rawId.startsWith('SV') && !rawId.startsWith('SM') && !rawId.startsWith('SVK')) || rawId.startsWith('SN')) {
-    if (rawId === 'S8B') return 'https://images.scrydex.com/pokemon/swsh8b_ja-logo/logo';
-    if (rawId === 'S12A') return 'https://images.scrydex.com/pokemon/swsh12a_ja-logo/logo';
-    const numMatch = rawId.match(/^S(?:N)?(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 2;
-    if (num === 1 || num === 5 || num === 6 || num === 7 || isNaN(num)) num = 2;
-    if (num > 12) num = 12;
-    return `https://images.scrydex.com/pokemon/swsh${num}_ja-logo/logo`;
-  }
-  if (rawId.match(/^M\d/)) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-logo/logo`;
-  }
-  if (rawId.startsWith('XY') || rawId.startsWith('CP')) {
-    const numMatch = rawId.match(/^XY(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 2;
-    if (num === 1 || num === 5 || num === 12 || isNaN(num)) num = 2;
-    if (num > 11) num = 11;
-    return `https://images.scrydex.com/pokemon/xy${num}_ja-logo/logo`;
-  }
-  if (rawId.startsWith('BW') || rawId.startsWith('EBB') || rawId.startsWith('CS') || rawId.startsWith('CSA')) {
-    const numMatch = rawId.match(/^BW(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    if (num > 11 || isNaN(num)) num = 1;
-    return `${base}setLogos/bw${num}.png`;
-  }
-  if (rawId.startsWith('L') || rawId === 'LL') {
-    if (rawId === 'L1A') return `${base}setLogos/hgss1.png`;
-    if (rawId === 'L1B') return `${base}setLogos/hgss2.png`;
-    if (rawId === 'L2') return `${base}setLogos/hgss3.png`;
-    if (rawId === 'L3' || rawId === 'LL') return `${base}setLogos/hgss4.png`;
-    return `${base}setLogos/hgss1.png`;
-  }
-  if (rawId.startsWith('PT')) {
-    const numMatch = rawId.match(/^PT(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    if (num > 4 || isNaN(num)) num = 1;
-    return `${base}setLogos/pl${num}.png`;
-  }
-  if (rawId.startsWith('DP')) {
-    const numMatch = rawId.match(/^DP(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    if (num > 7 || isNaN(num)) num = 1;
-    return `${base}setLogos/dp${num}.png`;
-  }
-  if (rawId.startsWith('ADV') || rawId.startsWith('PCG')) {
-    if (rawId.startsWith('ADV')) {
-      const numMatch = rawId.match(/^ADV(\d+)/i);
-      let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-      return `${base}setLogos/ex${num}.png`;
-    }
-    const numMatch = rawId.match(/^PCG(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) + 5 : 6;
-    if (num > 16) num = 16;
-    return `${base}setLogos/ex${num}.png`;
-  }
-  if (rawId.startsWith('PMCG')) {
-    if (rawId === 'PMCG1') return `${base}setLogos/base1.png`;
-    if (rawId === 'PMCG2') return `${base}setLogos/base2.png`;
-    if (rawId === 'PMCG3') return `${base}setLogos/base3.png`;
-    if (rawId === 'PMCG4') return `${base}setLogos/base5.png`;
-    if (rawId === 'PMCG5') return `${base}setLogos/gym1.png`;
-    if (rawId === 'PMCG6') return `${base}setLogos/gym2.png`;
-    return `${base}setLogos/base1.png`;
-  }
-  if (rawId.startsWith('NEO')) {
-    const numMatch = rawId.match(/^NEO(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    return `${base}setLogos/neo${num}.png`;
-  }
-  if (rawId.startsWith('VS') || rawId.startsWith('WEB')) {
-    return `${base}setLogos/si1.png`;
-  }
-  if (rawId.startsWith('E')) {
-    const numMatch = rawId.match(/^E(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    if (num > 3) num = ((num - 1) % 3) + 1;
-    return `${base}setLogos/ecard${num}.png`;
-  }
-
-  return `${base}setLogos/base1.png`;
+  return `/setLogos/${rawId}_ja.png`;
 }
 
 export function getJapaneseSetDefaultSymbol(setId: string): string {
-  const rawId = setId.replace(/_ja$/i, '').toUpperCase();
-  const base = import.meta.env.BASE_URL || '/';
-  if (rawId === 'SV2A') return `${base}setLogos/sv2a_ja.png`;
-  if (rawId.startsWith('SV') || rawId.startsWith('SVK')) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
+  const rawId = setId.replace(/_ja$/i, '').toLowerCase();
+  const rawBase = import.meta.env.BASE_URL || '/';
+  const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
+  if (rawId === 'sv2a') {
+    return `${base}setLogos/sv2a_ja.png`;
   }
-  if (rawId.startsWith('SM') || rawId.startsWith('SMP')) {
-    return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId.toLowerCase())}_ja-symbol/symbol`;
-  }
-  if ((rawId.startsWith('S') && !rawId.startsWith('SV') && !rawId.startsWith('SM') && !rawId.startsWith('SVK')) || rawId.startsWith('SN')) {
-    if (rawId === 'S8B') return 'https://images.scrydex.com/pokemon/swsh8b_ja-symbol/symbol';
-    if (rawId === 'S12A') return 'https://images.scrydex.com/pokemon/swsh12a_ja-symbol/symbol';
-    const numMatch = rawId.match(/^S(?:N)?(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 2;
-    if (num === 1 || num === 5 || num === 6 || num === 7 || isNaN(num)) num = 2;
-    if (num > 12) num = 12;
-    return `https://images.scrydex.com/pokemon/swsh${num}_ja-symbol/symbol`;
-  }
-  if (rawId.match(/^M\d/)) {
-    return `https://images.scrydex.com/pokemon/${rawId.toLowerCase()}_ja-symbol/symbol`;
-  }
-  if (rawId.startsWith('XY') || rawId.startsWith('CP')) {
-    const numMatch = rawId.match(/^XY(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 2;
-    if (num === 1 || num === 5 || num === 12 || isNaN(num)) num = 2;
-    if (num > 11) num = 11;
-    return `https://images.scrydex.com/pokemon/xy${num}_ja-symbol/symbol`;
-  }
-  if (rawId.startsWith('BW') || rawId.startsWith('CS') || rawId.startsWith('CSA')) {
-    const numMatch = rawId.match(/^BW(\d+)/i);
-    let num = numMatch ? parseInt(numMatch[1], 10) : 1;
-    if (num > 9 || isNaN(num)) num = 2;
-    return `https://images.scrydex.com/pokemon/bw${num}_ja-symbol/symbol`;
-  }
-  return 'https://images.scrydex.com/pokemon/base1_ja-symbol/symbol';
+  return `https://images.scrydex.com/pokemon/${encodeURIComponent(rawId)}_ja-symbol/symbol`;
 }
 
 export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGDexSeries> {

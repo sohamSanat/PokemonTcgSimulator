@@ -83,6 +83,21 @@ const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<str
 
 const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> = {}, lang: string = 'en'): string | null => {
   if (!set || !set.id) return null;
+
+  const isJapanese = lang === 'ja' || set.id.endsWith('_ja');
+  const cleanJaId = set.id.replace(/_ja$/i, '').toLowerCase();
+
+  if (isJapanese) {
+    const jaKey = `${cleanJaId}_ja`;
+    if (manifest[jaKey]) return manifest[jaKey];
+    if (manifest[set.id]) return manifest[set.id];
+    if (manifest[set.id.toLowerCase()]) return manifest[set.id.toLowerCase()];
+    if (set.logo && !set.logo.includes('base1_ja-logo') && !set.logo.includes('/en/')) {
+      return set.logo.endsWith('.png') || set.logo.endsWith('.webp') || set.logo.endsWith('.jpg') ? set.logo : `${set.logo}.png`;
+    }
+    return `/setLogos/${cleanJaId}_ja.png`;
+  }
+
   const rawId = set.id.replace(/_ja$/i, '');
 
   // 1. Check exact id or lowercase id in manifest

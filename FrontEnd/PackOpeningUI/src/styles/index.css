@@ -159,10 +159,9 @@ html, body {
   /* 8. Force hardware acceleration on frequently animated elements */
   .motion-div,
   [class*="motion("],
-  [class*="framer-motion"],
-  .motion-\${{
+  [class*="framer-motion"] {
     transform: translateZ(0);
-  }}
+  }
 
   /* 9. Optimize 3D transform rendering in Firefox */
   [class*="preserve-3d"],
