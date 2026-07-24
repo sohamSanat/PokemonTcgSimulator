@@ -143,6 +143,34 @@ const folderToIdMap = {
   "lost link": "ll"
 };
 
+const JAPANESE_VINTAGE_SET_MAP = {
+  // Black & White Series
+  'bw8v': 'bw9', 'bw8m': 'bw9', 'bw5z': 'ex3', 'bw5g': 'bw6', 'bw3d': 'bw3', 'bw3h': 'bw3',
+  'sc': 'bw11/RC', 'ebb': 'bw11', 'bw1w': 'bw1', 'bw1b': 'bw1', 'bw2': 'bw2', 'bw4': 'bw5',
+  'bw6f': 'bw7', 'bw6c': 'bw7', 'bw7': 'bw8', 'bw9': 'bw10',
+  'bw8s': 'bw9', 'bw8t': 'bw9', 'ds1': 'ex3', 'bw5d': 'bw6', 'sc1': 'bw11/RC', 'ebb1': 'bw11',
+
+  // Legend / HGSS Series
+  'l1a': 'hgss1', 'l1b': 'hgss1', 'l2': 'hgss3', 'll': 'hgss4', 'l3': 'hgss4',
+  'l1hg': 'hgss1', 'l1ss': 'hgss1', 'll1': 'hgss4',
+
+  // Platinum Series
+  'pt1': 'pl1', 'pt2': 'pl2', 'pt3': 'pl3', 'pt4': 'pl4',
+
+  // Diamond & Pearl Series
+  'dp1d': 'dp1', 'dp1p': 'dp1', 'dp2': 'dp2', 'dp3': 'dp3', 'dp4': 'dp4', 'dp5': 'dp5', 'dp6': 'dp6', 'dp7': 'dp7',
+  'dp4m': 'dp3', 'dp5t': 'dp5', 'dp1': 'dp1',
+
+  // Base Set / PMCG / E-Series
+  'pmcg1': 'base1', 'pmcg2': 'base2', 'pmcg3': 'base3', 'pmcg4': 'base5', 'pmcg5': 'gym1', 'pmcg6': 'gym2',
+  'e1': 'ecard1', 'e2': 'ecard1', 'e3': 'ecard2', 'e4': 'ecard2', 'e5': 'ecard3',
+
+  // ADV / EX Series
+  'adv1': 'ex1', 'adv2': 'ex2', 'adv3': 'ex3', 'adv4': 'ex4', 'adv5': 'ex5',
+  'pcg1': 'ex6', 'pcg2': 'ex7', 'pcg3': 'ex8', 'pcg4': 'ex9', 'pcg5': 'ex10',
+  'pcg6': 'ex11', 'pcg7': 'ex12', 'pcg8': 'ex13', 'pcg9': 'ex14', 'pcg10': 'ex15'
+};
+
 const generations = ['Scarlet & Violet', 'Sword & Shield', 'Sun & Moon', 'XY', 'Black-And-White', 'Legend', 'Diamond-and-pearl', 'Platinum', 'MegaEvolution'];
 
 // Collect candidate cards first (no network), then bulk-validate images
@@ -208,7 +236,9 @@ for (const gen of generations) {
         const nameParts = card.name.split('#');
         const cleanName = nameParts[0].trim();
         const cleanSet = setId.toLowerCase();
-        const isVintage = cleanSet.startsWith('base') || cleanSet.startsWith('neo') ||
+
+        const mappedEn = JAPANESE_VINTAGE_SET_MAP[cleanSet];
+        const isVintage = Boolean(mappedEn) || cleanSet.startsWith('base') || cleanSet.startsWith('neo') ||
           cleanSet.startsWith('fo') || cleanSet.startsWith('ju') ||
           cleanSet.startsWith('gc') || cleanSet.startsWith('gh');
 
@@ -216,18 +246,21 @@ for (const gen of generations) {
         const jpCardId = `${setId}_ja-${card.cardNum}`;
         const jpDisplayName = cleanName.toLowerCase().startsWith('japanese') ? cleanName : `Japanese ${cleanName} (${setFolder})`;
         let jpImgUrl = `https://images.scrydex.com/pokemon/${cleanSet}_ja-${card.cardNum}/large`;
-        if (isVintage) {
-          jpImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
+        if (mappedEn) {
+          if (mappedEn.startsWith('bw11/RC')) {
+            jpImgUrl = `https://images.pokemontcg.io/bw11/RC${card.cardNum}_hires.png`;
+          } else {
+            jpImgUrl = `https://images.pokemontcg.io/${mappedEn}/${card.cardNum}_hires.png`;
+          }
         }
 
         candidates.push({ id: jpCardId, setId: `${setId}_ja`, num: card.cardNum, name: jpDisplayName, rawPrice: card.price_numeric, img: jpImgUrl, _isVintage: isVintage });
 
-        // English version (ONLY for vintage cards like Base/Neo where pokemontcg.io hosts English equivalents; never for modern Japanese sets where Scrydex returns card backs for non-_ja codes)
-        if (isVintage) {
+        // English version
+        if (isVintage && mappedEn) {
           const engCardId = `${setId}-${card.cardNum}`;
           const engDisplayName = `${cleanName} (${setFolder})`;
-          const engImgUrl = `https://images.pokemontcg.io/${cleanSet.replace(/1$|2$|3$|4$/, '')}/${card.cardNum}_hires.png`;
-          candidates.push({ id: engCardId, setId: `${setId}`, num: card.cardNum, name: engDisplayName, rawPrice: card.price_numeric, img: engImgUrl, _isVintage: true });
+          candidates.push({ id: engCardId, setId: `${setId}`, num: card.cardNum, name: engDisplayName, rawPrice: card.price_numeric, img: jpImgUrl, _isVintage: true });
         }
       }
     } catch (e) {
