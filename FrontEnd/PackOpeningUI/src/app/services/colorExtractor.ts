@@ -87,6 +87,21 @@ export function getFallbackColor(cardType = 'colorless', cardName = ''): Extract
   };
 }
 
+// Shared offscreen canvas context to eliminate canvas DOM allocation churn in Firefox
+let sharedCanvas: HTMLCanvasElement | null = null;
+let sharedCtx: CanvasRenderingContext2D | null = null;
+
+function getSharedCtx(size: number): CanvasRenderingContext2D | null {
+  if (typeof document === 'undefined') return null;
+  if (!sharedCanvas) {
+    sharedCanvas = document.createElement('canvas');
+    sharedCanvas.width = size;
+    sharedCanvas.height = size;
+    sharedCtx = sharedCanvas.getContext('2d', { willReadFrequently: true });
+  }
+  return sharedCtx;
+}
+
 /**
  * Extracts the true majority / dominant color from a card artwork image using an offscreen canvas.
  * Filters out silver/grey card edges to capture the vibrant personality of each individual Pokemon card.
@@ -119,13 +134,11 @@ export function extractMajorityColor(
     // Schedule canvas processing asynchronously so main thread doesn't lock Firefox UI
     setTimeout(() => {
       try {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const SIZE = 24;
+        const ctx = getSharedCtx(SIZE);
         if (!ctx) return;
 
-        const SIZE = 28;
-        canvas.width = SIZE;
-        canvas.height = SIZE;
+        ctx.clearRect(0, 0, SIZE, SIZE);
         ctx.drawImage(img, 0, 0, SIZE, SIZE);
 
         const imageData = ctx.getImageData(0, 0, SIZE, SIZE).data;
@@ -157,10 +170,8 @@ export function extractMajorityColor(
             const bucketB = Math.round(b / 24) * 24;
             const bucketKey = `${bucketR},${bucketG},${bucketB}`;
 
-            const { h, s, l } = rgbToHsl(r, g, b);
-            
-            // Score formula: prioritize color frequency + vibrancy + pleasant mid-tone lightness
-            let score = (vibrancy * 2.5) + (100 - Math.abs(l - 55) * 1.2);
+            // Score formula: prioritize color frequency + vibrancy
+            let score = (vibrancy * 2.5) + (100 - Math.abs((r + g + b) / 3 - 140) * 0.8);
             if (isBorder) score *= 0.3; // heavily penalize border pixels
 
             if (!clusters.has(bucketKey)) {
