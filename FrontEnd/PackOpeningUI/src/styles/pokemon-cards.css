@@ -84,7 +84,9 @@
 .pkmn-card:hover,
 .pkmn-card.interacting,
 .pkmn-card.active {
-  will-change: transform, z-index;
+  /* Removed will-change: transform, z-index which causes layer thrashing in Firefox.
+     Use transform: translateZ(0) for hardware acceleration instead. */
+  transform: translateZ(0);
 }
 
 .pkmn-card:not(.interactive) .pkmn-card__translater,
@@ -143,10 +145,13 @@
 .pkmn-card__rotator {
   display: grid;
   perspective: 600px;
-  will-change: auto;
+  /* Removed will-change: auto which is a no-op */
   transform-origin: center;
   -webkit-transform-origin: center;
   transform-style: preserve-3d;
+  /* Force hardware acceleration for Firefox */
+  -webkit-transform: translate3d(0, 0, 0.01px);
+  transform: translate3d(0, 0, 0.01px);
 }
 
 .pkmn-card:hover .pkmn-card__translater,
@@ -155,7 +160,8 @@
 .pkmn-card.interacting .pkmn-card__rotator,
 .pkmn-card.active .pkmn-card__translater,
 .pkmn-card.active .pkmn-card__rotator {
-  will-change: transform, box-shadow;
+  /* Removed will-change: transform, box-shadow which causes layer thrashing in Firefox */
+  transform: translateZ(0);
 }
 
 .pkmn-card__translater {
@@ -184,7 +190,9 @@ button.pkmn-card__rotator, div.pkmn-card__rotator {
 
 .pkmn-card__rotator,
 .pkmn-card.active .pkmn-card__rotator:focus {
-  transition: box-shadow 0.4s ease, opacity .33s ease-out;
+  /* Simplified transition for Firefox - only animate box-shadow and opacity,
+     not transform which causes jank with 3D transforms in Firefox */
+  transition: box-shadow 0.4s ease, opacity 0.33s ease-out;
   box-shadow:
     0 0 3px -1px transparent,
     0 0 2px 1px transparent,
@@ -250,7 +258,8 @@ button.pkmn-card__rotator, div.pkmn-card__rotator {
 
 .pkmn-card__front {
   opacity: 1;
-  transition: opacity 0.33s ease-out;
+  /* Use transform instead of opacity transition for Firefox performance */
+  transition: opacity 0.33s ease-out, transform 0.33s ease-out;
   -webkit-transform: translate3d(0px, 0px, 0.01px);
   transform: translate3d(0px, 0px, 0.01px);
 }

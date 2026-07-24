@@ -83,33 +83,41 @@ const getPackArtsForSet = (setId: string, setName?: string, manifest: Record<str
 
 const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> = {}, lang: string = 'en'): string | null => {
   if (!set || !set.id) return null;
+  const rawId = set.id.replace(/_ja$/i, '');
+
   // 1. Check exact id or lowercase id in manifest
   if (manifest[set.id]) return manifest[set.id];
   if (manifest[set.id.toLowerCase()]) return manifest[set.id.toLowerCase()];
+  if (manifest[rawId]) return manifest[rawId];
+  if (manifest[rawId.toLowerCase()]) return manifest[rawId.toLowerCase()];
 
   // 2. Check safe id (. replaced with _)
   const safeId = set.id.replace(/[^a-z0-9.-]/gi, '_');
   if (manifest[safeId]) return manifest[safeId];
   if (manifest[safeId.toLowerCase()]) return manifest[safeId.toLowerCase()];
 
+  const safeRawId = rawId.replace(/[^a-z0-9.-]/gi, '_');
+  if (manifest[safeRawId]) return manifest[safeRawId];
+  if (manifest[safeRawId.toLowerCase()]) return manifest[safeRawId.toLowerCase()];
+
   // 3. Check normalized alphanumeric id
   const normId = set.id.toLowerCase().replace(/[^a-z0-9]/g, '');
   if (manifest[normId]) return manifest[normId];
-
-
+  const normRawId = rawId.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (manifest[normRawId]) return manifest[normRawId];
 
   if (set.id === 'sv05' || normId === 'sv05' || normId === 'sv5') {
     return '/setLogos/sv05.png';
   }
 
-  // 4. Fallback to local predownloaded path or set.logo URL
-  if (set.logo) {
+  // 4. Fallback to local predownloaded path or set.logo URL (ignore generic fallback logo)
+  if (set.logo && !set.logo.includes('base1_ja-logo')) {
     if (set.logo.includes('images.scrydex.com') || set.logo.endsWith('/logo') || set.logo.endsWith('/symbol') || set.logo.endsWith('.png') || set.logo.endsWith('.webp') || set.logo.endsWith('.jpg')) {
       return set.logo;
     }
     return `${set.logo}.png`;
   }
-  return `/setLogos/${safeId}.png`;
+  return `/setLogos/${safeRawId.toLowerCase()}.png`;
 };
 
 const getSetBoosterPrice = (set: TCGDexSet | TCGDexSetSummary | null | undefined, mysteryPackOverride?: MysteryPackConfig | null): number => {
@@ -485,7 +493,7 @@ const getRealCardPrice = (poke: PokemonCard): number => {
 
   // If it's an energy card or a common/uncommon card with no direct live market data, fix cost strictly between 1 to 10 cents ($0.01 - $0.10)
   if (isEnergy || rarity.includes('Common') || rarity.includes('Uncommon') || !rarity) {
-    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+    return Number((0.01 + normalizedHash * 0.09).toFixed(2));
   }
 
   const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
@@ -501,7 +509,7 @@ const getRealCardPrice = (poke: PokemonCard): number => {
   } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
     return Number((0.50 + normalizedHash * 2.50).toFixed(2));
   } else {
-    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+    return Number((0.01 + normalizedHash * 0.09).toFixed(2));
   }
 };
 

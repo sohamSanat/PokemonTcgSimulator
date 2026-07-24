@@ -143,7 +143,6 @@ export const InteractiveCard3D: React.FC<Props> = ({
         const rotateX = ((centerY - yPos) / centerY) * maxAngleX;
         const rotateY = ((xPos - centerX) / centerX) * maxAngleY;
         
-        tiltRef.current.style.transition = 'transform 0.12s ease-out';
         tiltRef.current.style.transform = `rotateX(${rotateX.toFixed(4)}deg) rotateY(${rotateY.toFixed(4)}deg) scale3d(1.03, 1.03, 1.03)`;
       }
     },
@@ -164,6 +163,12 @@ export const InteractiveCard3D: React.FC<Props> = ({
     },
     [updateTiltAndLighting]
   );
+
+  const handleMouseEnter = useCallback(() => {
+    if (tiltEnabled && tiltRef.current) {
+      tiltRef.current.style.transition = 'transform 0.12s ease-out';
+    }
+  }, [tiltEnabled]);
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
@@ -221,6 +226,7 @@ export const InteractiveCard3D: React.FC<Props> = ({
       }
       data-type={cardType}
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onTouchStart={handleTouchMove}
       onTouchMove={handleTouchMove}

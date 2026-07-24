@@ -7,6 +7,15 @@ export interface ExtractedColor {
 }
 
 const colorCache = new Map<string, ExtractedColor>();
+const CACHE_LIMIT = 500;
+
+function setCache(key: string, value: ExtractedColor) {
+  if (colorCache.size >= CACHE_LIMIT) {
+    const firstKey = colorCache.keys().next().value;
+    if (firstKey) colorCache.delete(firstKey);
+  }
+  colorCache.set(key, value);
+}
 
 // Fallback dynamic colors mapped by Pokemon Type with personalized variation based on card name
 const TYPE_COLOR_BASES: Record<string, { h: number; s: number; l: number }> = {
@@ -121,7 +130,7 @@ export function extractMajorityColor(
 
   const fallback = getFallbackColor(cardType, cardName);
   if (!imageUrl) {
-    colorCache.set(cacheKey, fallback);
+    setCache(cacheKey, fallback);
     return fallback;
   }
 
@@ -132,7 +141,8 @@ export function extractMajorityColor(
 
   img.onload = () => {
     // Schedule canvas processing asynchronously so main thread doesn't lock Firefox UI
-    setTimeout(() => {
+    const schedule = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : (fn: Function) => setTimeout(fn, 10);
+    schedule(() => {
       try {
         const SIZE = 24;
         const ctx = getSharedCtx(SIZE);
@@ -142,7 +152,7 @@ export function extractMajorityColor(
         ctx.drawImage(img, 0, 0, SIZE, SIZE);
 
         const imageData = ctx.getImageData(0, 0, SIZE, SIZE).data;
-        const clusters = new Map<string, { sumR: number; sumG: number; sumB: number; count: number; score: number }>();
+        const buckets = new Array<{ sumR: number; sumG: number; sumB: number; count: number; score: number } | undefined>(4096);
 
         for (let y = 0; y < SIZE; y++) {
           for (let x = 0; x < SIZE; x++) {
@@ -165,19 +175,19 @@ export function extractMajorityColor(
             if (isBorder && vibrancy < 35) continue;
 
             // Group colors into quantized buckets of 24
-            const bucketR = Math.round(r / 24) * 24;
-            const bucketG = Math.round(g / 24) * 24;
-            const bucketB = Math.round(b / 24) * 24;
-            const bucketKey = `${bucketR},${bucketG},${bucketB}`;
+            const rQuant = Math.round(r / 24);
+            const gQuant = Math.round(g / 24);
+            const bQuant = Math.round(b / 24);
+            const hash = rQuant * 256 + gQuant * 16 + bQuant;
 
             // Score formula: prioritize color frequency + vibrancy
             let score = (vibrancy * 2.5) + (100 - Math.abs((r + g + b) / 3 - 140) * 0.8);
             if (isBorder) score *= 0.3; // heavily penalize border pixels
 
-            if (!clusters.has(bucketKey)) {
-              clusters.set(bucketKey, { sumR: r, sumG: g, sumB: b, count: 1, score });
+            if (!buckets[hash]) {
+              buckets[hash] = { sumR: r, sumG: g, sumB: b, count: 1, score };
             } else {
-              const c = clusters.get(bucketKey)!;
+              const c = buckets[hash]!;
               c.sumR += r;
               c.sumG += g;
               c.sumB += b;
@@ -190,8 +200,9 @@ export function extractMajorityColor(
         let maxScore = -1;
         let bestCluster: { sumR: number; sumG: number; sumB: number; count: number; score: number } | null = null;
 
-        for (const cluster of clusters.values()) {
-          if (cluster.score > maxScore) {
+        for (let i = 0; i < buckets.length; i++) {
+          const cluster = buckets[i];
+          if (cluster && cluster.score > maxScore) {
             maxScore = cluster.score;
             bestCluster = cluster;
           }
@@ -217,21 +228,21 @@ export function extractMajorityColor(
             hex: `#${avgR.toString(16).padStart(2, '0')}${avgG.toString(16).padStart(2, '0')}${avgB.toString(16).padStart(2, '0')}`
           };
 
-          colorCache.set(cacheKey, extracted);
+          setCache(cacheKey, extracted);
           if (onExtracted) onExtracted(extracted);
         } else {
-          colorCache.set(cacheKey, fallback);
+          setCache(cacheKey, fallback);
           if (onExtracted) onExtracted(fallback);
         }
       } catch {
-        colorCache.set(cacheKey, fallback);
+        setCache(cacheKey, fallback);
         if (onExtracted) onExtracted(fallback);
       }
-    }, 10);
+    });
   };
 
   img.onerror = () => {
-    colorCache.set(cacheKey, fallback);
+    setCache(cacheKey, fallback);
     if (onExtracted) onExtracted(fallback);
   };
 

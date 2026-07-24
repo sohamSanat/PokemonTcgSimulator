@@ -78,6 +78,27 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
     lastDrawnOpacity: -999,
   });
 
+  const rectRef = useRef({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // ResizeObserver returns layout size before transform, which is exactly what we need
+        rectRef.current.width = entry.contentRect.width;
+        rectRef.current.height = entry.contentRect.height;
+      }
+    });
+    observer.observe(canvas);
+    // Initial rect
+    const rect = canvas.getBoundingClientRect();
+    rectRef.current.width = rect.width;
+    rectRef.current.height = rect.height;
+    
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     preloadHoloImages();
   }, []);
@@ -134,8 +155,8 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
       state.lastDrawnY = state.curY;
       state.lastDrawnOpacity = state.curOpacity;
 
-      const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
+      const { width: rectWidth, height: rectHeight } = rectRef.current;
+      if (rectWidth === 0 || rectHeight === 0) {
         rafId.current = requestAnimationFrame(render);
         return;
       }
@@ -145,8 +166,8 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
       if (isFirefox) {
         dpr = Math.min(dpr, 1.25);
       }
-      const width = Math.round(rect.width * dpr);
-      const height = Math.round(rect.height * dpr);
+      const width = Math.round(rectWidth * dpr);
+      const height = Math.round(rectHeight * dpr);
 
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
@@ -175,7 +196,7 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
         const key = `glare_${rPx}_${rPy}_${radiusFactor}_${alphaInner}`;
         let cached = gradCache.get(key);
         if (!cached) {
-          if (gradCache.size > 80) gradCache.clear();
+          if (gradCache.size > 40) gradCache.clear();
           const g = ctx.createRadialGradient(rPx, rPy, 0, rPx, rPy, width * radiusFactor);
           g.addColorStop(0, `rgba(255, 255, 255, ${alphaInner})`);
           g.addColorStop(0.6, 'rgba(255, 255, 255, 0.03)');

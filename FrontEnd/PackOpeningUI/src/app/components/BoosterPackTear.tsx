@@ -48,28 +48,27 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
   const currentPackArt = (packArts && packArts.length > 0 && packArts[packArtIndex % packArts.length]) || '/packArts/MegaEvolution-Generation/Ascended-heroes/1.webp';
 
   // Helper to generate a realistic serrated foil rip edge polygon clip-path
+  // Caches all 101 possible states for 0-100% tear progress to prevent garbage collection and string allocation during tear animation
+  const clipPathCache = useRef<string[]>(new Array(101).fill(''));
+  
   const getJaggedClipPath = useCallback((percent: number) => {
     if (percent <= 0) return 'none';
     if (percent >= 100) return 'polygon(0% 16%, 100% 16%, 100% 100%, 0% 100%)';
 
-    // Top horizontal notch is roughly at 15% to 17% height
-    // We create jagged teeth along the tear path across the top
-    const p = Math.min(100, Math.max(0, percent));
+    const p = Math.min(100, Math.max(0, Math.round(percent)));
+    if (clipPathCache.current[p]) return clipPathCache.current[p];
     
-    // Base polygon points: top-right to bottom-right to bottom-left to top-left untorn section
-    // Then serrated teeth along the rip up to `p%`
     let clip = `polygon(${p}% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 16%`;
     
-    // Add realistic jagged foil teeth between 0% and p% along the ~15.5% height seam
     const steps = Math.floor(p / 6);
     for (let i = 1; i <= steps; i++) {
       const stepX = (i / steps) * p;
-      // Alternate tooth height slightly to mimic ripped metallic foil
       const toothY = 15.2 + (i % 2 === 0 ? 1.6 : -1.2) + Math.sin(i) * 0.8;
       clip += `, ${stepX.toFixed(1)}% ${toothY.toFixed(1)}%`;
     }
     
     clip += `, ${p}% 16%, ${p}% 0%)`;
+    clipPathCache.current[p] = clip;
     return clip;
   }, []);
 

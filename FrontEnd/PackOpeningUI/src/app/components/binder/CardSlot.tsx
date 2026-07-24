@@ -75,29 +75,17 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           ...sortableStyle,
           position: "relative",
           aspectRatio: "2.5/3.5",
-          borderRadius: 14,
-          background: "linear-gradient(145deg, rgba(28, 28, 34, 0.75), rgba(16, 16, 20, 0.85))",
-          border: "2px solid rgba(255, 255, 255, 0.14)",
-          boxShadow: "inset 0 0 18px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.5)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
-          transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
           overflow: "hidden",
           padding: 8
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "rgba(245, 158, 11, 0.6)";
-          e.currentTarget.style.background = "linear-gradient(145deg, rgba(38, 38, 46, 0.85), rgba(22, 22, 28, 0.95))";
-          e.currentTarget.style.boxShadow = "0 0 22px rgba(245, 158, 11, 0.25), inset 0 0 18px rgba(0,0,0,0.8)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.14)";
-          e.currentTarget.style.background = "linear-gradient(145deg, rgba(28, 28, 34, 0.75), rgba(16, 16, 20, 0.85))";
-          e.currentTarget.style.boxShadow = "inset 0 0 18px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.5)";
-        }}
+        className="card-slot-empty"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         title="Empty Binder Pocket - Click to open packs and add cards!"
       >
         {/* Ultrasonic Weld Seam Simulation */}
@@ -185,7 +173,6 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
           cursor: "pointer",
           position: "relative",
           overflow: "hidden",
-          willChange: "transform",
         }}
       >
         {/* Ultrasonic Weld Seam Simulation around the card */}
