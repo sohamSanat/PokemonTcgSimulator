@@ -801,6 +801,18 @@ export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: 
 
   if (activeWarmupSetId !== set.id) return;
 
+  // Preload top chase card artwork so when curtain lifts, cards are 100% rendered with zero messiness
+  const topImgs = set.cards.slice(0, 12).map(c => c.image || getTCGDexValidAssetPath(set.id, c.localId)).filter(Boolean);
+  await Promise.allSettled(topImgs.slice(0, 6).map(url => new Promise(res => {
+    const img = new Image();
+    img.onload = res;
+    img.onerror = res;
+    img.src = url;
+    setTimeout(res, 350);
+  })));
+
+  if (activeWarmupSetId !== set.id) return;
+
   // Chase cards are now fully populated in cache. Tell UI it's safe to lift the curtain.
   if (onChaseCardsReady) onChaseCardsReady();
 

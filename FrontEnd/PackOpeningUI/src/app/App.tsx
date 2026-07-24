@@ -1053,7 +1053,7 @@ export default function App() {
   const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
   const [tradeTarget, setTradeTarget] = useState<any>(null);
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
-  const [isChaseCardsReady, setIsChaseCardsReady] = useState(true);
+  const [isChaseCardsReady, setIsChaseCardsReady] = useState(false);
   const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(true);
 
   useEffect(() => {
@@ -1538,7 +1538,13 @@ export default function App() {
         const newCards = await generateJapanesePackFromSet(setDetails);
         setCards(formatAndSortCards(newCards));
         preloadPackImages(newCards).catch(() => {});
-        setIsChaseCardsReady(true);
+        setIsChaseCardsReady(false);
+
+        setTimeout(() => {
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+            setIsChaseCardsReady(true);
+          });
+        }, 200);
       } else {
         const setDetails = await fetchSetDetails(setId);
         resolvedSetName = setDetails.name || setId;
@@ -2574,7 +2580,7 @@ export default function App() {
 
             {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
             <div className="grid grid-cols-3 gap-2 w-full relative">
-              {!isChaseCardsReady ? (
+              {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
                 Array.from({ length: 3 }).map((_, idx) => (
                   <div
                     key={`skeleton-mobile-${idx}`}
@@ -2694,7 +2700,7 @@ export default function App() {
 
                     {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
                     <div className="space-y-2 relative">
-                      {!isChaseCardsReady ? (
+                      {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
                         Array.from({ length: 3 }).map((_, idx) => (
                           <div
                             key={`skeleton-desktop-${idx}`}
@@ -3783,7 +3789,7 @@ export default function App() {
 
               {/* Chase Cards Grid */}
               <div className="overflow-y-auto pr-1 py-6 my-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5 relative z-10 custom-scrollbar min-h-[300px]">
-                {!isChaseCardsReady ? (
+                {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
                   Array.from({ length: 8 }).map((_, idx) => (
                     <div
                       key={`skeleton-${idx}`}
