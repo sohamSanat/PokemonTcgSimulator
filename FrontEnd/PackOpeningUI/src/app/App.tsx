@@ -1749,18 +1749,31 @@ export default function App() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Premium Leather-Bound Header */}
-      <header className="w-full py-2.5 px-2.5 sm:py-4 sm:px-6 md:py-4 md:px-6 flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-3 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_12px_35px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
+      <header className="w-full py-2 px-2.5 sm:py-2.5 sm:px-5 flex flex-col lg:flex-row items-center justify-between gap-2.5 z-[60] relative border-b border-white/10 bg-[#14141c]/95 backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.12)]">
         {/* Mobile Header Background Overlay to prevent scroll bleeding */}
         <div className={`absolute inset-0 bg-[#14141c] z-[65] lg:hidden transition-opacity duration-300 pointer-events-none border-b border-white/10 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} />
 
-        {/* Mobile Hamburger Row & Desktop Logo */}
-        <div className="flex w-full lg:w-auto justify-between items-center relative z-[70] shrink-0">
+        {/* Logo & Desktop Primary Action */}
+        <div className="flex w-full lg:w-auto justify-between lg:justify-start items-center relative z-[70] shrink-0 gap-3">
           <button
             onClick={() => { sound.playButtonClick(); setActiveTab('pack'); setIsMobileMenuOpen(false); }}
-            className="text-amber-500 font-black tracking-widest text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md cursor-pointer hover:scale-105 transition-transform"
+            className="text-amber-500 font-black tracking-widest text-base sm:text-lg flex items-center gap-2 shadow-amber-500/20 drop-shadow-md cursor-pointer hover:scale-105 transition-transform shrink-0"
           >
-            <Package className="w-5 h-5 lg:w-6 lg:h-6" /> <span className="inline">POKE TCG</span>
+            <Package className="w-5 h-5 lg:w-5 lg:h-5 text-amber-400" />
+            <span className="inline font-extrabold bg-gradient-to-r from-amber-400 via-amber-200 to-yellow-500 bg-clip-text text-transparent">POKE TCG</span>
           </button>
+
+          <motion.button
+            onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); setIsMobileMenuOpen(false); }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="hidden lg:flex px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 hover:border-white items-center gap-1.5 cursor-pointer transition-all duration-300 group shrink-0 whitespace-nowrap"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 text-black font-black group-hover:-translate-x-0.5 transition-transform shrink-0" />
+            <span className="tracking-wide uppercase font-black text-[11px]">Choose Set</span>
+            <Sparkles className="w-3.5 h-3.5 text-black animate-pulse shrink-0" />
+          </motion.button>
+
           <button
             onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
             className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
@@ -1769,132 +1782,134 @@ export default function App() {
           </button>
         </div>
 
-        {/* Navigation Container (Full Screen on Mobile, Inline on Desktop) */}
+        {/* Navigation Container (Full Screen on Mobile, High-Density Inline Dock on Desktop) */}
         <div className={`
           fixed inset-0 z-[60] w-full h-[100dvh] bg-[#14141c]/98 backdrop-blur-3xl p-6 flex flex-col gap-6 transform transition-all duration-300 ease-in-out pt-24 overflow-y-auto
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
-          lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-4 lg:transition-none lg:ml-6 lg:opacity-100 lg:pointer-events-auto
+          lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-2 lg:transition-none lg:ml-2 lg:opacity-100 lg:pointer-events-auto
         `}>
 
-          {/* Left / Primary Action */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full lg:w-auto shrink-0">
+          {/* Mobile Choose Set Button */}
+          <div className="flex lg:hidden flex-col items-stretch gap-4 w-full shrink-0">
             <motion.button
               onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); setIsMobileMenuOpen(false); }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 sm:px-5 lg:px-3.5 py-3 sm:py-2.5 lg:py-1.5 rounded-xl sm:rounded-2xl lg:rounded-lg bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-sm lg:text-xs shadow-[0_0_25px_rgba(245,158,11,0.65),inset_0_2px_4px_rgba(255,255,255,0.8)] border border-yellow-200 hover:border-white flex items-center justify-start lg:justify-center gap-3 sm:gap-2.5 lg:gap-1.5 cursor-pointer transition-all duration-300 group shrink-0 transform hover:-translate-y-0.5 whitespace-nowrap"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-black text-sm shadow-[0_0_20px_rgba(245,158,11,0.6)] border border-yellow-200 flex items-center justify-between cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4 sm:w-4 sm:h-4 lg:w-3 lg:h-3 text-black font-black group-hover:-translate-x-1 transition-transform shrink-0" />
-              <span className="tracking-wide uppercase font-black">Choose Set</span>
-              <Sparkles className="w-4 h-4 sm:w-4 sm:h-4 lg:w-3 lg:h-3 text-black animate-pulse shrink-0 ml-auto lg:ml-0" />
+              <div className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4 text-black font-black" />
+                <span className="tracking-wide uppercase font-black">Choose Set</span>
+              </div>
+              <Sparkles className="w-4 h-4 text-black animate-pulse" />
             </motion.button>
           </div>
 
-          {/* Center: Innovative Pill Navigation (Desktop) / Vertical List (Mobile) */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1 w-full lg:w-auto lg:bg-[#0a0a0f]/60 lg:backdrop-blur-md lg:p-1.5 lg:rounded-2xl lg:border lg:border-white/5 lg:shadow-[inset_0_1px_2px_rgba(255,255,255,0.05),0_4px_10px_rgba(0,0,0,0.5)] lg:overflow-x-auto lg:[&::-webkit-scrollbar]:hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] min-w-0">
+          {/* Center: Sleek High-Density Pill Dock (Desktop) / Vertical List (Mobile) */}
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-1.5 lg:gap-0.5 w-full lg:w-auto lg:bg-[#0a0a0f]/80 lg:backdrop-blur-xl lg:p-1 lg:rounded-xl lg:border lg:border-white/10 lg:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_4px_16px_rgba(0,0,0,0.6)] shrink-0 min-w-0">
 
             {/* Packs Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('pack'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(251,191,36,0.2)] ${activeTab === 'pack'
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-amber-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'pack'
+                ? 'bg-amber-500/15 lg:bg-white/15 text-white shadow-sm border border-amber-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-amber-300 hover:bg-white/5'
                 }`}
             >
-              <Package className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[15deg] group-hover:text-amber-400 ${activeTab === 'pack' ? 'text-amber-400' : ''}`} />
+              <Package className={`w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:scale-110 ${activeTab === 'pack' ? 'text-amber-400' : 'text-gray-400 group-hover:text-amber-400'}`} />
               <span>Packs</span>
             </button>
 
             {/* Binder Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('binder'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(56,189,248,0.2)] ${activeTab === 'binder'
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-sky-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'binder'
+                ? 'bg-sky-500/15 lg:bg-white/15 text-white shadow-sm border border-sky-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-sky-300 hover:bg-white/5'
                 }`}
             >
-              <BookOpen className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:text-sky-400 ${activeTab === 'binder' ? 'text-amber-400' : ''}`} />
+              <BookOpen className={`w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:-translate-y-0.5 ${activeTab === 'binder' ? 'text-sky-400' : 'text-gray-400 group-hover:text-sky-400'}`} />
               <span>Binder</span>
             </button>
 
             {/* PSA Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('psa'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(244,63,94,0.2)] ${activeTab === 'psa'
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-rose-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'psa'
+                ? 'bg-rose-500/15 lg:bg-white/15 text-white shadow-sm border border-rose-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-rose-300 hover:bg-white/5'
                 }`}
             >
-              <Award className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-rose-400 ${activeTab === 'psa' ? 'text-red-400' : ''}`} />
+              <Award className={`w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:scale-110 ${activeTab === 'psa' ? 'text-rose-400' : 'text-gray-400 group-hover:text-rose-400'}`} />
               <span>PSA Lab</span>
             </button>
 
             {/* Multiplayer Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('multiplayerLobby'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena')
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-purple-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena')
+                ? 'bg-purple-500/15 lg:bg-white/15 text-white shadow-sm border border-purple-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-purple-300 hover:bg-white/5'
                 }`}
             >
-              <Users className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:scale-105 group-hover:text-purple-400 ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena') ? 'text-purple-400' : ''}`} />
+              <Users className={`w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:scale-105 ${(activeTab === 'multiplayerLobby' || activeTab === 'multiplayerArena') ? 'text-purple-400' : 'text-gray-400 group-hover:text-purple-400'}`} />
               <span>Versus</span>
             </button>
 
             {/* Card Show Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('cardShow'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(45,212,191,0.2)] ${activeTab === 'cardShow'
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-teal-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'cardShow'
+                ? 'bg-teal-500/15 lg:bg-white/15 text-white shadow-sm border border-teal-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-teal-300 hover:bg-white/5'
                 }`}
             >
-              <Package className={`w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:scale-110 group-hover:text-teal-400 ${activeTab === 'cardShow' ? 'text-teal-400' : ''}`} />
+              <ShoppingBag className={`w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:scale-110 ${activeTab === 'cardShow' ? 'text-teal-400' : 'text-gray-400 group-hover:text-teal-400'}`} />
               <span>Card Show</span>
             </button>
 
             {/* Auctions Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('auctions'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] ${activeTab === 'auctions'
-                ? 'bg-white/10 lg:bg-white/15 text-white shadow-sm lg:shadow-[0_2px_8px_rgba(0,0,0,0.4)]'
-                : 'text-gray-400 hover:text-red-100 hover:bg-white/5'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'auctions'
+                ? 'bg-red-500/15 lg:bg-white/15 text-white shadow-sm border border-red-500/30 lg:border-white/20'
+                : 'text-gray-400 hover:text-red-300 hover:bg-white/5'
                 }`}
             >
-              <div className={`w-2 h-2 rounded-full ${activeTab === 'auctions' ? 'bg-red-500 animate-pulse' : 'bg-red-500/50 group-hover:bg-red-400'}`} />
-              <span className={activeTab === 'auctions' ? 'text-red-400' : ''}>Live Auctions</span>
+              <div className={`w-2 h-2 rounded-full shrink-0 ${activeTab === 'auctions' ? 'bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]' : 'bg-red-500/60 group-hover:bg-red-400'}`} />
+              <span className={activeTab === 'auctions' ? 'text-red-400 font-extrabold' : ''}>Auctions</span>
             </button>
 
             {/* Go Live / Rip & Ship Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('ripNship'); setIsMobileMenuOpen(false); }}
-              className={`group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-black text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] ${activeTab === 'ripNship'
-                ? 'bg-gradient-to-r from-red-600 via-rose-600 to-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.5)] border border-red-400'
-                : 'text-gray-300 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20'
+              className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-3.5 py-2.5 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-black text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'ripNship'
+                ? 'bg-gradient-to-r from-red-600 via-rose-600 to-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-400'
+                : 'text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/30'
                 }`}
             >
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_#ef4444]" />
-              <span className="text-red-400 group-hover:text-red-300 font-black">Go Live</span>
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444] shrink-0" />
+              <span className="font-black">Go Live</span>
             </button>
 
             {/* Vault Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setIsBulkModalOpen(true); setIsMobileMenuOpen(false); }}
-              className="group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-bold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer text-gray-400 hover:text-teal-100 hover:bg-white/5 hover:shadow-[0_0_15px_rgba(20,184,166,0.2)]"
+              className="relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-bold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer text-gray-400 hover:text-cyan-300 hover:bg-white/5"
             >
-              <Layers className="w-4 h-4 lg:w-4 lg:h-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:text-teal-400" />
+              <Layers className="w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:text-cyan-400 text-gray-400" />
               <span>Vault</span>
             </button>
 
             {/* Inventory Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setIsInventoryOpen(true); setIsMobileMenuOpen(false); }}
-              className="group flex items-center justify-start lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-4 lg:py-2 rounded-xl lg:rounded-[10px] font-extrabold text-sm lg:text-sm transition-all duration-300 whitespace-nowrap cursor-pointer text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 shadow-[0_0_12px_rgba(245,158,11,0.25)] relative"
+              className="relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-4 py-3 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-extrabold text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]"
             >
-              <Package className="w-4 h-4 lg:w-4 lg:h-4 text-amber-400 transition-transform duration-300 group-hover:scale-110" />
+              <Box className="w-4 h-4 lg:w-3.5 lg:h-3.5 xl:w-4 xl:h-4 text-amber-400 transition-transform duration-300 group-hover:scale-110 shrink-0" />
               <span>Inventory</span>
               {(earnedSetPacks.reduce((s, p) => s + p.count, 0) + ownedMysteryPacks.reduce((s, p) => s + p.count, 0)) > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-black text-[10px] font-black font-mono shadow animate-pulse">
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-black text-[9px] font-black font-mono shadow animate-pulse shrink-0">
                   {earnedSetPacks.reduce((s, p) => s + p.count, 0) + ownedMysteryPacks.reduce((s, p) => s + p.count, 0)}
                 </span>
               )}
@@ -1902,31 +1917,31 @@ export default function App() {
           </div>
 
           {/* Right: Utilities */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-2 w-full lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0 shrink-0">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 lg:gap-1.5 w-full lg:w-auto mt-auto lg:mt-0 pt-6 lg:pt-0 border-t lg:border-none border-white/10 pb-8 lg:pb-0 shrink-0">
             <button
               onClick={toggleSound}
-              className={`px-4 lg:px-2.5 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 ${soundEnabled
-                ? 'bg-[#1f1f2e] lg:bg-transparent border-amber-500/40 lg:border-amber-500/20 text-amber-300 hover:bg-[#28283c] lg:hover:bg-amber-500/10'
+              className={`px-3 lg:px-2 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-start lg:justify-center gap-2 lg:gap-1 cursor-pointer shrink-0 ${soundEnabled
+                ? 'bg-[#1f1f2e] lg:bg-transparent border-amber-500/40 lg:border-amber-500/20 text-amber-300 hover:bg-amber-500/10'
                 : 'bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-500 hover:bg-white/10 hover:text-gray-300'
                 }`}
               title={soundEnabled ? "Sound Effects ON" : "Sound Effects MUTED"}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" /> : <VolumeX className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />}
-              <span className="lg:hidden xl:inline">{soundEnabled ? 'SFX' : 'Muted'}</span>
+              <span className="lg:hidden xl:inline text-[11px]">{soundEnabled ? 'SFX' : 'Muted'}</span>
             </button>
 
             {currentUser ? (
-              <div className="flex items-center gap-2 w-full lg:w-auto">
+              <div className="flex items-center gap-1.5 w-full lg:w-auto">
                 <button
                   onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
-                  className={`flex-1 lg:flex-none px-4 lg:px-3 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
+                  className={`flex-1 lg:flex-none px-3 lg:px-2.5 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-start lg:justify-center gap-2 lg:gap-1.5 cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
                 >
                   <UserCircle className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
-                  <span className="truncate max-w-[120px] lg:hidden xl:inline">{currentUser.email?.split('@')[0] || 'User'}</span>
+                  <span className="truncate max-w-[100px] text-[11px]">{currentUser.email?.split('@')[0] || 'User'}</span>
                 </button>
                 <button
                   onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
-                  className="px-3 lg:px-2 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+                  className="px-2.5 lg:px-2 py-2 lg:py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4 lg:w-3.5 lg:h-3.5 shrink-0" />
@@ -1935,10 +1950,10 @@ export default function App() {
             ) : (
               <button
                 onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
-                className="px-4 lg:px-3 py-3 lg:py-1.5 rounded-xl lg:rounded-lg border text-sm lg:text-xs font-extrabold transition-all flex items-center justify-start lg:justify-center gap-3 lg:gap-1.5 cursor-pointer shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white border-purple-400/50"
+                className="px-3 py-1.5 rounded-lg border text-xs font-black transition-all flex items-center justify-start lg:justify-center gap-1.5 cursor-pointer shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white border-purple-400/50 shadow-md"
               >
-                <UserCircle className="w-4 h-4 lg:w-3.5 lg:h-3.5 text-purple-200 shrink-0" />
-                <span className="lg:hidden xl:inline">Sign In</span>
+                <UserCircle className="w-3.5 h-3.5 text-purple-200 shrink-0" />
+                <span className="text-[11px]">Sign In</span>
               </button>
             )}
           </div>
