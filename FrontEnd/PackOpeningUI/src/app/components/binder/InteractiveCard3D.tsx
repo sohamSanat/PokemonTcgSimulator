@@ -150,9 +150,17 @@ export const InteractiveCard3D: React.FC<Props> = ({
     [interactive, tiltEnabled]
   );
 
+  const rafMoveId = useRef<number | null>(null);
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      updateTiltAndLighting(e.clientX, e.clientY);
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      if (rafMoveId.current !== null) return;
+      rafMoveId.current = requestAnimationFrame(() => {
+        updateTiltAndLighting(clientX, clientY);
+        rafMoveId.current = null;
+      });
     },
     [updateTiltAndLighting]
   );
@@ -160,14 +168,23 @@ export const InteractiveCard3D: React.FC<Props> = ({
   const handleTouchMove = useCallback(
     (e: React.TouchEvent<HTMLDivElement>) => {
       const touch = e.touches[0] || e.changedTouches[0];
-      if (touch) {
-        updateTiltAndLighting(touch.clientX, touch.clientY);
-      }
+      if (!touch) return;
+      const clientX = touch.clientX;
+      const clientY = touch.clientY;
+      if (rafMoveId.current !== null) return;
+      rafMoveId.current = requestAnimationFrame(() => {
+        updateTiltAndLighting(clientX, clientY);
+        rafMoveId.current = null;
+      });
     },
     [updateTiltAndLighting]
   );
 
   const handleMouseLeave = useCallback(() => {
+    if (rafMoveId.current !== null) {
+      cancelAnimationFrame(rafMoveId.current);
+      rafMoveId.current = null;
+    }
     if (!cardRef.current) return;
     cardRef.current.style.setProperty('--pointer-x', '50%');
     cardRef.current.style.setProperty('--pointer-y', '50%');
@@ -177,6 +194,14 @@ export const InteractiveCard3D: React.FC<Props> = ({
       tiltRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
     }
   }, [tiltEnabled]);
+
+  useEffect(() => {
+    return () => {
+      if (rafMoveId.current !== null) {
+        cancelAnimationFrame(rafMoveId.current);
+      }
+    };
+  }, []);
 
   return (
     <div

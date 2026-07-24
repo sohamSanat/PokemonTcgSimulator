@@ -79,38 +79,44 @@ html, body {
 
 /* 🦊 Firefox Performance & Smooth Rendering Engine 🦊 */
 @supports (-moz-user-select: none) {
-  * {
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
+  /* 1. Bypass heavy offscreen backdrop-filter compositing passes in Firefox */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
-  /* Simplify 6-layer 3D box-shadows in Firefox to prevent GPU/CPU rasterization stalls */
+  /* 2. Simplify 6-layer 3D box-shadows in Firefox to prevent GPU/CPU rasterization stalls */
   .pkmn-card.active .pkmn-card__rotator,
   .pkmn-card.interacting .pkmn-card__rotator,
   .pkmn-card:hover .pkmn-card__rotator,
   .pkmn-card__rotator:focus {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px var(--card-glow) !important;
+    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.85), 0 0 12px var(--card-glow) !important;
   }
 
-  /* Disable expensive blend modes in Firefox to prevent compositing locks */
-  .mix-blend-overlay,
-  .mix-blend-screen,
-  .mix-blend-color-dodge,
-  .mix-blend-multiply {
-    mix-blend-mode: normal !important;
-    opacity: 0.7 !important;
+  /* 3. Contain paint and layout on scroll containers to prevent full-page repaints during scrolling */
+  .overflow-y-auto,
+  .overflow-x-auto,
+  .custom-scrollbar {
+    will-change: scroll-position;
+    contain: paint layout;
   }
 
-  .pkmn-card__translater,
-  .pkmn-card__rotator,
-  img {
+  /* 4. Layer promotion and paint containment on card elements */
+  .pkmn-card,
+  .card-slot {
     will-change: transform;
     transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout paint;
   }
 
-  /* Strip expensive SVG drop-shadow filter calculations from high-res card art */
-  img[class*="drop-shadow"] {
+  /* 5. Strip expensive SVG drop-shadow filter calculations from high-res card art */
+  img[class*="drop-shadow"],
+  [class*="drop-shadow-"] {
     filter: none !important;
+  }
+
+  /* 6. Hardware image scaling optimization */
+  img {
+    image-rendering: -webkit-optimize-contrast;
   }
 }

@@ -44,6 +44,21 @@ function preloadHoloImages() {
   });
 }
 
+const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent);
+
+// Gradient cache keyed by rounded parameters to eliminate GC allocation thrashing in Firefox
+const gradCache = new Map<string, CanvasGradient>();
+let cachedGradWidth = 0;
+let cachedGradHeight = 0;
+
+function clearGradCacheIfNeeded(w: number, h: number) {
+  if (cachedGradWidth !== w || cachedGradHeight !== h) {
+    gradCache.clear();
+    cachedGradWidth = w;
+    cachedGradHeight = h;
+  }
+}
+
 export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
   normalizedRarity,
   isStandardArtBox,
@@ -125,7 +140,11 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
         return;
       }
 
-      const dpr = window.devicePixelRatio || 1;
+      // 🦊 Cap DPR for Firefox to prevent 4K rasterization locks & 60fps drops
+      let dpr = window.devicePixelRatio || 1;
+      if (isFirefox) {
+        dpr = Math.min(dpr, 1.25);
+      }
       const width = Math.round(rect.width * dpr);
       const height = Math.round(rect.height * dpr);
 
@@ -134,6 +153,7 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
         canvas.height = height;
         lastWidth = width;
         lastHeight = height;
+        clearGradCacheIfNeeded(width, height);
       }
 
       const ctx = canvas.getContext('2d');
@@ -148,6 +168,24 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
       const px = (state.curX / 100) * width;
       const py = (state.curY / 100) * height;
 
+      // Helper: Cached radial glare gradient
+      const getRadialGlare = (radiusFactor: number, alphaInner: number) => {
+        const rPx = Math.round(px / 4) * 4;
+        const rPy = Math.round(py / 4) * 4;
+        const key = `glare_${rPx}_${rPy}_${radiusFactor}_${alphaInner}`;
+        let cached = gradCache.get(key);
+        if (!cached) {
+          if (gradCache.size > 80) gradCache.clear();
+          const g = ctx.createRadialGradient(rPx, rPy, 0, rPx, rPy, width * radiusFactor);
+          g.addColorStop(0, `rgba(255, 255, 255, ${alphaInner})`);
+          g.addColorStop(0.6, 'rgba(255, 255, 255, 0.03)');
+          g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          gradCache.set(key, g);
+          cached = g;
+        }
+        return cached;
+      };
+
       // Standard illustration window boundaries (for cards where holo is only on the artwork)
       const boxX = width * 0.078;
       const boxY = height * 0.115;
@@ -158,12 +196,8 @@ export const CardHoloCanvas: React.FC<CardHoloCanvasProps> = ({
       // 1. COMMON / UNCOMMON (Clean Paper Gloss)
       // =========================================================================
       if (normalizedRarity === 'common' || normalizedRarity === 'uncommon') {
-        const rad = ctx.createRadialGradient(px, py, 0, px, py, width * 0.75);
-        rad.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
-        rad.addColorStop(0.5, 'rgba(255, 255, 255, 0.03)');
-        rad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.globalCompositeOperation = 'screen';
-        ctx.fillStyle = rad;
+        ctx.fillStyle = getRadialGlare(0.75, 0.18);
         ctx.fillRect(0, 0, width, height);
         rafId.current = requestAnimationFrame(render);
         return;
