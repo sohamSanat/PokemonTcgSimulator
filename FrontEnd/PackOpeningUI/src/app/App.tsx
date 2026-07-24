@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, Volume2, VolumeX, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -28,6 +28,8 @@ import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPac
 import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
 import InventoryModal from './components/inventory/InventoryModal';
+import { LuckyDropModal } from './components/LuckyDropModal';
+import { getRemainingLuckyDropSeconds, claimLuckyDropReward } from './services/luckyDrop';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1037,6 +1039,51 @@ export default function App() {
   const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
   const [ownedMysteryPacks, setOwnedMysteryPacks] = useState<OwnedMysteryPack[]>(() => getOwnedMysteryPacks());
   const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
+  const [luckyDropSeconds, setLuckyDropSeconds] = useState<number>(() => getRemainingLuckyDropSeconds());
+  const [claimedLuckyPack, setClaimedLuckyPack] = useState<MysteryPackConfig | null>(null);
+  const [isLuckyDropModalOpen, setIsLuckyDropModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const updateLuckyTimer = () => {
+      setLuckyDropSeconds(getRemainingLuckyDropSeconds());
+    };
+    updateLuckyTimer();
+    const interval = setInterval(updateLuckyTimer, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleLuckyDropClick = () => {
+    if (luckyDropSeconds === 0) {
+      sound.playPackOpen();
+      const wonPack = claimLuckyDropReward();
+      setClaimedLuckyPack(wonPack);
+      setIsLuckyDropModalOpen(true);
+      setLuckyDropSeconds(300);
+    } else {
+      sound.playButtonClick();
+    }
+  };
+
+  const handleLuckyDropOpenNow = (pack: MysteryPackConfig) => {
+    setIsLuckyDropModalOpen(false);
+    setActiveTab('pack');
+    setSelectedLanguage(pack.language);
+    const result = rollMysteryPackResult(pack);
+    loadSetAndGeneratePack(result.setId, pack.language, pack, result);
+  };
+
+  const handleLuckyDropAddToInventory = (pack: MysteryPackConfig) => {
+    addOwnedMysteryPacks(pack.id, 1);
+    setIsLuckyDropModalOpen(false);
+    sound.playPackOpen();
+  };
+
+  const formatTimer = (seconds: number): string => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  };
+
   const [dailyCash, setDailyCash] = useState(() => getDailyCash());
   const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
   const [showInsufficientCashModal, setShowInsufficientCashModal] = useState<boolean>(false);
@@ -2201,19 +2248,44 @@ export default function App() {
               )}
             </motion.h1>
 
-            {/* SMALL CIRCLE WITH CHECKLIST SYMBOL */}
-            <motion.button
-              onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-              whileHover={{ scale: 1.15, rotate: 6 }}
-              whileTap={{ scale: 0.9 }}
-              title="Daily, Weekly & Monthly Missions Checklist"
-              className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_25px_rgba(56,189,248,0.7)] cursor-pointer shrink-0 relative group animate-bounce"
-            >
-              <ListChecks className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-black font-mono font-black text-[9px] px-1.5 py-0.2 rounded-full border border-black shadow-md animate-pulse">
-                TASKS
-              </span>
-            </motion.button>
+            {/* ACTION BUTTONS: TASKS & 5-MIN LUCKY DROP CIRCLE BUTTONS */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              {/* SMALL CIRCLE WITH CHECKLIST SYMBOL (TASKS) */}
+              <motion.button
+                onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
+                whileHover={{ scale: 1.15, rotate: 6 }}
+                whileTap={{ scale: 0.9 }}
+                title="Daily, Weekly & Monthly Missions Checklist"
+                className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border-2 border-white flex items-center justify-center text-white shadow-[0_0_25px_rgba(56,189,248,0.7)] cursor-pointer shrink-0 relative group animate-bounce"
+              >
+                <ListChecks className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+                <span className="absolute -top-1 -right-1 bg-amber-400 text-black font-mono font-black text-[9px] px-1.5 py-0.2 rounded-full border border-black shadow-md animate-pulse">
+                  TASKS
+                </span>
+              </motion.button>
+
+              {/* 5-MIN LUCKY DROP CIRCLE BUTTON */}
+              <motion.button
+                onClick={handleLuckyDropClick}
+                whileHover={{ scale: 1.15, rotate: -6 }}
+                whileTap={{ scale: 0.9 }}
+                title={luckyDropSeconds === 0 ? "5-Min Lucky Drop Ready! Click to Claim Free Mystery Pack!" : `Next Lucky Drop in ${formatTimer(luckyDropSeconds)}`}
+                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-white flex items-center justify-center text-white cursor-pointer shrink-0 relative group transition-all duration-300 ${
+                  luckyDropSeconds === 0
+                    ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-purple-600 shadow-[0_0_30px_rgba(245,158,11,0.9)] animate-bounce'
+                    : 'bg-gradient-to-tr from-purple-900/80 via-slate-900 to-indigo-950 border-white/40 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                }`}
+              >
+                <Gift className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform ${luckyDropSeconds === 0 ? 'animate-pulse scale-110 text-amber-200' : 'text-purple-300 group-hover:scale-110'}`} />
+                <span className={`absolute -top-1 -right-1 font-mono font-black text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-full border shadow-md ${
+                  luckyDropSeconds === 0
+                    ? 'bg-amber-300 text-black border-black animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.8)]'
+                    : 'bg-black/90 text-amber-300 border-amber-400/60'
+                }`}>
+                  {luckyDropSeconds === 0 ? 'DROP!' : formatTimer(luckyDropSeconds)}
+                </span>
+              </motion.button>
+            </div>
           </div>
 
           {/* Unified Command & Stats Console HUD */}
@@ -2226,8 +2298,8 @@ export default function App() {
             {/* Subtle ambient glowing background glow */}
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Top Grid: Financial Performance & Missions Pods */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 relative z-10">
+            {/* Top Grid: Financial Performance, Missions & Lucky Drop Pods */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-4 relative z-10">
               {/* Pod 1: Pack Price */}
               <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
                 <div className="flex items-center justify-between text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
@@ -2319,6 +2391,42 @@ export default function App() {
                     <span className="text-sm font-black font-mono text-amber-400">
                       {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(2)}`}
                     </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pod 6: 5-Min Lucky Drop */}
+              <div
+                onClick={handleLuckyDropClick}
+                className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group col-span-2 sm:col-span-1 ${
+                  luckyDropSeconds === 0
+                    ? 'bg-gradient-to-br from-amber-500/30 via-orange-500/20 to-purple-900/60 border border-amber-400 shadow-[0_0_25px_rgba(245,158,11,0.5)] animate-pulse'
+                    : 'bg-gradient-to-br from-purple-900/30 via-slate-900/40 to-indigo-950/40 border border-purple-500/30 hover:border-purple-400 shadow-[inset_0_1px_2px_rgba(168,85,247,0.2)]'
+                }`}
+              >
+                <div className="flex items-center justify-between text-purple-300 text-[11px] font-extrabold uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <Gift className={`w-3.5 h-3.5 ${luckyDropSeconds === 0 ? 'text-amber-300 animate-bounce' : 'text-purple-400 group-hover:scale-110 transition-transform'}`} />
+                    5-Min Lucky Drop
+                  </span>
+                  <span className={`text-[9px] font-mono font-black px-1.5 py-0.2 rounded-full border ${
+                    luckyDropSeconds === 0 ? 'bg-amber-400 text-black border-black animate-pulse' : 'bg-black/60 text-purple-300 border-purple-500/40'
+                  }`}>
+                    {luckyDropSeconds === 0 ? 'READY!' : '5-MIN'}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1 mt-1.5">
+                  <div className="text-sm sm:text-base font-black font-mono tracking-tight text-white flex items-center justify-between">
+                    <span>{luckyDropSeconds === 0 ? '🎁 CLAIM DROP!' : formatTimer(luckyDropSeconds)}</span>
+                  </div>
+                  {/* Live Progress Bar */}
+                  <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden mt-1 border border-white/10">
+                    <div
+                      className={`h-full transition-all duration-1000 ${
+                        luckyDropSeconds === 0 ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-purple-500 shadow-[0_0_10px_rgba(245,158,11,0.9)]' : 'bg-purple-500'
+                      }`}
+                      style={{ width: `${Math.round(((300 - luckyDropSeconds) / 300) * 100)}%` }}
+                    />
                   </div>
                 </div>
               </div>
@@ -3826,6 +3934,13 @@ export default function App() {
         onNavigateToMissions={() => {
           setActiveTab('missions');
         }}
+      />
+      <LuckyDropModal
+        isOpen={isLuckyDropModalOpen}
+        pack={claimedLuckyPack}
+        onClose={() => setIsLuckyDropModalOpen(false)}
+        onOpenNow={handleLuckyDropOpenNow}
+        onAddToInventory={handleLuckyDropAddToInventory}
       />
 
       {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
