@@ -88,12 +88,26 @@ class SoundEngine {
     return this.volume;
   }
 
-  private haptic(pattern: number | number[]) {
+  public haptic(pattern: number | number[] = 15, shakeIntensity: 'light' | 'medium' | 'heavy' | 'none' = 'none') {
+    // 1. Hardware Web Vibration API (Android Chrome, Edge, Samsung Internet, Firefox, PWAs)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      // Catch errors just in case browser blocks it without interaction
       try {
         navigator.vibrate(pattern);
       } catch (e) {}
+    }
+
+    // 2. Visual CSS Screen Shake Engine (Works across ALL mobile & desktop browsers: iOS Safari, Android, Windows, Mac)
+    if (shakeIntensity !== 'none' && typeof document !== 'undefined') {
+      const root = document.getElementById('root') || document.body;
+      if (root) {
+        root.classList.remove('shake-screen-light', 'shake-screen-medium', 'shake-screen-heavy');
+        // Force reflow so animation restarts cleanly on repeated triggers
+        void root.offsetWidth;
+        root.classList.add(`shake-screen-${shakeIntensity}`);
+        setTimeout(() => {
+          root.classList.remove(`shake-screen-${shakeIntensity}`);
+        }, shakeIntensity === 'heavy' ? 460 : shakeIntensity === 'medium' ? 310 : 190);
+      }
     }
   }
 
@@ -114,7 +128,7 @@ class SoundEngine {
    * Card Slide / Swish sound when moving stack, hovering, or drawing cards
    */
   public playCardSlide(isSubtle = false) {
-    this.haptic(isSubtle ? 5 : 12);
+    this.haptic(isSubtle ? 5 : 12, 'none');
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -154,7 +168,25 @@ class SoundEngine {
    * Card Flip sound when flipping over face-down card
    */
   public playCardFlip(rarity?: string) {
-    this.haptic([15, 25]);
+    const isRare = rarity && (
+      rarity.includes('Double Rare') || 
+      rarity.includes('ex') || 
+      rarity.includes('Secret') || 
+      rarity.includes('Hyper') || 
+      rarity.includes('Illustration') || 
+      rarity.includes('Special') || 
+      rarity.includes('Ultra') ||
+      rarity.includes('Gold') ||
+      rarity.includes('VMAX') ||
+      rarity.includes('VSTAR')
+    );
+
+    if (isRare) {
+      this.haptic([30, 40, 50, 40, 90], 'heavy');
+    } else {
+      this.haptic([15, 20], 'light');
+    }
+
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -203,17 +235,6 @@ class SoundEngine {
       noise.stop(now + duration);
     }
 
-    // 3. Check for rare / holographic celebration chime
-    const isRare = rarity && (
-      rarity.includes('Double Rare') || 
-      rarity.includes('ex') || 
-      rarity.includes('Secret') || 
-      rarity.includes('Hyper') || 
-      rarity.includes('Illustration') || 
-      rarity.includes('Special') || 
-      rarity.includes('Ultra')
-    );
-
     if (isRare) {
       setTimeout(() => this.playRareFanfare(), 60);
     }
@@ -223,7 +244,7 @@ class SoundEngine {
    * Shimmering magical chime for Rare/Holo/EX card reveal
    */
   public playRareFanfare() {
-    this.haptic([30, 50, 30, 50, 40]);
+    this.haptic([30, 50, 30, 50, 80], 'heavy');
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;

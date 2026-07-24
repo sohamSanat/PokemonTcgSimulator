@@ -544,6 +544,7 @@ export default function PSAGradingLab({ onBackToPacks, onGradeComplete }: PSAGra
     setIsSealingActive(true);
     setSealingProgress(100);
     sound.playUltrasonicSeal();
+    sound.haptic([50, 40, 90, 40, 150], 'heavy');
     setTimeout(() => {
       setIsSealingActive(false);
       if (activeCard) {

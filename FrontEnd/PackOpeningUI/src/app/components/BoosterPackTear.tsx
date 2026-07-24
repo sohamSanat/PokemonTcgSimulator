@@ -94,9 +94,10 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
 
       setProgress(Math.round(current));
 
-      // Play scratch sound periodically as auto-tear progresses
+      // Play scratch sound & light haptic tick periodically as auto-tear progresses
       if (now - lastScratchRef.current > 65 && current < 95) {
         sound.playFoilScratch(current);
+        sound.haptic(10, 'light');
         lastScratchRef.current = now;
       }
 
@@ -105,6 +106,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
       } else {
         setProgress(100);
         setIsAutoTearing(false);
+        sound.haptic([40, 30, 70, 40, 120], 'heavy');
         onTearComplete();
       }
     };
@@ -136,6 +138,7 @@ export const BoosterPackTear: React.FC<BoosterPackTearProps> = ({
         const advanced = Math.max(progress + 3, newPercent);
         if (performance.now() - lastScratchRef.current > 60 && advanced - progress > 2) {
           sound.playFoilScratch(advanced);
+          sound.haptic(12, 'light');
           lastScratchRef.current = performance.now();
         }
         setProgress(prev => (advanced > prev ? Math.min(100, advanced) : prev));
