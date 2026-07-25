@@ -348,11 +348,45 @@ export function weightedPick<T extends { id: string; localId?: string; name?: st
 }
 
 export function getMaxCardNumForJapaneseSet(setId: string): number {
-  if (!jaCardPricesCache) return 0;
+  if (!jaCardPricesCache && !jaCardNamesCache) return 0;
   const rawId = setId.replace(/_ja$/i, '').toLowerCase();
   
   const prefixes = new Set<string>([`${rawId}-`, `${rawId}_ja-`]);
   
+  const altP = rawId.replace('+', 'p');
+  const altPlus = rawId.replace('+', 'plus');
+  const altSym = rawId.replace('p', '+');
+  for (const p of [altP, altPlus, altSym]) {
+    prefixes.add(`${p}-`);
+    prefixes.add(`${p}_ja-`);
+  }
+
+  const xyAliases: Record<string, string[]> = {
+    'xy8a': ['xy8b', 'xy8blue', 'blue shock'],
+    'xy8blue': ['xy8a', 'xy8b', 'blue shock'],
+    'xy8b': ['xy8r', 'xy8red', 'red flash', 'xy8a'],
+    'xy8r': ['xy8b', 'xy8red', 'red flash'],
+    'xy8red': ['xy8b', 'xy8r', 'red flash'],
+    'xy5b': ['xy5t', 'tidal storm'],
+    'xy5t': ['xy5b', 'tidal storm'],
+    'xy11a': ['xy11b', 'explosive fighter', 'fever burst fighter'],
+    'xy11b': ['xy11a', 'cruel traitor', 'ruthless rebel'],
+    'xy9': ['outrageous anger', 'awakening super king'],
+    'xy4': ['phantom gate'],
+    'xy2': ['wild blaze'],
+    'cp1': ['team magma vs team aqua', 'double crisis'],
+    'cp2': ['legendary shine', 'legendary kira collection'],
+    'cp3': ['pokekyun collection'],
+    'cp4': ['premium champion pack ex', 'premium champion']
+  };
+
+  if (xyAliases[rawId]) {
+    for (const alias of xyAliases[rawId]) {
+      prefixes.add(`${alias}-`);
+      prefixes.add(`${alias}_ja-`);
+    }
+  }
+
   // Also check SWSH variants
   if (rawId.startsWith('s') && !rawId.startsWith('sv') && !rawId.startsWith('sm') && !rawId.startsWith('sn')) {
     const swshPrefix = 'swsh' + rawId.slice(1);
@@ -366,7 +400,8 @@ export function getMaxCardNumForJapaneseSet(setId: string): number {
   }
 
   let maxNum = 0;
-  for (const key of Object.keys(jaCardPricesCache)) {
+  const sourceCache = jaCardPricesCache || jaCardNamesCache || {};
+  for (const key of Object.keys(sourceCache)) {
     for (const prefix of prefixes) {
       if (key.startsWith(prefix)) {
         const numPart = key.slice(prefix.length);
