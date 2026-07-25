@@ -1946,7 +1946,7 @@ export default function App() {
             className="hidden lg:flex px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 hover:border-white items-center gap-1.5 cursor-pointer transition-all duration-300 group shrink-0 whitespace-nowrap"
           >
             <ArrowLeft className="w-3.5 h-3.5 text-black font-black group-hover:-translate-x-0.5 transition-transform shrink-0" />
-            <span className="tracking-wide uppercase font-black text-[11px]">Choose Set</span>
+            <span className="tracking-wide uppercase font-black text-[11px]">PokeShop</span>
             <Sparkles className="w-3.5 h-3.5 text-black animate-pulse shrink-0" />
           </motion.button>
 
@@ -1965,7 +1965,7 @@ export default function App() {
           lg:static lg:w-auto lg:h-auto lg:flex-1 lg:bg-transparent lg:border-none lg:p-0 lg:flex-row lg:items-center lg:justify-between lg:translate-y-0 lg:pt-0 lg:flex lg:shadow-none lg:overflow-visible lg:gap-2 lg:transition-none lg:ml-2 lg:opacity-100 lg:pointer-events-auto
         `}>
 
-          {/* Mobile Choose Set Button */}
+          {/* Mobile PokeShop Button */}
           <div className="flex lg:hidden flex-col items-stretch gap-4 w-full shrink-0">
             <motion.button
               onClick={() => { sound.playModalOpen(); setIsSetSelectorOpen(true); setIsMobileMenuOpen(false); }}
@@ -1975,7 +1975,7 @@ export default function App() {
             >
               <div className="flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4 text-black font-black" />
-                <span className="tracking-wide uppercase font-black">Choose Set</span>
+                <span className="tracking-wide uppercase font-black">PokeShop</span>
               </div>
               <Sparkles className="w-4 h-4 text-black animate-pulse" />
             </motion.button>
