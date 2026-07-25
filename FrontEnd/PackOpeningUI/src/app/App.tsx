@@ -90,10 +90,20 @@ const getSetLogoUrl = (set: TCGDexSetSummary, manifest: Record<string, string> =
 
   if (isJapanese) {
     const jaKey = `${cleanJaId}_ja`;
+    const altPKey = cleanJaId.replace(/\+/g, 'p') + '_ja';
+    const altPlusKey = cleanJaId.replace(/\+/g, 'plus') + '_ja';
+
     if (manifest[jaKey]) return manifest[jaKey];
+    if (manifest[altPKey]) return manifest[altPKey];
+    if (manifest[altPlusKey]) return manifest[altPlusKey];
+    if (manifest[cleanJaId]) return manifest[cleanJaId];
     if (manifest[set.id]) return manifest[set.id];
     if (manifest[set.id.toLowerCase()]) return manifest[set.id.toLowerCase()];
-    if (set.logo && !set.logo.includes('base1_ja-logo') && !set.logo.includes('/en/')) {
+
+    if (cleanJaId === 'sm10a' || cleanJaId === 'sn10a') return '/setLogos/sm10a_ja.png';
+    if (cleanJaId === 'sm4+' || cleanJaId === 'sm4p' || cleanJaId === 'sm4plus') return '/setLogos/sm4+_ja.png';
+
+    if (set.logo && !set.logo.includes('base1_ja-logo') && !set.logo.includes('/en/') && !set.logo.includes('images.scrydex.com')) {
       return set.logo.endsWith('.png') || set.logo.endsWith('.webp') || set.logo.endsWith('.jpg') ? set.logo : `${set.logo}.png`;
     }
     return `/setLogos/${cleanJaId}_ja.png`;

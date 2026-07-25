@@ -374,6 +374,12 @@ export function getJapaneseSetDefaultLogo(setId: string): string {
   if (rawId === 'sv2a') {
     return `${base}setLogos/sv2a_ja.png`;
   }
+  if (rawId === 'sm10a' || rawId === 'sn10a') {
+    return `${base}setLogos/sm10a_ja.png`;
+  }
+  if (rawId === 'sm4+' || rawId === 'sm4p' || rawId === 'sm4plus') {
+    return `${base}setLogos/sm4+_ja.png`;
+  }
   return `/setLogos/${rawId}_ja.png`;
 }
 
@@ -652,6 +658,15 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   const englishSub = nameMap[rawId] || s?.name || rawId;
   const setName = s ? englishSub : (rawId.toLowerCase() === 'sv2a' ? 'Pokémon Card 151' : `Japanese Set ${rawId}`);
 
+  const prefixLow = rawId.toLowerCase();
+
+  // Determine the correct Scrydex set ID prefix.
+  // SM sets: use lowercase sm prefix, NO number padding (e.g. sm9_ja-55)
+  // SWSH sets: TCGDex uses 'S1W','S12a' but Scrydex uses 'swsh1w','swsh12a' (full swsh prefix)
+  // SV sets: use lowercase sv prefix, NO padding (e.g. sv2a_ja-1)
+  const isSwshSet = prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn');
+  const scrydexSetPrefix = (isSwshSet ? `swsh${prefixLow.slice(1)}` : prefixLow).replace(/\+/g, 'p');
+  
   let logoUrl = getJapaneseSetDefaultLogo(rawId);
   let symbolUrl = getJapaneseSetDefaultSymbol(rawId);
 
@@ -674,7 +689,6 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
   }
 
   const cards: TCGDexCardSummary[] = [];
-  const prefixLow = rawId.toLowerCase();
 
   // Fetch live card titles from TCGDex Japanese & English endpoints where available
   const resolvedCardNamesMap = new Map<string, string>();
@@ -699,15 +713,7 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     // ignore
   }
 
-
-
   const offlineNames = jaCardNamesCache || {};
-  // Determine the correct Scrydex set ID prefix.
-  // SM sets: use lowercase sm prefix, NO number padding (e.g. sm9_ja-55)
-  // SWSH sets: TCGDex uses 'S1W','S12a' but Scrydex uses 'swsh1w','swsh12a' (full swsh prefix)
-  // SV sets: use lowercase sv prefix, NO padding (e.g. sv2a_ja-1)
-  const isSwshSet = prefixLow.startsWith('s') && !prefixLow.startsWith('sv') && !prefixLow.startsWith('sm') && !prefixLow.startsWith('sn');
-  const scrydexSetPrefix = isSwshSet ? `swsh${prefixLow.slice(1)}` : prefixLow;
 
   for (let i = 1; i <= totalCards; i++) {
     const cardNum = i.toString();
