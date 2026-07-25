@@ -267,7 +267,8 @@ const JAPANESE_SET_ALIASES = {
   'Vstar-Universe': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'vstar-universe_ja'],
 
   // Japanese XY Sets (folder name → xy set IDs)
-  'Awakening-Super-King': ['xy9_ja', 'xy9', 'xy9ja', 'xy10_ja', 'xy10', 'xy10ja', 'outrageous anger_ja', 'outrageous-anger_ja', 'outrageous anger', 'awakening super king_ja', 'awakening-super-king_ja', 'awakening super king', 'rage of the broken heavens_ja'],
+  'Outrageous-Anger': ['xy9_ja', 'xy9', 'xy9ja', 'outrageous anger_ja', 'outrageous-anger_ja', 'outrageous anger', 'outrageous-anger', 'rage of the broken heavens_ja', 'rage of the broken heavens'],
+  'Awakening-Super-King': ['xy10_ja', 'xy10', 'xy10ja', 'awakening super king_ja', 'awakening-super-king_ja', 'awakening super king', 'awakening-super-king'],
   'Bandit-Ring': ['xy7_ja', 'xy7', 'xy7ja', 'bandit ring_ja', 'bandit-ring_ja', 'bandit ring'],
   'Blue-Shock': ['xy8a_ja', 'xy8a', 'xy8aja', 'xy8blue_ja', 'xy8blue', 'blue shock_ja', 'blue-shock_ja', 'blue shock'],
   'Collection-X': ['xy1x_ja', 'xy1x', 'collection x_ja', 'collection-x_ja', 'collection x'],

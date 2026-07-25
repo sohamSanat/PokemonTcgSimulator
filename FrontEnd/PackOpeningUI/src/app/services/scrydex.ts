@@ -449,6 +449,7 @@ export async function fetchJapaneseSeriesDetails(seriesId: string): Promise<TCGD
       return idLow.startsWith('sm') || idLow.startsWith('smp');
     }
     if (sId === 'xy') {
+      if (idLow === 'xy8r') return false; // Keep only 59-card Red Flash (xy8b / xy8red)
       return idLow.startsWith('xy') || idLow.startsWith('cp');
     }
     if (sId === 'bw') {

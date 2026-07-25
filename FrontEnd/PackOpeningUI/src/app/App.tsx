@@ -16,6 +16,7 @@ import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
 import { PackLoadingCurtain } from './components/PackLoadingCurtain';
+import { preloadPackAssets } from './services/imagePreloader';
 import PSAGradingLab from './components/psa/PSAGradingLab';
 import RipNShipView from './components/ripNship/RipNShipView';
 import { CardMarketModal } from './components/CardMarketModal';
@@ -1533,14 +1534,18 @@ export default function App() {
 
     // Pick pack arts for this set from mystery pack art or set manifest
     const effectiveMysteryPack = mysteryPack !== undefined ? mysteryPack : currentMysteryPack;
+    let chosenArts: string[] = [];
     if (effectiveMysteryPack && effectiveMysteryPack.packArt) {
-      setCurrentPackArts([effectiveMysteryPack.packArt]);
+      chosenArts = [effectiveMysteryPack.packArt];
+      setCurrentPackArts(chosenArts);
       setPackArtIndex(0);
     } else {
-      const setArts = getPackArtsForSet(setId, undefined, packArtsManifest);
-      setCurrentPackArts(setArts);
-      setPackArtIndex(Math.floor(Math.random() * setArts.length));
+      chosenArts = getPackArtsForSet(setId, undefined, packArtsManifest);
+      setCurrentPackArts(chosenArts);
+      setPackArtIndex(Math.floor(Math.random() * chosenArts.length));
     }
+
+    let generatedCards: any[] = [];
 
     try {
       let resolvedSetName = setId;
@@ -1554,14 +1559,15 @@ export default function App() {
         setCurrentSet(setDetails);
         if (!effectiveMysteryPack) {
           const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
+          chosenArts = refinedArts;
           setCurrentPackArts(refinedArts);
         }
-        const newCards = await generateJapanesePackFromSet(setDetails);
-        setCards(formatAndSortCards(newCards));
-        preloadPackImages(newCards).catch(() => {});
+        const rawPackCards = await generateJapanesePackFromSet(setDetails);
+        generatedCards = rawPackCards;
+        setCards(formatAndSortCards(rawPackCards));
 
         setTimeout(() => {
-          orchestrateSetLoading(setDetails, newCards.map(c => c.id), finishCurtainReady);
+          orchestrateSetLoading(setDetails, generatedCards.map(c => c.id), finishCurtainReady);
         }, 200);
       } else {
         const setDetails = await fetchSetDetails(setId);
@@ -1573,17 +1579,16 @@ export default function App() {
         setCurrentSet(setDetails);
         if (!effectiveMysteryPack) {
           const refinedArts = getPackArtsForSet(setDetails.id || setId, setDetails.name, packArtsManifest);
+          chosenArts = refinedArts;
           setCurrentPackArts(refinedArts);
         }
-        const newCards = await generatePackFromSet(setDetails);
-        
-        // Render pack cards immediately, and trigger background image preload non-blockingly
-        setCards(formatAndSortCards(newCards));
-        preloadPackImages(newCards).catch(() => {});
+        const rawPackCards = await generatePackFromSet(setDetails);
+        generatedCards = rawPackCards;
+        setCards(formatAndSortCards(rawPackCards));
 
         // NOW that pack and contents are fully ready, trigger low-priority background chase card warmup
         setTimeout(() => {
-          orchestrateSetLoading(setDetails, newCards.map(c => c.id), finishCurtainReady);
+          orchestrateSetLoading(setDetails, generatedCards.map(c => c.id), finishCurtainReady);
         }, 200);
       }
 
@@ -1605,16 +1610,22 @@ export default function App() {
       }
     } catch (error) {
       console.error('Failed to load set pack:', error);
-      setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
+      const fallback = generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId });
+      generatedCards = fallback;
+      setCards(fallback);
       setIsChaseCardsReady(true);
     } finally {
+      // FORCE pre-decoding of both the active pack wrapper art AND the card images into GPU memory BEFORE opening curtains!
+      await preloadPackAssets(chosenArts, generatedCards);
+
       const elapsed = Date.now() - loadStartTime;
       const minCurtainTime = 1200;
       const remainingDelay = Math.max(0, minCurtainTime - elapsed);
-      setTimeout(() => {
-        isLoadingPackRef.current = false;
-        setIsLoadingPack(false);
-      }, remainingDelay);
+      if (remainingDelay > 0) {
+        await new Promise(r => setTimeout(r, remainingDelay));
+      }
+      isLoadingPackRef.current = false;
+      setIsLoadingPack(false);
     }
   }, [packArtsManifest, selectedLanguage, currentMysteryPack]);
 

@@ -365,7 +365,7 @@
   "XY6_ja": "/setLogos/xy6_ja.png",
   "xy9_ja": "/setLogos/xy9_ja.png",
   "XY9_ja": "/setLogos/xy9_ja.png",
-  "xy8b_ja": "/setLogos/xy8b_ja.png",
+  "xy8b_ja": "/setLogos/xy8r_ja.png",
   "XY8b_ja": "/setLogos/xy8b_ja.png",
   "XY8B_ja": "/setLogos/xy8b_ja.png",
   "xy7_ja": "/setLogos/xy7_ja.png",
@@ -794,5 +794,10 @@
   "gx battle boost": "/setLogos/sm4+_ja.png",
   "gx battle boost_ja": "/setLogos/sm4+_ja.png",
   "sn10a": "/setLogos/sn10a_ja.png",
-  "g-g end_ja": "/setLogos/sm10a_ja.png"
+  "g-g end_ja": "/setLogos/sm10a_ja.png",
+  "xy8b": "/setLogos/xy8r_ja.png",
+  "xy8red": "/setLogos/xy8r_ja.png",
+  "xy8red_ja": "/setLogos/xy8r_ja.png",
+  "red flash": "/setLogos/xy8r_ja.png",
+  "red flash_ja": "/setLogos/xy8r_ja.png"
 }

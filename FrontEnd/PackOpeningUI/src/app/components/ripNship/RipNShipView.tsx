@@ -16,6 +16,7 @@ import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageE
 import { CardMarketModal } from '../CardMarketModal';
 import BoosterPackTear from '../BoosterPackTear';
 import { PackLoadingCurtain } from '../PackLoadingCurtain';
+import { preloadPackAssets } from '../../services/imagePreloader';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import setPackPricesData from '../../data/set_pack_prices.json';
 import { getJapaneseCardRealPrice, fetchSingleJapaneseSet, generateJapanesePackFromSet } from '../../services/scrydex';
@@ -1004,6 +1005,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
     setPackStage('unopened');
     setCards([]);
 
+    let newCards: PokemonCard[] = [];
     try {
       const arts = getPackArtsForSet(order.setId, packArtsManifest);
       setCurrentPackArts(arts);
@@ -1012,7 +1014,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       const isJa = order.setId.endsWith('_ja');
       let setDetails;
       
-      let newCards: PokemonCard[] = [];
       try {
         if (isJa) {
           setDetails = await fetchSingleJapaneseSet(order.setId);
@@ -1022,9 +1023,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
           newCards = await generatePackFromSet(setDetails);
         }
         
-        // PRIORITIZE NETWORK: Force browser to download & cache all card images for THIS pack FIRST
-        await preloadPackImages(newCards);
-
         setCards(formatAndSortCards(newCards));
 
         // Delay background set warmup so it NEVER competes for network connections with the active pack
@@ -1037,20 +1035,23 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
         }
       } catch (e) {
         const fbCards = generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails || { id: order.setId });
-        await preloadPackImages(fbCards.map(c => c.pokemon));
         setCards(fbCards);
       }
     } catch (e) {
       const fbCards = generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: order.setId });
-      await preloadPackImages(fbCards.map(c => c.pokemon));
       setCards(fbCards);
     } finally {
+      // FORCE browser to fetch & decode pack wrapper art AND card images into GPU memory BEFORE lifting curtains
+      const activeArts = currentPackArts.length > 0 ? currentPackArts : getPackArtsForSet(order.setId, packArtsManifest);
+      await preloadPackAssets(activeArts, newCards);
+
       const elapsed = Date.now() - loadStartTime;
       const minCurtainTime = 1200;
       const remainingDelay = Math.max(0, minCurtainTime - elapsed);
-      setTimeout(() => {
-        setIsLoadingPack(false);
-      }, remainingDelay);
+      if (remainingDelay > 0) {
+        await new Promise(r => setTimeout(r, remainingDelay));
+      }
+      setIsLoadingPack(false);
     }
   };
 
