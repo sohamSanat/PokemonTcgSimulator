@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice } from './services/scrydex';
+import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice, scrydexCardFullCache, onScrydexCardFullCacheUpdated } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -950,16 +950,18 @@ export default function App() {
   const debouncedCacheTickRef = useRef<number | null>(null);
   useEffect(() => {
     const handleCacheUpdate = () => {
-      if (debouncedCacheTickRef.current) return;
+      if (debouncedCacheTickRef.current) clearTimeout(debouncedCacheTickRef.current);
       debouncedCacheTickRef.current = window.setTimeout(() => {
         debouncedCacheTickRef.current = null;
         setCacheTick(t => t + 1);
-      }, 350);
+      }, 50);
     };
 
     onCardFullCacheUpdated.add(handleCacheUpdate);
+    onScrydexCardFullCacheUpdated.add(handleCacheUpdate);
     return () => {
       onCardFullCacheUpdated.delete(handleCacheUpdate);
+      onScrydexCardFullCacheUpdated.delete(handleCacheUpdate);
       if (debouncedCacheTickRef.current) clearTimeout(debouncedCacheTickRef.current);
     };
   }, []);
@@ -1102,6 +1104,7 @@ export default function App() {
   const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
   const [isChaseCardsReady, setIsChaseCardsReady] = useState(false);
   const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(true);
+
 
   useEffect(() => {
     setIsChaseCardsRevealed(true);
@@ -1763,7 +1766,7 @@ export default function App() {
     if (!currentSet || !currentSet.cards || currentSet.cards.length === 0) return [];
     const candidates = currentSet.cards.filter(c => !c.name.toLowerCase().includes('energy') && !c.id.toLowerCase().includes('energy'));
     const mapped = candidates.map((card, idx) => {
-      const cached = cardFullCache.get(card.id);
+      const cached = cardFullCache.get(card.id) || scrydexCardFullCache.get(card.id);
       const isExOrRare = card.name.includes('Charizard') || card.name.includes('Pikachu') || card.name.includes('Umbreon') || card.name.includes('Rayquaza') || card.name.includes('ex') || card.name.includes('VMAX') || card.name.includes('VSTAR') || card.name.includes('MEGA') || card.name.includes('Secret') || card.name.includes('Gold') || card.name.includes('Alt');
       const baseUrl = cached?.image || card.image || `https://assets.tcgdex.net/en/swsh/${currentSet.id}/${card.localId || card.id?.split('-').pop() || idx + 1}`;
       const poke: PokemonCard = {
