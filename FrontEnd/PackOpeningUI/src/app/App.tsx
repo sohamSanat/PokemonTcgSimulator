@@ -32,6 +32,7 @@ import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRa
 import InventoryModal from './components/inventory/InventoryModal';
 import { LuckyDropModal } from './components/LuckyDropModal';
 import { getRemainingLuckyDropSeconds, claimLuckyDropReward } from './services/luckyDrop';
+import { SetPurchaseOptionsModal } from './components/proceduralBox/SetPurchaseOptionsModal';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1087,6 +1088,7 @@ export default function App() {
   const [luckyDropSeconds, setLuckyDropSeconds] = useState<number>(() => getRemainingLuckyDropSeconds());
   const [claimedLuckyPack, setClaimedLuckyPack] = useState<MysteryPackConfig | null>(null);
   const [isLuckyDropModalOpen, setIsLuckyDropModalOpen] = useState<boolean>(false);
+  const [purchaseTargetSet, setPurchaseTargetSet] = useState<any | null>(null);
 
   useEffect(() => {
     const updateLuckyTimer = () => {
@@ -3388,6 +3390,7 @@ export default function App() {
                           <div
                             key={set.id}
                             onClick={async () => {
+                              sound.playButtonClick();
                               if (activeTab === 'multiplayerArena' && matchId) {
                                 try {
                                   await updateMatchPack(matchId, set.id);
@@ -3396,7 +3399,7 @@ export default function App() {
                                   console.error("Failed to update match set", err);
                                 }
                               } else {
-                                loadSetAndGeneratePack(set.id);
+                                setPurchaseTargetSet(set);
                               }
                             }}
                             className={`p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col items-center justify-between text-center group ${currentSet?.id === set.id
@@ -4104,6 +4107,50 @@ export default function App() {
         onClose={() => setIsLuckyDropModalOpen(false)}
         onOpenNow={handleLuckyDropOpenNow}
         onAddToInventory={handleLuckyDropAddToInventory}
+      />
+
+      <SetPurchaseOptionsModal
+        isOpen={!!purchaseTargetSet}
+        onClose={() => setPurchaseTargetSet(null)}
+        set={purchaseTargetSet}
+        packArtUrl={purchaseTargetSet ? (getPackArtsForSet(purchaseTargetSet.id, purchaseTargetSet.name, packArtsManifest)[0] || null) : null}
+        logoUrl={purchaseTargetSet ? (getSetLogoUrl(purchaseTargetSet, setLogosManifest, selectedLanguage) || null) : null}
+        language={selectedLanguage}
+        basePackPrice={setPackPrices[purchaseTargetSet?.id || ''] || 5.00}
+        onSelectOption={(option, action) => {
+          if (!purchaseTargetSet) return;
+          const setId = purchaseTargetSet.id;
+          const isJa = selectedLanguage === 'ja' || setId.endsWith('_ja');
+          const packCount = option === 'single' ? 1 : option === 'halfBox' ? (isJa ? 15 : 18) : (isJa ? 30 : 36);
+
+          const targetSetCopy = purchaseTargetSet;
+          setPurchaseTargetSet(null);
+          setIsSetSelectorOpen(false);
+
+          if (action === 'vault') {
+            sound.playCardCollect();
+            addEarnedSetPacks([{
+              setId: setId,
+              setName: targetSetCopy.name,
+              language: selectedLanguage,
+              count: packCount
+            }]);
+            setEarnedSetPacks(getEarnedSetPacks());
+            setIsInventoryOpen(true);
+          } else {
+            // Rip Live
+            if (packCount > 1) {
+              addEarnedSetPacks([{
+                setId: setId,
+                setName: targetSetCopy.name,
+                language: selectedLanguage,
+                count: packCount - 1
+              }]);
+              setEarnedSetPacks(getEarnedSetPacks());
+            }
+            void loadSetAndGeneratePack(setId, selectedLanguage);
+          }
+        }}
       />
 
       {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
