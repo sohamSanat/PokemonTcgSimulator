@@ -36,7 +36,7 @@ const SET_ALIASES = {
   'phantasmal-flames': ['me02', 'me2', 'phantasmal flames', 'phantasmal-flames', 'phantasmalflames', 'me02'],
   'Ascended-heroes': ['me02.5', 'me2.5', 'me02pt5', 'me2pt5', 'ascended heroes', 'ascended-heroes', 'ascendedheroes', 'me025'],
   'perfect-order': ['me03', 'me3', 'perfect order', 'perfect-order', 'perfectorder', 'me03'],
-  'chaos-rising': ['me04', 'me4', 'chaos rising', 'chaos-rising', 'chaosrising', 'me04'],
+  'pitch-black': ['me05', 'me5', 'pitch black', 'pitch-black', 'pitchblack', 'me05'],
 
   // Scarlet & Violet
   'scarlet-and-violet': ['sv01', 'sv1', 'scarlet & violet', 'scarlet&violet', 'sv', 'sv01'],
@@ -53,8 +53,8 @@ const SET_ALIASES = {
   'prismatic-evolution': ['sv08.5', 'sv8pt5', 'sv8.5', 'prismatic evolutions', 'prismatic evolution', 'prismatic-evolution', 'prismatic-evolutions', 'sv085', 'sv85'],
   'journey-togather': ['sv09', 'sv9', 'journey together', 'journey togather', 'journey-together', 'journey-togather', 'sv09'],
   'destined-rivals': ['sv10', 'sv10a', 'destined rivals', 'destined-rivals', 'sv10'],
-  'black-bolt': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'pitch black', 'pitch-black', 'pitchblack', 'pitch black bolt', 'pitch-black bolt', 'pitchblackbolt', 'black flare', 'black-flare', 'blackflare'],
-  'black-flare': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'pitch black', 'pitch-black', 'pitchblack', 'pitch black bolt', 'pitch-black bolt', 'pitchblackbolt', 'black flare', 'black-flare', 'blackflare'],
+  'black-bolt': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'black flare', 'black-flare', 'blackflare'],
+  'black-flare': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'black flare', 'black-flare', 'blackflare'],
   'white-flare': ['sv10.5w', 'sv105w', 'sv10b', 'white flare', 'white-flare', 'whiteflare'],
 
   // Sword & Shield
