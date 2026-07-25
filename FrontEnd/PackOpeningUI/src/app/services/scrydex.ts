@@ -188,6 +188,33 @@ export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: stri
     }
   }
 
+  // XY set ID alias fallbacks (e.g., xy8a vs xy8b, xy5b vs xy5t, xy11a vs xy11b)
+  const xyAliases: Record<string, string[]> = {
+    'xy8a': ['xy8b', 'xy8blue', 'blue shock'],
+    'xy8blue': ['xy8a', 'xy8b', 'blue shock'],
+    'xy8b': ['xy8r', 'xy8red', 'red flash', 'xy8a'],
+    'xy8r': ['xy8b', 'xy8red', 'red flash'],
+    'xy8red': ['xy8b', 'xy8r', 'red flash'],
+    'xy5b': ['xy5t', 'tidal storm'],
+    'xy5t': ['xy5b', 'tidal storm'],
+    'xy11a': ['xy11b', 'explosive fighter', 'fever burst fighter'],
+    'xy11b': ['xy11a', 'cruel traitor', 'ruthless rebel'],
+    'xy9': ['outrageous anger', 'awakening super king'],
+    'xy4': ['phantom gate'],
+    'xy2': ['wild blaze'],
+    'cp1': ['team magma vs team aqua', 'double crisis'],
+    'cp2': ['legendary shine', 'legendary kira collection'],
+    'cp3': ['pokekyun collection'],
+    'cp4': ['premium champion pack ex', 'premium champion']
+  };
+
+  if (xyAliases[rawId]) {
+    for (const alias of xyAliases[rawId]) {
+      if (jaCardPricesCache[`${alias}-${num}`] !== undefined) return jaCardPricesCache[`${alias}-${num}`];
+      if (jaCardPricesCache[`${alias}_ja-${num}`] !== undefined) return jaCardPricesCache[`${alias}_ja-${num}`];
+    }
+  }
+
   return undefined;
 }
 
@@ -371,15 +398,18 @@ export function getJapaneseSetDefaultLogo(setId: string): string {
   const rawBase = import.meta.env.BASE_URL || '/';
   const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
-  if (rawId === 'sv2a') {
-    return `${base}setLogos/sv2a_ja.png`;
-  }
-  if (rawId === 'sm10a' || rawId === 'sn10a') {
-    return `${base}setLogos/sm10a_ja.png`;
-  }
-  if (rawId === 'sm4+' || rawId === 'sm4p' || rawId === 'sm4plus') {
-    return `${base}setLogos/sm4+_ja.png`;
-  }
+  if (rawId === 'sv2a') return `${base}setLogos/sv2a_ja.png`;
+  if (rawId === 'sm10a' || rawId === 'sn10a') return `${base}setLogos/sm10a_ja.png`;
+  if (rawId === 'sm4+' || rawId === 'sm4p' || rawId === 'sm4plus') return `${base}setLogos/sm4+_ja.png`;
+
+  if (rawId === 'xy8b' || rawId === 'xy8r' || rawId === 'xy8red' || rawId === 'red flash') return `${base}setLogos/xy8b_ja.png`;
+  if (rawId === 'xy8a' || rawId === 'xy8blue' || rawId === 'blue shock') return `${base}setLogos/xy8a_ja.png`;
+  if (rawId === 'xy5b' || rawId === 'xy5t' || rawId === 'tidal storm') return `${base}setLogos/xy5b_ja.png`;
+  if (rawId === 'xy4' || rawId === 'phantom gate') return `${base}setLogos/xy4_ja.png`;
+  if (rawId === 'xy2' || rawId === 'wild blaze') return `${base}setLogos/xy2_ja.png`;
+  if (rawId === 'cp1' || rawId === 'double crisis') return `${base}setLogos/cp1_ja.png`;
+  if (rawId === 'cp2' || rawId === 'legendary shine') return `${base}setLogos/cp2_ja.png`;
+
   return `/setLogos/${rawId}_ja.png`;
 }
 

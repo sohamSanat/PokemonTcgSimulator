@@ -264,9 +264,27 @@ const JAPANESE_SET_ALIASES = {
   'Incandeseant-Arcana': ['s11a_ja', 's11a', 's11aja', 'incandescent arcana_ja', 'incandeseant-arcana_ja'],
   'Paradigm-Trigger': ['s12_ja', 's12', 's12ja', 'paradigm trigger_ja', 'paradigm-trigger_ja'],
   'Shiny-Vstar': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'shiny-vstar_ja'],
-  'GG-End': ['s12a_ja', 's12a', 's12aja', 'gg end_ja', 'gg-end_ja'],
-  'Miracle-Twin': ['sm11_ja', 'sm11', 'sm11ja', 'miracle twin_ja', 'miracle-twin_ja'],
-  'Vstar-Universe': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'vstar-universe_ja']
+  'Vstar-Universe': ['s12a_ja', 's12a', 's12aja', 'vstar universe_ja', 'vstar-universe_ja'],
+
+  // Japanese XY Sets (folder name → xy set IDs)
+  'Awakening-Super-King': ['xy9_ja', 'xy9', 'xy9ja', 'xy10_ja', 'xy10', 'xy10ja', 'outrageous anger_ja', 'outrageous-anger_ja', 'outrageous anger', 'awakening super king_ja', 'awakening-super-king_ja', 'awakening super king', 'rage of the broken heavens_ja'],
+  'Bandit-Ring': ['xy7_ja', 'xy7', 'xy7ja', 'bandit ring_ja', 'bandit-ring_ja', 'bandit ring'],
+  'Blue-Shock': ['xy8a_ja', 'xy8a', 'xy8aja', 'xy8blue_ja', 'xy8blue', 'blue shock_ja', 'blue-shock_ja', 'blue shock'],
+  'Collection-X': ['xy1x_ja', 'xy1x', 'collection x_ja', 'collection-x_ja', 'collection x'],
+  'Collection-Y': ['xy1y_ja', 'xy1y', 'collection y_ja', 'collection-y_ja', 'collection y'],
+  'Emerald-Break': ['xy6_ja', 'xy6', 'xy6ja', 'emerald break_ja', 'emerald-break_ja', 'emerald break'],
+  'Explosvie-Warrior': ['xy11a_ja', 'xy11a', 'xy11aja', 'xy11b_ja', 'xy11b', 'xy11bja', 'explosive fighter_ja', 'explosive-fighter_ja', 'explosive fighter', 'explosive warrior_ja', 'explosive-warrior_ja', 'explosive warrior', 'fever burst fighter_ja', 'fever burst fighter'],
+  'Gaia-Volcano': ['xy5g_ja', 'xy5g', 'gaia volcano_ja', 'gaia-volcano_ja', 'gaia volcano'],
+  'Legendary-Kira': ['cp2_ja', 'cp2', 'cp2ja', 'legendary shine_ja', 'legendary-shine_ja', 'legendary shine', 'legendary kira collection_ja', 'legendary-kira-collection_ja', 'legendary kira collection', 'legendary kira'],
+  'Phantom-Gate': ['xy4_ja', 'xy4', 'xy4ja', 'phantom gate_ja', 'phantom-gate_ja', 'phantom gate'],
+  'Pokekyun-Collection': ['cp3_ja', 'cp3', 'cp3ja', 'pokekyun collection_ja', 'pokekyun-collection_ja', 'pokekyun collection'],
+  'Premium-Champion': ['cp4_ja', 'cp4', 'cp4ja', 'premium champion pack ex_ja', 'premium-champion-pack-ex_ja', 'premium champion pack ex', 'premium champion_ja', 'premium champion'],
+  'Red-Flash': ['xy8b_ja', 'xy8b', 'xy8bja', 'xy8r_ja', 'xy8r', 'xy8red_ja', 'xy8red', 'red flash_ja', 'red-flash_ja', 'red flash'],
+  'Rising-Fist': ['xy3_ja', 'xy3', 'xy3ja', 'rising fist_ja', 'rising-fist_ja', 'rising fist'],
+  'Ruthlss-Rebel': ['xy11b_ja', 'xy11b', 'xy11bja', 'xy11a_ja', 'xy11a', 'xy11aja', 'cruel traitor_ja', 'cruel-traitor_ja', 'cruel traitor', 'ruthless rebel_ja', 'ruthless-rebel_ja', 'ruthless rebel', 'ruthlss rebel'],
+  'Team-Magma-VS-Team-Aqua': ['cp1_ja', 'cp1', 'cp1ja', 'team magma vs team aqua_ja', 'team-magma-vs-team-aqua_ja', 'team magma vs team aqua', 'team magma vs. team aqua_ja', 'double crisis_ja', 'double crisis'],
+  'Tidal-Storm': ['xy5b_ja', 'xy5b', 'xy5bja', 'xy5t_ja', 'xy5t', 'tidal storm_ja', 'tidal-storm_ja', 'tidal storm'],
+  'Wild-Blaze': ['xy2_ja', 'xy2', 'xy2ja', 'wild blaze_ja', 'wild-blaze_ja', 'wild blaze']
 };
 
 const manifest = {};
