@@ -53,9 +53,9 @@ const SET_ALIASES = {
   'prismatic-evolution': ['sv08.5', 'sv8pt5', 'sv8.5', 'prismatic evolutions', 'prismatic evolution', 'prismatic-evolution', 'prismatic-evolutions', 'sv085', 'sv85'],
   'journey-togather': ['sv09', 'sv9', 'journey together', 'journey togather', 'journey-together', 'journey-togather', 'sv09'],
   'destined-rivals': ['sv10', 'sv10a', 'destined rivals', 'destined-rivals', 'sv10'],
-  'black-bolt': ['sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'black flare', 'black-flare', 'blackflare'],
-  'black-flare': ['sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'black flare', 'black-flare', 'blackflare'],
-  'white-flare': ['sv10b', 'white flare', 'white-flare', 'whiteflare'],
+  'black-bolt': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'pitch black', 'pitch-black', 'pitchblack', 'pitch black bolt', 'pitch-black bolt', 'pitchblackbolt', 'black flare', 'black-flare', 'blackflare'],
+  'black-flare': ['sv10.5b', 'sv105b', 'sv10.5', 'sv105', 'sv10a', 'sv10c', 'black bolt', 'black-bolt', 'blackbolt', 'pitch black', 'pitch-black', 'pitchblack', 'pitch black bolt', 'pitch-black bolt', 'pitchblackbolt', 'black flare', 'black-flare', 'blackflare'],
+  'white-flare': ['sv10.5w', 'sv105w', 'sv10b', 'white flare', 'white-flare', 'whiteflare'],
 
   // Sword & Shield
   'sword-and-shield': ['swsh1', 'sword & shield', 'sword&shield', 'swsh', 'swsh01', 's1w', 's1w_ja', 's1h', 's1h_ja', 's1a', 's1a_ja', 'sword', 'sword_ja', 'shield', 'shield_ja', 'vmax rising', 'vmax rising_ja'],
