@@ -31,16 +31,19 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
   const [liveCardFull, setLiveCardFull] = useState<TCGDexCardFull | null>(() => cardFullCache.get(poke.id) || null);
 
   useEffect(() => {
-    if (!liveCardFull && !poke.pricing?.cardmarket?.idProduct) {
+    const cached = cardFullCache.get(poke.id);
+    if (cached) {
+      setLiveCardFull(cached);
+    } else {
       fetchCardFull(poke.id)
         .then(data => {
-          if (data && (data.pricing || data.tcgplayer || data.cardmarket)) {
+          if (data) {
             setLiveCardFull(data);
           }
         })
         .catch(() => { });
     }
-  }, [poke.id, liveCardFull, poke.pricing]);
+  }, [poke.id]);
 
   const pricing = liveCardFull?.pricing || poke.pricing;
   const rawTcg = pricing?.tcgplayer || liveCardFull?.tcgplayer || poke.tcgplayer;

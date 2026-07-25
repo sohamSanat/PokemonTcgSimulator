@@ -649,7 +649,21 @@ const ensureMostExpensiveLast = (cards: CardData[]): CardData[] => {
 };
 
 const formatAndSortCards = (newCards: PokemonCard[]): CardData[] => {
-  const formatted = newCards.map((poke, idx) => ({
+  const enrichedCards: PokemonCard[] = newCards.map(c => {
+    const cached = cardFullCache.get(c.id);
+    if (cached) {
+      return {
+        ...c,
+        pricing: cached.pricing || (c as any).pricing,
+        tcgplayer: cached.tcgplayer || (c as any).tcgplayer,
+        cardmarket: cached.cardmarket || (c as any).cardmarket,
+        rarity: cached.rarity || c.rarity
+      };
+    }
+    return c;
+  });
+
+  const formatted: CardData[] = enrichedCards.map((poke, idx) => ({
     id: `${poke.id || 'card'}-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 9)}`,
     originalIndex: idx,
     flipped: false,
@@ -657,14 +671,34 @@ const formatAndSortCards = (newCards: PokemonCard[]): CardData[] => {
     value: getRealCardPrice(poke),
     pokemon: poke
   }));
-  const energyIdx = formatted.findIndex(c => c.pokemon.name?.toLowerCase().includes('energy') || c.pokemon.id?.toLowerCase().includes('energy'));
-  if (energyIdx > 0) {
-    const [energyCard] = formatted.splice(energyIdx, 1);
-    formatted.unshift(energyCard);
+
+  // Sort cards ascending by market price value so lower value cards are drawn first
+  formatted.sort((a, b) => a.value - b.value);
+
+  // Extract Energy card if present
+  const energyIdx = formatted.findIndex(c =>
+    c.pokemon.name?.toLowerCase().includes('energy') ||
+    c.pokemon.id?.toLowerCase().includes('energy')
+  );
+
+  let energyCard: CardData | null = null;
+  if (energyIdx >= 0) {
+    [energyCard] = formatted.splice(energyIdx, 1);
   }
-  ensureMostExpensiveLast(formatted);
-  // Reverse array so Slot 1 (Basic Energy) is revealed first and Slot 11/10 is revealed last
-  formatted.reverse();
+
+  // Extract Most Expensive Hit Card (highest value, now at end of array)
+  const mostExpensiveCard = formatted.pop();
+
+  // Insert Most Expensive Hit Card at index 0 (bottom of visual stack, revealed LAST)
+  if (mostExpensiveCard) {
+    formatted.unshift(mostExpensiveCard);
+  }
+
+  // Place Energy card at index length-1 (top of visual stack, revealed FIRST)
+  if (energyCard) {
+    formatted.push(energyCard);
+  }
+
   return formatted.map((c, idx) => ({ ...c, originalIndex: idx }));
 };
 

@@ -1469,44 +1469,41 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
 
   // Synchronously format pack cards in 0ms so pack opening never blocks on network queries!
   const cards: PokemonCard[] = selectedSlots.map((slot, idx) => {
-    // Check if full card details are already cached in memory
     const cached = cardFullCache.get(slot.summary.id);
+
+    // Warm up full card details asynchronously in the background without blocking the user!
+    if (!cached && !slot.summary.id.startsWith('sve-') && !slot.summary.name.includes('Energy')) {
+      fetchCardFull(slot.summary.id).catch(() => {});
+    }
+
     if (cached) {
       return {
         id: cached.id || slot.summary.id,
-        name: cached.name,
+        name: cached.name || slot.summary.name,
         rarity: cached.rarity || slot.defaultRarity || 'Common',
         isReverseHolo: Boolean(slot.isReverseHolo),
-        illustrator: cached.illustrator,
+        illustrator: cached.illustrator || (slot.summary as any).illustrator,
         images: {
           small: getCardImageUrl(cached.image || slot.summary.image, 'low'),
           large: getCardImageUrl(cached.image || slot.summary.image, 'high'),
         },
-        pricing: cached.pricing,
-        tcgplayer: cached.pricing?.tcgplayer ? { prices: cached.pricing.tcgplayer, unit: cached.pricing.tcgplayer.unit } : undefined,
-        cardmarket: cached.pricing?.cardmarket,
+        pricing: cached.pricing || (slot.summary as any).pricing,
+        tcgplayer: cached.tcgplayer || (cached.pricing?.tcgplayer ? { prices: cached.pricing.tcgplayer, unit: cached.pricing.tcgplayer.unit } : undefined),
+        cardmarket: cached.cardmarket || cached.pricing?.cardmarket,
       };
     }
 
-    // Conservative PLACEHOLDER pricing shown only until real market data warms in
-    // via fetchCardFull(). Kept modest & tier-consistent so it never inflates the
-    // session total; real values override it (usually upward) once loaded.
     let marketPrice = 0.15;
     const r = (slot.defaultRarity || '').toLowerCase();
-    if (r.includes('secret') || r.includes('rainbow') || r.includes('gold') || r.includes('hyper') || r.includes('special illustration')) marketPrice = 8 + Math.random() * 22;      // ~$8–30
-    else if (r.includes('illustration')) marketPrice = 4 + Math.random() * 12;                                                                                                          // ~$4–16
-    else if (r.includes('full art') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes(' gx') || r.includes('character super')) marketPrice = 3 + Math.random() * 9; // ~$3–12
-    else if (r.includes('double rare') || r.includes('(ex)') || r.includes(' ex') || r.includes(' v') || r.includes('prism') || r.includes('character')) marketPrice = 1.5 + Math.random() * 4.5;   // ~$1.5–6
-    else if (r.includes('reverse')) marketPrice = 0.25 + Math.random() * 0.75;                                                                                                          // ~$0.25–1
-    else if (r.includes('holo') || r.includes('gallery') || r.includes('shiny vault')) marketPrice = 0.5 + Math.random() * 2;                                                           // ~$0.5–2.5
-    else if (r.includes('uncommon')) marketPrice = 0.1 + Math.random() * 0.2;                                                                                                           // ~$0.1–0.3
-    else marketPrice = 0.03 + Math.random() * 0.09;                                                                                                                                     // ~$0.03–0.12
+    if (r.includes('secret') || r.includes('rainbow') || r.includes('gold') || r.includes('hyper') || r.includes('special illustration')) marketPrice = 8 + Math.random() * 22;
+    else if (r.includes('illustration')) marketPrice = 4 + Math.random() * 12;
+    else if (r.includes('full art') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes(' gx') || r.includes('character super')) marketPrice = 3 + Math.random() * 9;
+    else if (r.includes('double rare') || r.includes('(ex)') || r.includes(' ex') || r.includes(' v') || r.includes('prism') || r.includes('character')) marketPrice = 1.5 + Math.random() * 4.5;
+    else if (r.includes('reverse')) marketPrice = 0.25 + Math.random() * 0.75;
+    else if (r.includes('holo') || r.includes('gallery') || r.includes('shiny vault')) marketPrice = 0.5 + Math.random() * 2;
+    else if (r.includes('uncommon')) marketPrice = 0.1 + Math.random() * 0.2;
+    else marketPrice = 0.03 + Math.random() * 0.09;
     marketPrice = Number(marketPrice.toFixed(2));
-
-    // Warm up full card details asynchronously in the background without blocking the user!
-    if (!slot.summary.id.startsWith('sve-') && !slot.summary.name.includes('Energy')) {
-      fetchCardFull(slot.summary.id).catch(() => {});
-    }
 
     const initialTcgplayer = {
       unit: 'USD',
