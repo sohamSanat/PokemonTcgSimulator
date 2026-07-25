@@ -88,26 +88,12 @@ class SoundEngine {
     return this.volume;
   }
 
-  public haptic(pattern: number | number[] = 15, shakeIntensity: 'light' | 'medium' | 'heavy' | 'none' = 'none') {
-    // 1. Hardware Web Vibration API (Android Chrome, Edge, Samsung Internet, Firefox, PWAs)
+  public haptic(pattern: number | number[] = 15) {
+    // Hardware Web Vibration API (Android Chrome, Edge, Samsung Internet, Firefox, PWAs)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       try {
         navigator.vibrate(pattern);
       } catch (e) {}
-    }
-
-    // 2. Visual CSS Screen Shake Engine (Works across ALL mobile & desktop browsers: iOS Safari, Android, Windows, Mac)
-    if (shakeIntensity !== 'none' && typeof document !== 'undefined') {
-      const root = document.getElementById('root') || document.body;
-      if (root) {
-        root.classList.remove('shake-screen-light', 'shake-screen-medium', 'shake-screen-heavy');
-        // Force reflow so animation restarts cleanly on repeated triggers
-        void root.offsetWidth;
-        root.classList.add(`shake-screen-${shakeIntensity}`);
-        setTimeout(() => {
-          root.classList.remove(`shake-screen-${shakeIntensity}`);
-        }, shakeIntensity === 'heavy' ? 460 : shakeIntensity === 'medium' ? 310 : 190);
-      }
     }
   }
 
@@ -128,7 +114,7 @@ class SoundEngine {
    * Card Slide / Swish sound when moving stack, hovering, or drawing cards
    */
   public playCardSlide(isSubtle = false) {
-    this.haptic(isSubtle ? 5 : 12, 'none');
+    this.haptic(isSubtle ? 5 : 12);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
@@ -182,9 +168,10 @@ class SoundEngine {
     );
 
     if (isRare) {
-      this.haptic([30, 40, 50, 40, 90], 'heavy');
+      this.haptic([30, 40, 50, 40, 90]);
+      this.playRareFanfare();
     } else {
-      this.haptic([15, 20], 'light');
+      this.haptic([15, 20]);
     }
 
     if (!this.enabled) return;
@@ -244,7 +231,7 @@ class SoundEngine {
    * Shimmering magical chime for Rare/Holo/EX card reveal
    */
   public playRareFanfare() {
-    this.haptic([30, 50, 30, 50, 80], 'heavy');
+    this.haptic([30, 50, 30, 50, 80]);
     if (!this.enabled) return;
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
