@@ -76,23 +76,23 @@ const SET_ALIASES = {
   'silver-tempest': ['swsh12', 'silver tempest', 'silver-tempest', 'swsh12tg', 's11a', 's11a_ja', 's12', 's12_ja', 'incandescent arcana', 'incandescent arcana_ja', 'paradigm trigger', 'paradigm trigger_ja'],
   'crown-zenith': ['swsh12.5', 'swsh12pt5', 'swsh12.5gg', 'crown zenith', 'crown-zenith', 'swsh125', 's12a', 's12a_ja', 'vstar universe', 'vstar universe_ja'],
 
-  // Sun & Moon
-  'sun-and-moon-baseset': ['sm1', 'sm01', 'sun & moon', 'sun & moon base set', 'sun&moon-baseset', 'sun and moon', 'sm', 'sm1s', 'sm1s_ja', 'sm1m', 'sm1m_ja', 'sm1+', 'sm1+_ja', 'sm1pt_ja', 'collection sun', 'collection sun_ja', 'collection moon', 'collection moon_ja'],
-  'guardians-rising': ['sm2', 'sm02', 'guardians rising', 'guardians-rising', 'sm2k', 'sm2k_ja', 'sm2l', 'sm2l_ja', 'sm2+', 'sm2+_ja', 'sm2pt_ja', 'islands waiting for you', 'alolan moonlight', 'beyond the new trial'],
-  'burning-shadow': ['sm3', 'sm03', 'burning shadows', 'burning-shadow', 'burning-shadows', 'sm3h', 'sm3h_ja', 'sm3n', 'sm3n_ja', 'did you see the fighting rainbow?', 'darkness that consumes light'],
-  'shining-legends': ['sm3.5', 'sm3pt5', 'sm35', 'shining legends', 'shining-legends', 'slg', 'sm3+', 'sm3+_ja', 'sm3pt_ja'],
-  'crimson-invasion': ['sm4', 'sm04', 'crimson invasion', 'crimson-invasion', 'sm4s', 'sm4s_ja', 'sm4a', 'sm4a_ja', 'sm4+', 'sm4+_ja', 'sm4pt_ja', 'awakening hero', 'ultradimensional beasts', 'gx battle boost', 'gx battle boost_ja'],
-  'ultra-prism': ['sm5', 'sm05', 'ultra prism', 'ultra-prism', 'sm5s', 'sm5s_ja', 'sm5m', 'sm5m_ja', 'ultra sun', 'ultra sun_ja', 'ultra moon', 'ultra moon_ja'],
-  'forbidden-light': ['sm6', 'sm06', 'forbidden light', 'forbidden-light', 'sm5+', 'sm5+_ja', 'sm5pt_ja', 'sm6_ja', 'sm6a', 'sm6a_ja', 'ultra force', 'ultra force_ja', 'dragon storm', 'dragon storm_ja'],
-  'celesital-storm': ['sm7', 'sm07', 'celestial storm', 'celesital-storm', 'celestial-storm', 'sm6b', 'sm6b_ja', 'sm7_ja', 'champion road', 'champion road_ja', 'charisma of the sky', 'sky'],
-  'dragon-majesty': ['sm7.5', 'sm7pt5', 'sm75', 'dragon majesty', 'dragon-majesty', 'drm', 'sm7a', 'sm7a_ja', 'lightning spark', 'thunderclap spark'],
-  'lost-thunder': ['sm8', 'sm08', 'lost thunder', 'lost-thunder', 'sm7b', 'sm7b_ja', 'sm8_ja', 'sm8a', 'sm8a_ja', 'fairy rise', 'fairy rise_ja', 'super impact', 'super impact_ja', 'dark order', 'dark order_ja'],
-  'team-up': ['sm9', 'sm09', 'team up', 'team-up', 'sm9_ja', 'sm9a', 'sm9a_ja', 'tag bolt', 'tag bolt_ja', 'night unison', 'night unison_ja'],
-  'detective-pikachu': ['det1', 'sm9.5', 'detective pikachu', 'detective-pikachu', 'smp2', 'smp2_ja'],
-  'unbroken-bonds': ['sm10', 'unbroken bonds', 'unbroken-bonds', 'sm9b', 'sm9b_ja', 'sm10_ja', 'sn10a', 'sn10a_ja', 'sm10a_ja', 'full metal wall', 'full metal wall_ja', 'double blaze', 'double blaze_ja', 'g-g end', 'gg end'],
-  'unified-minds': ['sm11', 'unified minds', 'unified-minds', 'sm10b', 'sm10b_ja', 'sn11', 'sn11_ja', 'sm11_ja', 'sky legend', 'sky legend_ja', 'miracle twin', 'miracle twin_ja'],
-  'hidden-fates-shiny-vault': ['sma', 'sm115sv', 'hidden fates shiny vault', 'hidden fates: shiny vault', 'sm115', 'sm11.5', 'sm11pt5', 'hidden fates', 'hidden-fates', 'hif', 'sm8b', 'sm8b_ja', 'gx ultra shiny', 'gx ultra shiny_ja'],
-  'cosmic-eclipse': ['sm12', 'cosmic eclipse', 'cosmic-eclipse', 'sm11a', 'sm11a_ja', 'sm11b', 'sm11b_ja', 'sm12_ja', 'sm12a', 'sm12a_ja', 'remix bout', 'remix bout_ja', 'dream league', 'dream league_ja', 'alter genesis', 'alter genesis_ja', 'tag team gx tag all stars', 'tag team gx: tag all stars', 'tag all stars', 'tag all stars_ja', 'tag team gx tag all stars_ja'],
+  // Sun & Moon English sets
+  'sun-and-moon-baseset': ['sm1', 'sm01', 'sun & moon', 'sun & moon base set', 'sun&moon-baseset', 'sun and moon', 'sm'],
+  'guardians-rising': ['sm2', 'sm02', 'guardians rising', 'guardians-rising'],
+  'burning-shadow': ['sm3', 'sm03', 'burning shadows', 'burning-shadow', 'burning-shadows'],
+  'shining-legends': ['sm3.5', 'sm3pt5', 'sm35', 'shining legends', 'shining-legends', 'slg'],
+  'crimson-invasion': ['sm4', 'sm04', 'crimson invasion', 'crimson-invasion'],
+  'ultra-prism': ['sm5', 'sm05', 'ultra prism', 'ultra-prism'],
+  'forbidden-light': ['sm6', 'sm06', 'forbidden light', 'forbidden-light'],
+  'celesital-storm': ['sm7', 'sm07', 'celestial storm', 'celesital-storm', 'celestial-storm'],
+  'dragon-majesty': ['sm7.5', 'sm7pt5', 'sm75', 'dragon majesty', 'dragon-majesty', 'drm'],
+  'lost-thunder': ['sm8', 'sm08', 'lost thunder', 'lost-thunder'],
+  'team-up': ['sm9', 'sm09', 'team up', 'team-up'],
+  'detective-pikachu': ['det1', 'sm9.5', 'detective pikachu', 'detective-pikachu'],
+  'unbroken-bonds': ['sm10', 'unbroken bonds', 'unbroken-bonds'],
+  'unified-minds': ['sm11', 'unified minds', 'unified-minds'],
+  'hidden-fates-shiny-vault': ['sma', 'sm115sv', 'hidden fates shiny vault', 'hidden fates: shiny vault', 'sm115', 'sm11.5', 'sm11pt5', 'hidden fates', 'hidden-fates', 'hif'],
+  'cosmic-eclipse': ['sm12', 'cosmic eclipse', 'cosmic-eclipse'],
 
   // XY
   'XY-Baseset': ['xy1', 'xy01', 'xy base set', 'xy-baseset', 'xy'],
@@ -197,41 +197,42 @@ const JAPANESE_SET_ALIASES = {
   'Wild-Force': ['sv5k_ja', 'sv5kja', 'sv5k', 'wild force_ja', 'wild-force_ja', 'wild force'],
   'cyber-judge': ['sv5m_ja', 'sv5mja', 'sv5m', 'cyber judge_ja', 'cyber-judge_ja', 'cyber judge'],
 
-  // Sun & Moon Japanese sets (folder name → sm set IDs)
-  'Collection-Sun': ['sm1s_ja', 'sm1s', 'sm1sja', 'collection sun_ja', 'collection sun'],
+  // Sun & Moon Japanese sets (folder name → sm set IDs & names)
+  'Alola-Moonlight': ['sm2l_ja', 'sm2l', 'sm2lja', 'alolan moonlight_ja', 'alola moonlight_ja', 'alola moonlight', 'sm2+_ja', 'sm2+', 'sm2p_ja', 'sm2p', 'facing a new trail_ja', 'facing a new trail', 'beyond the new trial_ja', 'beyond the new trial'],
+  'Alter-Genesis': ['sm12_ja', 'sm12', 'sm12ja', 'alter genesis_ja', 'alter-genesis_ja', 'alter genesis', 'alter-genesis'],
+  'Awakening-Hero': ['sm4s_ja', 'sm4s', 'sm4sja', 'awakening hero_ja', 'awakening-hero_ja', 'awakening hero', 'awakening-hero'],
+  'Champion-Road': ['sm6b_ja', 'sm6b', 'sm6bja', 'champion road_ja', 'champion-road_ja', 'champion road', 'champion-road'],
+  'Charisma-Of-The-Sky': ['sm7_ja', 'sm7', 'sm7ja', 'charisma of the sky_ja', 'charisma-of-the-sky_ja', 'charisma of the sky', 'charisma-of-the-sky'],
   'Collection-Moon': ['sm1m_ja', 'sm1m', 'sm1mja', 'collection moon_ja', 'collection moon'],
-  'Sun&Moon-BaseSet': ['sm1_ja', 'sm1', 'sm1ja', 'sm1+_ja', 'sm1+', 'sm01_ja', 'sun moon base_ja'],
-  'Island-Waiting-For-You': ['sm2k_ja', 'sm2k', 'sm2kja', 'islands waiting for you_ja', 'island waiting for you_ja'],
-  'Alola-Moonlight': ['sm2l_ja', 'sm2l', 'sm2lja', 'alolan moonlight_ja', 'alola moonlight_ja', 'alola moonlight'],
-  'Darkness-That-Eats-The-Light': ['sm3n_ja', 'sm3n', 'sm3nja', 'darkness that consumes light_ja', 'darkness that eats the light_ja'],
-  'Did-You-See-The-Fight': ['sm3h_ja', 'sm3h', 'sm3hja', 'did you see the fighting rainbow_ja', 'did you see the fight_ja'],
-  'Awakening-Hero': ['sm4s_ja', 'sm4s', 'sm4sja', 'awakening hero_ja', 'awakening-hero_ja'],
-  'Hyperdimension-Beast': ['sm4a_ja', 'sm4a', 'sm4aja', 'ultradimensional beasts_ja', 'hyperdimension beast_ja'],
-  'Ultra-Sun': ['sm5s_ja', 'sm5s', 'sm5sja', 'ultra sun_ja', 'ultra-sun_ja'],
-  'Ultra-Moon': ['sm5m_ja', 'sm5m', 'sm5mja', 'ultra moon_ja', 'ultra-moon_ja'],
-  'Forbidden-Light': ['sm6_ja', 'sm6', 'sm6ja', 'forbidden light_ja', 'forbidden-light_ja'],
-  'Ultra-Force': ['sm6a_ja', 'sm6a', 'sm6aja', 'ultra force_ja', 'ultra-force_ja'],
-  'Dragon-Storm': ['sm6b_ja', 'sm6b', 'sm6bja', 'dragon storm_ja', 'dragon-storm_ja'],
-  'Champion-Road': ['sm7_ja', 'sm7', 'sm7ja', 'champion road_ja', 'champion-road_ja'],
-  'Charisma-Of-The-Sky': ['sm7a_ja', 'sm7a', 'sm7aja', 'charisma of the sky_ja', 'charisma-of-the-sky_ja', 'lightning spark_ja'],
-  'Hikaru-Legend': ['sm7b_ja', 'sm7b', 'sm7bja', 'fairy rise_ja', 'hikaru legend_ja'],
-  'Super-Impact': ['sm8_ja', 'sm8', 'sm8ja', 'super impact_ja', 'super-impact_ja'],
-  'Dark-Order': ['sm8a_ja', 'sm8a', 'sm8aja', 'dark order_ja', 'dark-order_ja'],
-  'GX-Ultra-Shiny': ['sm8b_ja', 'sm8b', 'sm8bja', 'gx ultra shiny_ja', 'gx-ultra-shiny_ja'],
-  'Tag-Bolt': ['sm9_ja', 'sm9', 'sm9ja', 'tag bolt_ja', 'tag-bolt_ja'],
-  'Night-Unison': ['sm9a_ja', 'sm9a', 'sm9aja', 'night unison_ja', 'night-unison_ja'],
-  'Full-Metal-Wall': ['sm9b_ja', 'sm9b', 'sm9bja', 'full metal wall_ja', 'full-metal-wall_ja'],
-  'Double-Blaze': ['sm10_ja', 'sm10', 'sm10ja', 'double blaze_ja', 'double-blaze_ja'],
-  'GX-Battle-Boost': ['sm4+_ja', 'sm4+', 'sm4+ja', 'gx battle boost_ja', 'gx-battle-boost_ja'],
-  'Sky-Legend': ['sm10b_ja', 'sm10b', 'sm10bja', 'sky legend_ja', 'sky-legend_ja'],
-  'Miracle-Twin': ['sm11_ja', 'sm11', 'sm11ja', 'miracle twin_ja', 'miracle-twin_ja'],
-  'Detective-Pikachu': ['smp2_ja', 'smp2', 'smp2ja', 'detective pikachu_ja', 'detective-pikachu_ja'],
-  'Fairy-Rise': ['sm7b_ja', 'sm7b', 'sm7bja', 'fairy rise_ja', 'fairy-rise_ja'],
-  'Lightning-Spark': ['sm7a_ja', 'sm7a', 'sm7aja', 'lightning spark_ja', 'lightning-spark_ja'],
-  'Remix-Bout': ['sm11a_ja', 'sm11a', 'sm11aja', 'remix bout_ja', 'remix-bout_ja'],
-  'Dream-League': ['sm11b_ja', 'sm11b', 'sm11bja', 'dream league_ja', 'dream-league_ja'],
-  'Alter-Genesis': ['sm12_ja', 'sm12', 'sm12ja', 'alter genesis_ja', 'alter-genesis_ja'],
-  'TAG team GX': ['sm12a_ja', 'sm12a', 'sm12aja', 'tag team gx tag all stars_ja', 'tag all stars_ja'],
+  'Collection-Sun': ['sm1s_ja', 'sm1s', 'sm1sja', 'collection sun_ja', 'collection sun'],
+  'Dark-Order': ['sm8a_ja', 'sm8a', 'sm8aja', 'dark order_ja', 'dark-order_ja', 'dark order', 'dark-order'],
+  'Darkness-That-Eats-The-Light': ['sm3n_ja', 'sm3n', 'sm3nja', 'darkness that consumes light_ja', 'darkness that eats the light_ja', 'darkness that consumes light'],
+  'Detective-Pikachu': ['smp2_ja', 'smp2', 'smp2ja', 'detective pikachu_ja', 'detective-pikachu_ja', 'detective pikachu'],
+  'Did-You-See-The-Fight': ['sm3h_ja', 'sm3h', 'sm3hja', 'did you see the fighting rainbow_ja', 'did you see the fight_ja', 'did you see the fighting rainbow', 'did you see the fighting rainbow?'],
+  'Double-Blaze': ['sm10_ja', 'sm10', 'sm10ja', 'double blaze_ja', 'double-blaze_ja', 'double blaze', 'double-blaze'],
+  'G-G-End': ['sm10a_ja', 'sm10a', 'sm10aja', 'sn10a_ja', 'sn10a', 'gg end_ja', 'gg end', 'g-g end', 'g-g end_ja'],
+  'GG-End': ['sm10a_ja', 'sm10a', 'sm10aja', 'sn10a_ja', 'sn10a', 'gg end_ja', 'gg end', 'g-g end', 'g-g end_ja'],
+  'Dragon-Storm': ['sm6a_ja', 'sm6a', 'sm6aja', 'dragon storm_ja', 'dragon-storm_ja', 'dragon storm', 'dragon-storm'],
+  'Dream-League': ['sm11b_ja', 'sm11b', 'sm11bja', 'dream league_ja', 'dream-league_ja', 'dream league', 'dream-league'],
+  'Fairy-Rise': ['sm7b_ja', 'sm7b', 'sm7bja', 'fairy rise_ja', 'fairy-rise_ja', 'fairy rise', 'fairy-rise'],
+  'Forbidden-Light': ['sm6_ja', 'sm6', 'sm6ja', 'forbidden light_ja', 'forbidden-light_ja', 'forbidden light', 'forbidden-light'],
+  'Full-Metal-Wall': ['sm9b_ja', 'sm9b', 'sm9bja', 'full metal wall_ja', 'full-metal-wall_ja', 'full metal wall', 'full-metal-wall'],
+  'GX-Battle-Boost': ['sm4+_ja', 'sm4+', 'sm4+ja', 'sm4p_ja', 'sm4p', 'gx battle boost_ja', 'gx-battle-boost_ja', 'gx battle boost', 'gx-battle-boost'],
+  'GX-Ultra-Shiny': ['sm8b_ja', 'sm8b', 'sm8bja', 'gx ultra shiny_ja', 'gx-ultra-shiny_ja', 'gx ultra shiny', 'gx-ultra-shiny'],
+  'Hikaru-Legend': ['sm3+_ja', 'sm3+', 'sm3+ja', 'sm3p_ja', 'sm3p', 'shining legends_ja', 'shining legend_ja', 'shining legends', 'shining legend', 'hikaru legend_ja', 'hikaru-legend_ja', 'hikaru legend'],
+  'Hyperdimension-Beast': ['sm4a_ja', 'sm4a', 'sm4aja', 'ultradimensional beasts_ja', 'hyperdimension beast_ja', 'hyperdimensional beast'],
+  'Island-Waiting-For-You': ['sm2k_ja', 'sm2k', 'sm2kja', 'islands waiting for you_ja', 'island waiting for you_ja', 'islands waiting for you'],
+  'Lightning-Spark': ['sm7a_ja', 'sm7a', 'sm7aja', 'lightning spark_ja', 'lightning-spark_ja', 'lightning spark'],
+  'Night-Unison': ['sm9a_ja', 'sm9a', 'sm9aja', 'night unison_ja', 'night-unison_ja', 'night unison', 'night-unison'],
+  'Remix-Bout': ['sm11a_ja', 'sm11a', 'sm11aja', 'remix bout_ja', 'remix-bout_ja', 'remix bout', 'remix-bout', 'sm11_ja', 'sm11', 'sn11_ja', 'sn11', 'miracle twin_ja', 'miracle twin'],
+  'Sky-Legend': ['sm10b_ja', 'sm10b', 'sm10bja', 'sky legend_ja', 'sky-legend_ja', 'sky legend'],
+  'Sun&Moon-BaseSet': ['sm1_ja', 'sm1', 'sm1ja', 'sm1+_ja', 'sm1+', 'sm1p_ja', 'sm1p', 'sm01_ja', 'sun moon base_ja', 'strength expansion pack sun & moon_ja', 'strength expansion pack sun & moon'],
+  'Super-Impact': ['sm8_ja', 'sm8', 'sm8ja', 'super impact_ja', 'super-impact_ja', 'super impact'],
+  'TAG team GX': ['sm12a_ja', 'sm12a', 'sm12aja', 'tag team gx tag all stars_ja', 'tag all stars_ja', 'tag team gx tag all stars'],
+  'Tag-Bolt': ['sm9_ja', 'sm9', 'sm9ja', 'tag bolt_ja', 'tag-bolt_ja', 'tag bolt'],
+  'Ultra-Force': ['sm5+_ja', 'sm5+', 'sm5+ja', 'sm5p_ja', 'sm5p', 'ultra force_ja', 'ultra-force_ja', 'ultra force', 'ultra-force'],
+  'Ultra-Moon': ['sm5m_ja', 'sm5m', 'sm5mja', 'ultra moon_ja', 'ultra-moon_ja', 'ultra moon'],
+  'Ultra-Sun': ['sm5s_ja', 'sm5s', 'sm5sja', 'ultra sun_ja', 'ultra-sun_ja', 'ultra sun'],
 
   // Sword & Shield Japanese sets (folder name → s set IDs)
   'Sword': ['s1w_ja', 's1w', 's1wja', 'sword_ja', 'vmax rising_ja'],
@@ -351,6 +352,15 @@ function scanDir(dir, relativePath = '') {
       }
     }
   }
+
+  // Sort subdirectories so non-Japanese folders scan first, and Japanese folders scan LAST
+  entries.sort((a, b) => {
+    const aIsJa = a.name.toLowerCase().includes('japanese') || a.name.toLowerCase().includes('_ja');
+    const bIsJa = b.name.toLowerCase().includes('japanese') || b.name.toLowerCase().includes('_ja');
+    if (aIsJa && !bIsJa) return 1;
+    if (!aIsJa && bIsJa) return -1;
+    return a.name.localeCompare(b.name);
+  });
 
   // Scan subdirectories
   for (const entry of entries) {

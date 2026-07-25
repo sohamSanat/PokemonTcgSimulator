@@ -664,8 +664,8 @@
   "XY8a": "/setLogos/xy8a_ja.png",
   "sm11_ja": "/setLogos/sm11_ja.png",
   "SM11_ja": "/setLogos/sm11_ja.png",
-  "sm10a_ja": "/setLogos/sn10a_ja.png",
-  "SM10a_ja": "/setLogos/sn10a_ja.png",
+  "sm10a_ja": "/setLogos/sm10a_ja.png",
+  "SM10a_ja": "/setLogos/sm10a_ja.png",
   "EBB": "/setLogos/ebb_ja.png",
   "sc_ja": "/setLogos/sc_ja.png",
   "SC_ja": "/setLogos/sc_ja.png",
@@ -781,5 +781,10 @@
   "xy8a": "/setLogos/xy8a_ja.png",
   "L1a": "/setLogos/l1a_ja.png",
   "LL": "/setLogos/ll_ja.png",
-  "L1b": "/setLogos/l1b_ja.png"
+  "L1b": "/setLogos/l1b_ja.png",
+  "sm10a": "/setLogos/sm10a.png",
+  "SM10a": "/setLogos/sm10a.png",
+  "gg end": "/setLogos/sm10a_ja.png",
+  "gg end_ja": "/setLogos/sm10a_ja.png",
+  "g-g end": "/setLogos/sm10a_ja.png"
 }
