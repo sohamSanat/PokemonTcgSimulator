@@ -1051,17 +1051,37 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
 
   const rollSpecial = (getFromPool: PoolPicker): { slotData: EnglishBoxSlotData; isHit: boolean } => {
     if (boxEra === 'swsh') {
-      if ((p.isTrainerGallerySet || p.isShinyVaultSet) && p.galleryPool.length > 0 && Math.random() < 0.12) {
-        return { slotData: { summary: getFromPool(p.galleryPool, [p.reverseHoloPool]), defaultRarity: p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery', isReverseHolo: true }, isHit: true };
+      const galleryOdds = p.isCrownZenith ? 0.48 : (p.isTrainerGallerySet || p.isShinyVaultSet) ? 0.32 : 0.15;
+      if ((p.isCrownZenith || p.isTrainerGallerySet || p.isShinyVaultSet || p.galleryPool.length > 0) && Math.random() < galleryOdds) {
+        return {
+          slotData: {
+            summary: getFromPool(p.galleryPool.length > 0 ? p.galleryPool : p.reverseHoloPool, [p.reverseHoloPool]),
+            defaultRarity: p.isCrownZenith ? 'Galarian Gallery' : p.isShinyVaultSet ? 'Shiny Vault' : 'Trainer Gallery',
+            isReverseHolo: true
+          },
+          isHit: true
+        };
+      }
+    } else if (boxEra === 'sv' || boxEra === 'me') {
+      const irOdds = (p.irPool.length > 0) ? 0.28 : 0;
+      if (irOdds > 0 && Math.random() < irOdds) {
+        return {
+          slotData: {
+            summary: getFromPool(p.irPool, [p.reverseHoloPool]),
+            defaultRarity: 'Illustration Rare',
+            isReverseHolo: true
+          },
+          isHit: true
+        };
       }
     } else if (boxEra === 'sm') {
-      if (p.isCosmicEclipse && p.characterRarePool.length > 0 && Math.random() < 0.08) {
+      if (p.isCosmicEclipse && p.characterRarePool.length > 0 && Math.random() < 0.22) {
         return { slotData: { summary: getFromPool(p.characterRarePool, [p.reverseHoloPool]), defaultRarity: 'Character Rare (CHR)', isReverseHolo: true }, isHit: true };
       }
-      if (p.prismStarPool.length > 0 && Math.random() < 0.08) {
+      if (p.prismStarPool.length > 0 && Math.random() < 0.15) {
         return { slotData: { summary: getFromPool(p.prismStarPool, [p.reverseHoloPool]), defaultRarity: 'Prism Star ♢', isReverseHolo: true }, isHit: true };
       }
-      if (p.galleryPool.length > 0 && Math.random() < 0.10) {
+      if (p.galleryPool.length > 0 && Math.random() < 0.25) {
         return { slotData: { summary: getFromPool(p.galleryPool, [p.reverseHoloPool]), defaultRarity: 'Shiny Vault', isReverseHolo: true }, isHit: true };
       }
     }
@@ -1072,7 +1092,7 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   const packs: EnglishBoxPackData[] = [];
   // pack_architecture.txt: SV/ME = 5 commons, SWSH/SM/XY = 4 commons, Base = 5 commons
   const commonCount = (boxEra === 'sv' || boxEra === 'me' || boxEra === 'base') ? 5 : 4;
-  const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh';
+  const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh' || boxEra === 'sv' || boxEra === 'me';
 
   for (let idx = 0; idx < packsPerBox; idx++) {
     const pickedIds = new Set<string>();

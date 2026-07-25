@@ -1761,11 +1761,20 @@ export default function App() {
     setIsHoveringStack(false);
   }, []);
 
-  const { remainingCards, revealedCards, topCardId } = React.useMemo(() => {
+  const { remainingCards, revealedCards, topCardId, isDoubleHitPack } = React.useMemo(() => {
     const rem = cards.filter(c => !c.collected);
     const rev = cards.filter(c => c.collected);
     const topId = rem.length > 0 ? rem[rem.length - 1].id : null;
-    return { remainingCards: rem, revealedCards: rev, topCardId: topId };
+
+    // Detect double hit pack: 2 or more hits in the pack (Galarian Gallery / Trainer Gallery / IR / SIR / Ultra Rare / value >= $2.00)
+    const hits = cards.filter(c => {
+      const r = (c.pokemon.rarity || '').toLowerCase();
+      const val = c.value || 0;
+      const isRareHit = r.includes('galarian') || r.includes('trainer gallery') || r.includes('shiny') || r.includes('illustration') || r.includes('special') || r.includes('secret') || r.includes('hyper') || r.includes('gold') || r.includes('ultra') || r.includes('ex') || r.includes('vmax') || r.includes('vstar') || r.includes('v');
+      return val >= 2.00 || (isRareHit && !r.includes('common') && !r.includes('uncommon'));
+    });
+
+    return { remainingCards: rem, revealedCards: rev, topCardId: topId, isDoubleHitPack: hits.length >= 2 };
   }, [cards]);
 
   const chaseCardsForActiveSet = React.useMemo(() => {
@@ -2602,7 +2611,7 @@ export default function App() {
 
             {/* Bottom Bar: Pack Progress & Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-white/10 relative z-10">
-              {/* Live Progress Indicator */}
+              {/* Live Progress Indicator & Double Hit Badge */}
               <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-2xl px-4 py-2 w-full sm:w-auto justify-between sm:justify-start">
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-300">
                   <Layers className="w-4 h-4 text-amber-400" />
@@ -2611,6 +2620,12 @@ export default function App() {
                   <span className="text-gray-500">/</span>
                   <span className="font-mono text-gray-400 text-sm">{cards.length || 11}</span>
                 </div>
+                {isDoubleHitPack && (
+                  <div className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-yellow-400 border border-amber-300 text-black font-black text-[10px] uppercase tracking-wider shadow-[0_0_15px_rgba(245,158,11,0.6)] animate-pulse flex items-center gap-1 shrink-0">
+                    <Zap className="w-3 h-3 text-black fill-black" />
+                    <span>DOUBLE HIT PACK! ⚡💥</span>
+                  </div>
+                )}
                 <div className="w-20 sm:w-28 h-2 bg-white/10 rounded-full overflow-hidden shrink-0">
                   <div
                     className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(245,158,11,0.8)]"
