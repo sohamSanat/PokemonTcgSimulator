@@ -15,6 +15,7 @@ import { generateStreamViewerReply, getRandomStreamMessage, generateMultiViewerC
 import { fetchSetDetails, generatePackFromSet, getCardImageUrl, handleCardImageError, type PokemonCard, cardFullCache, type TCGDexSetSummary, type TCGDexSet, type EnergyEra, ENERGY_POOLS_BY_ERA, fetchCardFull, orchestrateSetLoading, getRealCardPrice, onCardFullCacheUpdated } from '../../services/tcgdex';
 import { CardMarketModal } from '../CardMarketModal';
 import BoosterPackTear from '../BoosterPackTear';
+import { PackLoadingCurtain } from '../PackLoadingCurtain';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import setPackPricesData from '../../data/set_pack_prices.json';
 import { getJapaneseCardRealPrice, fetchSingleJapaneseSet, generateJapanesePackFromSet } from '../../services/scrydex';
@@ -997,6 +998,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
   const loadAndRipPack = async (order: CustomerOrder) => {
     sound.playButtonClick();
     lastProcessedPackRef.current = null;
+    const loadStartTime = Date.now();
     setIsLoadingPack(true);
     setIsChaseCardsReady(false);
     setPackStage('unopened');
@@ -1043,7 +1045,12 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
       await preloadPackImages(fbCards.map(c => c.pokemon));
       setCards(fbCards);
     } finally {
-      setIsLoadingPack(false);
+      const elapsed = Date.now() - loadStartTime;
+      const minCurtainTime = 1200;
+      const remainingDelay = Math.max(0, minCurtainTime - elapsed);
+      setTimeout(() => {
+        setIsLoadingPack(false);
+      }, remainingDelay);
     }
   };
 
@@ -1510,18 +1517,13 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
               </div>
 
               {/* Center Stage: Card Stack / Booster Pack Tear */}
-              <div className="w-full flex flex-col items-center justify-center shrink-0 min-h-[360px] my-2">
-                {isLoadingPack ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
-                  >
-                    <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
-                    <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
-                    <span className="text-xs text-amber-300 font-semibold mt-1.5">{activeOrder?.setId || 'Loading Set'}</span>
-                  </motion.div>
-                ) : packStage !== 'opened' ? (
+                <AnimatePresence mode="wait">
+                  {isLoadingPack ? (
+                    <PackLoadingCurtain
+                      key="ripnship-loading-curtain"
+                      setName={activeOrder?.packName || activeOrder?.setId}
+                    />
+                  ) : packStage !== 'opened' ? (
                   cards.length > 0 ? (
                     <div className="relative flex items-center justify-center min-w-[280px] sm:min-w-[320px] z-10 py-2">
                       <BoosterPackTear
@@ -1638,7 +1640,7 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
                     )}
                   </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </div>
 
             {/* Revealed Cards Gallery */}

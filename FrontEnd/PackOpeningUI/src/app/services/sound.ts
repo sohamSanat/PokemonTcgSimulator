@@ -40,7 +40,7 @@ class SoundEngine {
       this.keepAliveOsc.connect(silentGain);
       silentGain.connect(this.ctx.destination);
       this.keepAliveOsc.start();
-    } catch {}
+    } catch { }
   }
 
   private initContext() {
@@ -55,7 +55,7 @@ class SoundEngine {
       }
     }
     if (this.ctx && (this.ctx.state === 'suspended' || this.ctx.state === 'closed')) {
-      this.ctx.resume().catch(() => {});
+      this.ctx.resume().catch(() => { });
       this.startKeepAlive();
     }
   }
@@ -64,7 +64,7 @@ class SoundEngine {
     this.enabled = enabled;
     try {
       localStorage.setItem('tcg_sound_enabled', String(enabled));
-    } catch {}
+    } catch { }
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime, 0.02);
     }
@@ -78,7 +78,7 @@ class SoundEngine {
     this.volume = Math.max(0, Math.min(1, vol));
     try {
       localStorage.setItem('tcg_sound_volume', String(this.volume));
-    } catch {}
+    } catch { }
     if (this.masterGain && this.ctx && this.enabled) {
       this.masterGain.gain.setTargetAtTime(this.volume, this.ctx.currentTime, 0.02);
     }
@@ -93,7 +93,7 @@ class SoundEngine {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       try {
         navigator.vibrate(pattern);
-      } catch (e) {}
+      } catch (e) { }
     }
   }
 
@@ -155,12 +155,12 @@ class SoundEngine {
    */
   public playCardFlip(rarity?: string) {
     const isRare = rarity && (
-      rarity.includes('Double Rare') || 
-      rarity.includes('ex') || 
-      rarity.includes('Secret') || 
-      rarity.includes('Hyper') || 
-      rarity.includes('Illustration') || 
-      rarity.includes('Special') || 
+      rarity.includes('Double Rare') ||
+      rarity.includes('ex') ||
+      rarity.includes('Secret') ||
+      rarity.includes('Hyper') ||
+      rarity.includes('Illustration') ||
+      rarity.includes('Special') ||
       rarity.includes('Ultra') ||
       rarity.includes('Gold') ||
       rarity.includes('VMAX') ||
@@ -179,7 +179,7 @@ class SoundEngine {
     if (!this.ctx || !this.masterGain) return;
 
     const now = this.ctx.currentTime;
-    
+
     // 1. Snappy paper flick (low-thud + swish)
     const osc = this.ctx.createOscillator();
     osc.type = 'triangle';
@@ -281,7 +281,7 @@ class SoundEngine {
     if (!this.ctx || !this.masterGain) return;
 
     const now = this.ctx.currentTime;
-    
+
     // Snappy physical click
     const clickOsc = this.ctx.createOscillator();
     clickOsc.type = 'triangle';
@@ -362,7 +362,7 @@ class SoundEngine {
     if (noiseBuffer) {
       const noise = this.ctx.createBufferSource();
       noise.buffer = noiseBuffer;
-      
+
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'bandpass';
       filter.frequency.setValueAtTime(1800, now);
@@ -415,7 +415,7 @@ class SoundEngine {
       const noise = this.ctx.createBufferSource();
       noise.buffer = noiseBuffer;
       noise.playbackRate.value = 1.05;
-      
+
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'bandpass';
       filter.frequency.setValueAtTime(3200, now);
@@ -606,7 +606,7 @@ class SoundEngine {
 
     const now = this.ctx.currentTime;
     const baseFreq = 350 * Math.pow(1.08, index);
-    
+
     const osc = this.ctx.createOscillator();
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(baseFreq * 1.3, now);
@@ -624,10 +624,10 @@ class SoundEngine {
     this.playCardSlide(true);
 
     const isRare = rarity && (
-      rarity.includes('Double Rare') || 
-      rarity.includes('ex') || 
-      rarity.includes('Secret') || 
-      rarity.includes('Hyper') || 
+      rarity.includes('Double Rare') ||
+      rarity.includes('ex') ||
+      rarity.includes('Secret') ||
+      rarity.includes('Hyper') ||
       rarity.includes('Illustration')
     );
 

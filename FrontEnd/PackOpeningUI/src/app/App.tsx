@@ -15,6 +15,7 @@ import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
+import { PackLoadingCurtain } from './components/PackLoadingCurtain';
 import PSAGradingLab from './components/psa/PSAGradingLab';
 import RipNShipView from './components/ripNship/RipNShipView';
 import { CardMarketModal } from './components/CardMarketModal';
@@ -1597,8 +1598,13 @@ export default function App() {
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, { id: setId }));
       setIsChaseCardsReady(true);
     } finally {
-      isLoadingPackRef.current = false;
-      setIsLoadingPack(false);
+      const elapsed = Date.now() - loadStartTime;
+      const minCurtainTime = 1200;
+      const remainingDelay = Math.max(0, minCurtainTime - elapsed);
+      setTimeout(() => {
+        isLoadingPackRef.current = false;
+        setIsLoadingPack(false);
+      }, remainingDelay);
     }
   }, [packArtsManifest, selectedLanguage, currentMysteryPack]);
 
@@ -1829,7 +1835,11 @@ export default function App() {
     if (currentSet) {
       if (isLoadingPackRef.current) return;
       isLoadingPackRef.current = true;
+      const loadStartTime = Date.now();
+      sound.playPackOpen();
       setIsLoadingPack(true);
+      setPackStage('unopened');
+      setTearProgress(0);
       try {
         const isJaSet = selectedLanguage === 'ja' || currentSet.id.endsWith('_ja');
         const newCards = isJaSet
@@ -1843,8 +1853,13 @@ export default function App() {
       } catch {
         setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet));
       } finally {
-        isLoadingPackRef.current = false;
-        setIsLoadingPack(false);
+        const elapsed = Date.now() - loadStartTime;
+        const minCurtainTime = 1200;
+        const remainingDelay = Math.max(0, minCurtainTime - elapsed);
+        setTimeout(() => {
+          isLoadingPackRef.current = false;
+          setIsLoadingPack(false);
+        }, remainingDelay);
       }
     } else {
       setCards(generateFallbackPack(FALLBACK_POKEMON_CARDS, currentSet));
@@ -2870,34 +2885,32 @@ export default function App() {
                     )}
                   </AnimatePresence>
 
-                  {isLoadingPack ? (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl w-60 h-[21rem] text-center shrink-0"
-                    >
-                      <Loader2 className="w-12 h-12 text-amber-400 animate-spin mb-4" />
-                      <span className="font-bold text-base text-gray-200">Drawing Live Cards...</span>
-                      <span className="text-xs text-amber-300 font-semibold mt-1.5">{currentSet?.name || 'Loading Set'}</span>
-                    </motion.div>
-                  ) : (
-                    <BoosterPackTear
-                      packArts={currentPackArts}
-                      packArtIndex={packArtIndex}
-                      onPrevPackArt={() => {
-                        sound.playTabSwitch();
-                        setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length);
-                      }}
-                      onNextPackArt={() => {
-                        sound.playTabSwitch();
-                        setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
-                      }}
-                      onTearComplete={handleTearPack}
-                      setName={currentSet?.name}
-                      packStage={packStage}
-                      remainingCardsCount={remainingCards.length}
-                    />
-                  )}
+                  <AnimatePresence mode="wait">
+                    {isLoadingPack ? (
+                      <PackLoadingCurtain
+                        key="main-pack-loading-curtain"
+                        setName={currentSet?.name}
+                      />
+                    ) : (
+                      <BoosterPackTear
+                        key="main-booster-pack-tear"
+                        packArts={currentPackArts}
+                        packArtIndex={packArtIndex}
+                        onPrevPackArt={() => {
+                          sound.playTabSwitch();
+                          setPackArtIndex(prev => (prev - 1 + currentPackArts.length) % currentPackArts.length);
+                        }}
+                        onNextPackArt={() => {
+                          sound.playTabSwitch();
+                          setPackArtIndex(prev => (prev + 1) % currentPackArts.length);
+                        }}
+                        onTearComplete={handleTearPack}
+                        setName={currentSet?.name}
+                        packStage={packStage}
+                        remainingCardsCount={remainingCards.length}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* ✨ Right Flank: Pack Art Studio & Precision Haptic Control Panel ✨ */}
