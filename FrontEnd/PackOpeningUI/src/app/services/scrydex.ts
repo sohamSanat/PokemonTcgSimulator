@@ -177,6 +177,17 @@ export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: stri
     if (jaCardPricesCache[`${sPrefix}_ja-${num}`] !== undefined) return jaCardPricesCache[`${sPrefix}_ja-${num}`];
   }
 
+  // Set symbol / plus / p alias fallbacks (e.g., sm1+ vs sm1p vs sm1plus)
+  const altP = rawId.replace('+', 'p');
+  const altPlus = rawId.replace('+', 'plus');
+  const altSym = rawId.replace('p', '+');
+  for (const p of [altP, altPlus, altSym]) {
+    if (p !== rawId) {
+      if (jaCardPricesCache[`${p}-${num}`] !== undefined) return jaCardPricesCache[`${p}-${num}`];
+      if (jaCardPricesCache[`${p}_ja-${num}`] !== undefined) return jaCardPricesCache[`${p}_ja-${num}`];
+    }
+  }
+
   return undefined;
 }
 
@@ -705,19 +716,35 @@ export async function fetchSingleJapaneseSet(setId: string = 'sv2a_ja'): Promise
     // Also check swsh-prefixed key for SWSH sets
     const scrydexLookupKey = isSwshSet ? `${scrydexSetPrefix}_ja-${cardNum}` : lookupKey;
 
+    const altP = prefixLow.replace('+', 'p');
+    const altPlus = prefixLow.replace('+', 'plus');
+    const altSym = prefixLow.replace('p', '+');
+
     let topCardName = '';
     if (jaTopCardsCache) {
       const topMatch = jaTopCardsCache.find(c =>
         c.id === lookupKey ||
         c.id === altKey ||
-        c.id === scrydexLookupKey
+        c.id === scrydexLookupKey ||
+        c.id === `${altP}_ja-${cardNum}` ||
+        c.id === `${altP}-${cardNum}` ||
+        c.id === `${altSym}_ja-${cardNum}` ||
+        c.id === `${altSym}-${cardNum}`
       );
       if (topMatch && topMatch.name) {
         topCardName = topMatch.name.replace(/Japanese\s+/i, '').replace(/\s*\([^)]*\)$/, '').trim();
       }
     }
 
-    let resolvedName = offlineNames[lookupKey] || offlineNames[altKey] || resolvedCardNamesMap.get(cardNum) || topCardName || `${setName} Card #${cardNum}`;
+    let resolvedName = offlineNames[lookupKey] ||
+      offlineNames[altKey] ||
+      offlineNames[`${altP}_ja-${cardNum}`] ||
+      offlineNames[`${altP}-${cardNum}`] ||
+      offlineNames[`${altPlus}_ja-${cardNum}`] ||
+      offlineNames[`${altSym}_ja-${cardNum}`] ||
+      resolvedCardNamesMap.get(cardNum) ||
+      topCardName ||
+      `${setName} Card #${cardNum}`;
     if (jaRegex.test(resolvedName) || resolvedName.includes('Card #') || resolvedName.includes('Card ')) {
       resolvedName = translateJapaneseName(resolvedName);
     }
