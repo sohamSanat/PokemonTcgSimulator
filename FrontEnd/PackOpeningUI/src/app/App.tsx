@@ -33,6 +33,7 @@ import InventoryModal from './components/inventory/InventoryModal';
 import { LuckyDropModal } from './components/LuckyDropModal';
 import { getRemainingLuckyDropSeconds, claimLuckyDropReward } from './services/luckyDrop';
 import { SetPurchaseOptionsModal } from './components/proceduralBox/SetPurchaseOptionsModal';
+import { BoosterBoxUnboxingModal } from './components/proceduralBox/BoosterBoxUnboxingModal';
 
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
@@ -1126,6 +1127,11 @@ export default function App() {
   const [claimedLuckyPack, setClaimedLuckyPack] = useState<MysteryPackConfig | null>(null);
   const [isLuckyDropModalOpen, setIsLuckyDropModalOpen] = useState<boolean>(false);
   const [purchaseTargetSet, setPurchaseTargetSet] = useState<any | null>(null);
+  const [unboxingBoxTarget, setUnboxingBoxTarget] = useState<{
+    set: any;
+    boxType: 'halfBox' | 'fullBox';
+    action: 'rip' | 'vault';
+  } | null>(null);
 
   useEffect(() => {
     const updateLuckyTimer = () => {
@@ -4157,36 +4163,80 @@ export default function App() {
         onSelectOption={(option, action) => {
           if (!purchaseTargetSet) return;
           const setId = purchaseTargetSet.id;
-          const isJa = selectedLanguage === 'ja' || setId.endsWith('_ja');
-          const packCount = option === 'single' ? 1 : option === 'halfBox' ? (isJa ? 15 : 18) : (isJa ? 30 : 36);
-
           const targetSetCopy = purchaseTargetSet;
           setPurchaseTargetSet(null);
           setIsSetSelectorOpen(false);
 
-          if (action === 'vault') {
-            sound.playCardCollect();
-            addEarnedSetPacks([{
-              setId: setId,
-              setName: targetSetCopy.name,
-              language: selectedLanguage,
-              count: packCount
-            }]);
-            setEarnedSetPacks(getEarnedSetPacks());
-            setIsInventoryOpen(true);
-          } else {
-            // Rip Live
-            if (packCount > 1) {
+          if (option === 'single') {
+            if (action === 'vault') {
+              sound.playCardCollect();
               addEarnedSetPacks([{
                 setId: setId,
                 setName: targetSetCopy.name,
                 language: selectedLanguage,
-                count: packCount - 1
+                count: 1
               }]);
               setEarnedSetPacks(getEarnedSetPacks());
+              setIsInventoryOpen(true);
+            } else {
+              void loadSetAndGeneratePack(setId, selectedLanguage);
             }
-            void loadSetAndGeneratePack(setId, selectedLanguage);
+          } else {
+            // Half Box or Full Box: Trigger Cinematic 3D Booster Box Unboxing Ceremony!
+            setUnboxingBoxTarget({
+              set: targetSetCopy,
+              boxType: option,
+              action
+            });
           }
+        }}
+      />
+
+      {/* Cinematic 3D Booster Box Unboxing Experience Modal */}
+      <BoosterBoxUnboxingModal
+        isOpen={!!unboxingBoxTarget}
+        onClose={() => setUnboxingBoxTarget(null)}
+        set={unboxingBoxTarget?.set || null}
+        boxType={unboxingBoxTarget?.boxType || 'fullBox'}
+        packArtUrl={unboxingBoxTarget?.set ? (getPackArtsForSet(unboxingBoxTarget.set.id, unboxingBoxTarget.set.name, packArtsManifest)[0] || null) : null}
+        logoUrl={unboxingBoxTarget?.set ? (getSetLogoUrl(unboxingBoxTarget.set, setLogosManifest, selectedLanguage) || null) : null}
+        language={selectedLanguage}
+        onStartRipping={() => {
+          if (!unboxingBoxTarget) return;
+          const { set: targetSet, boxType } = unboxingBoxTarget;
+          const isJa = selectedLanguage === 'ja' || targetSet.id.endsWith('_ja');
+          const packCount = boxType === 'halfBox' ? (isJa ? 15 : 18) : (isJa ? 30 : 36);
+
+          // Save remaining packs to vault
+          if (packCount > 1) {
+            addEarnedSetPacks([{
+              setId: targetSet.id,
+              setName: targetSet.name,
+              language: selectedLanguage,
+              count: packCount - 1
+            }]);
+            setEarnedSetPacks(getEarnedSetPacks());
+          }
+
+          setUnboxingBoxTarget(null);
+          void loadSetAndGeneratePack(targetSet.id, selectedLanguage);
+        }}
+        onSaveToVault={() => {
+          if (!unboxingBoxTarget) return;
+          const { set: targetSet, boxType } = unboxingBoxTarget;
+          const isJa = selectedLanguage === 'ja' || targetSet.id.endsWith('_ja');
+          const packCount = boxType === 'halfBox' ? (isJa ? 15 : 18) : (isJa ? 30 : 36);
+
+          sound.playCardCollect();
+          addEarnedSetPacks([{
+            setId: targetSet.id,
+            setName: targetSet.name,
+            language: selectedLanguage,
+            count: packCount
+          }]);
+          setEarnedSetPacks(getEarnedSetPacks());
+          setUnboxingBoxTarget(null);
+          setIsInventoryOpen(true);
         }}
       />
 
