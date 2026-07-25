@@ -16,7 +16,7 @@ import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
 import { PackLoadingCurtain } from './components/PackLoadingCurtain';
-import { preloadPackAssets } from './services/imagePreloader';
+import { preloadPackAssets, preloadSingleImage } from './services/imagePreloader';
 import PSAGradingLab from './components/psa/PSAGradingLab';
 import RipNShipView from './components/ripNship/RipNShipView';
 import { CardMarketModal } from './components/CardMarketModal';
@@ -1519,13 +1519,19 @@ export default function App() {
     setBinderAddedIds(new Set());
     setPityNotification(null);
 
-    const finishCurtainReady = () => {
+    const finishCurtainReady = async () => {
       const elapsed = Date.now() - loadStartTime;
       const minCurtainTime = 1200; // Guaranteed 1.2s curtain display for EVERY set load
       const remainingDelay = Math.max(0, minCurtainTime - elapsed);
-      setTimeout(() => {
-        setIsChaseCardsReady(true);
-      }, remainingDelay);
+
+      // FORCE hardware pre-decoding of top chase card thumbnails into GPU memory before lifting chase curtain
+      const topChaseUrls = chaseCardsForActiveSet.slice(0, 6).map(c => c.card.images?.large || c.card.images?.small).filter(Boolean);
+      await Promise.allSettled(topChaseUrls.map(url => preloadSingleImage(url, 3000)));
+
+      if (remainingDelay > 0) {
+        await new Promise(r => setTimeout(r, remainingDelay));
+      }
+      setIsChaseCardsReady(true);
     };
 
     if (mysteryPack !== undefined) {

@@ -1,4 +1,5 @@
 import { weightedPick, loadJapaneseMetadata, getJapaneseCardRealPrice } from './scrydex';
+import { preloadSingleImage } from './imagePreloader';
 
 export interface TCGDexCardSummary {
   id: string;
@@ -799,21 +800,13 @@ export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: 
     await new Promise(r => setTimeout(r, 50));
   }
 
-  if (activeWarmupSetId !== set.id) return;
-
   // Preload top chase card artwork so when curtain lifts, cards are 100% rendered with zero messiness
   const topImgs = set.cards.slice(0, 12).map(c => c.image || getTCGDexValidAssetPath(set.id, c.localId)).filter(Boolean);
-  await Promise.allSettled(topImgs.slice(0, 6).map(url => new Promise(res => {
-    const img = new Image();
-    img.onload = res;
-    img.onerror = res;
-    img.src = url;
-    setTimeout(res, 350);
-  })));
+  await Promise.allSettled(topImgs.slice(0, 12).map(url => preloadSingleImage(url, 3000)));
 
   if (activeWarmupSetId !== set.id) return;
 
-  // Chase cards are now fully populated in cache. Tell UI it's safe to lift the curtain.
+  // Chase cards are now fully populated in cache AND pre-decoded in GPU memory. Tell UI it's safe to lift the curtain.
   if (onChaseCardsReady) onChaseCardsReady();
 
   // Phase 3: Background warmup for the rest of the set (Low priority)
