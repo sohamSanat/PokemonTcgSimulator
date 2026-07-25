@@ -52,26 +52,26 @@ export const SetPurchaseOptionsModal: React.FC<SetPurchaseOptionsModalProps> = (
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 sm:p-4 bg-black/85 backdrop-blur-md overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 20 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="relative w-full max-w-4xl rounded-3xl bg-gradient-to-b from-[#1c1c28] via-[#141420] to-[#0d0d16] border border-amber-500/40 shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col my-auto"
+          className="relative w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] rounded-3xl bg-gradient-to-b from-[#1c1c28] via-[#141420] to-[#0d0d16] border border-amber-500/40 shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col my-auto"
         >
           {/* Top Header Bar */}
-          <div className="relative px-6 py-4 border-b border-white/10 flex items-center justify-between bg-black/40">
+          <div className="relative px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex items-center justify-between bg-black/40 shrink-0">
             <div className="flex items-center gap-3">
               {logoUrl ? (
-                <img src={logoUrl} alt={set.name} className="h-9 sm:h-11 max-w-[180px] object-contain filter drop-shadow-md" />
+                <img src={logoUrl} alt={set.name} className="h-8 sm:h-11 max-w-[180px] object-contain filter drop-shadow-md" />
               ) : (
                 <div className="p-2 rounded-xl bg-amber-500/20 border border-amber-500/40">
                   <Box className="w-6 h-6 text-amber-300" />
                 </div>
               )}
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-white tracking-wide truncate max-w-xs sm:max-w-md">
+                <h3 className="text-base sm:text-xl font-black text-white tracking-wide truncate max-w-xs sm:max-w-md">
                   {set.name}
                 </h3>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -93,13 +93,13 @@ export const SetPurchaseOptionsModal: React.FC<SetPurchaseOptionsModalProps> = (
             </button>
           </div>
 
-          {/* Main Content Area */}
-          <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 overflow-y-auto max-h-[calc(92vh-70px)] sm:max-h-none">
+          {/* Main Scrollable Content Area */}
+          <div className="p-4 sm:p-5 flex-1 overflow-y-auto flex flex-col gap-3 sm:gap-4 min-h-0">
             <div className="text-center">
-              <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
+              <h2 className="text-lg sm:text-2xl font-black bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
                 Choose How You Want to Rip
               </h2>
-              <p className="text-xs sm:text-sm text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm text-gray-400 mt-0.5">
                 Select a single booster pack or save up to 20% with factory-sealed Booster Boxes!
               </p>
             </div>
@@ -218,30 +218,30 @@ export const SetPurchaseOptionsModal: React.FC<SetPurchaseOptionsModalProps> = (
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Sticky Action Buttons */}
-            <div className="sticky bottom-0 bg-[#0d0d16]/95 backdrop-blur-md p-3 sm:p-0 z-30 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 border-t sm:border-t-0 border-white/10 -mx-4 -mb-4 sm:mx-0 sm:mb-0">
-              <button
-                onClick={() => {
-                  onSelectOption(selectedOption, 'rip');
-                }}
-                className="w-full sm:flex-1 py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.6)] flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
-              >
-                <Zap className="w-4 h-4 text-black fill-black" />
-                <span>Unbox & Rip Live ⚡</span>
-                <ArrowRight className="w-4 h-4 text-black" />
-              </button>
+          {/* Fixed Footer Action Buttons */}
+          <div className="p-3 sm:p-5 border-t border-white/10 bg-[#0d0d16]/95 backdrop-blur-md flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 shrink-0">
+            <button
+              onClick={() => {
+                onSelectOption(selectedOption, 'rip');
+              }}
+              className="w-full sm:flex-1 py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:via-yellow-300 hover:to-amber-400 text-black font-black text-xs sm:text-sm shadow-[0_0_25px_rgba(245,158,11,0.6)] flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+            >
+              <Zap className="w-4 h-4 text-black fill-black" />
+              <span>Unbox & Rip Live ⚡</span>
+              <ArrowRight className="w-4 h-4 text-black" />
+            </button>
 
-              <button
-                onClick={() => {
-                  onSelectOption(selectedOption, 'vault');
-                }}
-                className="w-full sm:w-auto py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-gray-200 hover:text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
-              >
-                <Box className="w-4 h-4 text-purple-300" />
-                <span>Save Box to Vault 🎒</span>
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                onSelectOption(selectedOption, 'vault');
+              }}
+              className="w-full sm:w-auto py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-gray-200 hover:text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95"
+            >
+              <Box className="w-4 h-4 text-purple-300" />
+              <span>Save Box to Vault 🎒</span>
+            </button>
           </div>
         </motion.div>
       </div>
