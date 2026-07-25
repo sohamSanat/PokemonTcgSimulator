@@ -979,6 +979,17 @@
     "/packArts/MegaEvolution-Generation/chaos-rising/1.webp",
     "/packArts/MegaEvolution-Generation/chaos-rising/2.webp"
   ],
+  "me04": [
+    "/packArts/MegaEvolution-Generation/chaos-rising/1.webp",
+    "/packArts/MegaEvolution-Generation/chaos-rising/2.webp"
+  ],
+  "me4": [
+    "/packArts/ScarletAndViolet-Generation/151/1.webp"
+  ],
+  "chaos rising": [
+    "/packArts/MegaEvolution-Generation/chaos-rising/1.webp",
+    "/packArts/MegaEvolution-Generation/chaos-rising/2.webp"
+  ],
   "ME-EnergyCards": [
     "/packArts/MegaEvolution-Generation/ME-EnergyCards/1.webp",
     "/packArts/MegaEvolution-Generation/ME-EnergyCards/2.webp",
@@ -1260,9 +1271,6 @@
     "/packArts/ScarletAndViolet-Generation/151/1.webp"
   ],
   "sv35": [
-    "/packArts/ScarletAndViolet-Generation/151/1.webp"
-  ],
-  "me4": [
     "/packArts/ScarletAndViolet-Generation/151/1.webp"
   ],
   "meo": [

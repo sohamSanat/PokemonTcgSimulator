@@ -36,6 +36,7 @@ const SET_ALIASES = {
   'phantasmal-flames': ['me02', 'me2', 'phantasmal flames', 'phantasmal-flames', 'phantasmalflames', 'me02'],
   'Ascended-heroes': ['me02.5', 'me2.5', 'me02pt5', 'me2pt5', 'ascended heroes', 'ascended-heroes', 'ascendedheroes', 'me025'],
   'perfect-order': ['me03', 'me3', 'perfect order', 'perfect-order', 'perfectorder', 'me03'],
+  'chaos-rising': ['me04', 'me4', 'chaos rising', 'chaos-rising', 'chaosrising', 'me04'],
   'pitch-black': ['me05', 'me5', 'pitch black', 'pitch-black', 'pitchblack', 'me05'],
 
   // Scarlet & Violet
