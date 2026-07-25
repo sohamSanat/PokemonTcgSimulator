@@ -144,21 +144,21 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-5 bg-black/85 pointer-events-auto overflow-hidden"
+        className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 sm:p-5 bg-black/85 backdrop-blur-md pointer-events-auto overflow-y-auto"
       >
         <motion.div
           initial={{ scale: 0.92, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.92, y: 20 }}
-          className="relative w-full max-w-4xl bg-gradient-to-b from-[#161226] via-[#100d1d] to-[#0a0815] border-2 border-amber-500/40 rounded-3xl p-4 sm:p-6 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white overflow-hidden flex flex-col max-h-[88vh] sm:max-h-[85vh]"
+          className="relative w-full max-w-4xl bg-gradient-to-b from-[#161226] via-[#100d1d] to-[#0a0815] border-2 border-amber-500/40 rounded-3xl p-4 sm:p-6 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] my-auto"
         >
           {/* Top Decorative Glow Header */}
-          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 z-30" />
           
           {/* Close Button */}
           <button
             onClick={() => { sound.playButtonClick(); onClose(); }}
-            className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-gray-300 hover:text-white transition-all cursor-pointer z-20 shadow-md active:scale-95"
+            className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-gray-300 hover:text-white transition-all cursor-pointer z-30 shadow-md active:scale-95"
           >
             <X className="w-5 h-5" />
           </button>
