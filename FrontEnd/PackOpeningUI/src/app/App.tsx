@@ -2118,7 +2118,7 @@ export default function App() {
               <span className={activeTab === 'auctions' ? 'text-red-400 font-extrabold' : ''}>Auctions</span>
             </button>
 
-            {/* Go Live / Rip & Ship Tab */}
+            {/* RipNship Tab */}
             <button
               onClick={() => { sound.playTabSwitch(); setActiveTab('ripNship'); setIsMobileMenuOpen(false); }}
               className={`relative group flex items-center justify-start lg:justify-center gap-2.5 lg:gap-1.5 px-3.5 py-2.5 lg:px-2.5 lg:py-1.5 xl:px-3 xl:py-1.5 rounded-xl lg:rounded-lg font-black text-sm lg:text-[11px] xl:text-xs transition-all duration-200 whitespace-nowrap cursor-pointer ${activeTab === 'ripNship'
@@ -2127,7 +2127,7 @@ export default function App() {
                 }`}
             >
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444] shrink-0" />
-              <span className="font-black">Go Live</span>
+              <span className="font-black">RipNship</span>
             </button>
 
             {/* Vault Tab */}
@@ -2233,9 +2233,51 @@ export default function App() {
           }}
         />
       ) : activeTab === 'ripNship' ? (
-        <RipNShipView
-          onBackToPacks={() => setActiveTab('pack')}
-        />
+        <div className="flex-1 overflow-y-auto min-h-0 p-4 sm:p-8 flex items-center justify-center">
+          <div className="relative min-h-[420px] w-full max-w-3xl flex flex-col items-center justify-center p-6 sm:p-12 text-center rounded-3xl bg-gradient-to-b from-[#1c1428]/95 via-[#140e20]/95 to-[#0b0814]/95 border border-rose-500/30 shadow-[0_0_60px_rgba(244,63,94,0.18)] overflow-hidden my-4">
+            {/* Ambient Background Glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.15)_0%,transparent_70%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+            {/* Top Caution Banner */}
+            <div className="absolute top-0 left-0 right-0 py-2 bg-gradient-to-r from-red-600/20 via-rose-500/30 to-red-600/20 border-b border-rose-500/30 flex items-center justify-center gap-2 overflow-hidden">
+              <div className="text-[10px] sm:text-[11px] font-black text-rose-300 uppercase tracking-widest flex items-center gap-2 animate-pulse">
+                <Construction className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>IN WORKS • RIP & SHIP LIVE STREAM STUDIO</span>
+                <Construction className="w-4 h-4 text-rose-400 shrink-0" />
+              </div>
+            </div>
+
+            {/* Main Icon */}
+            <div className="relative mb-6 mt-6">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-red-600/25 via-rose-600/20 to-amber-600/20 border border-rose-500/40 flex items-center justify-center shadow-[0_0_40px_rgba(244,63,94,0.35)]">
+                <Hammer className="w-10 h-10 sm:w-12 sm:h-12 text-rose-400 animate-bounce" />
+              </div>
+              <div className="absolute -top-1.5 -right-1.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-500 text-white flex items-center justify-center font-black text-xs sm:text-sm shadow-lg border-2 border-[#140e20]">
+                ⚡
+              </div>
+            </div>
+
+            {/* Content */}
+            <span className="px-4 py-1 rounded-full bg-rose-500/15 border border-rose-500/40 text-rose-300 font-mono font-black text-xs uppercase tracking-widest mb-3 shadow-inner">
+              🚧 UNDER DEVELOPMENT
+            </span>
+            <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight mb-2">
+              RipNship Live Studio — In Works
+            </h3>
+            <p className="text-sm sm:text-base text-gray-300 max-w-lg leading-relaxed mb-6 font-medium px-4">
+              Our live stream <span className="text-rose-400 font-bold">RipNship</span> studio platform is currently undergoing major upgrades and live queue enhancements. <span className="text-amber-300 font-extrabold block mt-2">This will be available shortly!</span>
+            </p>
+
+            <button
+              onClick={() => { sound.playTabSwitch(); setActiveTab('pack'); }}
+              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(244,63,94,0.4)] transition-all cursor-pointer hover:scale-105 active:scale-95"
+            >
+              <Sparkles className="w-4 h-4 text-rose-200 shrink-0" />
+              <span>Return to Pack Opener</span>
+            </button>
+          </div>
+        </div>
       ) : activeTab === 'multiplayerLobby' ? (
         <div className="flex-1 overflow-y-auto min-h-0">
           <PackOffLobby
@@ -3347,7 +3389,7 @@ export default function App() {
                       In Works
                     </h3>
                     <p className="text-sm text-gray-300 max-w-md leading-relaxed mb-6 font-medium px-4">
-                      The <span className="text-amber-300 font-bold">{JAPANESE_SERIES_TABS.find(t => t.id === selectedSeriesId)?.name}</span> Japanese set collection is currently under active expansion & indexing. These sets are not ready for pack opening yet.
+                      The <span className="text-amber-300 font-bold">{JAPANESE_SERIES_TABS.find(t => t.id === selectedSeriesId)?.name}</span> Japanese set collection is currently under active expansion & indexing. <span className="text-amber-300 font-extrabold block mt-2">This will be available shortly!</span>
                     </p>
 
                     <div className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-xs text-gray-300 font-semibold shadow-md">
