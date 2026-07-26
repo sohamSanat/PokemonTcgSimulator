@@ -1666,7 +1666,7 @@ export default function App() {
           small: getCardImageUrl(baseUrl, 'low'),
           large: getCardImageUrl(baseUrl, 'high'),
         },
-        rarity: cached?.rarity || card.rarity || 'Rare',
+        rarity: cached?.rarity || card.rarity || 'Common',
         pricing: cached?.pricing || (card as any).pricing,
         tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
         cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
@@ -1677,8 +1677,17 @@ export default function App() {
         value: getRealCardPrice(poke)
       };
     });
-    mapped.sort((a, b) => b.value - a.value);
-    return mapped.slice(0, 12);
+
+    const filtered = mapped.filter(item => {
+      const r = (item.card.rarity || '').toLowerCase();
+      const n = (item.card.name || '').toLowerCase();
+      const isPlainItem = (n.includes('balloon') || n.includes('candy') || n.includes('switch') || n.includes('potion') || n.includes('ball') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special');
+      if (isPlainItem && item.value < 10) return false;
+      return item.value >= 1.50 || r.includes('secret') || r.includes('illustration') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('holo');
+    });
+
+    filtered.sort((a, b) => b.value - a.value);
+    return filtered.slice(0, 12);
   }, [currentSet, cacheTick]);
 
 

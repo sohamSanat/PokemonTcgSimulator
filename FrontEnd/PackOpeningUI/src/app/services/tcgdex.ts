@@ -316,7 +316,7 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     return setDetailsCache.get(cacheKey)!;
   }
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/sets/${normalizedId}`, 1500);
+    const res = await fetchWithTimeout(`${API_BASE}/sets/${normalizedId}`, 7000);
     if (!res.ok) throw new Error(`Failed to fetch set details for ${normalizedId}`);
     const data: TCGDexSet = await res.json();
     if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${normalizedId}`);
@@ -333,6 +333,11 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
   } catch (err) {
     console.warn(`Timeout/error fetching set details for ${setId} (${normalizedId}), using local fallback:`, err);
     // Bulletproof fallback so pack opening never gets stuck on "Drawing Live Cards..."
+    const fallbackNames = [
+      'Charizard ex', 'Pikachu ex', 'Umbreon VMAX', 'Rayquaza VMAX', 'Giratina V', 'Lugia V',
+      'Gengar VMAX', 'Mewtwo ex', 'Blastoise ex', 'Venusaur ex', 'Gardevoir ex', 'Miriam',
+      'Iono', 'Erika\'s Invitation', 'Latias ex', 'Latios ex', 'Snorlax', 'Dragonite ex'
+    ];
     const fallbackSet: TCGDexSet = {
       id: normalizedId,
       name: normalizedId === 'swsh3' ? 'Darkness Ablaze' : normalizedId === 'me02.5' ? 'Ascended Heroes' : normalizedId.toUpperCase(),
@@ -342,15 +347,23 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
         const rawNum = `${i + 1}`;
         const localNum = (normalizedId.toLowerCase().startsWith('me') || normalizedId.toLowerCase().startsWith('sv')) ? rawNum.padStart(3, '0') : rawNum;
         let defaultRarity = 'Common';
-        if (i >= 180) defaultRarity = 'Secret Rare';
-        else if (i >= 170) defaultRarity = 'Ultra Rare';
-        else if (i >= 150) defaultRarity = 'Double Rare';
-        else if (i >= 120) defaultRarity = 'Rare Holo';
-        else if (i >= 70) defaultRarity = 'Uncommon';
+        let name = `Pokémon Card ${i + 1}`;
+        if (i >= 170) {
+          defaultRarity = 'Special Illustration Rare';
+          name = fallbackNames[(i - 170) % fallbackNames.length];
+        } else if (i >= 150) {
+          defaultRarity = 'Ultra Rare';
+          name = `${fallbackNames[i % fallbackNames.length]} Full Art`;
+        } else if (i >= 120) {
+          defaultRarity = 'Double Rare';
+          name = `${fallbackNames[i % fallbackNames.length]}`;
+        } else if (i >= 70) {
+          defaultRarity = 'Uncommon';
+        }
         return {
           id: `${normalizedId}-${localNum}`,
           localId: localNum,
-          name: i === 135 ? 'Charizard VMAX' : i === 19 ? 'Butterfree V' : `Pokémon Card ${i + 1}`,
+          name,
           rarity: defaultRarity,
           image: getTCGDexValidAssetPath(normalizedId, localNum)
         };
@@ -832,18 +845,36 @@ export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: 
   candidates.sort((a, b) => {
     const score = (card: TCGDexCardSummary) => {
       let s = 0;
-      const n = card.name.toLowerCase();
-      if (n.includes('charizard') || n.includes('pikachu') || n.includes('umbreon') || n.includes('rayquaza') || n.includes('mewtwo') || n.includes('lugia') || n.includes('gengar') || n.includes('giratina') || n.includes('arceus') || n.includes('mew')) s += 100;
-      if (n.includes('secret') || n.includes('rainbow') || n.includes('gold') || n.includes('alt') || n.includes('illustration') || n.includes('sir') || n.includes('ir') || n.includes('gallery')) s += 50;
-      if (n.includes('vmax') || n.includes('vstar') || n.includes('mega') || n.includes('ex') || n.includes(' gx') || n.includes('tag team')) s += 30;
+      const n = (card.name || '').toLowerCase();
+      const r = (card.rarity || '').toLowerCase();
+
+      // 1. Rarity Score (HIGHEST PRIORITY)
+      if (r.includes('special illustration') || r.includes('sir') || r.includes('sar') || r.includes('hyper') || r.includes('gold') || r.includes('secret')) s += 500;
+      else if (r.includes('illustration rare') || r.includes('ir') || r.includes('character rare') || r.includes('chr')) s += 300;
+      else if (r.includes('ultra rare') || r.includes('full art') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('ace spec')) s += 200;
+      else if (r.includes('double rare') || r.includes('holo') || r.includes('rare')) s += 100;
+
+      // 2. Name Score
+      if (/charizard|pikachu|umbreon|rayquaza|mewtwo|lugia|gengar|giratina|arceus|mew|eevee|latias|latios|gardevoir|blastoise|venusaur/i.test(n)) s += 150;
+      if (n.includes('vmax') || n.includes('vstar') || n.includes('mega') || n.includes(' ex') || n.includes('ex ') || n.endsWith('ex') || n.includes('gx')) s += 50;
+
+      // 3. Static Market Price Check
+      const staticPrice = getJapaneseCardRealPrice(set.id, card.localId) ?? (enCardPricesCache ? (enCardPricesCache[card.id] ?? enCardPricesCache[`${set.id}-${card.localId}`]) : undefined);
+      if (staticPrice && staticPrice > 0) s += staticPrice * 10;
+
+      // 4. Penalty for plain common items / trainers unless SIR/Secret
+      if ((n.includes('energy') || n.includes('candy') || n.includes('balloon') || n.includes('switch') || n.includes('ball') || n.includes('potion') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special')) {
+        s -= 400;
+      }
+
       return s;
     };
     return score(b) - score(a);
   });
 
-  // Extract top ~24 candidates for immediate fetching (Chase Cards Phase)
-  const chaseCandidates = candidates.slice(0, 24);
-  const backgroundCandidates = candidates.slice(24);
+  // Extract top ~30 candidates for immediate fetching (Chase Cards Phase)
+  const chaseCandidates = candidates.slice(0, 30);
+  const backgroundCandidates = candidates.slice(30);
 
   // Fetch chase candidates
   const batchSize = 6;
