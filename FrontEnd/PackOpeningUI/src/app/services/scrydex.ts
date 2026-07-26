@@ -1258,7 +1258,14 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
 
       if (!addedIds.has(targetId)) {
         addedIds.add(targetId);
-        const rawPrice = Number(card.rawPrice.toFixed(2));
+        const rawVal = typeof card.rawPrice === 'number'
+          ? card.rawPrice
+          : typeof card.price === 'number'
+            ? card.price
+            : typeof card.rawPrice === 'string'
+              ? (parseFloat(card.rawPrice) || 0)
+              : 0;
+        const rawPrice = Number(rawVal.toFixed(2));
         
         const grade = rawPrice > 500 ? "PSA 10" : rawPrice > 180 ? "PSA 9" : "Raw NM";
         const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.8).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.6).toFixed(2)) : rawPrice;
@@ -1352,8 +1359,9 @@ export function getCardShowDynamicJapaneseCards(count: number = 60): any[] {
       const cardId = `${item.cleanSet}_ja-${item.num}`;
       if (!addedIds.has(cardId)) {
         addedIds.add(cardId);
-        const cachedPrice = (jaCardPricesCache && (jaCardPricesCache[cardId] || jaCardPricesCache[`${item.cleanSet}-${item.num}`])) || item.rawPrice;
-        const rawPrice = Number(cachedPrice.toFixed(2));
+        const cachedPrice = (jaCardPricesCache && (jaCardPricesCache[cardId] || jaCardPricesCache[`${item.cleanSet}-${item.num}`])) || item.rawPrice || 0;
+        const rawVal = typeof cachedPrice === 'number' ? cachedPrice : typeof cachedPrice === 'string' ? (parseFloat(cachedPrice) || 0) : 0;
+        const rawPrice = Number(rawVal.toFixed(2));
         const grade = rawPrice > 500 ? "PSA 10" : rawPrice > 180 ? "PSA 9" : "Raw NM";
         const displayPrice = grade === "PSA 10" ? Number((rawPrice * 2.8).toFixed(2)) : grade === "PSA 9" ? Number((rawPrice * 1.6).toFixed(2)) : rawPrice;
 
