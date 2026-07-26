@@ -11,6 +11,9 @@ import {
   DollarSign,
   Star,
   Sparkles,
+  Camera,
+  Upload,
+  ImageIcon,
   Trash2,
 } from 'lucide-react';
 import {
@@ -22,6 +25,17 @@ import {
 } from '../binder/types';
 
 const MAX_SHOWCASE = 8;
+
+const PRESET_AVATARS = [
+  { name: 'Pikachu', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png' },
+  { name: 'Charizard', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png' },
+  { name: 'Gengar', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png' },
+  { name: 'Mewtwo', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png' },
+  { name: 'Umbreon', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/197.png' },
+  { name: 'Rayquaza', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/384.png' },
+  { name: 'Lucario', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png' },
+  { name: 'Cynthia', url: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png' },
+];
 
 interface ProfileViewProps {
   currentUser: any;
@@ -44,6 +58,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState(profile.displayName);
   const [draftBio, setDraftBio] = useState(profile.bio);
+  const [draftAvatarUrl, setDraftAvatarUrl] = useState(profile.avatarUrl || currentUser?.photoURL || '');
   const [picking, setPicking] = useState(false);
   const [search, setSearch] = useState('');
   const [copied, setCopied] = useState(false);
@@ -55,13 +70,49 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     return () => window.removeEventListener('storage', load);
   }, []);
 
-  const photoURL = currentUser?.photoURL;
+  const currentAvatar = profile.avatarUrl || currentUser?.photoURL;
   const initials = (profile.displayName || 'T')
     .split(' ')
     .map((p: string) => p[0])
     .join('')
     .slice(0, 2)
     .toUpperCase();
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size too large. Please select an image under 5MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setDraftAvatarUrl(String(event.target.result));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const saveEdits = async () => {
+    const next: UserProfile = {
+      ...profile,
+      displayName: draftName.trim() || profile.displayName,
+      bio: draftBio.trim(),
+      avatarUrl: draftAvatarUrl.trim() || profile.avatarUrl || currentUser?.photoURL || '',
+    };
+    setProfile(next);
+    setEditing(false);
+    await saveProfile(next);
+  };
+
+  const cancelEdits = () => {
+    setDraftName(profile.displayName);
+    setDraftBio(profile.bio);
+    setDraftAvatarUrl(profile.avatarUrl || currentUser?.photoURL || '');
+    setEditing(false);
+  };
 
   const collectionValue = useMemo(
     () => cards.reduce((s, c) => s + (c.currentPrice || 0), 0),
@@ -99,23 +150,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       if (prev.showcaseCardIds.length >= MAX_SHOWCASE) return prev;
       return { ...prev, showcaseCardIds: [...prev.showcaseCardIds, id] };
     });
-  };
-
-  const saveEdits = async () => {
-    const next: UserProfile = {
-      ...profile,
-      displayName: draftName.trim() || profile.displayName,
-      bio: draftBio.trim(),
-    };
-    setProfile(next);
-    setEditing(false);
-    await saveProfile(next);
-  };
-
-  const cancelEdits = () => {
-    setDraftName(profile.displayName);
-    setDraftBio(profile.bio);
-    setEditing(false);
   };
 
   const persistShowcase = async () => {
@@ -190,42 +224,113 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <div className="relative rounded-3xl border border-white/10 bg-[#16161f] p-6 overflow-hidden shadow-2xl">
           <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-gradient-to-br from-fuchsia-500/20 to-purple-500/10 blur-2xl" />
           <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            <div className="w-24 h-24 rounded-2xl overflow-hidden border border-white/15 bg-[#0d0d13] flex items-center justify-center shadow-lg shrink-0">
-              {photoURL ? (
-                <img src={photoURL} alt={profile.displayName} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-3xl font-black text-fuchsia-300">{initials}</span>
+            {/* Avatar Container with Upload Trigger */}
+            <div className="relative group shrink-0">
+              <div className="w-24 h-24 rounded-2xl overflow-hidden border border-white/20 bg-[#0d0d13] flex items-center justify-center shadow-xl relative">
+                {(editing ? draftAvatarUrl : currentAvatar) ? (
+                  <img
+                    src={editing ? draftAvatarUrl : currentAvatar}
+                    alt={profile.displayName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <span className="text-3xl font-black text-fuchsia-300">{initials}</span>
+                )}
+              </div>
+
+              {editing && (
+                <label className="absolute inset-0 rounded-2xl bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center text-white text-[10px] font-bold cursor-pointer opacity-90 hover:opacity-100 transition-opacity border border-fuchsia-400">
+                  <Camera className="w-6 h-6 text-fuchsia-300 mb-1 animate-pulse" />
+                  <span>Upload</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
               )}
             </div>
 
-            <div className="flex-1 text-center sm:text-left min-w-0">
+            <div className="flex-1 text-center sm:text-left min-w-0 w-full">
               {editing ? (
-                <div className="space-y-2">
-                  <input
-                    value={draftName}
-                    onChange={(e) => setDraftName(e.target.value)}
-                    placeholder="Display name"
-                    className="w-full bg-black/40 border border-white/15 rounded-lg px-3 py-2 text-white font-bold focus:outline-none focus:border-fuchsia-400"
-                  />
-                  <textarea
-                    value={draftBio}
-                    onChange={(e) => setDraftBio(e.target.value)}
-                    placeholder="Short bio — let the floor know who you are..."
-                    rows={2}
-                    className="w-full bg-black/40 border border-white/15 rounded-lg px-3 py-2 text-sm text-gray-200 resize-none focus:outline-none focus:border-fuchsia-400"
-                  />
-                  <div className="flex justify-center sm:justify-end gap-2">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-black text-fuchsia-300 uppercase tracking-wider block mb-1">
+                      Display Name
+                    </label>
+                    <input
+                      value={draftName}
+                      onChange={(e) => setDraftName(e.target.value)}
+                      placeholder="Display name"
+                      className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-white font-bold focus:outline-none focus:border-fuchsia-400 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-black text-fuchsia-300 uppercase tracking-wider block mb-1">
+                      Bio
+                    </label>
+                    <textarea
+                      value={draftBio}
+                      onChange={(e) => setDraftBio(e.target.value)}
+                      placeholder="Short bio — let the floor know who you are..."
+                      rows={2}
+                      className="w-full bg-black/40 border border-white/15 rounded-xl px-3 py-2 text-sm text-gray-200 resize-none focus:outline-none focus:border-fuchsia-400"
+                    />
+                  </div>
+
+                  {/* Preset Trainer Avatars Selection */}
+                  <div>
+                    <label className="text-[10px] font-black text-fuchsia-300 uppercase tracking-wider block mb-1.5 flex items-center justify-between">
+                      <span>Choose Avatar or Upload Custom Photo</span>
+                      <span className="text-[9px] text-gray-400 font-normal">Tap icon to apply</span>
+                    </label>
+
+                    <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1">
+                      <label className="w-9 h-9 rounded-xl bg-fuchsia-600/30 border border-fuchsia-400/50 hover:bg-fuchsia-600/50 flex flex-col items-center justify-center text-fuchsia-200 cursor-pointer shrink-0 shadow-md">
+                        <Upload className="w-4 h-4" />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {PRESET_AVATARS.map((av) => (
+                        <button
+                          key={av.name}
+                          type="button"
+                          onClick={() => setDraftAvatarUrl(av.url)}
+                          className={`w-9 h-9 rounded-xl border overflow-hidden p-0.5 transition-all shrink-0 cursor-pointer ${
+                            draftAvatarUrl === av.url
+                              ? 'border-fuchsia-400 bg-fuchsia-500/20 ring-2 ring-fuchsia-400/50'
+                              : 'border-white/10 bg-black/40 hover:border-white/30'
+                          }`}
+                          title={av.name}
+                        >
+                          <img src={av.url} alt={av.name} className="w-full h-full object-contain" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center sm:justify-end gap-2 pt-1">
                     <button
                       onClick={cancelEdits}
-                      className="px-3 py-1.5 rounded-lg border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/5"
+                      className="px-4 py-2 rounded-xl border border-white/10 text-gray-300 text-xs font-bold hover:bg-white/5 cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={saveEdits}
-                      className="px-3 py-1.5 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white text-xs font-bold flex items-center gap-1"
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black flex items-center gap-1.5 shadow-lg cursor-pointer"
                     >
-                      <Check className="w-3.5 h-3.5" /> Save
+                      <Check className="w-4 h-4" /> Save Profile
                     </button>
                   </div>
                 </div>

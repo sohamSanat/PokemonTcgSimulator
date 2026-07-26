@@ -1,6 +1,7 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { trackMissionProgress, collectMissionsForSync, restoreMissionsFromSync, buildMissionsPayloadFromGuest } from '../../services/missions';
+import { resolveVendorCardRealPrice } from '../../services/scrydex';
 import promoCardsData from '../../data/promo_cards.json';
 
 const PROMO_CARDS_POOL = promoCardsData as any[];
@@ -430,6 +431,15 @@ export function getCollectedCards(): Card[] {
           }
         }
       }
+
+      // Repair generic hardcoded $0.50 price with real live market price!
+      if (!c.currentPrice || c.currentPrice <= 0.50) {
+        const resolved = resolveVendorCardRealPrice(c);
+        if (resolved && resolved > 0.50) {
+          c.currentPrice = Number(resolved.toFixed(2));
+          repaired = true;
+        }
+      }
     }
 
     if (repaired || cleaned.length !== parsed.length) {
@@ -510,10 +520,11 @@ export function addCash(amount: number): number {
   return next;
 }
 
-// ── Player profile (showcase + bio, shared via link/text) ───────────────────
+// ── Player profile (showcase + bio + avatar, shared via link/text) ───────────────────
 export interface UserProfile {
   displayName: string;
   bio: string;
+  avatarUrl?: string;
   showcaseCardIds: string[];
   updatedAt?: string;
 }
@@ -522,6 +533,7 @@ export function getProfile(forceUid?: string | null): UserProfile {
   const fallback: UserProfile = {
     displayName: auth?.currentUser?.displayName || auth?.currentUser?.email?.split('@')[0] || 'Trainer',
     bio: '',
+    avatarUrl: auth?.currentUser?.photoURL || '',
     showcaseCardIds: [],
   };
   try {
@@ -531,6 +543,7 @@ export function getProfile(forceUid?: string | null): UserProfile {
     return {
       displayName: parsed.displayName || fallback.displayName,
       bio: parsed.bio || '',
+      avatarUrl: parsed.avatarUrl || fallback.avatarUrl || auth?.currentUser?.photoURL || '',
       showcaseCardIds: Array.isArray(parsed.showcaseCardIds) ? parsed.showcaseCardIds : [],
     };
   } catch {
@@ -611,7 +624,7 @@ export function saveCollectedCard(cardData: any, setName: string, binderId: stri
   } else if (typeof cardData.currentPrice === 'number' && cardData.currentPrice > 0) {
     realMarketPrice = cardData.currentPrice;
   } else {
-    realMarketPrice = 0.50;
+    realMarketPrice = resolveVendorCardRealPrice(poke || cardData);
   }
 
   const basePrice = Number(realMarketPrice.toFixed(2));

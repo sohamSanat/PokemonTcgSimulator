@@ -10,7 +10,7 @@ import { sound } from './services/sound';
 import { generateVendorReply } from './services/geminiVendorChat';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
-import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, getStorageKey, type CatalogueStore, type Binder, type Card } from './components/binder/types';
+import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, getStorageKey, getProfile, type CatalogueStore, type Binder, type Card } from './components/binder/types';
 import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
 import InteractiveCard3D from './components/binder/InteractiveCard3D';
@@ -948,6 +948,17 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isHoveringStack, setIsHoveringStack] = useState(false);
+
+  const [userProfile, setUserProfile] = useState(() => getProfile());
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setUserProfile(getProfile());
+    };
+    handleProfileUpdate();
+    window.addEventListener('storage', handleProfileUpdate);
+    return () => window.removeEventListener('storage', handleProfileUpdate);
+  }, [currentUser]);
 
   const [currentSet, setCurrentSet] = useState<TCGDexSet | null>(null);
   const [currentMysteryPack, setCurrentMysteryPack] = useState<MysteryPackConfig | null>(null);
@@ -2207,8 +2218,12 @@ export default function App() {
                   }`}
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-fuchsia-400 via-pink-400 to-amber-300 flex items-center justify-center p-0.5 shadow-lg border border-white/30 shrink-0">
-                      <UserCircle className="w-10 h-10 text-black font-black" />
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-fuchsia-400 via-pink-400 to-amber-300 flex items-center justify-center p-0.5 shadow-lg border border-white/30 shrink-0 overflow-hidden">
+                      {(userProfile.avatarUrl || currentUser?.photoURL) ? (
+                        <img src={userProfile.avatarUrl || currentUser?.photoURL} alt="Avatar" className="w-full h-full object-cover rounded-xl" />
+                      ) : (
+                        <UserCircle className="w-10 h-10 text-black font-black" />
+                      )}
                     </div>
                     <div className="flex flex-col items-start leading-tight min-w-0 text-left">
                       <div className="flex items-center gap-2">
@@ -2218,7 +2233,7 @@ export default function App() {
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                       </div>
                       <span className="text-base font-black text-white truncate max-w-[180px] sm:max-w-[240px] drop-shadow-md mt-1">
-                        {currentUser.displayName || currentUser.email?.split('@')[0] || 'My Profile'}
+                        {userProfile.displayName || currentUser.displayName || currentUser.email?.split('@')[0] || 'My Profile'}
                       </span>
                       <span className="text-xs text-gray-300 truncate max-w-[180px] font-medium opacity-90">
                         {currentUser.email}
