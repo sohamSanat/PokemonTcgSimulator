@@ -2012,12 +2012,49 @@ export default function App() {
             <Sparkles className="w-3.5 h-3.5 text-black animate-pulse shrink-0" />
           </motion.button>
 
-          <button
-            onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
-            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
-          >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Mobile Header Top Profile Button & Menu Toggle */}
+          <div className="flex lg:hidden items-center gap-2 relative z-[70]">
+            {currentUser ? (
+              <motion.button
+                onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-3 py-1.5 rounded-xl border flex items-center gap-2 shadow-lg transition-all duration-300 cursor-pointer ${
+                  activeTab === 'profile'
+                    ? 'bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 border-fuchsia-300 text-white shadow-[0_0_20px_rgba(217,70,239,0.7)] animate-pulse'
+                    : 'bg-gradient-to-r from-purple-950 via-fuchsia-900 to-pink-950 border-fuchsia-400/80 text-white shadow-[0_0_15px_rgba(192,38,211,0.5)] hover:border-fuchsia-300'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-fuchsia-400 via-pink-300 to-amber-300 flex items-center justify-center p-0.5 shadow-md shrink-0">
+                  <UserCircle className="w-6 h-6 text-black font-black" />
+                </div>
+                <div className="flex flex-col items-start leading-none min-w-0 pr-0.5">
+                  <span className="text-[8px] font-black uppercase tracking-wider text-fuchsia-300 flex items-center gap-1">
+                    <span>TRAINER</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+                  </span>
+                  <span className="text-xs font-black text-white truncate max-w-[90px] sm:max-w-[120px] drop-shadow-md mt-0.5">
+                    {currentUser.displayName || currentUser.email?.split('@')[0] || 'Profile'}
+                  </span>
+                </div>
+              </motion.button>
+            ) : (
+              <button
+                onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
+                className="px-3 py-1.5 rounded-xl border text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-purple-600 via-indigo-600 to-fuchsia-600 text-white border-fuchsia-400/60 shadow-[0_0_15px_rgba(168,85,247,0.5)] animate-pulse"
+              >
+                <UserCircle className="w-5 h-5 text-fuchsia-200 shrink-0" />
+                <span className="text-xs font-black">Sign In</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => { sound.playButtonClick(); setIsMobileMenuOpen(!isMobileMenuOpen); }}
+              className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors relative z-[70]"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Navigation Container (Full Screen on Mobile, High-Density Inline Dock on Desktop) */}
