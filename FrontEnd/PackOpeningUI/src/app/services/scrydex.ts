@@ -716,10 +716,23 @@ export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean =
   await loadJapaneseMetadata();
   const localNum = cardId.split('-')[1] || '1';
   const setId = cardId.split('-')[0] || '';
+  const rawSetId = setId.replace(/_ja$/i, '').toLowerCase();
+  const numStr = parseInt(localNum, 10).toString();
   const realPrice = getJapaneseCardRealPrice(setId, localNum) ?? getJapaneseCardRealPrice(cardId) ?? 0.15;
+
+  const resolvedName = (jaCardNamesCache && (
+    jaCardNamesCache[cardId] ||
+    jaCardNamesCache[`${rawSetId}_ja-${localNum}`] ||
+    jaCardNamesCache[`${rawSetId}-${localNum}`] ||
+    jaCardNamesCache[`${rawSetId}_ja-${numStr}`] ||
+    jaCardNamesCache[`${rawSetId}-${numStr}`]
+  )) || `Card #${localNum}`;
 
   if (scrydexCardFullCache.has(cardId)) {
     const cached = scrydexCardFullCache.get(cardId)!;
+    if (resolvedName && (cached.name.includes('Card #') || cached.name.includes('Pokémon Card'))) {
+      cached.name = resolvedName;
+    }
     cached.prices = [{ market: realPrice }];
     cached.tcgplayer = { unit: 'USD', updated: new Date().toISOString(), normal: { marketPrice: realPrice, midPrice: realPrice, lowPrice: realPrice, highPrice: realPrice } };
     cached.pricing = { tcgplayer: cached.tcgplayer, cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: realPrice } };
@@ -730,9 +743,9 @@ export async function fetchJapaneseCardFull(cardId: string, skipEvent: boolean =
   const mappedCard: TCGDexCardFull = {
     id: cardId,
     localId: localNum,
-    name: `Pokémon Card ${localNum}`,
+    name: resolvedName,
     image: `https://images.scrydex.com/pokemon/${cardId}/large`,
-    rarity: 'Common',
+    rarity: getJapaneseCardRarity(localNum, 100, 150, resolvedName),
     prices: [{ market: realPrice }],
     tcgplayer: { unit: 'USD', prices: initialPricing },
     pricing: { tcgplayer: initialPricing, cardmarket: { unit: 'EUR', updated: new Date().toISOString(), trend: realPrice, avg: realPrice, low: realPrice } }
