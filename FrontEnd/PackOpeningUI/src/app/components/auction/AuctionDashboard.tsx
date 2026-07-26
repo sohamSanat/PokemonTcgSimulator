@@ -296,6 +296,7 @@ interface AuctionLotSectionProps {
   onImageError?: () => void;
   bidIncrements: number[];
   defaultBidIncrement: number;
+  isDualMode?: boolean;
   theme: {
     badgeBg: string;
     badgeText: string;
@@ -339,6 +340,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
   onImageError,
   bidIncrements,
   defaultBidIncrement,
+  isDualMode = false,
   theme
 }) => {
   // Zero-latency GPU tilt driven directly via the DOM transform (no React
@@ -410,7 +412,8 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col md:flex-row h-full rounded-2xl overflow-hidden bg-slate-900/50 border transition-all duration-300 shadow-2xl relative min-h-0",
+      "flex h-full rounded-2xl overflow-hidden bg-slate-900/50 border transition-all duration-300 shadow-2xl relative min-h-0",
+      isDualMode ? "flex-col 2xl:flex-row" : "flex-col md:flex-row",
       theme.cardBorder
     )}>
       {/* Subtle grid texture */}
@@ -900,7 +903,12 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
       </div>
 
       {/* Desktop Right Panel: Live Bids Feed & Controls */}
-      <div className="hidden md:flex w-[250px] lg:w-[270px] xl:w-[280px] shrink-0 flex-col bg-slate-950/60 border-t md:border-t-0 md:border-l border-slate-700/50 relative z-10 min-h-0 overflow-hidden">
+      <div className={cn(
+        "hidden md:flex shrink-0 flex-col bg-slate-950/60 border-t border-slate-700/50 relative z-10 min-h-0 overflow-hidden",
+        isDualMode
+          ? "w-full h-[220px] 2xl:h-auto 2xl:w-[270px] 2xl:border-t-0 2xl:border-l"
+          : "w-[250px] lg:w-[270px] xl:w-[280px] md:border-t-0 md:border-l"
+      )}>
         <div className="p-2.5 border-b border-slate-700/50 bg-slate-950/60 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5">
             <Terminal className={cn("w-3.5 h-3.5", theme.badgeText)} />
@@ -1330,8 +1338,8 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
         )}
       </AnimatePresence>
 
-      {/* Main Container (Scrollable on mobile/tablet `< xl`, fixed on desktop `xl:`) */}
-      <div className="w-full max-w-[1920px] h-full p-2 sm:p-4 flex flex-col gap-2.5 relative z-10 min-h-0 overflow-y-auto xl:overflow-hidden">
+      {/* Main Container (Scrollable on mobile `< md`, fixed on desktop/tablet `md:`) */}
+      <div className="w-full max-w-[1920px] h-full p-2 sm:p-4 flex flex-col gap-2.5 relative z-10 min-h-0 overflow-y-auto md:overflow-hidden">
         
         {/* RESPONSIVE HEADER */}
         <header className="flex-none flex flex-wrap items-center justify-between gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-900/80 border border-slate-700/70 rounded-xl shadow-lg shrink-0">
@@ -1411,16 +1419,16 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
           </div>
         </header>
 
-        {/* CONTENT GRID: Auto-scrollable on mobile `< xl` so nothing ever cuts off, locked 100% height on desktop `xl:` */}
+        {/* CONTENT GRID: Auto-scrollable on mobile `< md`, side-by-side 2-column on `md:` */}
         <div className={cn(
           "flex-1 grid gap-3 min-h-0",
-          viewMode === 'both' ? "grid-cols-1 xl:grid-cols-2 overflow-y-auto xl:overflow-hidden" : "grid-cols-1 overflow-hidden"
+          viewMode === 'both' ? "grid-cols-1 md:grid-cols-2 overflow-y-auto md:overflow-hidden" : "grid-cols-1 overflow-hidden"
         )}>
           {/* SECTION 1: EXPENSIVE CARDS ARENA (Grail Lots >= $100) */}
           {(viewMode === 'both' || viewMode === 'expensive_only') && (
             <div className={cn(
               "min-h-0 overflow-hidden rounded-2xl",
-              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] xl:min-h-0 xl:h-full" : "h-full"
+              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] md:min-h-0 md:h-full" : "h-full"
             )}>
               <AuctionLotSection
                 type="expensive"
@@ -1449,6 +1457,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
                 onImageError={() => handleImageError('expensive', expensiveCard?.img)}
                 bidIncrements={(() => { const i = auctionIncrement(expensiveLot.currentBid); return [i, i * 2, i * 5]; })()}
                 defaultBidIncrement={auctionIncrement(expensiveLot.currentBid)}
+                isDualMode={viewMode === 'both'}
                 theme={{
                   badgeBg: "bg-amber-500/20",
                   badgeText: "text-amber-400",
@@ -1471,7 +1480,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
           {(viewMode === 'both' || viewMode === 'normal_only') && (
             <div className={cn(
               "min-h-0 overflow-hidden rounded-2xl",
-              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] xl:min-h-0 xl:h-full" : "h-full"
+              viewMode === 'both' ? "min-h-[460px] sm:min-h-[500px] md:min-h-0 md:h-full" : "h-full"
             )}>
               <AuctionLotSection
                 type="normal"
@@ -1500,6 +1509,7 @@ export const AuctionDashboard: React.FC<{ onBack: () => void; onSpendNetReturn?:
                 onImageError={() => handleImageError('normal', normalCard?.img)}
                 bidIncrements={(() => { const i = auctionIncrement(normalLot.currentBid); return [i, i * 2, i * 5]; })()}
                 defaultBidIncrement={auctionIncrement(normalLot.currentBid)}
+                isDualMode={viewMode === 'both'}
                 theme={{
                   badgeBg: "bg-cyan-500/20",
                   badgeText: "text-cyan-400",
