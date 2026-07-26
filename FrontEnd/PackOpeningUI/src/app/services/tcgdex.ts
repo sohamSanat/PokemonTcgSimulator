@@ -316,7 +316,7 @@ export async function fetchSetDetails(setId: string): Promise<TCGDexSet> {
     return setDetailsCache.get(cacheKey)!;
   }
   try {
-    const res = await fetchWithTimeout(`${API_BASE}/sets/${normalizedId}`, 3500);
+    const res = await fetchWithTimeout(`${API_BASE}/sets/${normalizedId}`, 1500);
     if (!res.ok) throw new Error(`Failed to fetch set details for ${normalizedId}`);
     const data: TCGDexSet = await res.json();
     if (!data.cards || data.cards.length < 20) throw new Error(`Incomplete set cards for ${normalizedId}`);
