@@ -596,22 +596,25 @@ const Card = React.memo(({
         rotateZ: card.flipped ? 0 : rotation,
         x: card.flipped ? 0 : offsetX
       }}
+      whileHover={isTopCard ? { scale: card.flipped ? 1.2 : 1.18 } : undefined}
       exit={{ x: 380, y: -160, opacity: 0, scale: 0.65, rotateZ: 25 }}
-      transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+      transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
       style={{
         zIndex: card.originalIndex,
         perspective: 1200,
         position: 'absolute',
+        willChange: 'transform'
       }}
-      className={`w-60 sm:w-68 aspect-[0.718] cursor-pointer select-none group ${isTopCard ? 'hover:scale-[1.18]' : ''} transition-transform duration-300`}
+      className="w-60 sm:w-68 aspect-[0.718] cursor-pointer select-none group"
     >
       <motion.div
         animate={{ rotateY: card.flipped ? 180 : 0 }}
-        transition={{ duration: 0.45, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: [0.4, 0.0, 0.2, 1] }}
         style={{
           width: '100%',
           height: '100%',
           transformStyle: 'preserve-3d',
+          willChange: 'transform',
           position: 'relative'
         }}
       >
@@ -621,6 +624,7 @@ const Card = React.memo(({
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
+            transform: 'rotateY(0deg) translateZ(1px)',
             background: 'radial-gradient(circle at center, #1c1c24 0%, #0d0d0f 100%)',
             border: '3px solid rgba(245,158,11,0.4)'
           }}
@@ -651,7 +655,7 @@ const Card = React.memo(({
           style={{
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
+            transform: 'rotateY(180deg) translateZ(1px)',
             border: '2px solid rgba(255, 255, 250, 0.4)'
           }}
         >
