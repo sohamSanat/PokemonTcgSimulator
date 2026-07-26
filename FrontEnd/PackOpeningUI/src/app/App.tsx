@@ -2192,33 +2192,102 @@ export default function App() {
           </div>
 
           {/* Right: Utilities */}
-          <div className="flex flex-row items-center gap-1.5 w-auto mt-0 pt-0 border-none pb-0 shrink-0">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1.5 w-full lg:w-auto mt-2 lg:mt-0 shrink-0">
+            {/* Mobile View Profile Large Card */}
             {currentUser ? (
-              <div className="flex items-center gap-1.5 w-auto">
-                <button
+              <div className="flex lg:hidden flex-col gap-2 w-full my-1">
+                <motion.button
                   onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
-                  className={`p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
-                  title={currentUser.email || "Profile"}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full p-4 rounded-2xl border flex items-center justify-between shadow-2xl transition-all duration-300 cursor-pointer relative overflow-hidden group ${
+                    activeTab === 'profile'
+                      ? 'bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 border-fuchsia-300 text-white shadow-[0_0_30px_rgba(217,70,239,0.7)]'
+                      : 'bg-gradient-to-r from-purple-950/90 via-fuchsia-950/90 to-pink-950/90 border-fuchsia-400/80 hover:border-fuchsia-300 text-white shadow-[0_0_25px_rgba(192,38,211,0.5)]'
+                  }`}
                 >
-                  <UserCircle className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
-                </button>
-                <button
-                  onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
-                  className="p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
-                  title="Logout"
-                >
-                  <LogOut className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
-                </button>
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-fuchsia-400 via-pink-400 to-amber-300 flex items-center justify-center p-0.5 shadow-lg border border-white/30 shrink-0">
+                      <UserCircle className="w-10 h-10 text-black font-black" />
+                    </div>
+                    <div className="flex flex-col items-start leading-tight min-w-0 text-left">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-fuchsia-300 bg-fuchsia-950/90 px-2 py-0.5 rounded-full border border-fuchsia-500/50">
+                          TRAINER PROFILE
+                        </span>
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      </div>
+                      <span className="text-base font-black text-white truncate max-w-[180px] sm:max-w-[240px] drop-shadow-md mt-1">
+                        {currentUser.displayName || currentUser.email?.split('@')[0] || 'My Profile'}
+                      </span>
+                      <span className="text-xs text-gray-300 truncate max-w-[180px] font-medium opacity-90">
+                        {currentUser.email}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="px-3 py-1.5 rounded-xl bg-white/20 border border-white/30 text-white font-extrabold text-xs flex items-center gap-1 shadow-md">
+                      <span>View</span>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                    </span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); signOut(auth); setIsMobileMenuOpen(false); }}
+                      className="p-2.5 rounded-xl bg-red-600/30 border border-red-400/50 text-red-300 hover:bg-red-600/50 transition-colors shadow-md"
+                      title="Sign Out"
+                    >
+                      <LogOut className="w-5 h-5" />
+                    </button>
+                  </div>
+                </motion.button>
               </div>
             ) : (
-              <button
-                onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
-                className="px-3 py-1.5 rounded-lg border text-xs font-black transition-all flex items-center justify-start lg:justify-center gap-1.5 cursor-pointer shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white border-purple-400/50 shadow-md"
-              >
-                <UserCircle className="w-3.5 h-3.5 text-purple-200 shrink-0" />
-                <span className="text-[11px]">Sign In</span>
-              </button>
+              <div className="flex lg:hidden flex-col gap-2 w-full my-1">
+                <button
+                  onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full p-4 rounded-2xl border flex items-center justify-between shadow-2xl transition-all cursor-pointer bg-gradient-to-r from-purple-600 via-indigo-600 to-fuchsia-600 text-white border-fuchsia-400/70 shadow-[0_0_25px_rgba(168,85,247,0.5)] animate-pulse"
+                >
+                  <div className="flex items-center gap-3">
+                    <UserCircle className="w-8 h-8 text-fuchsia-200 shrink-0" />
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-black text-white uppercase tracking-wider">Sign In / Register</span>
+                      <span className="text-xs text-purple-200 font-medium">Save binders & sync cards to cloud</span>
+                    </div>
+                  </div>
+                  <Sparkles className="w-5 h-5 text-amber-300" />
+                </button>
+              </div>
             )}
+
+            {/* Desktop Compact Profile Utilities */}
+            <div className="hidden lg:flex items-center gap-1.5 w-auto">
+              {currentUser ? (
+                <div className="flex items-center gap-1.5 w-auto">
+                  <button
+                    onClick={() => { sound.playTabSwitch(); setActiveTab('profile'); setIsMobileMenuOpen(false); }}
+                    className={`p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 hover:border-fuchsia-500/30 ${activeTab === 'profile' ? 'text-fuchsia-300 border-fuchsia-500/30 bg-fuchsia-500/10' : 'text-gray-300'}`}
+                    title={currentUser.email || "Profile"}
+                  >
+                    <UserCircle className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
+                  </button>
+                  <button
+                    onClick={() => { signOut(auth); setIsMobileMenuOpen(false); }}
+                    className="p-2 lg:p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0 bg-white/5 lg:bg-transparent border-white/10 lg:border-white/5 text-gray-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+                    title="Logout"
+                  >
+                    <LogOut className="w-4 h-4 lg:w-4 lg:h-4 shrink-0" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { setIsLoginModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="px-3 py-1.5 rounded-lg border text-xs font-black transition-all flex items-center justify-start lg:justify-center gap-1.5 cursor-pointer shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white border-purple-400/50 shadow-md"
+                >
+                  <UserCircle className="w-3.5 h-3.5 text-purple-200 shrink-0" />
+                  <span className="text-[11px]">Sign In</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
