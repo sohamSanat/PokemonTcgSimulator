@@ -864,3 +864,121 @@ export function moveBulkCardToBinder(bulkCard: BulkCard, binderId: string): void
     console.error('Failed to move bulk card to binder', e);
   }
 }
+
+export function saveCollectedCardsBatch(cardsData: any[], setName: string, binderId: string = 'my-collection'): Card[] {
+  if (!cardsData || cardsData.length === 0) return [];
+  const cards = getCollectedCards();
+  const newCards: Card[] = [];
+
+  const typesList = ['Fire', 'Water', 'Grass', 'Psychic', 'Lightning', 'Fighting', 'Dragon', 'Colorless'];
+
+  for (const cardData of cardsData) {
+    const poke = cardData.pokemon || cardData;
+    const acquiredCost = cardData.acquiredPrice ?? cardData.buyPrice ?? cardData.purchasePrice ?? cardData.originalValue;
+
+    let realMarketPrice = 0;
+    if (typeof cardData.marketPrice === 'number' && cardData.marketPrice > 0) {
+      realMarketPrice = cardData.marketPrice;
+    } else if (typeof poke.marketPrice === 'number' && poke.marketPrice > 0) {
+      realMarketPrice = poke.marketPrice;
+    } else if (typeof cardData.realMarketPrice === 'number' && cardData.realMarketPrice > 0) {
+      realMarketPrice = cardData.realMarketPrice;
+    } else if (typeof cardData.value === 'number' && cardData.value > 0 && cardData.value !== acquiredCost) {
+      realMarketPrice = cardData.value;
+    } else if (typeof poke.value === 'number' && poke.value > 0 && poke.value !== acquiredCost) {
+      realMarketPrice = poke.value;
+    } else if (typeof cardData.value === 'number' && cardData.value > 0) {
+      realMarketPrice = cardData.value;
+    } else if (typeof poke.value === 'number' && poke.value > 0) {
+      realMarketPrice = poke.value;
+    } else if (typeof cardData.currentPrice === 'number' && cardData.currentPrice > 0 && cardData.currentPrice !== acquiredCost) {
+      realMarketPrice = cardData.currentPrice;
+    } else if (typeof cardData.currentPrice === 'number' && cardData.currentPrice > 0) {
+      realMarketPrice = cardData.currentPrice;
+    } else {
+      realMarketPrice = 0.50;
+    }
+
+    const basePrice = Number(realMarketPrice.toFixed(2));
+    const trend = (Math.random() - 0.45) * 2;
+    const points: PricePoint[] = [];
+    let price = basePrice * (1 - trend * 0.3);
+    for (let i = 0; i < 30; i++) {
+      price += (Math.random() - 0.42) * basePrice * 0.06 + trend * basePrice * 0.01;
+      points.push({ day: i + 1, price: Math.max(0.01, +price.toFixed(2)) });
+    }
+
+    let type = 'Colorless';
+    if (poke.types && poke.types.length > 0) {
+      type = poke.types[0];
+    } else {
+      for (const t of typesList) {
+        if (poke.name && String(poke.name).includes(t)) type = t;
+      }
+    }
+
+    const cardIdStr = String(poke.id || cardData.id || 'card');
+    const setNumber = poke.localId || poke.setNumber || (cardIdStr.includes('-') ? cardIdStr.split('-')[1] : '001');
+    const imageUrl = cardData.imageUrl || poke.imageUrl || poke.images?.large || poke.images?.small || cardData.img || '';
+
+    const newCard: Card = {
+      id: `${cardIdStr}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      name: poke.name || cardData.name || 'Pokemon Card',
+      setName: setName || 'Unknown Set',
+      setNumber: setNumber,
+      rarity: poke.rarity || cardData.rarity || 'Common',
+      type: type,
+      currentPrice: basePrice,
+      originalValue: acquiredCost !== undefined ? acquiredCost : basePrice,
+      priceChange: Number((trend * 5 + (Math.random() * 4 - 2)).toFixed(1)),
+      priceHistory: points,
+      holofoil: poke.isReverseHolo || (poke.rarity && String(poke.rarity).toLowerCase().includes('rare')) || false,
+      imageUrl: imageUrl,
+      favorite: false,
+      binderId: binderId || 'my-collection'
+    };
+
+    newCards.unshift(newCard);
+  }
+
+  cards.unshift(...newCards);
+  try {
+    localStorage.setItem(getStorageKey('tcg_my_collection'), JSON.stringify(cards));
+    getBinders();
+    syncToFirestore();
+    trackMissionProgress('collect_card', cardsData.length);
+  } catch (e) {
+    console.error('Failed to batch save cards to binder', e);
+  }
+  return newCards;
+}
+
+export function saveCardsToCatalogueBatch(cardsData: any[], setName: string): void {
+  if (!cardsData || cardsData.length === 0) return;
+  const catalogues = getCatalogues();
+  const set = setName || 'Unknown Set';
+  if (!catalogues[set]) catalogues[set] = {};
+
+  for (const cardData of cardsData) {
+    const poke = cardData.pokemon || cardData;
+    const cardId = poke?.id || `bulk-${poke?.name}`;
+    const existing = catalogues[set][cardId];
+
+    catalogues[set][cardId] = {
+      id: cardId,
+      name: poke?.name || 'Pokemon Card',
+      rarity: poke?.rarity || 'Common',
+      imageUrl: poke?.images?.large || poke?.images?.small || cardData.imageUrl || '',
+      setName: set,
+      count: (existing?.count || 0) + 1,
+    };
+  }
+
+  try {
+    localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(catalogues));
+    syncToFirestore();
+  } catch (e) {
+    console.error('Failed to save cards batch to catalogue', e);
+  }
+}
+
