@@ -95,6 +95,7 @@ const generations = fs.readdirSync(priceChartsDir, { withFileTypes: true })
 
 console.log(`Found ${generations.length} generation folders: ${generations.join(', ')}`);
 const priceMap = {};
+const namesMap = {};
 let totalSets = 0;
 let totalCards = 0;
 
@@ -152,29 +153,45 @@ for (const gen of generations) {
       setIds.add(normSetName);
 
       for (const card of cards) {
-        if (card.price_numeric !== undefined && card.price_numeric !== null) {
-          const priceNum = Number(card.price_numeric);
-          if (isNaN(priceNum)) continue;
+        const rawName = (card.name || '').trim();
+        if (!rawName) continue;
 
-          // Extract card number from name (e.g. "Pansage #1" or "Charizard ex #180")
-          let cardNum = '';
-          const match = (card.name || '').match(/#(\d+)(?:\s|$|[^0-9])/);
-          if (match && match[1]) {
-            cardNum = match[1];
-          } else {
-            // Check if name ends with digits or #digits
-            const endMatch = (card.name || '').match(/(\d+)$/);
-            if (endMatch && endMatch[1]) {
-              cardNum = endMatch[1];
-            }
+        // Extract card number from name (e.g. "Pansage #1" or "Charizard ex #180")
+        let cardNum = '';
+        const match = rawName.match(/#(\d+)(?:\s|$|[^0-9])/);
+        if (match && match[1]) {
+          cardNum = match[1];
+        } else {
+          // Check if name ends with digits or #digits
+          const endMatch = rawName.match(/(\d+)$/);
+          if (endMatch && endMatch[1]) {
+            cardNum = endMatch[1];
           }
+        }
 
-          if (cardNum) {
-            totalCards++;
-            // Map every set ID + card number to the real numeric price
-            for (const sId of setIds) {
+        // Extract clean English card name by stripping `#<number>`
+        let cleanName = rawName.replace(/\s*#\d+.*$/, '').trim();
+        if (cleanName === rawName) {
+          cleanName = rawName.replace(/\s*\d+$/, '').trim();
+        }
+
+        if (cardNum && cleanName) {
+          totalCards++;
+          const numStr = parseInt(cardNum, 10).toString();
+          const priceNum = (card.price_numeric !== undefined && card.price_numeric !== null) ? Number(card.price_numeric) : undefined;
+
+          // Map every set ID + card number to clean English name and real numeric price
+          for (const sId of setIds) {
+            namesMap[`${sId}-${cardNum}`] = cleanName;
+            namesMap[`${sId}_ja-${cardNum}`] = cleanName;
+            namesMap[`${sId}-${numStr}`] = cleanName;
+            namesMap[`${sId}_ja-${numStr}`] = cleanName;
+
+            if (priceNum !== undefined && !isNaN(priceNum)) {
               priceMap[`${sId}-${cardNum}`] = priceNum;
               priceMap[`${sId}_ja-${cardNum}`] = priceNum;
+              priceMap[`${sId}-${numStr}`] = priceNum;
+              priceMap[`${sId}_ja-${numStr}`] = priceNum;
             }
           }
         }
@@ -185,6 +202,13 @@ for (const gen of generations) {
   }
 }
 
-const outputPath = path.join(publicDir, 'ja-card-prices.json');
-fs.writeFileSync(outputPath, JSON.stringify(priceMap), 'utf8');
-console.log(`Compiled real Japanese card prices for ${totalSets} sets and ${totalCards} cards! Saved ${Object.keys(priceMap).length} lookup keys to ${outputPath}`);
+const pricesOutputPath = path.join(publicDir, 'ja-card-prices.json');
+fs.writeFileSync(pricesOutputPath, JSON.stringify(priceMap), 'utf8');
+
+const namesOutputPath = path.join(publicDir, 'ja-card-names.json');
+fs.writeFileSync(namesOutputPath, JSON.stringify(namesMap), 'utf8');
+
+console.log(`Compiled real Japanese card prices & names for ${totalSets} sets and ${totalCards} cards!`);
+console.log(`Saved ${Object.keys(priceMap).length} price keys to ${pricesOutputPath}`);
+console.log(`Saved ${Object.keys(namesMap).length} name keys to ${namesOutputPath}`);
+
