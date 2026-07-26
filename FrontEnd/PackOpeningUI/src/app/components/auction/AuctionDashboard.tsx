@@ -767,7 +767,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
       {/* ========================================================================= */}
       {/* 2. DESKTOP/TABLET FULL HOLO STAGE (>= md screens)                         */}
       {/* ========================================================================= */}
-      <div className="hidden md:flex flex-1 min-w-0 flex-col items-center justify-between p-4 relative z-10 overflow-hidden min-h-0">
+      <div className="hidden md:flex flex-1 min-w-0 flex-col items-center justify-center gap-2 xl:gap-4 p-2 xl:p-4 relative z-10 overflow-y-auto custom-scrollbar min-h-0">
         
         {/* Section Header Badge */}
         <div className="w-full flex flex-col items-center text-center shrink-0">
@@ -787,9 +787,15 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
         </div>
 
         {/* 3D Holographic Card + Progress Ring */}
-        <div className="relative flex items-center justify-center w-[200px] sm:w-[220px] h-[200px] sm:h-[220px] shrink-0 my-1 perspective-[1000px]">
+        <div className={cn(
+          "relative flex items-center justify-center shrink-0 my-1 perspective-[1000px]",
+          isDualMode ? "w-[160px] h-[160px] lg:w-[180px] lg:h-[180px] xl:w-[220px] xl:h-[220px]" : "w-[200px] sm:w-[220px] h-[200px] sm:h-[220px]"
+        )}>
           {/* Radial Progress Ring */}
-          <svg className="absolute w-[190px] sm:w-[210px] h-[190px] sm:h-[210px] -rotate-90 pointer-events-none" viewBox="0 0 220 220">
+          <svg className={cn(
+            "absolute -rotate-90 pointer-events-none",
+            isDualMode ? "w-[150px] h-[150px] lg:w-[170px] lg:h-[170px] xl:w-[210px] xl:h-[210px]" : "w-[190px] sm:w-[210px] h-[190px] sm:h-[210px]"
+          )} viewBox="0 0 220 220">
             <circle cx="110" cy="110" r={radius} fill="none" stroke="rgba(30, 41, 59, 0.6)" strokeWidth="4" />
             <circle 
               cx="110" cy="110" r={radius} 
@@ -819,7 +825,10 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
 
           {/* Card Image */}
           <motion.div
-            className="relative w-[120px] sm:w-[135px] h-[165px] sm:h-[188px] rounded-xl overflow-hidden shadow-2xl border border-slate-600/60 bg-slate-800 cursor-grab active:cursor-grabbing z-10 flex items-center justify-center will-change-transform"
+            className={cn(
+              "relative rounded-xl overflow-hidden shadow-2xl border border-slate-600/60 bg-slate-800 cursor-grab active:cursor-grabbing z-10 flex items-center justify-center will-change-transform",
+              isDualMode ? "w-[100px] h-[140px] lg:w-[115px] lg:h-[160px] xl:w-[135px] xl:h-[188px]" : "w-[120px] sm:w-[135px] h-[165px] sm:h-[188px]"
+            )}
             style={{ transformStyle: "preserve-3d", transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)', transition: 'transform 0.25s ease-out' }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -906,7 +915,7 @@ const AuctionLotSection: React.FC<AuctionLotSectionProps> = ({
       <div className={cn(
         "hidden md:flex shrink-0 flex-col bg-slate-950/60 border-t border-slate-700/50 relative z-10 min-h-0 overflow-hidden",
         isDualMode
-          ? "w-full h-[220px] 2xl:h-auto 2xl:w-[270px] 2xl:border-t-0 2xl:border-l"
+          ? "w-full shrink-0 h-[180px] lg:h-[190px] xl:h-[220px] 2xl:h-auto 2xl:w-[270px] 2xl:border-t-0 2xl:border-l"
           : "w-[250px] lg:w-[270px] xl:w-[280px] md:border-t-0 md:border-l"
       )}>
         <div className="p-2.5 border-b border-slate-700/50 bg-slate-950/60 flex items-center justify-between shrink-0">

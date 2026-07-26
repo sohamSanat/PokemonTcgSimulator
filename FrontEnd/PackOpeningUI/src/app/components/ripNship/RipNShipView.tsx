@@ -459,7 +459,6 @@ const Card = React.memo(({
           {/* Ultra-Clear Penny Sleeve Layer for Top Hit */}
           {card.isMostExpensive && (
             <div className="absolute inset-0 rounded-xl pointer-events-none z-30 overflow-hidden bg-gradient-to-tr from-cyan-500/15 via-transparent to-blue-400/25 border-2 border-cyan-300/50 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-white/90 via-cyan-200 to-white/90 border-b border-cyan-300/70 shadow-sm" />
               <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white font-black text-[9px] uppercase tracking-wider shadow-lg border border-cyan-200/60 flex items-center gap-1 animate-pulse">
                 <ShieldCheck className="w-3.5 h-3.5 text-cyan-200" />
                 <span>Sleeved Hit (${cardLiveValue.toFixed(2)})</span>
@@ -1932,7 +1931,6 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
               exit={{ scale: 0.85, y: 30 }}
               className="w-full max-w-lg bg-gradient-to-b from-[#1c1830] via-[#120f24] to-[#0a0817] border-2 border-amber-400/60 rounded-3xl p-6 shadow-[0_0_50px_rgba(245,158,11,0.3)] text-center flex flex-col items-center relative overflow-hidden"
             >
-              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
               
               {/* Animated Parcel Box Header */}
               <motion.div

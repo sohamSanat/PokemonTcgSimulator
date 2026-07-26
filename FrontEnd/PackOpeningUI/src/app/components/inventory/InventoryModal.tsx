@@ -152,9 +152,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
           exit={{ scale: 0.92, y: 20 }}
           className="relative w-full max-w-4xl bg-gradient-to-b from-[#161226] via-[#100d1d] to-[#0a0815] border-2 border-amber-500/40 rounded-3xl p-4 sm:p-6 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] my-auto"
         >
-          {/* Top Decorative Glow Header */}
-          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 z-30" />
-          
           {/* Close Button */}
           <button
             onClick={() => { sound.playButtonClick(); onClose(); }}
@@ -283,8 +280,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                         animate={{ opacity: 1, scale: 1 }}
                         className="p-3.5 rounded-2xl bg-gradient-to-b from-[#1d1933] to-[#120f24] border border-amber-500/30 hover:border-amber-400 transition-all flex flex-col justify-between shadow-lg relative group overflow-hidden"
                       >
-                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500 opacity-80" />
-                        
                         {/* Top Meta Info */}
                         <div className="flex items-start justify-between gap-2 mb-2.5">
                           <span className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -341,8 +336,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                         animate={{ opacity: 1, scale: 1 }}
                         className="p-3.5 rounded-2xl bg-gradient-to-b from-[#241a3a] via-[#1a132c] to-[#110b21] border border-purple-500/40 hover:border-purple-300 transition-all flex flex-col justify-between shadow-lg relative group overflow-hidden"
                       >
-                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-500 opacity-80" />
-
                         {/* Top Meta Info */}
                         <div className="flex items-start justify-between gap-2 mb-2.5">
                           <span className="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/50 text-purple-300 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
