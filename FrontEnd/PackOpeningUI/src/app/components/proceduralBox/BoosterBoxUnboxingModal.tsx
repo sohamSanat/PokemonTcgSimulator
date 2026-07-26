@@ -149,19 +149,28 @@ export const BoosterBoxUnboxingModal: React.FC<BoosterBoxUnboxingModalProps> = (
       // Generate all packs step-by-step with rapid visual feedback & pack tear audio
       for (let i = 0; i < totalPacks; i++) {
         let pack: PokemonCard[] = [];
-        if (isJapanese) {
-          pack = await generateJapanesePackFromSet(fullSet);
-        } else {
-          pack = await generatePackFromSet(fullSet);
+        try {
+          if (isJapanese) {
+            pack = await generateJapanesePackFromSet(fullSet);
+          } else {
+            pack = await generatePackFromSet(fullSet);
+          }
+        } catch (err) {
+          console.warn(`Pack ${i + 1} generation error, utilizing set pool fallback:`, err);
+          if (fullSet && fullSet.cards && fullSet.cards.length > 0) {
+            pack = (fullSet.cards as PokemonCard[]).slice(0, 11);
+          }
         }
-        pulledCards.push(...pack);
+        if (pack && pack.length > 0) {
+          pulledCards.push(...pack);
+        }
         setRipStep(i + 1);
         setTotalCardsPulled(pulledCards.length);
 
         if (i % 3 === 0) {
           sound.playPackOpen();
         }
-        await new Promise(r => setTimeout(r, 45)); // Fast exciting ripping ticker delay
+        await new Promise(r => setTimeout(r, 35)); // Fast exciting ripping ticker delay
       }
 
       // Save pulled cards & catalogue items to inventory/vault automatically

@@ -1517,7 +1517,11 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
     englishBoxCache.set(boxKey, boxEntry);
   }
 
-  const selectedSlots: EnglishBoxSlotData[] = boxEntry.packs[boxEntry.index++].slots;
+  if (boxEntry.index >= boxEntry.packs.length) {
+    boxEntry.index = 0;
+  }
+  const currentPackObj = boxEntry.packs[boxEntry.index++] || boxEntry.packs[0];
+  const selectedSlots: EnglishBoxSlotData[] = (currentPackObj && currentPackObj.slots) ? currentPackObj.slots : boxEntry.packs[0].slots;
 
   // Synchronously format pack cards in 0ms so pack opening never blocks on network queries!
   const cards: PokemonCard[] = selectedSlots.map((slot, idx) => {

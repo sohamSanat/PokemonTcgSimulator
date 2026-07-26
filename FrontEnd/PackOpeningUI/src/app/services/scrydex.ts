@@ -1178,7 +1178,13 @@ export function getJapaneseBoxStatus(setId: string): {
 export async function generateJapanesePackFromSet(set: TCGDexSet): Promise<PokemonCard[]> {
   await loadJapaneseMetadata();
   const boxState = getOrGenerateJapaneseBox(set);
-  const packData = boxState.packs[boxState.currentIndex++];
+  if (!boxState.packs || boxState.packs.length === 0) {
+    throw new Error(`Failed to generate Japanese box packs for ${set.id}`);
+  }
+  if (boxState.currentIndex >= boxState.packs.length) {
+    boxState.currentIndex = 0;
+  }
+  const packData = boxState.packs[boxState.currentIndex++] || boxState.packs[0];
   const rawSetId = set.id.replace(/_ja$/i, '').toLowerCase();
   
   return packData.slots.map((p, idx) => {
