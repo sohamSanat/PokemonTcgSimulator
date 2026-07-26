@@ -61,19 +61,19 @@ export const PackOffLobby: React.FC<PackOffLobbyProps> = ({ onBack, onEnterArena
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-      <div className="w-full max-w-md bg-[#14141c]/90 border border-amber-500/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(245,158,11,0.15)]">
-        <div className="flex items-center gap-3 mb-8">
+      <div className="w-full max-w-md bg-[#14141c]/90 border border-amber-500/30 rounded-3xl p-5 sm:p-8 shadow-[0_0_50px_rgba(245,158,11,0.15)]">
+        <div className="flex items-center gap-3 mb-6 sm:mb-8">
           <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <ArrowLeft className="w-5 h-5 text-gray-400" />
           </button>
-          <h2 className="text-2xl font-black text-white flex items-center gap-2">
-            <Users className="text-amber-400 w-6 h-6" /> Pack-Off Lobby
+          <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+            <Users className="text-amber-400 w-5 h-5 sm:w-6 sm:h-6" /> Pack-Off Lobby
           </h2>
         </div>
 
-        <div className="mb-8 p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
-          <p className="text-sm text-gray-400 uppercase tracking-wider font-bold mb-1">Playing As</p>
-          <p className="text-xl text-amber-300 font-black">{displayName}</p>
+        <div className="mb-6 sm:mb-8 p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
+          <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider font-bold mb-1">Playing As</p>
+          <p className="text-lg sm:text-xl text-amber-300 font-black truncate">{displayName}</p>
         </div>
 
         {error && (
@@ -82,33 +82,33 @@ export const PackOffLobby: React.FC<PackOffLobbyProps> = ({ onBack, onEnterArena
           </div>
         )}
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <button
             onClick={handleCreate}
             disabled={loading}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-lg flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02] transition-transform disabled:opacity-50"
+            className="w-full py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-base sm:text-lg flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:scale-[1.02] transition-transform disabled:opacity-50"
           >
-            <Plus className="w-6 h-6" /> Create New Room
+            <Plus className="w-5 h-5 sm:w-6 sm:h-6" /> Create New Room
           </button>
 
-          <div className="relative flex items-center py-2">
+          <div className="relative flex items-center py-1 sm:py-2">
             <div className="flex-grow border-t border-white/10"></div>
-            <span className="flex-shrink-0 mx-4 text-gray-500 font-bold text-sm uppercase">OR JOIN FRIEND</span>
+            <span className="flex-shrink-0 mx-4 text-gray-500 font-bold text-xs sm:text-sm uppercase">OR JOIN FRIEND</span>
             <div className="flex-grow border-t border-white/10"></div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-2">
             <input
               type="text"
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value.toUpperCase().slice(0, 5))}
               placeholder="ROOM CODE"
-              className="flex-1 bg-black/40 border border-white/20 rounded-xl px-4 text-center text-xl font-mono font-bold text-white uppercase outline-none focus:border-amber-400 transition-colors"
+              className="w-full sm:flex-1 min-w-0 bg-black/40 border border-white/20 rounded-xl px-4 py-3 text-center text-lg sm:text-xl font-mono font-bold text-white uppercase outline-none focus:border-amber-400 transition-colors"
             />
             <button
               onClick={handleJoin}
               disabled={loading || joinCode.length !== 5}
-              className="px-6 rounded-xl bg-[#1f1f2e] border border-white/20 text-white font-bold hover:bg-white/10 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#1f1f2e] border border-white/20 text-white font-bold hover:bg-white/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shrink-0"
             >
               <LogIn className="w-5 h-5" /> Join
             </button>

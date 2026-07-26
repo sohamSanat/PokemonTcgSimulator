@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift } from 'lucide-react';
+import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift, Hammer, Construction } from 'lucide-react';
 import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
 import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice, scrydexCardFullCache, onScrydexCardFullCacheUpdated } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
@@ -860,6 +860,14 @@ const JAPANESE_SERIES_TABS = [
   { id: 'pl_ja', name: 'Platinum' },
   { id: 'dp_ja', name: 'Diamond & Pearl' },
   { id: 'classic_ja', name: 'Original / Base / Classic' },
+];
+
+const UNREADY_JAPANESE_SERIES_IDS = [
+  'bw_ja',
+  'hgss_ja',
+  'pl_ja',
+  'dp_ja',
+  'classic_ja',
 ];
 
 
@@ -3282,23 +3290,72 @@ export default function App() {
 
               {/* Series Tabs */}
               <div className="flex overflow-x-auto hide-scrollbar border-b border-white/10 px-4 py-2 gap-2 shrink-0">
-                {(selectedLanguage === 'en' ? ENGLISH_SERIES_TABS : JAPANESE_SERIES_TABS).map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => { sound.playTabSwitch(); setSelectedSeriesId(tab.id); }}
-                    className={`px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-t-xl transition-all border-b-2 cursor-pointer flex-shrink-0 ${selectedSeriesId === tab.id
-                      ? 'text-amber-300 border-amber-400 bg-gradient-to-r from-amber-500/20 to-orange-500/10 shadow-[0_-4px_15px_rgba(245,158,11,0.2)]'
-                      : 'text-gray-400 border-transparent hover:text-white hover:bg-white/5'
-                      }`}
-                  >
-                    {tab.name}
-                  </button>
-                ))}
+                {(selectedLanguage === 'en' ? ENGLISH_SERIES_TABS : JAPANESE_SERIES_TABS).map(tab => {
+                  const isUnready = selectedLanguage === 'ja' && UNREADY_JAPANESE_SERIES_IDS.includes(tab.id);
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => { sound.playTabSwitch(); setSelectedSeriesId(tab.id); }}
+                      className={`px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-t-xl transition-all border-b-2 cursor-pointer flex-shrink-0 flex items-center gap-2 ${selectedSeriesId === tab.id
+                        ? 'text-amber-300 border-amber-400 bg-gradient-to-r from-amber-500/20 to-orange-500/10 shadow-[0_-4px_15px_rgba(245,158,11,0.2)]'
+                        : 'text-gray-400 border-transparent hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                      <span>{tab.name}</span>
+                      {isUnready && (
+                        <span className="px-1.5 py-0.2 text-[9px] font-black rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+                          In Works
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Sets Grid */}
               <div className="p-6 overflow-y-auto flex-1">
-                {(selectedSeriesId === 'mystery_en' || selectedSeriesId === 'mystery_ja') ? (
+                {(selectedLanguage === 'ja' && UNREADY_JAPANESE_SERIES_IDS.includes(selectedSeriesId)) ? (
+                  <div className="relative min-h-[360px] w-full flex flex-col items-center justify-center p-6 sm:p-10 text-center rounded-3xl bg-gradient-to-b from-[#181824]/95 via-[#111118]/95 to-[#0b0b10]/95 border border-amber-500/30 shadow-[0_0_50px_rgba(245,158,11,0.15)] overflow-hidden my-2">
+                    {/* Ambient Background Glow */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.15)_0%,transparent_70%)] pointer-events-none" />
+                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+                    {/* Top Caution Banner */}
+                    <div className="absolute top-0 left-0 right-0 py-2 bg-gradient-to-r from-amber-500/20 via-yellow-500/30 to-amber-500/20 border-b border-amber-500/30 flex items-center justify-center gap-2 overflow-hidden">
+                      <div className="text-[10px] sm:text-[11px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-2 animate-pulse">
+                        <Construction className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>IN WORKS • JAPANESE {JAPANESE_SERIES_TABS.find(t => t.id === selectedSeriesId)?.name?.toUpperCase()} ERA</span>
+                        <Construction className="w-4 h-4 text-amber-400 shrink-0" />
+                      </div>
+                    </div>
+
+                    {/* Main Icon */}
+                    <div className="relative mb-6 mt-6">
+                      <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/40 flex items-center justify-center shadow-[0_0_35px_rgba(245,158,11,0.3)]">
+                        <Hammer className="w-10 h-10 text-amber-400 animate-bounce" />
+                      </div>
+                      <div className="absolute -top-1.5 -right-1.5 w-7 h-7 rounded-full bg-amber-400 text-black flex items-center justify-center font-black text-xs shadow-lg border-2 border-[#111118]">
+                        !
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <span className="px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono font-black text-xs uppercase tracking-widest mb-3 shadow-inner">
+                      🚧 UNDER DEVELOPMENT
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+                      In Works
+                    </h3>
+                    <p className="text-sm text-gray-300 max-w-md leading-relaxed mb-6 font-medium px-4">
+                      The <span className="text-amber-300 font-bold">{JAPANESE_SERIES_TABS.find(t => t.id === selectedSeriesId)?.name}</span> Japanese set collection is currently under active expansion & indexing. These sets are not ready for pack opening yet.
+                    </p>
+
+                    <div className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-xs text-gray-300 font-semibold shadow-md">
+                      <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Please select another active Japanese era (Mega Evolution, Scarlet & Violet, Sword & Shield, etc.) above!</span>
+                    </div>
+                  </div>
+                ) : (selectedSeriesId === 'mystery_en' || selectedSeriesId === 'mystery_ja') ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                     {(selectedLanguage === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS).map(pack => (
                       <div
