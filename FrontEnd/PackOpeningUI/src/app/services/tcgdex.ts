@@ -1,4 +1,4 @@
-import { weightedPick, loadJapaneseMetadata, getJapaneseCardRealPrice } from './scrydex';
+import { weightedPick, loadJapaneseMetadata, getJapaneseCardRealPrice, enCardPricesCache } from './scrydex';
 import { preloadSingleImage } from './imagePreloader';
 
 export interface TCGDexCardSummary {
@@ -607,22 +607,35 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
 
 export const getRealCardPrice = (poke: PokemonCard): number => {
   if (!poke) return 0.10;
-  const isEnergy = (poke.name || '').toLowerCase().includes('energy') || (poke.id || '').toLowerCase().includes('energy');
+  const idStr = poke.id || '';
+  const nameLower = (poke.name || '').toLowerCase();
+  const isEnergy = nameLower.includes('energy') || idStr.toLowerCase().includes('energy');
   if (isEnergy) return 0.03;
 
-  const isJapaneseCard = poke.id?.includes('_ja');
+  // 1. Check Japanese Card Real Price Cache
+  const rawSet = idStr.split('-')[0] || '';
+  const localNum = poke.localId || idStr.split('-')[1] || '';
+  const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(idStr);
+  if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+    return Number(jaRealPrice.toFixed(2));
+  }
 
-  if (poke.id && isJapaneseCard) {
-    const rawSet = poke.id.split('-')[0] || '';
-    const localNum = poke.localId || poke.id.split('-')[1] || '';
-    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
-    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
-      return Number(jaRealPrice.toFixed(2));
+  // 2. Check English Card Real Price Cache (Static Market Database)
+  if (enCardPricesCache && Object.keys(enCardPricesCache).length > 0) {
+    const cleanId = idStr.toLowerCase();
+    const setNum = (rawSet && localNum) ? `${rawSet}-${localNum}`.toLowerCase() : '';
+    const enPrice =
+      enCardPricesCache[idStr] ??
+      enCardPricesCache[cleanId] ??
+      (setNum ? enCardPricesCache[setNum] : undefined) ??
+      (poke.id ? enCardPricesCache[poke.id] : undefined);
+    if (typeof enPrice === 'number' && !isNaN(enPrice) && enPrice > 0) {
+      return Number(enPrice.toFixed(2));
     }
   }
 
-  // Synchronous price lookup - do not trigger background fetch side-effects inside render loops
-  const cached = cardFullCache.get(poke.id);
+  // 3. Live TCGdex / TCGplayer / Cardmarket API cache
+  const cached = cardFullCache.get(idStr);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
 
   const rawTcg = activePricing?.tcgplayer || cached?.tcgplayer || poke.tcgplayer;
@@ -717,38 +730,36 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
     if (maxPrice > 0) return Number(maxPrice.toFixed(2));
   }
 
-  if (OVERRIDE_CARD_PRICES[poke.id]) return OVERRIDE_CARD_PRICES[poke.id];
+  // 4. Price overrides
+  if (OVERRIDE_CARD_PRICES[idStr]) return OVERRIDE_CARD_PRICES[idStr];
   if (NAME_OVERRIDE_PRICES[poke.name]) return NAME_OVERRIDE_PRICES[poke.name];
 
+  // 5. Deterministic fallback calculation (stable across re-renders)
   let hash = 0;
-  const str = poke.id || poke.name || 'card';
+  const str = idStr || poke.name || 'card';
   for (let i = 0; i < str.length; i++) {
     hash = (hash << 5) - hash + str.charCodeAt(i);
     hash |= 0;
   }
-  const normalizedHash = Math.abs(hash) % 100 / 100;
-
-  const isExOrMega = poke.name?.includes('ex') || poke.name?.includes('MEGA') || poke.name?.includes('VMAX') || poke.name?.includes('VSTAR');
-  const rarity = poke.rarity || '';
-
-  if (isEnergy || rarity.includes('Common') || rarity.includes('Uncommon') || !rarity) {
-    return Number((0.01 + Math.random() * 0.09).toFixed(2));
-  }
+  const normalizedHash = (Math.abs(hash) % 100) / 100;
 
   const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
-  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold');
-  const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
+  const rarity = poke.rarity || '';
+  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold') || rarity.includes('Alternate');
+  const isUltraOrEx = /\b(ex|vmax|vstar|mega|ultra|gx|v)\b/i.test(poke.name || '') || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
 
   if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
     return Number((30.00 + normalizedHash * 60.00).toFixed(2));
   } else if (isSecretOrAlt) {
-    return Number((15.00 + normalizedHash * 30.00).toFixed(2));
+    return Number((15.00 + normalizedHash * 35.00).toFixed(2));
   } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
-    return Number((2.00 + normalizedHash * 8.00).toFixed(2));
+    return Number((2.50 + normalizedHash * 9.50).toFixed(2));
   } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
     return Number((0.50 + normalizedHash * 2.50).toFixed(2));
+  } else if (rarity.includes('Uncommon')) {
+    return Number((0.10 + normalizedHash * 0.40).toFixed(2));
   } else {
-    return Number((0.01 + Math.random() * 0.09).toFixed(2));
+    return Number((0.01 + normalizedHash * 0.09).toFixed(2));
   }
 };
 

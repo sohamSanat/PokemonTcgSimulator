@@ -19,7 +19,7 @@ export let jaTopCardsCache: any[] | null = null;
 let metadataLoadingPromise: Promise<void> | null = null;
 
 export async function loadJapaneseMetadata(): Promise<void> {
-  if (jaSetsCache && jaEnNamesCache && jaCardPricesCache && jaTopCardsCache) {
+  if (jaSetsCache && jaEnNamesCache && jaCardPricesCache && jaTopCardsCache && enCardPricesCache) {
     return;
   }
   if (metadataLoadingPromise) {
@@ -312,6 +312,7 @@ export function getCardMarketPrice(
   const price =
     (typeof setId === 'string' ? getJapaneseCardRealPrice(setId, num) : undefined) ??
     (setName ? getJapaneseCardRealPrice(setName.toLowerCase(), num) : undefined) ??
+    (enCardPricesCache ? (enCardPricesCache[card.id] ?? enCardPricesCache[`${setId}-${num}`]) : undefined) ??
     englishPrice ??
     0;
   _chasePriceMemo.set(card.id, price || 0);

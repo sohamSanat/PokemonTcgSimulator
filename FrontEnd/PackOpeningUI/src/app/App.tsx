@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, RefreshCcw, Layers, CheckCircle2, Loader2, X, Calendar, Info, ZoomIn, ZoomOut, Eye, RotateCw, Palette, BookOpen, Coins, Package, TrendingUp, TrendingDown, Award, ShieldCheck, Zap, ChevronLeft, ChevronRight, Music, Scissors, UserCircle, LogOut, Users, Menu, MessageSquare, Send, ShoppingBag, ShoppingCart, ListChecks, CheckSquare, Lock, Box, Gift, Hammer, Construction } from 'lucide-react';
-import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra } from './services/tcgdex';
-import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice, scrydexCardFullCache, onScrydexCardFullCacheUpdated } from './services/scrydex';
+import { fetchSetDetails, fetchSeriesDetails, fetchCardFull, orchestrateSetLoading, handleCardImageError, cardFullCache, onCardFullCacheUpdated, generatePackFromSet, getCardImageUrl, getTCGDexValidAssetPath, preloadPackImages, TCGDexSet, TCGDexSetSummary, TCGDexSeries, TCGDexCardFull, PokemonCard, ENERGY_POOLS_BY_ERA, type EnergyEra, getRealCardPrice } from './services/tcgdex';
+import { fetchSingleJapaneseSet, fetchJapaneseSeriesDetails, generateJapanesePackFromSet, getJapaneseCardRealPrice, scrydexCardFullCache, onScrydexCardFullCacheUpdated, loadJapaneseMetadata } from './services/scrydex';
 import { auth, signOut, db, onSnapshot, doc, setDoc } from './services/firebase';
 import { useAuth } from './context/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
@@ -390,152 +390,7 @@ const NAME_OVERRIDE_PRICES: Record<string, number> = {
   "Chesnaught": 0.85
 };
 
-const getRealCardPrice = (poke: PokemonCard): number => {
-  const isJapaneseCard = poke.id?.includes('_ja');
 
-  if (poke.id && isJapaneseCard) {
-    const rawSet = poke.id.split('-')[0] || '';
-    const localNum = poke.localId || poke.id.split('-')[1] || '';
-    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(poke.id);
-    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
-      return Number(jaRealPrice.toFixed(2));
-    }
-  }
-
-  // 1. Check direct TCGdex live pricing object or memory cache with Cardmarket bedrock guard rail
-  const cached = cardFullCache.get(poke.id);
-  const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
-  if (activePricing || cached?.tcgplayer || cached?.cardmarket || poke.tcgplayer) {
-    let foundPrice = 0;
-
-    // First establish Cardmarket bedrock price (converted to USD) if listed
-    let cmUsd = 0;
-    const cmObj = activePricing?.cardmarket || cached?.cardmarket || poke.cardmarket;
-    if (cmObj) {
-      const cmVal = cmObj.trend ?? cmObj.avg ?? cmObj['trend-holo'] ?? cmObj['avg-holo'] ?? cmObj.avg30 ?? cmObj.low;
-      if (typeof cmVal === 'number' && !isNaN(cmVal) && cmVal > 0) {
-        cmUsd = cmVal * (cmObj.unit === 'EUR' ? 1.08 : 1);
-      }
-    }
-
-    // Evaluate TCGplayer prices using the direct variant live price first
-    const tcgObj = activePricing?.tcgplayer || cached?.tcgplayer || (poke.tcgplayer?.prices || poke.tcgplayer);
-    if (tcgObj) {
-      const tcg = tcgObj;
-      const candidates: number[] = [];
-      for (const key of Object.keys(tcg)) {
-        if (typeof tcg[key] === 'object' && tcg[key] !== null) {
-          const sub = tcg[key];
-          const val = sub.marketPrice ?? sub.midPrice ?? sub.lowPrice ?? sub.highPrice ?? sub.market ?? sub.mid ?? sub.low;
-          if (typeof val === 'number' && !isNaN(val) && val > 0) {
-            candidates.push(val);
-          }
-        }
-      }
-
-      if (candidates.length > 0) {
-        // If drawn in Slot 9 Reverse Holo slot, prefer reverseHolofoil price if present
-        if (poke.isReverseHolo && (tcg.reverseHolofoil || tcg.reverse)) {
-          const rev = tcg.reverseHolofoil ?? tcg.reverse;
-          const rVal = rev.marketPrice ?? rev.midPrice ?? rev.lowPrice;
-          foundPrice = (typeof rVal === 'number' && !isNaN(rVal) && rVal > 0) ? rVal : candidates[0];
-        } else if (tcg.holofoil && typeof tcg.holofoil === 'object') {
-          const hVal = tcg.holofoil.marketPrice ?? tcg.holofoil.midPrice ?? tcg.holofoil.lowPrice;
-          foundPrice = (typeof hVal === 'number' && !isNaN(hVal) && hVal > 0) ? hVal : candidates[0];
-        } else if (tcg.normal && typeof tcg.normal === 'object') {
-          const nVal = tcg.normal.marketPrice ?? tcg.normal.midPrice ?? tcg.normal.lowPrice;
-          foundPrice = (typeof nVal === 'number' && !isNaN(nVal) && nVal > 0) ? nVal : candidates[0];
-        } else if (cmUsd > 0 && candidates.length > 1) {
-          let minDelta = Infinity;
-          for (const cand of candidates) {
-            const delta = Math.abs(cand - cmUsd);
-            if (delta < minDelta) {
-              minDelta = delta;
-              foundPrice = cand;
-            }
-          }
-        } else {
-          foundPrice = candidates[0];
-        }
-      }
-    }
-
-    // If no TCGplayer price was found, fallback directly to Cardmarket bedrock
-    if (foundPrice === 0 && cmUsd > 0) {
-      foundPrice = cmUsd;
-    }
-
-    if (foundPrice > 0) return Number(foundPrice.toFixed(2));
-  }
-
-  // 2. Check array prices
-  if (Array.isArray(poke.prices) && poke.prices.length > 0) {
-    let maxPrice = 0;
-    for (const item of poke.prices) {
-      if (item && typeof item === 'object') {
-        const val = item.market ?? item.marketPrice ?? item.price ?? item.value ?? item.amount ?? item.mid ?? item.low;
-        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
-          maxPrice = val;
-        }
-      } else if (typeof item === 'number' && !isNaN(item) && item > maxPrice) {
-        maxPrice = item;
-      }
-    }
-    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
-  }
-
-  // 3. Check legacy tcgplayer object
-  if (poke.tcgplayer?.prices) {
-    const p = poke.tcgplayer.prices as Record<string, any>;
-    let maxPrice = 0;
-    for (const key of Object.keys(p)) {
-      const sub = p[key];
-      if (sub && typeof sub === 'object') {
-        const val = sub.market ?? sub.mid ?? sub.low;
-        if (typeof val === 'number' && !isNaN(val) && val > maxPrice) {
-          maxPrice = val;
-        }
-      }
-    }
-    if (maxPrice > 0) return Number(maxPrice.toFixed(2));
-  }
-
-  if (OVERRIDE_CARD_PRICES[poke.id]) return OVERRIDE_CARD_PRICES[poke.id];
-  if (NAME_OVERRIDE_PRICES[poke.name]) return NAME_OVERRIDE_PRICES[poke.name];
-
-  let hash = 0;
-  const str = poke.id || poke.name || 'card';
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-  const normalizedHash = Math.abs(hash) % 100 / 100;
-
-  const isEnergy = poke.name?.toLowerCase().includes('energy') || poke.id?.toLowerCase().includes('energy');
-  const isExOrMega = poke.name?.includes('ex') || poke.name?.includes('MEGA') || poke.name?.includes('VMAX') || poke.name?.includes('VSTAR');
-  const rarity = poke.rarity || '';
-
-  // If it's an energy card or a common/uncommon card with no direct live market data, fix cost strictly between 1 to 10 cents ($0.01 - $0.10)
-  if (isEnergy || rarity.includes('Common') || rarity.includes('Uncommon') || !rarity) {
-    return Number((0.01 + normalizedHash * 0.09).toFixed(2));
-  }
-
-  const isHolyGrailName = /Charizard|Pikachu|Umbreon|Rayquaza|Giratina|Mewtwo|Lugia|Gengar|Blastoise|Venusaur|Mew/i.test(poke.name || '');
-  const isSecretOrAlt = rarity.includes('Secret') || rarity.includes('Special Illustration') || rarity.includes('Hyper') || rarity.includes('Rainbow') || rarity.includes('Gold');
-  const isUltraOrEx = isExOrMega || rarity.includes('ex') || rarity.includes('VMAX') || rarity.includes('VSTAR') || rarity.includes('Ultra');
-
-  if (isHolyGrailName && (isSecretOrAlt || isUltraOrEx)) {
-    return Number((30.00 + normalizedHash * 60.00).toFixed(2));
-  } else if (isSecretOrAlt) {
-    return Number((15.00 + normalizedHash * 30.00).toFixed(2));
-  } else if (isHolyGrailName || isUltraOrEx || rarity.includes('Double Rare')) {
-    return Number((2.00 + normalizedHash * 8.00).toFixed(2));
-  } else if (rarity.includes('Rare') || rarity.includes('Illustration') || rarity.includes('Holo')) {
-    return Number((0.50 + normalizedHash * 2.50).toFixed(2));
-  } else {
-    return Number((0.01 + normalizedHash * 0.09).toFixed(2));
-  }
-};
 
 const toTitleCase = (str: string) => str.replace(/\b\w+/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 
@@ -1153,6 +1008,7 @@ export default function App() {
   } | null>(null);
 
   useEffect(() => {
+    loadJapaneseMetadata();
     const updateLuckyTimer = () => {
       setLuckyDropSeconds(getRemainingLuckyDropSeconds());
     };
@@ -1801,7 +1657,6 @@ export default function App() {
     const candidates = currentSet.cards.filter(c => !c.name.toLowerCase().includes('energy') && !c.id.toLowerCase().includes('energy'));
     const mapped = candidates.map((card, idx) => {
       const cached = cardFullCache.get(card.id) || scrydexCardFullCache.get(card.id);
-      const isExOrRare = card.name.includes('Charizard') || card.name.includes('Pikachu') || card.name.includes('Umbreon') || card.name.includes('Rayquaza') || card.name.includes('ex') || card.name.includes('VMAX') || card.name.includes('VSTAR') || card.name.includes('MEGA') || card.name.includes('Secret') || card.name.includes('Gold') || card.name.includes('Alt');
       const baseUrl = cached?.image || card.image || `https://assets.tcgdex.net/en/swsh/${currentSet.id}/${card.localId || card.id?.split('-').pop() || idx + 1}`;
       const poke: PokemonCard = {
         ...card,
@@ -1811,7 +1666,7 @@ export default function App() {
           small: getCardImageUrl(baseUrl, 'low'),
           large: getCardImageUrl(baseUrl, 'high'),
         },
-        rarity: isExOrRare ? 'Special Illustration Rare' : (cached?.rarity || card.rarity || 'Rare'),
+        rarity: cached?.rarity || card.rarity || 'Rare',
         pricing: cached?.pricing || (card as any).pricing,
         tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
         cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
