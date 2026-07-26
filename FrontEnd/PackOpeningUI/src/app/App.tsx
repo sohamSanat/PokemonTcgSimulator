@@ -2620,12 +2620,6 @@ export default function App() {
                   <span className="text-gray-500">/</span>
                   <span className="font-mono text-gray-400 text-sm">{cards.length || 11}</span>
                 </div>
-                {isDoubleHitPack && (
-                  <div className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-yellow-400 border border-amber-300 text-black font-black text-[10px] uppercase tracking-wider shadow-[0_0_15px_rgba(245,158,11,0.6)] animate-pulse flex items-center gap-1 shrink-0">
-                    <Zap className="w-3 h-3 text-black fill-black" />
-                    <span>DOUBLE HIT PACK! ⚡💥</span>
-                  </div>
-                )}
                 <div className="w-20 sm:w-28 h-2 bg-white/10 rounded-full overflow-hidden shrink-0">
                   <div
                     className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(245,158,11,0.8)]"
