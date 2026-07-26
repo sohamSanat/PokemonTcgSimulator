@@ -1,0 +1,56 @@
+================================================================================
+1. STEP-BY-STEP SETUP (AFTER CLONING)
+================================================================================
+
+--------------------------------------------------------------------------------
+STEP 1: Navigate to the Repository Root
+--------------------------------------------------------------------------------
+Open your terminal/command prompt and enter the project folder:
+
+  cd PokemonTcgSimulator
+
+
+--------------------------------------------------------------------------------
+STEP 2: Install All Dependencies
+--------------------------------------------------------------------------------
+Run the install command directly from the root directory:
+
+  npm install
+
+* Note: Root scripts automatically run `postinstall` to configure all
+  frontend dependencies for you.
+
+
+--------------------------------------------------------------------------------
+STEP 3: Start the Development Server
+--------------------------------------------------------------------------------
+Run the development command directly from the root directory:
+
+  npm run dev
+
+* What happens automatically:
+  1. The asset manifest generator syncs 2,000+ booster pack wrapper arts
+  2. Vite launches the development server
+  3. Your local server URL will be printed in the terminal (usually http://localhost:5173)
+
+Open your web browser and navigate to:
+  http://localhost:5173
+
+
+================================================================================
+3. OPTIONAL: ADDING GOOGLE GEMINI AI KEY
+================================================================================
+The app works 100% OUT OF THE BOX without any API key (using built-in smart
+local AI fallback engines for vendor haggling and live stream chat).
+
+If you want live Google Gemini AI responses for vendor negotiation & stream chat:
+
+  1. Get a FREE Gemini API key from: https://aistudio.google.com/app/apikey
+  2. Open the file `FrontEnd/PackOpeningUI/.env.example`
+  3. Create a new file named `.env.local` inside `FrontEnd/PackOpeningUI/`
+  4. Add your API key:
+       VITE_GEMINI_API_KEY=your_actual_gemini_api_key_here
+  5. Restart your dev server (`npm run dev`)
+
+
+================================================================================

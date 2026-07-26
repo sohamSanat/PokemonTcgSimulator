@@ -225,9 +225,10 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
     }, 600);
   };
 
-  const handleSendChatMessage = async () => {
-    if (!chatInput.trim() || isVendorTyping) return;
-    const userMsgText = chatInput.trim();
+  const handleSendChatMessage = async (explicitMsg?: string | React.MouseEvent) => {
+    const textToUse = (typeof explicitMsg === 'string' ? explicitMsg : chatInput).trim();
+    if (!textToUse || isVendorTyping) return;
+    const userMsgText = textToUse;
     const newMsg = {
       sender: 'user' as const,
       text: userMsgText,
@@ -838,6 +839,48 @@ export const CardMarketModal = React.memo(({ card, onClose, onAddToBinder, isAdd
                   >
                     <Coins className="w-4 h-4" />
                     <span>Buy · Trade or Cash (${negotiatedPrice.toLocaleString()})</span>
+                  </button>
+                </div>
+
+                {/* ── QUICK PRESET QUESTIONS BAR ──────────────────── */}
+                <div className="px-3 py-1.5 bg-[#0b101d] border-t border-white/10 flex items-center gap-1.5 overflow-x-auto custom-scrollbar shrink-0">
+                  <span className="text-[10px] font-mono text-purple-300 font-bold shrink-0 flex items-center gap-1">
+                    💬 Quick Ask:
+                  </span>
+                  <button
+                    disabled={isVendorTyping}
+                    onClick={() => handleSendChatMessage(`Which set is this ${activePoke.name} from?`)}
+                    className="px-2 py-0.5 rounded-full bg-purple-500/15 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-[10px] font-mono whitespace-nowrap transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    📦 What set?
+                  </button>
+                  <button
+                    disabled={isVendorTyping}
+                    onClick={() => handleSendChatMessage(`Who illustrated this ${activePoke.name}?`)}
+                    className="px-2 py-0.5 rounded-full bg-pink-500/15 hover:bg-pink-500/30 text-pink-300 border border-pink-500/40 text-[10px] font-mono whitespace-nowrap transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    🎨 Who is artist?
+                  </button>
+                  <button
+                    disabled={isVendorTyping}
+                    onClick={() => handleSendChatMessage(`Is this ${activePoke.name} card authentic and verified?`)}
+                    className="px-2 py-0.5 rounded-full bg-blue-500/15 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 text-[10px] font-mono whitespace-nowrap transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    🛡️ Is it authentic?
+                  </button>
+                  <button
+                    disabled={isVendorTyping}
+                    onClick={() => handleSendChatMessage(`What is the exact condition of this ${activePoke.name}?`)}
+                    className="px-2 py-0.5 rounded-full bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-mono whitespace-nowrap transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    💎 What condition?
+                  </button>
+                  <button
+                    disabled={isVendorTyping}
+                    onClick={() => handleSendChatMessage(`Can you do a better discount on the ${activePoke.name}?`)}
+                    className="px-2 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono whitespace-nowrap transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    🏷️ Any discount?
                   </button>
                 </div>
 
