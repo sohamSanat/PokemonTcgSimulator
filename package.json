@@ -1,5 +1,11 @@
 {
-  "dependencies": {
-    "firebase": "^12.16.0"
+  "name": "pokemon-tcg-simulator-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix FrontEnd/PackOpeningUI run dev",
+    "build": "npm --prefix FrontEnd/PackOpeningUI run build",
+    "predev": "npm --prefix FrontEnd/PackOpeningUI run predev",
+    "postinstall": "npm --prefix FrontEnd/PackOpeningUI install"
   }
 }

@@ -141,18 +141,18 @@ Supported card sets and authentic drop mechanics spanning **25+ years of TCG his
 # 1️⃣ Clone the repository
 git clone https://github.com/sohamSanat/PokemonTcgSimulator.git
 
-# 2️⃣ Navigate to the frontend project directory
-cd PokemonTcgSimulator/FrontEnd/PackOpeningUI
+# 2️⃣ Enter project root
+cd PokemonTcgSimulator
 
-# 3️⃣ Install dependencies
+# 3️⃣ Install all dependencies
 npm install
 
-# 4️⃣ Launch the local dev server
+# 4️⃣ Launch local dev server
 npm run dev
 ```
 
 > [!NOTE]
-> The app will run locally at **`http://localhost:5173`**.
+> The app will automatically generate the asset manifests and launch locally at **`http://localhost:5173`** with zero configuration required!
 
 ---
 

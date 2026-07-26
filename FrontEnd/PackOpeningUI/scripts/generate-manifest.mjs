@@ -14,12 +14,15 @@ console.log('Destination:', publicPackArtsDir);
 
 // 1. Copy files from FrontEnd/packArts to public/packArts if source exists
 if (fs.existsSync(frontEndPackArtsDir)) {
-  if (fs.existsSync(publicPackArtsDir)) {
-    fs.rmSync(publicPackArtsDir, { recursive: true, force: true });
+  try {
+    if (!fs.existsSync(publicPackArtsDir)) {
+      fs.mkdirSync(publicPackArtsDir, { recursive: true });
+    }
+    fs.cpSync(frontEndPackArtsDir, publicPackArtsDir, { recursive: true, force: true });
+    console.log('Successfully synced exact current packArts to public/packArts');
+  } catch (err) {
+    console.warn('Pack arts copy warning (proceeding with existing packArts):', err.message);
   }
-  fs.mkdirSync(publicPackArtsDir, { recursive: true });
-  fs.cpSync(frontEndPackArtsDir, publicPackArtsDir, { recursive: true, force: true });
-  console.log('Successfully synced exact current packArts to public/packArts');
 } else {
   console.log('Source FrontEnd/packArts not found, checking public/packArts only.');
 }
