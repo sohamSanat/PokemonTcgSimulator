@@ -19,7 +19,7 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'en_mystery_bronze',
     name: 'Bronze Starter Mystery Pack',
     price: 8.99,
-    description: 'High-value entry mystery pack featuring budget Scarlet & Violet, Mega Evolution, and Sword & Shield booster packs — with lucky hits into vintage grails!',
+    description: 'High-value entry mystery pack featuring budget Scarlet & Violet, Mega Evolution, and Sword & Shield booster packs — plus direct pulls into Flashfire, EX, and Vintage grails!',
     language: 'en',
     badge: '🥉 BRONZE TIER',
     gradient: 'from-amber-900/40 via-stone-900/60 to-amber-950/80',
@@ -27,14 +27,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(217,119,6,0.35)]',
     icon: '📦',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/bronze.webp',
-    setIds: ['me01', 'me03', 'me04', 'sv01', 'sv04', 'sv05', 'sv08', 'sv09', 'swsh04.5', 'swsh05', 'swsh10'],
-    highlightSets: ['Mega Evolution', 'Chaos Rising', 'Scarlet & Violet Base', 'Paradox Rift', 'Surging Sparks', 'Astral Radiance']
+    setIds: ['me01', 'me03', 'me04', 'sv01', 'sv04', 'sv05', 'sv08', 'sv09', 'swsh04.5', 'swsh05', 'swsh10', 'bw1', 'dp1', 'pl1', 'xy2', 'ex1', 'g1'],
+    highlightSets: ['Mega Evolution', 'Scarlet & Violet Base', 'Flashfire', 'EX Ruby & Sapphire', 'Black & White', 'Gym Heroes']
   },
   {
     id: 'en_mystery_silver',
     name: 'Silver Modern Mystery Pack',
     price: 14.99,
-    description: 'Feature-packed modern booster series including Paldea Evolved, Ascended Heroes, Obsidian Flames, and Twilight Masquerade — with lucky hit pulls into rare vintage!',
+    description: 'Feature-packed modern booster series including Paldea Evolved, Obsidian Flames, and Twilight Masquerade — with direct pulls into Team Up, FireRed & LeafGreen, and HGSS grails!',
     language: 'en',
     badge: '🥈 SILVER TIER',
     gradient: 'from-slate-700/40 via-zinc-900/60 to-slate-900/80',
@@ -42,14 +42,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(203,213,225,0.35)]',
     icon: '🥈',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/silver.webp',
-    setIds: ['me02.5', 'sv02', 'sv03', 'sv06', 'sv07', 'swsh01', 'swsh02', 'swsh03', 'swsh06', 'swsh12'],
-    highlightSets: ['Ascended Heroes', 'Paldea Evolved', 'Obsidian Flames', 'Twilight Masquerade', 'Stellar Crown', 'Silver Tempest']
+    setIds: ['me02.5', 'sv02', 'sv03', 'sv06', 'sv07', 'swsh01', 'swsh02', 'swsh03', 'swsh06', 'swsh12', 'sm9', 'hgss1', 'dp3', 'ex6', 'bw5', 'dc1', 'ex3'],
+    highlightSets: ['Team Up', 'FireRed & LeafGreen', 'Paldea Evolved', 'HGSS Base', 'Dragon Vault', 'Silver Tempest']
   },
   {
     id: 'en_mystery_gold',
     name: 'Gold Chase Mystery Pack',
     price: 24.99,
-    description: 'Chance to hit fan-favorite heavyweights: Pokémon 151, Prismatic Evolutions, Crown Zenith, Lost Origin, and Fusion Strike plus lucky vintage grails!',
+    description: 'Chance to hit fan-favorite heavyweights: Pokémon 151, Prismatic Evolutions, Crown Zenith, Lost Origin, plus Team Rocket, EX Deoxys, & EX Dragon Frontiers!',
     language: 'en',
     badge: '🥇 GOLD TIER',
     gradient: 'from-amber-500/30 via-yellow-950/50 to-amber-900/80',
@@ -57,14 +57,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(245,158,11,0.45)]',
     icon: '✨',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/gold.webp',
-    setIds: ['sv03.5', 'sv08.5', 'swsh12.5', 'swsh11', 'swsh08', 'swsh09', 'paldean-fates', 'shrouded-fable'],
-    highlightSets: ['Pokémon 151', 'Prismatic Evolutions', 'Crown Zenith', 'Lost Origin', 'Fusion Strike', 'Brilliant Stars']
+    setIds: ['sv03.5', 'sv08.5', 'swsh12.5', 'swsh11', 'swsh08', 'swsh09', 'paldean-fates', 'shrouded-fable', 'base5', 'ex8', 'ex15', 'pl3', 'col1', 'xy4', 'bw8', 'ex5'],
+    highlightSets: ['Pokémon 151', 'Prismatic Evolutions', 'Team Rocket', 'EX Deoxys', 'EX Dragon Frontiers', 'Crown Zenith']
   },
   {
     id: 'en_mystery_diamond',
     name: 'Diamond High Roller Mystery Pack',
     price: 49.99,
-    description: 'High-stakes mystery box containing legendary grails like Evolving Skies, Emerging Powers, Dragon Vault, Celebrations, Hidden Fates, and Ultra Prism!',
+    description: 'High-stakes mystery box containing legendary grails: WOTC Base Set, EX Team Rocket Returns, EX Delta Species, Evolving Skies, Jungle, and Celebrations!',
     language: 'en',
     badge: '💎 DIAMOND TIER',
     gradient: 'from-cyan-500/30 via-blue-950/50 to-sky-900/80',
@@ -72,14 +72,14 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.5)]',
     icon: '💎',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/diamond.webp',
-    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault', 'bw2', 'dv1'],
-    highlightSets: ['Evolving Skies', 'Emerging Powers', 'Dragon Vault', 'Celebrations', 'Hidden Fates', 'Ultra Prism']
+    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault', 'bw2', 'dv1', 'base1', 'base2', 'base3', 'ex7', 'ex11', 'ex14', 'hgss4', 'dp7', 'bw6'],
+    highlightSets: ['WOTC Base Set', 'Evolving Skies', 'EX Team Rocket Returns', 'EX Delta Species', 'Jungle', 'Celebrations']
   },
   {
     id: 'en_mystery_vintage',
     name: 'Vintage Master Mystery Pack',
     price: 99.99,
-    description: 'Rare vintage mystery packs across Black & White, HGSS, Sun & Moon, & XY eras including Next Destinies, Plasma Blast, Legendary Treasures, Unleashed, & Cosmic Eclipse!',
+    description: 'Rare vintage mystery packs across WOTC, EX Series, Diamond & Pearl, & Sun & Moon including Base Set, EX Deoxys, EX Team Rocket Returns, & Cosmic Eclipse!',
     language: 'en',
     badge: '👑 VINTAGE MASTER',
     gradient: 'from-purple-600/30 via-indigo-950/50 to-purple-900/80',
@@ -87,8 +87,8 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(168,85,247,0.5)]',
     icon: '🔮',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/vintage.webp',
-    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12', 'bw3', 'bw4', 'bw7', 'bw10', 'bw11', 'hgss2', 'hgss3'],
-    highlightSets: ['Legendary Treasures', 'Next Destinies', 'Plasma Blast', 'Unleashed', 'Cosmic Eclipse', 'XY Evolutions']
+    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12', 'bw3', 'bw4', 'bw7', 'bw10', 'bw11', 'hgss2', 'hgss3', 'base1', 'base4', 'base5', 'ex1', 'ex7', 'ex8', 'ex15', 'dp6', 'pl4', 'bw9', 'sm9'],
+    highlightSets: ['WOTC Base Set', 'EX Deoxys', 'EX Team Rocket Returns', 'EX Dragon Frontiers', 'Team Up', 'Cosmic Eclipse']
   },
   {
     id: 'en_mystery_god',
@@ -119,7 +119,7 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     id: 'ja_mystery_starter',
     name: 'Japanese Starter Mystery Pack',
     price: 3.99,
-    description: 'Authentic Japanese Scarlet & Violet booster packs including Violet ex, Scarlet ex, Triplet Beat, Clay Burst, and Wild Force!',
+    description: 'Authentic Japanese Scarlet & Violet booster packs including Violet ex, Scarlet ex, Triplet Beat, Clay Burst, plus lucky vintage Base & Team Rocket hits!',
     language: 'ja',
     badge: '🌸 JAPANESE STARTER',
     gradient: 'from-pink-600/30 via-rose-950/50 to-pink-900/80',
@@ -127,14 +127,14 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(244,114,182,0.35)]',
     icon: '🌸',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/starter.webp',
-    setIds: ['SV1S_ja', 'SV1V_ja', 'SV1a_ja', 'SV2P_ja', 'SV2D_ja', 'SV3_ja', 'SV5K_ja', 'SV5M_ja'],
-    highlightSets: ['Violet ex', 'Scarlet ex', 'Triplet Beat', 'Clay Burst', 'Snow Hazard', 'Ruler of the Black Flame']
+    setIds: ['SV1S_ja', 'SV1V_ja', 'SV1a_ja', 'SV2P_ja', 'SV2D_ja', 'SV3_ja', 'SV5K_ja', 'SV5M_ja', 'PMCG1_ja', 'PMCG5_ja', 'neo1_ja'],
+    highlightSets: ['Violet ex', 'Scarlet ex', 'Expansion Pack (Base)', 'Team Rocket', 'Clay Burst', 'Neo Genesis']
   },
   {
     id: 'ja_mystery_highclass',
     name: 'Japanese High-Class Mystery Pack',
     price: 9.99,
-    description: 'Premium Japanese High-Class sets featuring Pokémon Card 151, Shiny Treasure ex, Terastal Fest ex, VSTAR Universe, and Eevee Heroes!',
+    description: 'Premium Japanese High-Class sets featuring Pokémon Card 151, Shiny Treasure ex, Terastal Fest ex, VSTAR Universe, plus VS Series & Web Series!',
     language: 'ja',
     badge: '✨ HIGH-CLASS SPECIAL',
     gradient: 'from-emerald-500/30 via-teal-950/50 to-emerald-900/80',
@@ -142,14 +142,14 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(52,211,153,0.45)]',
     icon: '✨',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/high-class.webp',
-    setIds: ['SV2a_ja', 'SV4a_ja', 'SV8a_ja', 'S12a_ja', 'S8b_ja', 'S4a_ja', 'S6a_ja'],
-    highlightSets: ['Pokémon Card 151', 'Shiny Treasure ex', 'Terastal Fest ex', 'VSTAR Universe', 'VMAX Climax', 'Eevee Heroes']
+    setIds: ['SV2a_ja', 'SV4a_ja', 'SV8a_ja', 'S12a_ja', 'S8b_ja', 'S4a_ja', 'S6a_ja', 'VS1_ja', 'web1_ja', 'SM12a_ja'],
+    highlightSets: ['Pokémon Card 151', 'Shiny Treasure ex', 'Terastal Fest ex', 'Pokémon VS', 'Pokémon Web', 'VSTAR Universe']
   },
   {
     id: 'ja_mystery_swsh',
     name: 'Japanese SwSh Collector Mystery Pack',
     price: 19.99,
-    description: 'Coveted Japanese Sword & Shield expansions like Blue Sky Stream, Skyscraping Perfection, Lost Abyss, and Paradigm Trigger!',
+    description: 'Coveted Japanese Sword & Shield expansions like Blue Sky Stream, Skyscraping Perfection, Lost Abyss, plus Fossil & Neo Revelation grails!',
     language: 'ja',
     badge: '⚔️ SWSH COLLECTOR',
     gradient: 'from-blue-600/30 via-indigo-950/50 to-sky-900/80',
@@ -157,14 +157,14 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(96,165,250,0.45)]',
     icon: '⚔️',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/collector.webp',
-    setIds: ['S7R_ja', 'S7D_ja', 'S11_ja', 'S12_ja', 'S10P_ja', 'S10D_ja', 'S9_ja', 'S8a_ja'],
-    highlightSets: ['Blue Sky Stream', 'Skyscraping Perfection', 'Lost Abyss', 'Paradigm Trigger', 'Space Juggler']
+    setIds: ['S7R_ja', 'S7D_ja', 'S11_ja', 'S12_ja', 'S10P_ja', 'S10D_ja', 'S9_ja', 'S8a_ja', 'PMCG3_ja', 'neo3_ja'],
+    highlightSets: ['Blue Sky Stream', 'Skyscraping Perfection', 'Lost Abyss', 'Fossil', 'Neo Revelation', 'Space Juggler']
   },
   {
     id: 'ja_mystery_sm',
     name: 'Japanese Sun & Moon Vault Mystery Pack',
     price: 49.99,
-    description: 'Grail Japanese Sun & Moon sets including Dream League, Tag Team All Stars, Ultra Shiny, Tag Bolt, and Alter Genesis!',
+    description: 'Grail Japanese Sun & Moon sets including Dream League, Tag Team All Stars, Ultra Shiny, Tag Bolt, plus Neo Destiny & WOTC Base!',
     language: 'ja',
     badge: '☀️ SUN & MOON VAULT',
     gradient: 'from-amber-500/30 via-orange-950/50 to-red-900/80',
@@ -172,8 +172,8 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(251,146,60,0.5)]',
     icon: '☀️',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.webp',
-    setIds: ['SM12a_ja', 'SM11b_ja', 'SM8b_ja', 'SM9_ja', 'SM12_ja', 'SM10_ja', 'SM3+_ja'],
-    highlightSets: ['Tag Team All Stars', 'Dream League', 'GX Ultra Shiny', 'Tag Bolt', 'Alter Genesis', 'Double Blaze']
+    setIds: ['SM12a_ja', 'SM11b_ja', 'SM8b_ja', 'SM9_ja', 'SM12_ja', 'SM10_ja', 'SM3+_ja', 'neo4_ja', 'PMCG1_ja'],
+    highlightSets: ['Tag Team All Stars', 'Dream League', 'Neo Destiny', 'Expansion Pack (Base)', 'GX Ultra Shiny', 'Tag Bolt']
   },
   {
     id: 'ja_mystery_vintage',
