@@ -137,6 +137,38 @@ export const getCardImageUrl = (baseUrl?: string, quality: 'low' | 'high' = 'hig
   return baseUrl;
 };
 
+export const getBulletproofCardImageUrl = (card?: any, quality: 'low' | 'high' = 'high'): string => {
+  if (!card) return 'https://assets.tcgdex.net/en/swsh/swsh3/154/high.webp';
+  
+  if (typeof card === 'string') {
+    return getCardImageUrl(card, quality);
+  }
+
+  const rawUrl = card.images?.large || card.images?.small || card.image || card.imageUrl || card.img;
+  if (rawUrl && typeof rawUrl === 'string' && rawUrl.trim()) {
+    const formatted = getCardImageUrl(rawUrl, quality);
+    if (formatted) return formatted;
+  }
+
+  // Fallback construction from card.id or localId + set ID
+  const cardId = String(card.id || '').trim();
+  if (cardId.includes('-')) {
+    const parts = cardId.split('-');
+    const setId = parts[0].toLowerCase();
+    const localId = parts[1];
+    if (setId && localId) {
+      if (setId.endsWith('_ja')) {
+        const cleanSet = setId.replace('_ja', '');
+        return `https://images.scrydex.com/pokemon/${cleanSet}_ja-${localId}/large`;
+      }
+      const series = setId.startsWith('sv') ? 'sv' : setId.startsWith('sm') ? 'sm' : setId.startsWith('xy') ? 'xy' : setId.startsWith('me') ? 'me' : 'swsh';
+      return `https://assets.tcgdex.net/en/${series}/${setId}/${localId}/${quality === 'low' ? 'low.webp' : 'high.webp'}`;
+    }
+  }
+
+  return `https://images.scrydex.com/pokemon/${cardId || 'swsh3-1'}/large`;
+};
+
 export function preloadPackImages(cards: PokemonCard[]): Promise<void> {
   return new Promise((resolve) => {
     if (!cards || cards.length === 0) {
