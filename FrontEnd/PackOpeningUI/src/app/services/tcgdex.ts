@@ -612,29 +612,19 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
   const isEnergy = nameLower.includes('energy') || idStr.toLowerCase().includes('energy');
   if (isEnergy) return 0.03;
 
-  // 1. Check Japanese Card Real Price Cache
   const rawSet = idStr.split('-')[0] || '';
   const localNum = poke.localId || idStr.split('-')[1] || '';
-  const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(idStr);
-  if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
-    return Number(jaRealPrice.toFixed(2));
-  }
+  const isJapaneseCard = idStr.includes('_ja') || rawSet.toLowerCase().endsWith('ja');
 
-  // 2. Check English Card Real Price Cache (Static Market Database)
-  if (enCardPricesCache && Object.keys(enCardPricesCache).length > 0) {
-    const cleanId = idStr.toLowerCase();
-    const setNum = (rawSet && localNum) ? `${rawSet}-${localNum}`.toLowerCase() : '';
-    const enPrice =
-      enCardPricesCache[idStr] ??
-      enCardPricesCache[cleanId] ??
-      (setNum ? enCardPricesCache[setNum] : undefined) ??
-      (poke.id ? enCardPricesCache[poke.id] : undefined);
-    if (typeof enPrice === 'number' && !isNaN(enPrice) && enPrice > 0) {
-      return Number(enPrice.toFixed(2));
+  // 1. JAPANESE SIDE: Primary lookup from Japanese Price Charts (ja-card-prices.json)
+  if (isJapaneseCard) {
+    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(idStr);
+    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+      return Number(jaRealPrice.toFixed(2));
     }
   }
 
-  // 3. Live TCGdex / TCGplayer / Cardmarket API cache
+  // 2. ENGLISH SIDE: Primary lookup from Live API (TCGDex / TCGplayer / Cardmarket live data)
   const cached = cardFullCache.get(idStr);
   const activePricing = cached?.pricing || (cached?.tcgplayer || cached?.cardmarket ? { tcgplayer: cached.tcgplayer, cardmarket: cached.cardmarket } : poke.pricing);
 
@@ -730,11 +720,33 @@ export const getRealCardPrice = (poke: PokemonCard): number => {
     if (maxPrice > 0) return Number(maxPrice.toFixed(2));
   }
 
-  // 4. Price overrides
+  // 3. ENGLISH FALLBACK: Static English Price Chart Database (en-card-prices.json)
+  if (enCardPricesCache && Object.keys(enCardPricesCache).length > 0) {
+    const cleanId = idStr.toLowerCase();
+    const setNum = (rawSet && localNum) ? `${rawSet}-${localNum}`.toLowerCase() : '';
+    const enPrice =
+      enCardPricesCache[idStr] ??
+      enCardPricesCache[cleanId] ??
+      (setNum ? enCardPricesCache[setNum] : undefined) ??
+      (poke.id ? enCardPricesCache[poke.id] : undefined);
+    if (typeof enPrice === 'number' && !isNaN(enPrice) && enPrice > 0) {
+      return Number(enPrice.toFixed(2));
+    }
+  }
+
+  // 4. JAPANESE FALLBACK for cards without explicit _ja tag
+  if (!isJapaneseCard) {
+    const jaRealPrice = getJapaneseCardRealPrice(rawSet, localNum) ?? getJapaneseCardRealPrice(idStr);
+    if (jaRealPrice !== undefined && typeof jaRealPrice === 'number' && !isNaN(jaRealPrice) && jaRealPrice > 0) {
+      return Number(jaRealPrice.toFixed(2));
+    }
+  }
+
+  // 5. Price overrides
   if (OVERRIDE_CARD_PRICES[idStr]) return OVERRIDE_CARD_PRICES[idStr];
   if (NAME_OVERRIDE_PRICES[poke.name]) return NAME_OVERRIDE_PRICES[poke.name];
 
-  // 5. Deterministic fallback calculation (stable across re-renders)
+  // 6. Deterministic fallback calculation (stable across re-renders)
   let hash = 0;
   const str = idStr || poke.name || 'card';
   for (let i = 0; i < str.length; i++) {
