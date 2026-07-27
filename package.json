@@ -7,5 +7,8 @@
     "build": "npm --prefix FrontEnd/PackOpeningUI run build",
     "predev": "npm --prefix FrontEnd/PackOpeningUI run predev",
     "postinstall": "npm --prefix FrontEnd/PackOpeningUI install"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
