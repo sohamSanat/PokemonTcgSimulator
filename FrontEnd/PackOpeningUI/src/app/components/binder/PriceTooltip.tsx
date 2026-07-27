@@ -1,5 +1,6 @@
 import React from "react";
 import type { Card } from "./types";
+import { resolveVendorCardRealPrice } from "../../services/scrydex";
 
 interface Props {
   card: Card;
@@ -7,9 +8,16 @@ interface Props {
 }
 
 function PriceTooltip({ card, index = 4 }: Props) {
-  const priceVal = typeof card?.currentPrice === 'number' && !isNaN(card.currentPrice)
-    ? card.currentPrice
-    : (typeof card?.originalValue === 'number' && !isNaN(card.originalValue) ? card.originalValue : 0.50);
+  const c = card as any;
+  const priceVal = typeof c?.currentPrice === 'number' && !isNaN(c.currentPrice) && c.currentPrice > 0
+    ? c.currentPrice
+    : (typeof c?.originalValue === 'number' && !isNaN(c.originalValue) && c.originalValue > 0
+      ? c.originalValue
+      : (typeof c?.value === 'number' && !isNaN(c.value) && c.value > 0
+        ? c.value
+        : (typeof c?.marketPrice === 'number' && !isNaN(c.marketPrice) && c.marketPrice > 0
+          ? c.marketPrice
+          : resolveVendorCardRealPrice(card))));
 
   const changeVal = typeof card?.priceChange === 'number' && !isNaN(card.priceChange)
     ? card.priceChange
@@ -88,7 +96,7 @@ function PriceTooltip({ card, index = 4 }: Props) {
         backdropFilter: "blur(24px)",
         boxShadow: "0 24px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06) inset, 0 10px 30px rgba(0,0,0,0.5)",
         zIndex: 500,
-        pointerEvents: "none",
+        pointerEvents: "auto",
         animation: "fadeInScale 0.15s ease-out forwards",
       }}
     >

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Crown, FolderPlus, Sparkles, ChevronRight, ChevronDown, Layers, Check } from 'lucide-react';
 import { MASTER_SET_GENERATIONS, type Binder } from './types';
@@ -17,6 +17,7 @@ interface CreateBinderModalProps {
 }
 
 const GEN_ICONS: Record<string, string> = {
+  "Mega Evolution Series": "🔥",
   "Scarlet & Violet Series": "⚡",
   "Sword & Shield Series": "🛡️",
   "Sun & Moon Series": "☀️",
@@ -36,10 +37,25 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
   const [selectedSetId, setSelectedSetId] = useState<string>('');
   const [isGenDropdownOpen, setIsGenDropdownOpen] = useState<boolean>(false);
 
+  const currentGen = useMemo(() => {
+    return MASTER_SET_GENERATIONS[selectedGenIndex] || MASTER_SET_GENERATIONS[0];
+  }, [selectedGenIndex]);
+
+  const selectedSet = useMemo(() => {
+    if (!currentGen?.sets) return undefined;
+    return currentGen.sets.find(s => s.id === selectedSetId) || currentGen.sets[0];
+  }, [currentGen, selectedSetId]);
+
   if (!isOpen) return null;
 
-  const currentGen = MASTER_SET_GENERATIONS[selectedGenIndex];
-  const selectedSet = currentGen?.sets.find(s => s.id === selectedSetId) || currentGen?.sets[0];
+  const handleSelectGen = (idx: number) => {
+    setSelectedGenIndex(idx);
+    const gen = MASTER_SET_GENERATIONS[idx];
+    if (gen?.sets[0]) {
+      setSelectedSetId(gen.sets[0].id);
+    }
+    setIsGenDropdownOpen(false);
+  };
 
   const handleCreate = () => {
     if (binderType === 'normal') {
@@ -70,15 +86,16 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
         className="fixed inset-0 z-[9500] flex items-center justify-center p-4"
-        style={{ backdropFilter: 'blur(16px)', background: 'rgba(0,0,0,0.8)' }}
+        style={{ backdropFilter: 'blur(8px)', background: 'rgba(0,0,0,0.75)' }}
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 20 }}
+          initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 20 }}
-          transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+          exit={{ opacity: 0, scale: 0.96, y: 12 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
           onClick={e => e.stopPropagation()}
           className="w-full max-w-xl flex flex-col rounded-3xl overflow-hidden shadow-2xl border border-white/10"
           style={{
@@ -99,7 +116,7 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
             </div>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors duration-100"
             >
               <X className="w-5 h-5" />
             </button>
@@ -116,7 +133,7 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                 <button
                   type="button"
                   onClick={() => { setBinderType('normal'); setIsGenDropdownOpen(false); }}
-                  className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border text-left transition-colors duration-100 relative overflow-hidden flex flex-col justify-between cursor-pointer ${
                     binderType === 'normal'
                       ? 'border-emerald-500/80 bg-emerald-500/10 text-white shadow-lg shadow-emerald-500/10'
                       : 'border-white/10 bg-white/5 text-gray-400 hover:border-white/20 hover:bg-white/8'
@@ -147,7 +164,7 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                       setSelectedSetId(currentGen.sets[0].id);
                     }
                   }}
-                  className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between ${
+                  className={`p-4 rounded-2xl border text-left transition-colors duration-100 relative overflow-hidden flex flex-col justify-between cursor-pointer ${
                     binderType === 'masterSet'
                       ? 'border-amber-500/80 bg-gradient-to-br from-amber-500/20 to-purple-600/20 text-white shadow-lg shadow-amber-500/15'
                       : 'border-white/10 bg-white/5 text-gray-400 hover:border-white/20 hover:bg-white/8'
@@ -185,7 +202,7 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                   value={customName}
                   onChange={e => setCustomName(e.target.value)}
                   placeholder="e.g. Vintage Holos, Secret Rares, Charizards..."
-                  className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-emerald-500/50 transition-all"
+                  className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors duration-100"
                   autoFocus
                 />
               </div>
@@ -201,7 +218,7 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                   <button
                     type="button"
                     onClick={() => setIsGenDropdownOpen(!isGenDropdownOpen)}
-                    className="w-full px-4 py-3 rounded-2xl bg-[#181824] border border-amber-500/40 hover:border-amber-400 text-white text-sm flex items-center justify-between transition-all shadow-lg cursor-pointer"
+                    className="w-full px-4 py-3 rounded-2xl bg-[#181824] border border-amber-500/40 hover:border-amber-400 text-white text-sm flex items-center justify-between transition-colors duration-100 shadow-lg cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="text-base">{GEN_ICONS[currentGen.name] || '⚡'}</span>
@@ -210,52 +227,40 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                         {currentGen.sets.length} sets
                       </span>
                     </div>
-                    <ChevronDown className={`w-4 h-4 text-amber-400 transition-transform duration-200 ${isGenDropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-amber-400 transition-transform duration-150 ${isGenDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Custom Glassmorphism Dropdown Menu */}
-                  <AnimatePresence>
-                    {isGenDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                        transition={{ duration: 0.15 }}
-                        className="mt-2 p-2 rounded-2xl bg-[#12121a] border border-amber-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.9)] space-y-1 max-h-60 overflow-y-auto custom-scrollbar z-30 relative"
-                      >
-                        {MASTER_SET_GENERATIONS.map((gen, idx) => {
-                          const isSelected = selectedGenIndex === idx;
-                          return (
-                            <button
-                              key={gen.name}
-                              type="button"
-                              onClick={() => {
-                                setSelectedGenIndex(idx);
-                                if (gen.sets[0]) setSelectedSetId(gen.sets[0].id);
-                                setIsGenDropdownOpen(false);
-                              }}
-                              className={`w-full px-3.5 py-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
-                                isSelected
-                                  ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-black shadow-md'
-                                  : 'border-transparent text-gray-300 hover:bg-white/8 hover:text-white'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <span className="text-base">{GEN_ICONS[gen.name] || '⚡'}</span>
-                                <span className="text-xs truncate font-medium">{gen.name}</span>
-                              </div>
-                              <div className="flex items-center gap-2 shrink-0">
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-black/40 text-gray-400 border border-white/5">
-                                  {gen.sets.length} sets
-                                </span>
-                                {isSelected && <Check className="w-4 h-4 text-amber-400 font-black" />}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {isGenDropdownOpen && (
+                    <div className="mt-2 p-2 rounded-2xl bg-[#12121a] border border-amber-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.9)] space-y-1 max-h-60 overflow-y-auto custom-scrollbar z-30 relative animate-in fade-in duration-100">
+                      {MASTER_SET_GENERATIONS.map((gen, idx) => {
+                        const isSelected = selectedGenIndex === idx;
+                        return (
+                          <button
+                            key={gen.name}
+                            type="button"
+                            onClick={() => handleSelectGen(idx)}
+                            className={`w-full px-3.5 py-2.5 rounded-xl border text-left flex items-center justify-between transition-colors duration-100 cursor-pointer ${
+                              isSelected
+                                ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-black shadow-md'
+                                : 'border-transparent text-gray-300 hover:bg-white/8 hover:text-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="text-base">{GEN_ICONS[gen.name] || '⚡'}</span>
+                              <span className="text-xs truncate font-medium">{gen.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-black/40 text-gray-400 border border-white/5">
+                                {gen.sets.length} sets
+                              </span>
+                              {isSelected && <Check className="w-4 h-4 text-amber-400 font-black" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 {/* Set Selector */}
@@ -265,13 +270,13 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto custom-scrollbar p-1">
                     {currentGen.sets.map(s => {
-                      const isSelected = (selectedSetId || currentGen.sets[0].id) === s.id;
+                      const isSelected = selectedSet?.id === s.id;
                       return (
                         <button
                           key={s.id}
                           type="button"
                           onClick={() => setSelectedSetId(s.id)}
-                          className={`px-3 py-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                          className={`px-3 py-2.5 rounded-xl border text-left flex items-center justify-between transition-colors duration-100 cursor-pointer ${
                             isSelected
                               ? 'border-amber-400 bg-amber-500/20 text-amber-300 font-bold shadow-md shadow-amber-500/10'
                               : 'border-white/5 bg-white/5 text-gray-300 hover:bg-white/10 hover:border-white/15'
@@ -307,13 +312,13 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
           <div className="px-6 py-4 border-t border-white/10 bg-white/5 flex items-center justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 text-xs font-bold transition-all"
+              className="px-4 py-2.5 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 text-xs font-bold transition-colors duration-100"
             >
               Cancel
             </button>
             <button
               onClick={handleCreate}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black text-black flex items-center gap-2 shadow-lg transition-all cursor-pointer ${
+              className={`px-6 py-2.5 rounded-xl text-xs font-black text-black flex items-center gap-2 shadow-lg transition-all duration-100 cursor-pointer ${
                 binderType === 'masterSet'
                   ? 'bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:brightness-110 shadow-amber-500/25'
                   : 'bg-emerald-400 hover:bg-emerald-300 shadow-emerald-500/25'
@@ -328,3 +333,4 @@ export default function CreateBinderModal({ isOpen, onClose, onCreateBinder }: C
     </AnimatePresence>
   );
 }
+

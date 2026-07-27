@@ -240,6 +240,17 @@ export interface GenerationOption {
 
 export const MASTER_SET_GENERATIONS: GenerationOption[] = [
   {
+    name: "Mega Evolution Series",
+    sets: [
+      { id: "me01", name: "Mega Evolution Base", totalCards: 200 },
+      { id: "me02", name: "Phantasmal Flames", totalCards: 185 },
+      { id: "me02.5", name: "Ascended Heroes", totalCards: 210 },
+      { id: "me03", name: "Perfect Order", totalCards: 190 },
+      { id: "me04", name: "Chaos Rising", totalCards: 195 },
+      { id: "me05", name: "Pitch Black", totalCards: 180 },
+    ]
+  },
+  {
     name: "Scarlet & Violet Series",
     sets: [
       { id: "sv3pt5", name: "151", totalCards: 207 },

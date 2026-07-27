@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Card } from "./types";
@@ -36,6 +36,23 @@ interface Props {
 function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: Props) {
   const [hovered, setHovered] = useState(false);
   const [priceOpen, setPriceOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!priceOpen) return;
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (containerRef.current && containerRef.current.contains(e.target as Node)) {
+        return;
+      }
+      setPriceOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [priceOpen]);
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -43,7 +60,6 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
 
   const handleMouseLeave = () => {
     setHovered(false);
-    setPriceOpen(false);
   };
 
   const sortableId = card?.id ?? `empty-${index}`;
@@ -144,7 +160,10 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
 
   return (
     <div
-      ref={setNodeRef}
+      ref={(node) => {
+        setNodeRef(node);
+        containerRef.current = node;
+      }}
       {...attributes}
       {...listeners}
       style={{
@@ -287,6 +306,9 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
                 e.stopPropagation();
                 onToggleFavorite && onToggleFavorite(card.id);
               }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
               title={card.favorite ? "Remove from Favorites" : "Add to Favorites"}
               style={{
                 position: "absolute",
@@ -331,13 +353,16 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
                card.rarity === "Ultra Rare" ? "UR" : card.rarity[0] || 'C'}
             </div>
 
-            {/* Price Button — visible on hover only */}
-            {hovered && (
+            {/* Price Button — visible on hover or when price tooltip is open */}
+            {(hovered || priceOpen) && (
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // don't trigger favorite toggle
+                  e.stopPropagation(); // don't trigger favorite toggle or card inspect
                   setPriceOpen(prev => !prev);
                 }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
                 style={{
                   position: "absolute",
                   bottom: 30,
@@ -397,8 +422,8 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
         )}
       </div>
 
-      {/* Price Tooltip — only shown when Price button is clicked */}
-      {hovered && priceOpen && <PriceTooltip card={card} index={index} />}
+      {/* Price Tooltip — shown when Price button is clicked */}
+      {priceOpen && <PriceTooltip card={card} index={index} />}
     </div>
   );
 }

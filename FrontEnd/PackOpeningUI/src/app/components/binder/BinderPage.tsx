@@ -132,7 +132,7 @@ function BinderPage({
               padding: "28px 28px 32px 84px",
               boxShadow: "0 40px 120px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.15), 0 0 0 1px rgba(0,0,0,0.8)",
               position: "relative",
-              overflow: "hidden"
+              overflow: "visible"
             }}
           >
             {/* Binder Binding Spine & Metal Rings on LEFT edge */}
