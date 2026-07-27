@@ -55,21 +55,31 @@
 ## 📸 Interface Showcase
 
 <div align="center">
-  <table>
-    <tr>
-      <td width="68%" align="center" valign="top">
-        <h3>🖥️ Desktop Main Page</h3>
-        <a href="docs/assets/desktop-preview.png">
-          <img src="docs/assets/desktop-preview.png" alt="Pokémon TCG Simulator PC Main Page" width="100%" />
-        </a>
-      </td>
-      <td width="32%" align="center" valign="top">
-        <h3>📱 Mobile Main Page</h3>
-        <a href="docs/assets/mobile-preview.png">
-          <img src="docs/assets/mobile-preview.png" alt="Pokémon TCG Simulator Mobile Main Page" width="100%" />
-        </a>
-      </td>
-    </tr>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th width="65%" align="center"><b>🖥️ Desktop Main Page</b></th>
+        <th width="35%" align="center"><b>📱 Mobile Main Page</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td width="65%" align="center" valign="middle">
+          <p align="center">
+            <a href="docs/assets/desktop-preview.png">
+              <img src="docs/assets/desktop-preview.png" alt="Pokémon TCG Simulator PC Main Page" width="100%" align="center" />
+            </a>
+          </p>
+        </td>
+        <td width="35%" align="center" valign="middle">
+          <p align="center">
+            <a href="docs/assets/mobile-preview.png">
+              <img src="docs/assets/mobile-preview.png" alt="Pokémon TCG Simulator Mobile Main Page" width="100%" align="center" />
+            </a>
+          </p>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </div>
 
