@@ -143,11 +143,30 @@
 > [!NOTE]
 > **Built for Mobile & Touch**: The entire application is engineered from the ground up to deliver a native app-like experience on smartphones and tablets. Whether tearing open booster foil wrappers with a swipe or browsing binders on mobile web browsers, everything runs butter-smooth at 60fps.
 
-<p align="center">
-  <a href="docs/assets/mobile-preview.png">
-    <img src="docs/assets/mobile-preview.png" alt="Mobile Experience Preview" width="300" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" />
-  </a>
-</p>
+<div align="center">
+  <table width="100%">
+    <tr>
+      <td width="33.3%" align="center" valign="middle">
+        <b>📱 Main Booster Arena</b><br/><br/>
+        <a href="docs/assets/mobile-preview.png">
+          <img src="docs/assets/mobile-preview.png" alt="Mobile View - Pack Tear Arena" width="100%" />
+        </a>
+      </td>
+      <td width="33.3%" align="center" valign="middle">
+        <b>📱 Card Inspection & Stats</b><br/><br/>
+        <a href="docs/assets/mobile-preview-2.png">
+          <img src="docs/assets/mobile-preview-2.png" alt="Mobile View - Live Stats & Grails" width="100%" />
+        </a>
+      </td>
+      <td width="33.3%" align="center" valign="middle">
+        <b>📱 Card Binder & Collection</b><br/><br/>
+        <a href="docs/assets/mobile-preview-3.png">
+          <img src="docs/assets/mobile-preview-3.png" alt="Mobile View - Collection & Binders" width="100%" />
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ```
  ┌──────────────────────────────────────────────────────────────────────────┐
