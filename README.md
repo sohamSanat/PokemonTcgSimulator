@@ -26,6 +26,7 @@
 
   <p align="center">
     <a href="https://pokemontcgsim.vercel.app/"><b>✨ Launch App</b></a> •
+    <a href="#-interface-showcase"><b>📸 Showcase</b></a> •
     <a href="#-key-features"><b>🔥 Features</b></a> •
     <a href="#-mobile-first--touch-experience"><b>📱 Mobile</b></a> •
     <a href="#-generation--set-coverage"><b>⚡ Sets & Eras</b></a> •
@@ -48,6 +49,29 @@
  │    tear & holo shimmer  │    with real viewer orders  │    Market P/L    │
  └──────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 📸 Interface Showcase
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="68%" align="center" valign="top">
+        <h3>🖥️ Desktop Main Page</h3>
+        <a href="docs/assets/desktop-preview.png">
+          <img src="docs/assets/desktop-preview.png" alt="Pokémon TCG Simulator PC Main Page" width="100%" />
+        </a>
+      </td>
+      <td width="32%" align="center" valign="top">
+        <h3>📱 Mobile Main Page</h3>
+        <a href="docs/assets/mobile-preview.png">
+          <img src="docs/assets/mobile-preview.png" alt="Pokémon TCG Simulator Mobile Main Page" width="100%" />
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
@@ -108,6 +132,12 @@
 
 > [!NOTE]
 > **Built for Mobile & Touch**: The entire application is engineered from the ground up to deliver a native app-like experience on smartphones and tablets. Whether tearing open booster foil wrappers with a swipe or browsing binders on mobile web browsers, everything runs butter-smooth at 60fps.
+
+<p align="center">
+  <a href="docs/assets/mobile-preview.png">
+    <img src="docs/assets/mobile-preview.png" alt="Mobile Experience Preview" width="300" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" />
+  </a>
+</p>
 
 ```
  ┌──────────────────────────────────────────────────────────────────────────┐
