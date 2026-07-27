@@ -1415,7 +1415,7 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
       const num = numParts ? parseInt(numParts[0], 10) : 0;
       const isSecretNumber = (num > officialCount && officialCount > 0);
 
-      if (isSVEra && isSecretNumber) {
+      if ((isSVEra || isMEEra) && isSecretNumber) {
         if (num <= officialCount + 18) irPool.push(card);
         else sirPool.push(card);
       }
