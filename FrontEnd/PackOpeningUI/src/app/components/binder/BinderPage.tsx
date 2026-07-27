@@ -18,6 +18,7 @@ interface Props {
   onDeleteBinder?: () => void;
   totalCardsInBinder: number;
   onInspectCard?: (card: Card) => void;
+  onMoveCard?: (card: Card) => void;
   currentBinderObj?: Binder;
 }
 
@@ -35,6 +36,7 @@ function BinderPage({
   onDeleteBinder,
   totalCardsInBinder,
   onInspectCard,
+  onMoveCard,
   currentBinderObj
 }: Props) {
   // Ensure 9 slots for grid view
@@ -187,7 +189,7 @@ function BinderPage({
                 className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 relative z-10"
               >
                 {gridSlots.slice(0, 9).map((card, i) => (
-                  <CardSlot key={card?.id ?? `empty-${i}`} card={card} index={i} onToggleFavorite={onToggleFavorite} onAddCard={onAddCard} onInspectCard={onInspectCard} />
+                  <CardSlot key={card?.id ?? `empty-${i}`} card={card} index={i} onToggleFavorite={onToggleFavorite} onAddCard={onAddCard} onInspectCard={onInspectCard} onMoveCard={onMoveCard} />
                 ))}
               </div>
             </SortableContext>
@@ -218,7 +220,7 @@ function BinderPage({
                 <th style={{ padding: "10px 12px" }}>Type</th>
                 <th style={{ padding: "10px 12px" }}>Price</th>
                 <th style={{ padding: "10px 12px" }}>Change</th>
-                <th style={{ padding: "10px 12px", textAlign: "right" }}>Favorite</th>
+                <th style={{ padding: "10px 12px", textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -248,12 +250,41 @@ function BinderPage({
                       </span>
                     </td>
                     <td style={{ padding: "12px", textAlign: "right" }}>
-                      <button
-                        onClick={() => onToggleFavorite(card.id)}
-                        style={{ background: "transparent", border: "none", color: card.favorite ? "#ffc832" : "#555", cursor: "pointer", fontSize: 16 }}
-                      >
-                        ★
-                      </button>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+                        {onMoveCard && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onMoveCard(card);
+                            }}
+                            title="Move card to another binder"
+                            style={{
+                              padding: "4px 8px",
+                              borderRadius: 6,
+                              background: "rgba(56, 189, 248, 0.15)",
+                              border: "1px solid rgba(56, 189, 248, 0.4)",
+                              color: "#38bdf8",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4
+                            }}
+                          >
+                            <span>📦 Move</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFavorite(card.id);
+                          }}
+                          style={{ background: "transparent", border: "none", color: card.favorite ? "#ffc832" : "#555", cursor: "pointer", fontSize: 16 }}
+                        >
+                          ★
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

@@ -31,9 +31,10 @@ interface Props {
   onToggleFavorite?: (id: string) => void;
   onAddCard?: () => void;
   onInspectCard?: (card: Card) => void;
+  onMoveCard?: (card: Card) => void;
 }
 
-function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: Props) {
+function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard, onMoveCard }: Props) {
   const [hovered, setHovered] = useState(false);
   const [priceOpen, setPriceOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -352,6 +353,45 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard }: P
                card.rarity === "Illustration Rare" ? "IR" :
                card.rarity === "Ultra Rare" ? "UR" : card.rarity[0] || 'C'}
             </div>
+
+            {/* Move Button — visible on hover */}
+            {hovered && onMoveCard && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveCard(card);
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                title="Move card to another binder"
+                style={{
+                  position: "absolute",
+                  bottom: 30,
+                  left: 5,
+                  zIndex: 35,
+                  background: "rgba(10, 10, 14, 0.85)",
+                  border: "1px solid rgba(56, 189, 248, 0.55)",
+                  borderRadius: 6,
+                  padding: "3px 7px",
+                  fontSize: 9,
+                  fontWeight: 800,
+                  color: "#38bdf8",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  backdropFilter: "blur(8px)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.6)",
+                  transition: "all 0.15s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 3,
+                }}
+              >
+                <span style={{ fontSize: 8 }}>📦</span>
+                <span>Move</span>
+              </button>
+            )}
 
             {/* Price Button — visible on hover or when price tooltip is open */}
             {(hovered || priceOpen) && (

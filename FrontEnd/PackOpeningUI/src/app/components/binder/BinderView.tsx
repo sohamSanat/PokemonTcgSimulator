@@ -5,7 +5,8 @@ import { arrayMove } from '@dnd-kit/sortable';
 import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
 import CreateBinderModal from "./CreateBinderModal";
-import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, type Card, type Binder } from "./types";
+import MoveCardModal from "./MoveCardModal";
+import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, moveCardToBinder, type Card, type Binder } from "./types";
 
 interface Props {
   onSwitchToPacks?: () => void;
@@ -24,6 +25,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [collectedCards, setCollectedCards] = useState<Card[]>([]);
   const [isSimulatingLoad, setIsSimulatingLoad] = useState<boolean>(true);
+  const [movingCard, setMovingCard] = useState<Card | null>(null);
 
   useEffect(() => {
     setIsSimulatingLoad(false);
@@ -33,6 +35,15 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
     setCollectedCards(getCollectedCards());
     setBinders(getBinders());
   }, []);
+
+  const handleOpenMoveCardModal = useCallback((card: Card) => {
+    setMovingCard(card);
+  }, []);
+
+  const handleConfirmMoveCard = useCallback((cardId: string, targetBinderId: string) => {
+    moveCardToBinder(cardId, targetBinderId);
+    refreshData();
+  }, [refreshData]);
 
   useEffect(() => {
     refreshData();
@@ -244,6 +255,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
             onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
             totalCardsInBinder={filteredCards.length}
             onInspectCard={onInspectCard}
+            onMoveCard={handleOpenMoveCardModal}
             currentBinderObj={currentBinderObj}
           />
         </DndContext>
@@ -253,6 +265,15 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreateBinder={handleCreateBinder}
+      />
+
+      <MoveCardModal
+        isOpen={Boolean(movingCard)}
+        card={movingCard}
+        binders={binders}
+        currentBinderId={activeBinder}
+        onClose={() => setMovingCard(null)}
+        onMoveCard={handleConfirmMoveCard}
       />
     </div>
   );
