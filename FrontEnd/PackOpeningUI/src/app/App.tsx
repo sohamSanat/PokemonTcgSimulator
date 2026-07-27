@@ -26,7 +26,7 @@ import { PackOffArena } from './components/multiplayer/PackOffArena';
 import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
 import { MissionsView } from './components/missions/MissionsView';
 import { ProfileView } from './components/profile/ProfileView';
-import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, addEarnedSetPacks, addOwnedMysteryPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
+import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, hasEarnedSetPackForSet, useEarnedSetPackForSet, addEarnedSetPacks, addOwnedMysteryPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
 import InventoryModal from './components/inventory/InventoryModal';
@@ -911,19 +911,15 @@ export default function App() {
   // Listen for Firebase Stats sync
   useEffect(() => {
     if (!currentUser) return;
-    // Start unloaded for this user so the save effect below cannot write the
-    // previous user's stats into this user's Firestore document before we've
-    // received this user's actual snapshot.
     setHasLoadedFromFirebase(false);
     const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
-      console.log('App.tsx: Received snapshot from Firebase', docSnap.exists() ? docSnap.data() : 'NOT EXISTS');
       setHasLoadedFromFirebase(true);
       if (docSnap.exists()) {
         const rootData = docSnap.data();
         const data = rootData.stats || {};
-        const fbTotal = data.sessionTotal ?? 0;
+        const fbTotal = data.sessionTotal ?? rootData.netTotal ?? 0;
         const fbCount = data.packCount ?? 0;
-        const fbSpent = data.sessionSpent ?? 0;
+        const fbSpent = data.sessionSpent ?? rootData.netSpent ?? 0;
 
         lastSyncedStatsRef.current = {
           sessionTotal: fbTotal,
@@ -931,50 +927,59 @@ export default function App() {
           sessionSpent: fbSpent,
         };
 
-        // Prevent wiping out local stats if Firebase is completely empty but local has data
-        // ONLY do this if `rootData.stats` does NOT exist. If it DOES exist and is 0, it means it was explicitly reset.
-        const isMigration = !rootData.stats;
+        const isMigration = !rootData.stats && !rootData.netTotal;
 
-        setSessionTotal(prev => (isMigration && fbTotal === 0 && prev > 0) ? prev : fbTotal);
-        setPackCount(prev => (isMigration && fbCount === 0 && prev > 0) ? prev : fbCount);
-        setSessionSpent(prev => (isMigration && fbSpent === 0 && prev > 0) ? prev : fbSpent);
+        setSessionTotal(prev => {
+          if (isMigration && fbTotal === 0 && prev > 0) return prev;
+          // Protect in-flight local card flip total from being overwritten by older async snapshots
+          return prev > fbTotal ? prev : fbTotal;
+        });
+        setPackCount(prev => {
+          if (isMigration && fbCount === 0 && prev > 0) return prev;
+          return prev > fbCount ? prev : fbCount;
+        });
+        setSessionSpent(prev => {
+          if (isMigration && fbSpent === 0 && prev > 0) return prev;
+          return prev > fbSpent ? prev : fbSpent;
+        });
       }
     });
     return () => unsubscribe();
   }, [currentUser]);
 
-  // Save stats to LocalStorage (as fallback) and Firebase
+  // Save stats synchronously to LocalStorage & Firebase
   useEffect(() => {
-    // NEVER persist while logged out. When currentUser is null, getStorageKey
-    // falls back to the non-namespaced GUEST key, which would leak the previous
-    // account's stats into the shared guest slot and later into a brand-new
-    // account via the guest->account migration. Wait until a real user is set.
-    if (!currentUser) return;
+    const uid = currentUser?.uid;
     try {
-      localStorage.setItem(getStorageKey('tcg_session_total', currentUser.uid), sessionTotal.toString());
-      localStorage.setItem(getStorageKey('tcg_session_pack_count', currentUser.uid), packCount.toString());
-      localStorage.setItem(getStorageKey('tcg_session_spent', currentUser.uid), sessionSpent.toString());
-
-      if (hasLoadedFromFirebase) {
-        // Only write if the current state differs from what we just received from Firebase
-        const isFromFirebase =
-          sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
-          packCount === lastSyncedStatsRef.current.packCount &&
-          sessionSpent === lastSyncedStatsRef.current.sessionSpent;
-
-        if (!isFromFirebase) {
-          setDoc(doc(db, 'users', currentUser.uid), {
-            stats: {
-              sessionTotal,
-              packCount,
-              sessionSpent,
-              lastUpdated: new Date().toISOString()
-            }
-          }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
-        }
-      }
+      localStorage.setItem(getStorageKey('tcg_session_total', uid), sessionTotal.toString());
+      localStorage.setItem(getStorageKey('tcg_session_pack_count', uid), packCount.toString());
+      localStorage.setItem(getStorageKey('tcg_session_spent', uid), sessionSpent.toString());
+      window.dispatchEvent(new CustomEvent('user_stats_updated', { detail: { sessionTotal, packCount, sessionSpent } }));
     } catch { }
-  }, [sessionTotal, packCount, sessionSpent, currentUser]);
+
+    if (!uid) return;
+
+    if (hasLoadedFromFirebase) {
+      const isFromFirebase =
+        sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
+        packCount === lastSyncedStatsRef.current.packCount &&
+        sessionSpent === lastSyncedStatsRef.current.sessionSpent;
+
+      if (!isFromFirebase) {
+        lastSyncedStatsRef.current = { sessionTotal, packCount, sessionSpent };
+        setDoc(doc(db, 'users', uid), {
+          netTotal: sessionTotal,
+          netSpent: sessionSpent,
+          stats: {
+            sessionTotal,
+            packCount,
+            sessionSpent,
+            lastUpdated: new Date().toISOString()
+          }
+        }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
+      }
+    }
+  }, [sessionTotal, packCount, sessionSpent, currentUser, hasLoadedFromFirebase]);
   const [isRevealingAll, setIsRevealingAll] = useState(false);
   const [cards, setCards] = useState<CardData[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1365,39 +1370,40 @@ export default function App() {
     let canOpen = false;
     let wasPaidPack = true; // Assume it's a paid pack unless we use free/earned/cash
     let deductFromNetReturn = 0;
-    // First check if we have earned packs for this set and language
-    const earnedPackForThisSet = earnedSetPacks.find(
-      p => p.setId === currentSet.id && p.language === setLanguage && p.count > 0
-    );
-    if (earnedPackForThisSet) {
-      canOpen = useEarnedSetPack(currentSet.id, setLanguage);
+
+    // STEP 1: ALWAYS check inventory FIRST before using daily free allowance or daily cash!
+    if (currentSet && hasEarnedSetPackForSet(currentSet, setLanguage)) {
+      canOpen = useEarnedSetPackForSet(currentSet, setLanguage);
       if (canOpen) {
-        wasPaidPack = false; // Used earned pack, not paid
+        wasPaidPack = false; // Used earned pack from inventory, FREE!
       }
-    } else if (isFreeEligible) {
-      // If no earned pack, check free daily packs
-      canOpen = useDailyFreePack(setLanguage);
-      if (canOpen) {
-        wasPaidPack = false; // Used free pack, not paid
+    }
+
+    // STEP 2: Only if no inventory pack was available, check daily free allowance or daily cash
+    if (!canOpen) {
+      if (isFreeEligible) {
+        // Check free daily packs allowance
+        canOpen = useDailyFreePack(setLanguage);
+        if (canOpen) {
+          wasPaidPack = false; // Used free daily pack
+        } else {
+          // Check daily cash + net return
+          [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
+          if (canOpen) {
+            wasPaidPack = false; // Used daily cash
+          }
+        }
+      } else if (!skipGate) {
+        // Pack costs > $20 and is not in inventory & not covered by daily free packs allowance.
+        setPriceGateCost(setPrice);
+        setPendingOpenKind(openKindRef.current);
+        setShowPriceGateModal(true);
+        return;
       } else {
-        // If no free packs, check daily cash + net return
         [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
         if (canOpen) {
-          wasPaidPack = false; // Used daily cash/net return, not paid
+          wasPaidPack = false;
         }
-      }
-    } else if (!skipGate) {
-      // Pack costs more than $20, so it isn't covered by the free daily allowance.
-      // Show a price-gate popup that lets the user pay to open it.
-      setPriceGateCost(setPrice);
-      setPendingOpenKind(openKindRef.current);
-      setShowPriceGateModal(true);
-      return;
-    } else {
-      // Not eligible for free packs, check daily cash + net return
-      [canOpen, deductFromNetReturn] = useDailyCash(setPrice, netReturn);
-      if (canOpen) {
-        wasPaidPack = false; // Used daily cash/net return, not paid
       }
     }
 

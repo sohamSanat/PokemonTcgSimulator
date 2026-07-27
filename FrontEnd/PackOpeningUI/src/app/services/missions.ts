@@ -564,8 +564,83 @@ export function addEarnedSetPacks(packs: EarnedSetPack[]) {
 export function useEarnedSetPack(setId: string, language: 'en' | 'ja'): boolean {
   if (typeof window === 'undefined') return true;
   const current = getEarnedSetPacks();
-  const packIndex = current.findIndex(p => p.setId === setId && p.language === language && p.count > 0);
+  let packIndex = current.findIndex(p => p.setId === setId && p.language === language && p.count > 0);
+
+  if (packIndex === -1) {
+    const targetIdNorm = (setId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    packIndex = current.findIndex(p => {
+      if (p.count <= 0) return false;
+      const pIdNorm = (p.setId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      return pIdNorm === targetIdNorm || (pIdNorm && targetIdNorm && (pIdNorm.includes(targetIdNorm) || targetIdNorm.includes(pIdNorm)));
+    });
+  }
+
   if (packIndex === -1) return false;
+  current[packIndex].count -= 1;
+  const updated = current.filter(p => p.count > 0);
+  localStorage.setItem(lsKey(EARNED_SET_PACKS_KEY), JSON.stringify(updated));
+  persistMissions();
+  window.dispatchEvent(new CustomEvent('earned_packs_updated', { detail: updated }));
+  window.dispatchEvent(new CustomEvent('inventory_updated', { detail: { setPacks: updated, mysteryPacks: getOwnedMysteryPacks() } }));
+  return true;
+}
+
+export function hasEarnedSetPackForSet(currentSet: { id: string; name: string }, preferredLanguage?: 'en' | 'ja'): boolean {
+  if (typeof window === 'undefined' || !currentSet) return false;
+  const current = getEarnedSetPacks();
+  if (current.length === 0) return false;
+
+  const targetIdNorm = (currentSet.id || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const targetNameNorm = (currentSet.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  return current.some(p => {
+    if (p.count <= 0) return false;
+    const pIdNorm = (p.setId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const pNameNorm = (p.setName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const isIdMatch = pIdNorm === targetIdNorm || (pIdNorm && targetIdNorm && (pIdNorm.includes(targetIdNorm) || targetIdNorm.includes(pIdNorm)));
+    const isNameMatch = pNameNorm === targetNameNorm || (pNameNorm && targetNameNorm && (pNameNorm.includes(targetNameNorm) || targetNameNorm.includes(pNameNorm)));
+
+    return isIdMatch || isNameMatch;
+  });
+}
+
+export function useEarnedSetPackForSet(currentSet: { id: string; name: string }, preferredLanguage: 'en' | 'ja'): boolean {
+  if (typeof window === 'undefined' || !currentSet) return false;
+  const current = getEarnedSetPacks();
+  if (current.length === 0) return false;
+
+  const targetIdNorm = (currentSet.id || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const targetNameNorm = (currentSet.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // 1. First try matching ID or Name AND preferred language
+  let packIndex = current.findIndex(p => {
+    if (p.count <= 0) return false;
+    const pIdNorm = (p.setId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const pNameNorm = (p.setName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const isIdMatch = pIdNorm === targetIdNorm || (pIdNorm && targetIdNorm && (pIdNorm.includes(targetIdNorm) || targetIdNorm.includes(pIdNorm)));
+    const isNameMatch = pNameNorm === targetNameNorm || (pNameNorm && targetNameNorm && (pNameNorm.includes(targetNameNorm) || targetNameNorm.includes(pNameNorm)));
+
+    return (isIdMatch || isNameMatch) && p.language === preferredLanguage;
+  });
+
+  // 2. If preferred language match not found, match ID or Name regardless of language
+  if (packIndex === -1) {
+    packIndex = current.findIndex(p => {
+      if (p.count <= 0) return false;
+      const pIdNorm = (p.setId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const pNameNorm = (p.setName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const isIdMatch = pIdNorm === targetIdNorm || (pIdNorm && targetIdNorm && (pIdNorm.includes(targetIdNorm) || targetIdNorm.includes(pIdNorm)));
+      const isNameMatch = pNameNorm === targetNameNorm || (pNameNorm && targetNameNorm && (pNameNorm.includes(targetNameNorm) || targetNameNorm.includes(pNameNorm)));
+
+      return isIdMatch || isNameMatch;
+    });
+  }
+
+  if (packIndex === -1) return false;
+
   current[packIndex].count -= 1;
   const updated = current.filter(p => p.count > 0);
   localStorage.setItem(lsKey(EARNED_SET_PACKS_KEY), JSON.stringify(updated));

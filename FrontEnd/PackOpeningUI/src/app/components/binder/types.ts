@@ -67,15 +67,24 @@ export async function syncToFirestore() {
     const binders = getBinders();
     const catalogues = getCatalogues();
     const cash = getCash();
-    const netTotal = parseFloat(localStorage.getItem(getStorageKey('tcg_session_total')) || '0') || 0;
-    const netSpent = parseFloat(localStorage.getItem(getStorageKey('tcg_session_spent')) || '0') || 0;
-    await setDoc(doc(db, 'users', auth.currentUser.uid), {
+    const uid = auth.currentUser.uid;
+    const sessionTotal = parseFloat(localStorage.getItem(getStorageKey('tcg_session_total', uid)) || '0') || 0;
+    const packCount = parseInt(localStorage.getItem(getStorageKey('tcg_session_pack_count', uid)) || '0', 10) || 0;
+    const sessionSpent = parseFloat(localStorage.getItem(getStorageKey('tcg_session_spent', uid)) || '0') || 0;
+
+    await setDoc(doc(db, 'users', uid), {
       cards,
       binders,
       catalogues,
       cash,
-      netTotal,
-      netSpent,
+      netTotal: sessionTotal,
+      netSpent: sessionSpent,
+      stats: {
+        sessionTotal,
+        packCount,
+        sessionSpent,
+        lastUpdated: new Date().toISOString()
+      },
       missions: collectMissionsForSync(),
       lastUpdated: new Date().toISOString()
     }, { merge: true });
