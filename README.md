@@ -18,6 +18,7 @@
     <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=fff" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=fff" alt="Vite" />
     <img src="https://img.shields.io/badge/Tailwind_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=fff" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/Mobile_Optimized-00E676?style=for-the-badge&logo=apple&logoColor=fff" alt="Mobile Optimized" />
     <img src="https://img.shields.io/badge/Framer_Motion-F24E1E?style=for-the-badge&logo=framer&logoColor=fff" alt="Framer Motion" />
     <img src="https://img.shields.io/badge/Firebase_12-FFCA28?style=for-the-badge&logo=firebase&logoColor=000" alt="Firebase" />
     <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=fff" alt="Vercel" />
@@ -26,6 +27,7 @@
   <p align="center">
     <a href="https://pokemontcgsim.vercel.app/"><b>✨ Launch App</b></a> •
     <a href="#-key-features"><b>🔥 Features</b></a> •
+    <a href="#-mobile-first--touch-experience"><b>📱 Mobile</b></a> •
     <a href="#-generation--set-coverage"><b>⚡ Sets & Eras</b></a> •
     <a href="#-quick-start"><b>🚀 Quick Start</b></a>
   </p>
@@ -89,6 +91,48 @@
         <li><b>Live Auctions:</b> Bid on grail cards in active auction rounds.</li>
         <li><b>Trade Studio:</b> Trade binder duplicates with virtual collectors.</li>
         <li><b>Japanese & English Sets:</b> Seamless support for both EN & JP sets.</li>
+      </ul>
+    </td>
+</table>
+
+---
+
+## 📱 Mobile-First & Touch Experience
+
+<p align="center">
+  <img src="https://img.shields.io/badge/iOS_Safari-Fully_Supported-00E676?style=for-the-badge&logo=apple&logoColor=fff" alt="iOS Support" />
+  <img src="https://img.shields.io/badge/Android_Chrome-Fully_Supported-3DDC84?style=for-the-badge&logo=android&logoColor=fff" alt="Android Support" />
+  <img src="https://img.shields.io/badge/60_FPS-GPU_Accelerated-00E5FF?style=for-the-badge&logo=speedtest&logoColor=fff" alt="60FPS" />
+  <img src="https://img.shields.io/badge/Touch_Gestures-Haptic_Tear-FF007A?style=for-the-badge" alt="Touch Gestures" />
+</p>
+
+> [!NOTE]
+> **Built for Mobile & Touch**: The entire application is engineered from the ground up to deliver a native app-like experience on smartphones and tablets. Whether tearing open booster foil wrappers with a swipe or browsing binders on mobile web browsers, everything runs butter-smooth at 60fps.
+
+```
+ ┌──────────────────────────────────────────────────────────────────────────┐
+ │ 👆 Multi-Touch Tear   │ 📱 Responsive Drawers  │ ⚡ 60FPS GPU Shimmer    │
+ │    Physical swipe to  │    Mobile menu drawer  │    Touch 3D tilt &      │
+ │    tear foil wrappers │    & bottom action bar │    lightweight shaders  │
+ └──────────────────────────────────────────────────────────────────────────┘
+```
+
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h4>🖐️ Touch-Native Interactions</h4>
+      <ul>
+        <li><b>Multi-Touch Foil Tear:</b> Swipe & drag across touchscreen surfaces to physically slice open booster wrappers.</li>
+        <li><b>Tap & Long-Press Controls:</b> Instant card flip animations, tap-to-inspect grails, and drag-and-drop binder transfers.</li>
+        <li><b>Haptic Audio Feedback:</b> Real-time sound effects for foil tearing, card flipping, and rare card pulls on mobile devices.</li>
+      </ul>
+    </td>
+    <td width="50%" valign="top">
+      <h4>📐 Adaptive Mobile Architecture</h4>
+      <ul>
+        <li><b>Dynamic Grid Scaling:</b> Automatically switches from 2-column mobile grids (<code>grid-cols-2</code>) to 5-column desktop displays.</li>
+        <li><b>Mobile Drawer & Bottom Bar:</b> One-thumb navigation drawer for seamless tab switching on mobile devices.</li>
+        <li><b>Viewport-Height Safety:</b> Touch-safe modal sheets and full-screen viewports optimized for iOS Safari notch & gesture bar.</li>
       </ul>
     </td>
   </tr>
