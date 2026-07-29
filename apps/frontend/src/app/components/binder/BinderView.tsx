@@ -140,31 +140,38 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
       // Type filter
       if (activeTypeFilter !== "All Types" && card.type !== activeTypeFilter) return false;
 
-      // Rarity filter
-      if (activeRarityFilter !== "All Rarities") {
-        const cRarity = (card.rarity || "").toLowerCase();
-        const fRarity = activeRarityFilter.toLowerCase();
+        // Rarity filter
+        if (activeRarityFilter !== "All Rarities") {
+          const cRarity = (card.rarity || "").toLowerCase();
+          const fRarity = activeRarityFilter.toLowerCase();
 
-        if (fRarity === "common") {
-          if (!cRarity.includes("common")) return false;
-        } else if (fRarity === "uncommon") {
-          if (!cRarity.includes("uncommon")) return false;
-        } else if (fRarity === "rare") {
-          if (!cRarity.includes("rare") || cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration")) return false;
-        } else if (fRarity === "ultra / secret rare") {
-          const isSecretOrUltra = cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration") || cRarity.includes("hyper") || cRarity.includes("double") || cRarity.includes("rainbow") || cRarity.includes("ace") || cRarity.includes("vmax") || cRarity.includes("vstar") || cRarity.includes("ex");
-          if (!isSecretOrUltra) return false;
-        } else if (fRarity === "illustration rare") {
-          if (!cRarity.includes("illustration") && !cRarity.includes("art rare")) return false;
-        } else if (fRarity === "promo") {
-          if (!cRarity.includes("promo") && !card.id.toLowerCase().includes("promo")) return false;
-        } else if (fRarity === "shiny vault") {
-          if (!cRarity.includes("shiny vault") && !cRarity.includes("shiny")) return false;
-        } else {
-          // Exact or partial match for custom rarity strings
-          if (card.rarity !== activeRarityFilter && !cRarity.includes(fRarity)) return false;
+          if (fRarity === "sir" || fRarity.includes("special illustration") || fRarity.includes("sir")) {
+            const isSir = cRarity.includes("special illustration") || cRarity === "sir" || cRarity === "sar" || cRarity.includes("special art");
+            if (!isSir) return false;
+          } else if (fRarity === "sr" || fRarity.includes("secret rare") || fRarity === "secret") {
+            const isSr = (cRarity.includes("secret") || cRarity === "sr" || cRarity.includes("super rare")) && !cRarity.includes("special illustration");
+            if (!isSr) return false;
+          } else if (fRarity === "ur" || fRarity.includes("ultra rare")) {
+            const isUr = cRarity.includes("ultra") || cRarity === "ur" || cRarity.includes("double rare") || cRarity.includes("hyper rare") || cRarity.includes("vmax") || cRarity.includes("vstar") || (cRarity.includes("ex") && !cRarity.includes("special illustration"));
+            if (!isUr) return false;
+          } else if (fRarity === "ir" || fRarity.includes("illustration rare")) {
+            const isIr = (cRarity.includes("illustration") || cRarity === "ir" || cRarity.includes("art rare") || cRarity === "ar") && !cRarity.includes("special illustration");
+            if (!isIr) return false;
+          } else if (fRarity === "common") {
+            if (!cRarity.includes("common")) return false;
+          } else if (fRarity === "uncommon") {
+            if (!cRarity.includes("uncommon")) return false;
+          } else if (fRarity === "rare") {
+            if (!cRarity.includes("rare") || cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration") || cRarity.includes("special")) return false;
+          } else if (fRarity.includes("promo")) {
+            if (!cRarity.includes("promo") && !card.id.toLowerCase().includes("promo")) return false;
+          } else if (fRarity.includes("shiny vault")) {
+            if (!cRarity.includes("shiny vault") && !cRarity.includes("shiny")) return false;
+          } else {
+            // Exact or partial match for custom rarity strings
+            if (card.rarity !== activeRarityFilter && !cRarity.includes(fRarity)) return false;
+          }
         }
-      }
 
       // Holofoil filter
       if (holofoilOnly && !card.holofoil) return false;

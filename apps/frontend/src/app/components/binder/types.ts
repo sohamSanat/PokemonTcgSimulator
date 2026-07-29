@@ -188,6 +188,59 @@ export interface PricePoint {
   price: number;
 }
 
+export function formatRarityTag(rarity?: string): string {
+  if (!rarity) return 'C';
+  const r = rarity.trim();
+  const lr = r.toLowerCase();
+
+  if (lr === 'special illustration rare' || lr === 'sir' || lr === 'sar' || lr.includes('special illustration') || lr.includes('special art')) {
+    return 'SIR';
+  }
+  if (lr === 'secret rare' || lr === 'secret illustration rare' || lr === 'sr' || lr.includes('secret')) {
+    return 'SR';
+  }
+  if (lr === 'illustration rare' || lr === 'ir' || lr === 'art rare' || lr === 'ar') {
+    return 'IR';
+  }
+  if (lr === 'ultra rare' || lr === 'ur' || lr.includes('ultra rare')) {
+    return 'UR';
+  }
+  if (lr.includes('hyper rare') || lr === 'hr') {
+    return 'HR';
+  }
+  if (lr.includes('double rare') || lr === 'rr') {
+    return 'RR';
+  }
+  if (lr.includes('triple rare') || lr === 'rrr') {
+    return 'RRR';
+  }
+  if (lr.includes('trainer gallery') || lr === 'tg') {
+    return 'TG';
+  }
+  if (lr.includes('galarian gallery') || lr === 'gg') {
+    return 'GG';
+  }
+  if (lr.includes('shiny vault') || lr === 'sv') {
+    return 'SV';
+  }
+  if (lr.includes('holo')) {
+    return 'HOLO';
+  }
+  if (lr.includes('promo')) {
+    return 'PROMO';
+  }
+  if (lr.includes('rare')) {
+    return 'RARE';
+  }
+  if (lr.includes('uncommon')) {
+    return 'UNC';
+  }
+  if (lr.includes('common')) {
+    return 'COM';
+  }
+  return r.length <= 5 ? r.toUpperCase() : r.substring(0, 3).toUpperCase();
+}
+
 export interface Card {
   id: string;
   name: string;

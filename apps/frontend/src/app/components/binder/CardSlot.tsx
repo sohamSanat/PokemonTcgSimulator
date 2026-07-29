@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Card } from "./types";
+import { type Card, formatRarityTag } from "./types";
 import PriceTooltip from "./PriceTooltip";
 import InteractiveCard3D from "./InteractiveCard3D";
 
@@ -16,13 +16,16 @@ const CARD_GRADIENTS: Record<string, string> = {
   Colorless: "linear-gradient(160deg, #1a1a1a, #333333)",
 };
 
-const RARITY_GLOW: Record<string, string> = {
-  "Special Illustration Rare": "0 0 20px rgba(255,200,50,0.4), 0 0 60px rgba(255,180,0,0.15)",
-  "Illustration Rare": "0 0 16px rgba(180,100,255,0.4), 0 0 40px rgba(150,80,255,0.12)",
-  "Ultra Rare": "0 0 14px rgba(68,138,255,0.4), 0 0 30px rgba(68,138,255,0.1)",
-  "Rare": "0 0 8px rgba(200,200,220,0.3)",
-  "Uncommon": "none",
-  "Common": "none",
+const getCardRarityGlow = (rarity?: string) => {
+  if (!rarity) return "none";
+  const tag = formatRarityTag(rarity);
+  if (tag === "SIR") return "0 0 22px rgba(255,200,50,0.55), 0 0 60px rgba(255,180,0,0.25)";
+  if (tag === "SR") return "0 0 20px rgba(236,72,153,0.55), 0 0 50px rgba(168,85,247,0.25)";
+  if (tag === "HR") return "0 0 18px rgba(250,204,21,0.5), 0 0 45px rgba(245,158,11,0.2)";
+  if (tag === "IR") return "0 0 16px rgba(168,85,247,0.45), 0 0 40px rgba(147,51,234,0.2)";
+  if (tag === "UR" || tag === "RR") return "0 0 14px rgba(56,189,248,0.45), 0 0 30px rgba(14,165,233,0.15)";
+  if (tag === "HOLO") return "0 0 10px rgba(200,200,220,0.3)";
+  return "none";
 };
 
 interface Props {
@@ -335,24 +338,37 @@ function CardSlot({ card, index, onToggleFavorite, onAddCard, onInspectCard, onM
               ★
             </button>
 
-            {/* Rarity gem */}
-            <div style={{
-              position: "absolute",
-              top: 5,
-              left: 5,
-              fontSize: 8,
-              fontWeight: 700,
-              color: "rgba(255,255,255,0.7)",
-              background: "rgba(0,0,0,0.5)",
-              borderRadius: 4,
-              padding: "2px 4px",
-              backdropFilter: "blur(4px)",
-              zIndex: 30,
-            }}>
-              {card.rarity === "Special Illustration Rare" ? "SIR" :
-               card.rarity === "Illustration Rare" ? "IR" :
-               card.rarity === "Ultra Rare" ? "UR" : card.rarity[0] || 'C'}
-            </div>
+            {/* Rarity Tag Badge */}
+            {(() => {
+              const tag = formatRarityTag(card.rarity);
+              const badgeClass =
+                tag === "SIR"
+                  ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-amber-300 font-black shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                  : tag === "SR"
+                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white border-pink-400/50 font-black shadow-[0_0_10px_rgba(236,72,153,0.5)]"
+                    : tag === "HR"
+                      ? "bg-gradient-to-r from-yellow-300 to-amber-500 text-black border-yellow-200 font-black shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+                      : tag === "IR"
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-purple-400/40 font-bold"
+                        : tag === "UR" || tag === "RR"
+                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-cyan-400/40 font-bold"
+                          : "bg-black/75 text-zinc-300 border-white/15 font-semibold";
+
+              return (
+                <div
+                  className={`px-1.5 py-0.5 rounded text-[9px] tracking-wider uppercase border shadow-md ${badgeClass}`}
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    left: 5,
+                    backdropFilter: "blur(6px)",
+                    zIndex: 30,
+                  }}
+                >
+                  {tag}
+                </div>
+              );
+            })()}
 
             {/* Move Button — visible on hover */}
             {hovered && onMoveCard && (

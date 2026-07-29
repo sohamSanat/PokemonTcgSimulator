@@ -1,5 +1,6 @@
 import React from "react";
 import type { Card } from "./types";
+import { formatRarityTag } from "./types";
 import { resolveVendorCardRealPrice } from "../../services/scrydex";
 
 interface Props {
@@ -126,18 +127,16 @@ function PriceTooltip({ card, index = 4 }: Props) {
           style={{
             fontSize: 9,
             fontWeight: 700,
-            color: "rgba(255,255,255,0.8)",
-            background: "rgba(255,255,255,0.1)",
+            color: "rgba(255,255,255,0.9)",
+            background: "rgba(255,255,255,0.12)",
             padding: "2px 6px",
             borderRadius: 6,
             whiteSpace: "nowrap",
             letterSpacing: "0.03em",
+            border: "1px solid rgba(255,255,255,0.15)"
           }}
         >
-          {cardRarity === "Special Illustration Rare" ? "SIR" :
-           cardRarity === "Illustration Rare" ? "IR" :
-           cardRarity === "Ultra Rare" ? "UR" :
-           cardRarity === "Rare Holo" ? "Holo" : cardRarity}
+          {formatRarityTag(cardRarity)} ({cardRarity})
         </div>
       </div>
 

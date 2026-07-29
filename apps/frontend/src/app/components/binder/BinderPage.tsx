@@ -93,11 +93,13 @@ function BinderPage({
 
   const QUICK_RARITY_PRESETS = [
     { id: "All Rarities", label: "✨ All", icon: "✨" },
-    { id: "Common", label: "⚪ Common", icon: "⚪" },
-    { id: "Uncommon", label: "🔷 Uncommon", icon: "🔷" },
+    { id: "SIR", label: "🔥 SIR (Special Art)", icon: "🔥" },
+    { id: "SR", label: "👑 SR (Secret Rare)", icon: "👑" },
+    { id: "UR", label: "💎 UR (Ultra Rare)", icon: "💎" },
+    { id: "IR", label: "🌟 IR (Illustration Rare)", icon: "🌟" },
     { id: "Rare", label: "⭐ Rare", icon: "⭐" },
-    { id: "Ultra / Secret Rare", label: "💎 Ultra / Secret", icon: "💎" },
-    { id: "Illustration Rare", label: "🌟 Illustration Rare", icon: "🌟" },
+    { id: "Uncommon", label: "🔷 Uncommon", icon: "🔷" },
+    { id: "Common", label: "⚪ Common", icon: "⚪" },
     { id: "Promo", label: "🎁 Promo", icon: "🎁" },
     { id: "Shiny Vault", label: "✨ Shiny Vault", icon: "✨" }
   ];
