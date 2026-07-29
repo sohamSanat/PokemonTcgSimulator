@@ -5,14 +5,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const frontEndPackArtsDir = path.resolve(__dirname, '../../packArts');
+const frontEndPackArtsDir = path.resolve(__dirname, '../public/packArts');
 const publicPackArtsDir = path.resolve(__dirname, '../public/packArts');
 
 console.log('Syncing Pack Arts...');
 console.log('Source:', frontEndPackArtsDir);
 console.log('Destination:', publicPackArtsDir);
 
-// 1. Copy files from FrontEnd/packArts to public/packArts if source exists
+// 1. Copy files from packArts to public/packArts if source exists
 if (fs.existsSync(frontEndPackArtsDir)) {
   try {
     if (!fs.existsSync(publicPackArtsDir)) {
@@ -24,7 +24,7 @@ if (fs.existsSync(frontEndPackArtsDir)) {
     console.warn('Pack arts copy warning (proceeding with existing packArts):', err.message);
   }
 } else {
-  console.log('Source FrontEnd/packArts not found, checking public/packArts only.');
+  console.log('Source packArts not found, checking public/packArts only.');
 }
 
 if (!fs.existsSync(publicPackArtsDir)) {
