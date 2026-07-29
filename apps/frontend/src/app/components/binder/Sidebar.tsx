@@ -20,6 +20,7 @@ interface Props {
   totalCardsCount: number;
   totalPortfolioValue: number;
   setsList?: string[];
+  raritiesList?: string[];
 }
 
 const BinderIcon = React.memo(({ name, isMasterSet, isActive }: { name: string; isMasterSet?: boolean; isActive?: boolean }) => {
@@ -77,9 +78,25 @@ function Sidebar({
   onSelectBinder,
   onNewBinder,
   onDeleteBinder,
+  activeSetFilter = "All Sets",
+  onSetFilterChange,
+  activeRarityFilter = "All Rarities",
+  onRarityFilterChange,
+  activeTypeFilter = "All Types",
+  onTypeFilterChange,
+  holofoilOnly = false,
+  onToggleHolofoil,
+  favoritesOnly = false,
+  onToggleFavorites,
   totalCardsCount,
   totalPortfolioValue,
+  setsList = ["All Sets"],
+  raritiesList = ["All Rarities", "Common", "Uncommon", "Rare", "Ultra / Secret Rare", "Illustration Rare", "Promo", "Shiny Vault"]
 }: Props) {
+  const [showFilters, setShowFilters] = React.useState<boolean>(true);
+
+  const hasActiveFilters = activeRarityFilter !== "All Rarities" || activeSetFilter !== "All Sets" || activeTypeFilter !== "All Types" || holofoilOnly || favoritesOnly;
+
   return (
     <aside
       className="w-full md:w-[300px] md:min-w-[300px] h-auto md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10"
@@ -150,6 +167,94 @@ function Sidebar({
           </div>
         </div>
         <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "0 20px 18px" }} />
+      </div>
+
+      {/* Vault Filters Accordion/Section */}
+      <div className="hidden md:block px-4 mb-4">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
+          <div 
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center justify-between cursor-pointer select-none"
+          >
+            <div className="text-[11px] font-extrabold tracking-widest text-[#a1a1aa] uppercase flex items-center gap-2">
+              <span>💎 VAULT FILTERS</span>
+              {hasActiveFilters && (
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              )}
+            </div>
+            <span className="text-xs text-zinc-400 font-bold">{showFilters ? "▲" : "▼"}</span>
+          </div>
+
+          {showFilters && (
+            <div className="mt-3 space-y-3 pt-2 border-t border-white/5">
+              {/* Rarity Selector */}
+              <div>
+                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Card Rarity
+                </label>
+                <select
+                  value={activeRarityFilter}
+                  onChange={(e) => onRarityFilterChange && onRarityFilterChange(e.target.value)}
+                  className="w-full bg-black/50 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400/80 cursor-pointer"
+                >
+                  {raritiesList.map((rarity) => (
+                    <option key={rarity} value={rarity} className="bg-zinc-900 text-white">
+                      {rarity}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Set Selector */}
+              {onSetFilterChange && (
+                <div>
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+                    Set
+                  </label>
+                  <select
+                    value={activeSetFilter}
+                    onChange={(e) => onSetFilterChange(e.target.value)}
+                    className="w-full bg-black/50 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400/80 cursor-pointer"
+                  >
+                    {setsList.map((set) => (
+                      <option key={set} value={set} className="bg-zinc-900 text-white">
+                        {set}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Quick Filter Toggles */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {onToggleHolofoil && (
+                  <button
+                    onClick={onToggleHolofoil}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
+                      holofoilOnly
+                        ? "bg-amber-500/20 border-amber-400 text-amber-300"
+                        : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    ✨ Holofoil
+                  </button>
+                )}
+                {onToggleFavorites && (
+                  <button
+                    onClick={onToggleFavorites}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
+                      favoritesOnly
+                        ? "bg-amber-500/20 border-amber-400 text-amber-300"
+                        : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    ⭐ Favorites
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Binder list - Uncluttered, Spacious, and User-Friendly */}

@@ -20,6 +20,24 @@ interface Props {
   onInspectCard?: (card: Card) => void;
   onMoveCard?: (card: Card) => void;
   currentBinderObj?: Binder;
+  activeRarityFilter?: string;
+  onRarityFilterChange?: (rarity: string) => void;
+  raritiesList?: string[];
+  activeSetFilter?: string;
+  onSetFilterChange?: (set: string) => void;
+  setsList?: string[];
+  activeTypeFilter?: string;
+  onTypeFilterChange?: (type: string) => void;
+  typesList?: string[];
+  holofoilOnly?: boolean;
+  onToggleHolofoil?: () => void;
+  favoritesOnly?: boolean;
+  onToggleFavorites?: () => void;
+  searchQuery?: string;
+  onSearchQueryChange?: (q: string) => void;
+  sortBy?: "price-desc" | "price-asc" | "name" | "rarity" | "newest";
+  onSortByChange?: (sort: "price-desc" | "price-asc" | "name" | "rarity" | "newest") => void;
+  onResetFilters?: () => void;
 }
 
 function BinderPage({
@@ -37,7 +55,25 @@ function BinderPage({
   totalCardsInBinder,
   onInspectCard,
   onMoveCard,
-  currentBinderObj
+  currentBinderObj,
+  activeRarityFilter = "All Rarities",
+  onRarityFilterChange,
+  raritiesList = ["All Rarities", "Common", "Uncommon", "Rare", "Ultra / Secret Rare", "Illustration Rare", "Promo", "Shiny Vault"],
+  activeSetFilter = "All Sets",
+  onSetFilterChange,
+  setsList = ["All Sets"],
+  activeTypeFilter = "All Types",
+  onTypeFilterChange,
+  typesList = ["All Types"],
+  holofoilOnly = false,
+  onToggleHolofoil,
+  favoritesOnly = false,
+  onToggleFavorites,
+  searchQuery = "",
+  onSearchQueryChange,
+  sortBy = "price-desc",
+  onSortByChange,
+  onResetFilters
 }: Props) {
   // Ensure 9 slots for grid view
   const gridSlots: (Card | null)[] = [...cards];
@@ -55,10 +91,30 @@ function BinderPage({
     }
   }
 
+  const QUICK_RARITY_PRESETS = [
+    { id: "All Rarities", label: "✨ All", icon: "✨" },
+    { id: "Common", label: "⚪ Common", icon: "⚪" },
+    { id: "Uncommon", label: "🔷 Uncommon", icon: "🔷" },
+    { id: "Rare", label: "⭐ Rare", icon: "⭐" },
+    { id: "Ultra / Secret Rare", label: "💎 Ultra / Secret", icon: "💎" },
+    { id: "Illustration Rare", label: "🌟 Illustration Rare", icon: "🌟" },
+    { id: "Promo", label: "🎁 Promo", icon: "🎁" },
+    { id: "Shiny Vault", label: "✨ Shiny Vault", icon: "✨" }
+  ];
+
+  const hasActiveFilters =
+    activeRarityFilter !== "All Rarities" ||
+    activeSetFilter !== "All Sets" ||
+    activeTypeFilter !== "All Types" ||
+    holofoilOnly ||
+    favoritesOnly ||
+    searchQuery.trim() !== "" ||
+    sortBy !== "price-desc";
+
   return (
     <main className="flex-1 flex flex-col overflow-visible md:overflow-hidden px-4 md:px-6 py-4 md:py-5 min-h-0">
       {/* Topbar */}
-      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-4 md:mb-5 shrink-0 gap-3 xl:gap-0">
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-3 shrink-0 gap-3 xl:gap-0">
         <div>
           <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#f0f0f2] flex items-center gap-2">
             <span>{binderName}</span>
@@ -69,7 +125,7 @@ function BinderPage({
             )}
           </h1>
           <p className="text-xs text-[#7a7a8a] mt-1">
-            {totalCardsInBinder} cards · Page {currentPage} of {Math.max(1, totalPages)}
+            {totalCardsInBinder} cards matched &middot; Page {currentPage} of {Math.max(1, totalPages)}
           </p>
         </div>
 
@@ -80,6 +136,123 @@ function BinderPage({
           {onClearBinder && <TopBtn label="🗑️ Clear Binder" onClick={onClearBinder} />}
           {onDeleteBinder && <TopBtn label="❌ Delete Binder" onClick={onDeleteBinder} />}
           <TopBtn label="+ Open Packs to Add" accent onClick={onAddCard} />
+        </div>
+      </div>
+
+      {/* 🔍 VAULT RARITY & CARDS FILTER BAR */}
+      <div className="mb-4 bg-gradient-to-r from-zinc-900/90 via-black/80 to-zinc-900/90 border border-white/10 rounded-2xl p-3 shadow-xl backdrop-blur-xl shrink-0 space-y-2.5">
+        {/* Search + Sort + Controls Row */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          {/* Search input */}
+          <div className="relative flex-1 min-w-[220px]">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">🔍</span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchQueryChange && onSearchQueryChange(e.target.value)}
+              placeholder="Search vault cards by name, set, or rarity..."
+              className="w-full bg-black/60 border border-white/15 rounded-xl pl-8 pr-8 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400/80 transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => onSearchQueryChange && onSearchQueryChange("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs font-bold"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Rarity Dropdown (Full collection rarities) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider hidden sm:inline">Rarity:</span>
+            <select
+              value={activeRarityFilter}
+              onChange={(e) => onRarityFilterChange && onRarityFilterChange(e.target.value)}
+              className="bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-semibold focus:outline-none focus:border-amber-400/80 cursor-pointer"
+            >
+              {raritiesList.map((rarity) => (
+                <option key={rarity} value={rarity} className="bg-zinc-900 text-white">
+                  {rarity}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort By Dropdown */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider hidden sm:inline">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => onSortByChange && onSortByChange(e.target.value as any)}
+              className="bg-black/60 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400/80 cursor-pointer"
+            >
+              <option value="price-desc" className="bg-zinc-900 text-white">Highest Price ($ → 0)</option>
+              <option value="price-asc" className="bg-zinc-900 text-white">Lowest Price (0 → $)</option>
+              <option value="rarity" className="bg-zinc-900 text-white">Highest Rarity</option>
+              <option value="name" className="bg-zinc-900 text-white">Card Name (A-Z)</option>
+            </select>
+          </div>
+
+          {/* Reset Filters button */}
+          {hasActiveFilters && onResetFilters && (
+            <button
+              onClick={onResetFilters}
+              className="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 hover:bg-amber-500/30 text-xs font-bold transition-all flex items-center gap-1 shrink-0"
+            >
+              <span>↺ Reset</span>
+            </button>
+          )}
+        </div>
+
+        {/* Quick Rarity Chips Bar */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
+          <span className="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+            <span>💎 RARITY FILTER:</span>
+          </span>
+          {QUICK_RARITY_PRESETS.map((preset) => {
+            const isActive = activeRarityFilter === preset.id;
+            return (
+              <button
+                key={preset.id}
+                onClick={() => onRarityFilterChange && onRarityFilterChange(preset.id)}
+                className={`px-2.5 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition-all border shrink-0 flex items-center gap-1 ${
+                  isActive
+                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-black border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.4)] scale-105"
+                    : "bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                <span>{preset.label}</span>
+              </button>
+            );
+          })}
+
+          {/* Extra Holofoil & Favorite Pills */}
+          <div className="h-4 w-[1px] bg-white/10 mx-1 shrink-0" />
+          {onToggleHolofoil && (
+            <button
+              onClick={onToggleHolofoil}
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition-all border shrink-0 ${
+                holofoilOnly
+                  ? "bg-amber-500/25 border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
+                  : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
+              }`}
+            >
+              ✨ Holofoil
+            </button>
+          )}
+          {onToggleFavorites && (
+            <button
+              onClick={onToggleFavorites}
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition-all border shrink-0 ${
+                favoritesOnly
+                  ? "bg-amber-500/25 border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
+                  : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
+              }`}
+            >
+              ⭐ Favorites
+            </button>
+          )}
         </div>
       </div>
 

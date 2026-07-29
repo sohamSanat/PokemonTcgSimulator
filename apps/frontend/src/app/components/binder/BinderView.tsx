@@ -19,6 +19,8 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const [activeSetFilter, setActiveSetFilter] = useState<string>("All Sets");
   const [activeRarityFilter, setActiveRarityFilter] = useState<string>("All Rarities");
   const [activeTypeFilter, setActiveTypeFilter] = useState<string>("All Types");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"price-desc" | "price-asc" | "name" | "rarity" | "newest">("price-desc");
   const [holofoilOnly, setHolofoilOnly] = useState<boolean>(false);
   const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -107,23 +109,101 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
     return Array.from(sets);
   }, [rawCards]);
 
+  const typesList = useMemo(() => {
+    const types = new Set<string>(["All Types"]);
+    rawCards.forEach(c => c.type && types.add(c.type));
+    return Array.from(types);
+  }, [rawCards]);
+
+  const raritiesList = useMemo(() => {
+    const defaultList = ["All Rarities", "Common", "Uncommon", "Rare", "Ultra / Secret Rare", "Illustration Rare", "Promo", "Shiny Vault"];
+    const set = new Set<string>(defaultList);
+    rawCards.forEach(c => c.rarity && set.add(c.rarity));
+    return Array.from(set);
+  }, [rawCards]);
+
   const filteredCards = useMemo(() => {
     return rawCards.filter(card => {
+      // Search query filter
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchesName = card.name.toLowerCase().includes(q);
+        const matchesSet = card.setName?.toLowerCase().includes(q);
+        const matchesNumber = card.setNumber?.toLowerCase().includes(q);
+        const matchesRarity = card.rarity?.toLowerCase().includes(q);
+        if (!matchesName && !matchesSet && !matchesNumber && !matchesRarity) return false;
+      }
+
+      // Set filter
       if (activeSetFilter !== "All Sets" && card.setName !== activeSetFilter) return false;
-      if (activeRarityFilter !== "All Rarities" && card.rarity !== activeRarityFilter) return false;
+
+      // Type filter
       if (activeTypeFilter !== "All Types" && card.type !== activeTypeFilter) return false;
+
+      // Rarity filter
+      if (activeRarityFilter !== "All Rarities") {
+        const cRarity = (card.rarity || "").toLowerCase();
+        const fRarity = activeRarityFilter.toLowerCase();
+
+        if (fRarity === "common") {
+          if (!cRarity.includes("common")) return false;
+        } else if (fRarity === "uncommon") {
+          if (!cRarity.includes("uncommon")) return false;
+        } else if (fRarity === "rare") {
+          if (!cRarity.includes("rare") || cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration")) return false;
+        } else if (fRarity === "ultra / secret rare") {
+          const isSecretOrUltra = cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration") || cRarity.includes("hyper") || cRarity.includes("double") || cRarity.includes("rainbow") || cRarity.includes("ace") || cRarity.includes("vmax") || cRarity.includes("vstar") || cRarity.includes("ex");
+          if (!isSecretOrUltra) return false;
+        } else if (fRarity === "illustration rare") {
+          if (!cRarity.includes("illustration") && !cRarity.includes("art rare")) return false;
+        } else if (fRarity === "promo") {
+          if (!cRarity.includes("promo") && !card.id.toLowerCase().includes("promo")) return false;
+        } else if (fRarity === "shiny vault") {
+          if (!cRarity.includes("shiny vault") && !cRarity.includes("shiny")) return false;
+        } else {
+          // Exact or partial match for custom rarity strings
+          if (card.rarity !== activeRarityFilter && !cRarity.includes(fRarity)) return false;
+        }
+      }
+
+      // Holofoil filter
       if (holofoilOnly && !card.holofoil) return false;
+
+      // Favorites filter
       if (favoritesOnly && !card.favorite) return false;
+
       return true;
     });
-  }, [rawCards, activeSetFilter, activeRarityFilter, activeTypeFilter, holofoilOnly, favoritesOnly]);
+  }, [rawCards, searchQuery, activeSetFilter, activeRarityFilter, activeTypeFilter, holofoilOnly, favoritesOnly]);
+
+  const sortedCards = useMemo(() => {
+    const list = [...filteredCards];
+    if (sortBy === "price-desc") {
+      list.sort((a, b) => (b.currentPrice || 0) - (a.currentPrice || 0));
+    } else if (sortBy === "price-asc") {
+      list.sort((a, b) => (a.currentPrice || 0) - (b.currentPrice || 0));
+    } else if (sortBy === "name") {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "rarity") {
+      const rarityRank = (r: string) => {
+        const lr = (r || "").toLowerCase();
+        if (lr.includes("secret") || lr.includes("hyper") || lr.includes("special illustration")) return 5;
+        if (lr.includes("ultra") || lr.includes("illustration") || lr.includes("double")) return 4;
+        if (lr.includes("rare")) return 3;
+        if (lr.includes("uncommon")) return 2;
+        return 1;
+      };
+      list.sort((a, b) => rarityRank(b.rarity) - rarityRank(a.rarity));
+    }
+    return list;
+  }, [filteredCards, sortBy]);
 
   const pageSize = 9;
-  const totalPages = Math.ceil(filteredCards.length / pageSize) || 1;
+  const totalPages = Math.ceil(sortedCards.length / pageSize) || 1;
   const paginatedCards = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return filteredCards.slice(start, start + pageSize);
-  }, [filteredCards, currentPage]);
+    return sortedCards.slice(start, start + pageSize);
+  }, [sortedCards, currentPage]);
 
   const currentBinderObj: Binder = binders.find(b => b.id === activeBinder) || binders[0] || { id: "my-collection", name: "My Binder", count: 0, value: 0, isCustom: false };
 
@@ -207,6 +287,19 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const handleTypeFilterChange = useCallback((t: string) => { setActiveTypeFilter(t); setCurrentPage(1); }, []);
   const handleToggleHolofoil = useCallback(() => { setHolofoilOnly(prev => !prev); setCurrentPage(1); }, []);
   const handleToggleFavorites = useCallback(() => { setFavoritesOnly(prev => !prev); setCurrentPage(1); }, []);
+  const handleSearchQueryChange = useCallback((q: string) => { setSearchQuery(q); setCurrentPage(1); }, []);
+  const handleSortByChange = useCallback((s: "price-desc" | "price-asc" | "name" | "rarity" | "newest") => { setSortBy(s); setCurrentPage(1); }, []);
+  const handleResetFilters = useCallback(() => {
+    setActiveRarityFilter("All Rarities");
+    setActiveSetFilter("All Sets");
+    setActiveTypeFilter("All Types");
+    setHolofoilOnly(false);
+    setFavoritesOnly(false);
+    setSearchQuery("");
+    setSortBy("price-desc");
+    setCurrentPage(1);
+  }, []);
+
   const handleAddCard = useCallback(() => { if (onSwitchToPacks) onSwitchToPacks(); }, [onSwitchToPacks]);
   const handleDeleteActiveBinder = useCallback(() => { handleDeleteBinder(activeBinder); }, [handleDeleteBinder, activeBinder]);
 
@@ -231,6 +324,7 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
         totalCardsCount={totalCardsCount}
         totalPortfolioValue={totalPortfolioValue}
         setsList={setsList}
+        raritiesList={raritiesList}
       />
       {isSimulatingLoad ? (
         <div className="flex-1 flex flex-col items-center justify-center h-full bg-[#0d0d0f] relative overflow-hidden">
@@ -253,10 +347,28 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
             onAddCard={handleAddCard}
             onClearBinder={handleClearBinder}
             onDeleteBinder={activeBinder !== "my-collection" ? handleDeleteActiveBinder : undefined}
-            totalCardsInBinder={filteredCards.length}
+            totalCardsInBinder={sortedCards.length}
             onInspectCard={onInspectCard}
             onMoveCard={handleOpenMoveCardModal}
             currentBinderObj={currentBinderObj}
+            activeRarityFilter={activeRarityFilter}
+            onRarityFilterChange={handleRarityFilterChange}
+            raritiesList={raritiesList}
+            activeSetFilter={activeSetFilter}
+            onSetFilterChange={handleSetFilterChange}
+            setsList={setsList}
+            activeTypeFilter={activeTypeFilter}
+            onTypeFilterChange={handleTypeFilterChange}
+            typesList={typesList}
+            holofoilOnly={holofoilOnly}
+            onToggleHolofoil={handleToggleHolofoil}
+            favoritesOnly={favoritesOnly}
+            onToggleFavorites={handleToggleFavorites}
+            searchQuery={searchQuery}
+            onSearchQueryChange={handleSearchQueryChange}
+            sortBy={sortBy}
+            onSortByChange={handleSortByChange}
+            onResetFilters={handleResetFilters}
           />
         </DndContext>
       )}
