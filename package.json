@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "npm run dev --workspace=frontend",
     "build": "npm run build --workspace=frontend",
+    "find-large-files": "node scripts/find_large_files.js",
+    "add-jsdocs": "node scripts/add_jsdocs.js",
     "scrape": "npm run scrape --workspace=tcg-price-scraper"
   },
   "dependencies": {

@@ -20,6 +20,8 @@ import { preloadPackAssets } from '../../services/imagePreloader';
 import InteractiveCard3D from '../binder/InteractiveCard3D';
 import setPackPricesData from '../../data/set_pack_prices.json';
 import { getJapaneseCardRealPrice, fetchSingleJapaneseSet, generateJapanesePackFromSet } from '../../services/scrydex';
+import { FALLBACK_POKEMON_CARDS, toTitleCase, generateFallbackPack } from '../../data/fallbackCards';
+
 const setPackPrices: Record<string, number> = setPackPricesData as Record<string, number>;
 
 interface CardData {
@@ -37,199 +39,11 @@ interface CardData {
 }
 
 
-const FALLBACK_POKEMON_CARDS: PokemonCard[] = [
-  {
-    id: "me4-1",
-    name: "Weedle",
-    rarity: "Common",
-    images: { small: "https://images.scrydex.com/pokemon/me4-1/small", large: "https://images.scrydex.com/pokemon/me4-1/large" },
-    tcgplayer: { prices: { normal: { market: 0.45 } } }
-  },
-  {
-    id: "me4-2",
-    name: "Kakuna",
-    rarity: "Common",
-    images: { small: "https://images.scrydex.com/pokemon/me4-2/small", large: "https://images.scrydex.com/pokemon/me4-2/large" },
-    tcgplayer: { prices: { normal: { market: 0.80 } } }
-  },
-  {
-    id: "me4-3",
-    name: "Beedrill ex",
-    rarity: "Double Rare",
-    images: { small: "https://images.scrydex.com/pokemon/me4-3/small", large: "https://images.scrydex.com/pokemon/me4-3/large" },
-    tcgplayer: { prices: { holofoil: { market: 24.50 } } }
-  },
-  {
-    id: "me4-4",
-    name: "Carnivine",
-    rarity: "Common",
-    images: { small: "https://images.scrydex.com/pokemon/me4-4/small", large: "https://images.scrydex.com/pokemon/me4-4/large" },
-    tcgplayer: { prices: { normal: { market: 1.10 } } }
-  },
-  {
-    id: "me4-7",
-    name: "Chesnaught",
-    rarity: "Rare",
-    images: { small: "https://images.scrydex.com/pokemon/me4-7/small", large: "https://images.scrydex.com/pokemon/me4-7/large" },
-    tcgplayer: { prices: { holofoil: { market: 6.75 } } }
-  },
-  {
-    id: "me4-10",
-    name: "Ho-Oh",
-    rarity: "Rare",
-    images: { small: "https://images.scrydex.com/pokemon/me4-10/small", large: "https://images.scrydex.com/pokemon/me4-10/large" },
-    tcgplayer: { prices: { holofoil: { market: 18.90 } } }
-  },
-  {
-    id: "swsh3-154",
-    name: "Rookidee",
-    rarity: "Common",
-    images: { small: "https://assets.tcgdex.net/en/swsh/swsh3/154/low.webp", large: "https://assets.tcgdex.net/en/swsh/swsh3/154/high.webp" },
-    tcgplayer: { prices: { normal: { market: 0.04 } } }
-  },
-  {
-    id: "swsh3-155",
-    name: "Corvisquire",
-    rarity: "Uncommon",
-    images: { small: "https://assets.tcgdex.net/en/swsh/swsh3/155/low.webp", large: "https://assets.tcgdex.net/en/swsh/swsh3/155/high.webp" },
-    tcgplayer: { prices: { normal: { market: 0.15 } } }
-  },
-  {
-    id: "sve-10",
-    name: "Basic Fire Energy",
-    rarity: "Common",
-    images: { small: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp", large: "/packArts/ScarletAndViolet-Generation/SV-EnergyCards/2.webp" },
-    tcgplayer: { prices: { normal: { market: 0.03 } } }
-  }
-];
 
 
 
 
 
-
-
-
-
-
-const toTitleCase = (str: string) => str.replace(/\b\w+/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-
-
-const generateFallbackPack = (pool: PokemonCard[], fallbackSet?: { id?: string; name?: string } | TCGDexSetSummary | TCGDexSet | null): CardData[] => {
-  const sourcePool = pool.length > 0 ? pool : FALLBACK_POKEMON_CARDS;
-
-  const commons = sourcePool.filter(c => c.rarity?.includes('Common') && !c.name.includes('Energy'));
-  const uncommons = sourcePool.filter(c => c.rarity?.includes('Uncommon') && !c.name.includes('Energy'));
-  const rares = sourcePool.filter(c => !c.rarity?.includes('Common') && !c.rarity?.includes('Uncommon') && !c.name.includes('Energy'));
-  const energy = sourcePool.filter(c => c.name.includes('Energy'));
-
-  const nonEnergySourcePool = sourcePool.filter(c => !c.name.includes('Energy'));
-  const fallbackCardPool = nonEnergySourcePool.length > 0 ? nonEnergySourcePool : sourcePool;
-
-  const pickedIds = new Set<string>();
-
-  const pickUnique = (candidates: PokemonCard[]): PokemonCard => {
-    const unpicked = candidates.filter(c => !pickedIds.has(c.id));
-    if (unpicked.length > 0) {
-      const chosen = unpicked[Math.floor(Math.random() * unpicked.length)];
-      if (chosen) {
-        pickedIds.add(chosen.id);
-        return chosen;
-      }
-    }
-    if (candidates.length > 0) {
-      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-      if (chosen) return chosen;
-    }
-    const rem = fallbackCardPool.filter(c => !pickedIds.has(c.id));
-    if (rem.length > 0) {
-      const chosen = rem[Math.floor(Math.random() * rem.length)];
-      if (chosen) {
-        pickedIds.add(chosen.id);
-        return chosen;
-      }
-    }
-    return fallbackCardPool[0] || sourcePool[0];
-  };
-
-  const setId = (fallbackSet?.id || '').toLowerCase();
-  const setName = (fallbackSet?.name || '').toLowerCase();
-
-  const getC = () => pickUnique(commons.length > 0 ? commons : fallbackCardPool);
-  const getU = () => pickUnique(uncommons.length > 0 ? uncommons : fallbackCardPool);
-  const getR = () => pickUnique(rares.length > 0 ? rares : fallbackCardPool);
-  const getE = (): PokemonCard => {
-    if (energy.length > 0) return energy[Math.floor(Math.random() * energy.length)];
-    const era: EnergyEra =
-      setId.startsWith('me') || setName.includes('mega evolution') || setName.includes('phantasmal') || setName.includes('ascended') || setName.includes('perfect order') || setName.includes('chaos rising') ? 'me' :
-        setId.startsWith('sv') || setName.includes('scarlet') || setName.includes('paldea') || setName.includes('obsidian') || setName.includes('paradox') || setName.includes('temporal') || setName.includes('twilight') || setName.includes('stellar') || setName.includes('surging') || setName.includes('151') || setName.includes('prismatic') || setName.includes('shrouded') ? 'sv' :
-          setId.startsWith('sm') || setName.includes('sun & moon') || setName.includes('guardians rising') || setName.includes('burning shadows') || setName.includes('cosmic eclipse') || setName.includes('hidden fates') ? 'sm' :
-            setId.startsWith('xy') || setName.includes('flashfire') || setName.includes('furious fists') || setName.includes('roaring skies') || setName.includes('evolutions') || setName.includes('phantom forces') ? 'xy' :
-              setId.startsWith('base') || setId === 'bs1' || setId === 'bs2' || setId === 'ju' || setId === 'fo' || setId === 'tr' || setName.includes('base set') || setName.includes('jungle') || setName.includes('fossil') || setName.includes('team rocket') ? 'base' : 'swsh';
-    const pool = ENERGY_POOLS_BY_ERA[era] || ENERGY_POOLS_BY_ERA.sv;
-    const chosen = pool[Math.floor(Math.random() * pool.length)];
-    return {
-      ...chosen,
-      images: {
-        small: chosen.image,
-        large: chosen.image
-      },
-      rarity: 'Basic Energy'
-    };
-  };
-
-  const eraForSlots = setId.startsWith('me') || setName.includes('mega evolution') || setName.includes('phantasmal') || setName.includes('ascended') || setName.includes('perfect order') || setName.includes('chaos rising') ? 'me' :
-        setId.startsWith('sv') || setName.includes('scarlet') || setName.includes('paldea') || setName.includes('obsidian') || setName.includes('paradox') || setName.includes('temporal') || setName.includes('twilight') || setName.includes('stellar') || setName.includes('surging') || setName.includes('151') || setName.includes('prismatic') || setName.includes('shrouded') ? 'sv' :
-          setId.startsWith('sm') || setName.includes('sun & moon') || setName.includes('guardians rising') || setName.includes('burning shadows') || setName.includes('cosmic eclipse') || setName.includes('hidden fates') ? 'sm' :
-            setId.startsWith('xy') || setName.includes('flashfire') || setName.includes('furious fists') || setName.includes('roaring skies') || setName.includes('evolutions') || setName.includes('phantom forces') ? 'xy' :
-              setId.startsWith('base') || setId === 'bs1' || setId === 'bs2' || setId === 'ju' || setId === 'fo' || setId === 'tr' || setName.includes('base set') || setName.includes('jungle') || setName.includes('fossil') || setName.includes('team rocket') ? 'base' : 'swsh';
-
-  const commonCount = (eraForSlots === 'sv' || eraForSlots === 'me' || eraForSlots === 'base') ? 5 : 4;
-  const isSpecialEra = (eraForSlots === 'swsh' || eraForSlots === 'sm');
-
-  const selected: PokemonCard[] = [];
-  // Slot 1: 1 Basic Energy
-  selected.push(getE());
-  
-  // Slots 2-6 (or 2-5): 4 or 5 Commons
-  for (let i = 0; i < commonCount; i++) selected.push(getC());
-  
-  // Slots 7-9: 3 Uncommons
-  for (let i = 0; i < 3; i++) selected.push(getU());
-  
-  // Special Slot / Reverse Holo (Slot 10)
-  if (isSpecialEra && commonCount === 4) {
-    // Fill the missing slot so the pack still has 11 cards
-    const special = getC();
-    selected.push({ ...special, isReverseHolo: true, rarity: 'Special' });
-  }
-  const revCard = getC();
-  selected.push({ ...revCard, isReverseHolo: true, rarity: 'Reverse Holo' });
-  
-  // Slot 11: 1 Rare or higher
-  selected.push(getR());
-
-  const formatted = selected.map((poke, idx) => {
-    const val = getRealCardPrice(poke);
-    return {
-      id: Date.now() + idx + Math.floor(Math.random() * 1000),
-      originalIndex: idx,
-      flipped: false,
-      collected: false,
-      value: val,
-      pokemon: poke
-    };
-  });
-  const energyIdx = formatted.findIndex(c => c.pokemon.name?.toLowerCase().includes('energy') || c.pokemon.id?.toLowerCase().includes('energy'));
-  if (energyIdx > 0) {
-    const [energyCard] = formatted.splice(energyIdx, 1);
-    formatted.unshift(energyCard);
-  }
-  ensureMostExpensiveLast(formatted);
-  // Reverse array so Slot 1 (Basic Energy) is at index length-1 (top of DOM stack, revealed first) and Slot 11/10 (Rare hit) is at index 0 (bottom of stack, revealed last)
-  formatted.reverse();
-  return formatted.map((c, idx) => ({ ...c, originalIndex: idx }));
-};
 
 
 const isActualHit = (card: CardData): boolean => {

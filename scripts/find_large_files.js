@@ -6,7 +6,7 @@ function getFiles(dir, fileList = []) {
   files.forEach(file => {
     const filePath = path.join(dir, file);
     if (fs.statSync(filePath).isDirectory()) {
-      if (!filePath.includes('node_modules') && !filePath.includes('.next')) {
+      if (!filePath.includes('node_modules') && !filePath.includes('.next') && !filePath.includes('dist')) {
         getFiles(filePath, fileList);
       }
     } else if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
@@ -18,7 +18,12 @@ function getFiles(dir, fileList = []) {
   return fileList;
 }
 
-const allFiles = getFiles('d:\\Tcg\\apps\\frontend\\src');
+const targetDir = path.join(__dirname, '../apps/frontend/src');
+const allFiles = getFiles(targetDir);
 allFiles.sort((a, b) => b.lines - a.lines);
+
 console.log('Top 15 largest files by line count:');
-allFiles.slice(0, 15).forEach(f => console.log(`${f.lines} lines (${(f.size/1024).toFixed(1)} KB): ${f.path}`));
+allFiles.slice(0, 15).forEach(f => {
+  const relPath = path.relative(path.join(__dirname, '..'), f.path);
+  console.log(`${f.lines} lines (${(f.size/1024).toFixed(1)} KB): ${relPath}`);
+});
