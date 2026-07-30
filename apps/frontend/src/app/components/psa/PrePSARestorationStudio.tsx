@@ -8,6 +8,10 @@ import {
 } from 'lucide-react';
 import { type Card, getCollectedCards, getStorageKey, syncToFirestore } from '../binder/types';
 import { sound } from '../../services/sound';
+import ThermalPressStation from './components/ThermalPressStation';
+import EdgeRepairStation from './components/EdgeRepairStation';
+import RotaryBufferStation from './components/RotaryBufferStation';
+import CardSaverStation from './components/CardSaverStation';
 
 interface PrePSARestorationStudioProps {
   isOpen: boolean;
@@ -36,6 +40,15 @@ interface ScuffSpot {
   buffed: boolean;
 }
 
+/**
+ * Pre-PSA Restoration Studio Component
+ * 
+ * Provides an interface for the user to perform restoration tasks on their card
+ * before sending it to PSA for grading. This includes thermal pressing, edge repair,
+ * rotary buffering, and penny sleeve encapsulation.
+ *
+ * @param {PrePSARestorationStudioProps} props - The component props
+ */
 export default function PrePSARestorationStudio({
   isOpen,
   onClose,
@@ -49,30 +62,17 @@ export default function PrePSARestorationStudio({
   // Active Restoration Station
   const [station, setStation] = useState<RestorationStation>('press');
 
-  // Station 1: Thermal Moisture Press
-  const [targetTemp, setTargetTemp] = useState<number>(35); // 50-60 target
-  const [steamLevel, setSteamLevel] = useState<number>(0);
-  const [isPressing, setIsPressing] = useState<boolean>(false);
   const [cardWarpAngle, setCardWarpAngle] = useState<number>(24); // 24deg down to 0deg
-  const [pressHoldTimer, setPressHoldTimer] = useState<number>(0);
 
   // Station 2: Edge Whitening Repair Pen
   const [edgeDings, setEdgeDings] = useState<EdgeDing[]>([]);
-  const [isDrawingInk, setIsDrawingInk] = useState<boolean>(false);
 
   // Station 3: Electric Rotary Buffer
   const [scuffSpots, setScuffSpots] = useState<ScuffSpot[]>([]);
-  const [bufferRPM, setBufferRPM] = useState<number>(3500); // 1000 - 8000 RPM
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
 
   // Station 4: High-Tech Card Saver 1 Encapsulation
-  const [sleeveSlideProgress, setSleeveSlideProgress] = useState<number>(0); // 0 - 100%
-  const [saverSnapProgress, setSaverSnapProgress] = useState<number>(0); // 0 - 100%
   const [hasPennySleeve, setHasPennySleeve] = useState<boolean>(false);
   const [hasCardSaver, setHasCardSaver] = useState<boolean>(false);
-  const [sleeveStyle, setSleeveStyle] = useState<'clear' | 'gold' | 'holo'>('clear');
-  const [isLaserSealing, setIsLaserSealing] = useState<boolean>(false);
-  const [laserScanPos, setLaserScanPos] = useState<number>(0);
 
   useEffect(() => {
     if (availableCards.length > 0 && !selectedCard) {
@@ -83,10 +83,7 @@ export default function PrePSARestorationStudio({
   useEffect(() => {
     if (selectedCard) {
       // Reset Station 1
-      setTargetTemp(35);
-      setSteamLevel(0);
       setCardWarpAngle(24);
-      setPressHoldTimer(0);
 
       // Reset Station 2: 4 edge dings
       setEdgeDings([
@@ -104,63 +101,17 @@ export default function PrePSARestorationStudio({
       ]);
 
       // Reset Station 4
-      setSleeveSlideProgress(0);
-      setSaverSnapProgress(0);
       setHasPennySleeve(false);
       setHasCardSaver(false);
-      setIsLaserSealing(false);
-      setLaserScanPos(0);
     }
   }, [selectedCard]);
-
-  // Station 1: Pressing lever hold effect
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPressing) {
-      interval = setInterval(() => {
-        setPressHoldTimer(prev => {
-          const next = prev + 1;
-          sound.playAirBlower();
-          if (targetTemp >= 48 && targetTemp <= 65 && steamLevel > 0) {
-            setCardWarpAngle(angle => Math.max(0, angle - 6));
-          }
-          if (next >= 4) {
-            setIsPressing(false);
-            setCardWarpAngle(0);
-            sound.playLaserScan();
-          }
-          return next;
-        });
-      }, 500);
-    }
-    return () => clearInterval(interval);
-  }, [isPressing, targetTemp, steamLevel]);
 
   // NOTE: The rotary buffer no longer uses a JS requestAnimationFrame loop
   // (which previously called setState on EVERY animation frame while this view
   // was mounted). It is now a pure CSS rotation driven by bufferRPM via the
   // inline animation-duration, so it costs zero main-thread time.
 
-  // Station 4: Laser sealing animation
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isLaserSealing) {
-      interval = setInterval(() => {
-        setLaserScanPos(prev => {
-          if (prev >= 100) {
-            setIsLaserSealing(false);
-            setSaverSnapProgress(100);
-            setHasCardSaver(true);
-            sound.playLaserScan();
-            return 100;
-          }
-          sound.playUltrasonicWeldPulse();
-          return prev + 20;
-        });
-      }, 150);
-    }
-    return () => clearInterval(interval);
-  }, [isLaserSealing]);
+
 
   if (!isOpen) return null;
 
@@ -176,95 +127,11 @@ export default function PrePSARestorationStudio({
     (flattenScore * 0.25) + (edgeScore * 0.25) + (bufferScore * 0.25) + (sleeveScore * 0.25)
   );
 
-  // Station 1 Actions
-  const handleApplySteam = () => {
-    sound.playAirBlower();
-    setSteamLevel(100);
-  };
 
-  const handleAutoFlatten = () => {
-    sound.playAirBlower();
-    setTargetTemp(55);
-    setSteamLevel(100);
-    sound.playLaserScan();
-    setCardWarpAngle(0);
-  };
 
-  // Station 2 Actions
-  const handleFixAllEdgeDings = () => {
-    sound.playClothWipe();
-    setEdgeDings(prev => prev.map(d => ({ ...d, progress: 100, repaired: true })));
-  };
 
-  // Station 3 Actions
-  const handleBuffAllScuffs = () => {
-    sound.playLaserScan();
-    setScuffSpots(prev => prev.map(s => ({ ...s, pasted: true, buffProgress: 100, buffed: true })));
-  };
 
-  // Station 4 Actions
-  const handleTriggerLaserSeal = () => {
-    sound.playAirBlower();
-    setSleeveSlideProgress(100);
-    setHasPennySleeve(true);
-    setIsLaserSealing(true);
-    setLaserScanPos(0);
-  };
 
-  const handleEncapsulateBoth = () => {
-    sound.playButtonClick();
-    setSleeveSlideProgress(100);
-    setSaverSnapProgress(100);
-    setHasPennySleeve(true);
-    setHasCardSaver(true);
-    sound.playLaserScan();
-  };
-
-  // Touch & Pointer Interaction Handler (Fully Compatible with Mobile Screen Touch + Mouse)
-  const handleCardPointerInteraction = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-    setMousePos({ x, y });
-
-    // Station 2: Mobile Touch & Mouse Edge Ink Pen Brushing
-    if (station === 'edgePen' && (e.buttons === 1 || isDrawingInk || e.pointerType === 'touch')) {
-      setEdgeDings(prev => prev.map(d => {
-        if (d.repaired) return d;
-        const dist = Math.hypot(d.x - x, d.y - y);
-        if (dist < 28) { // High touch sensitivity
-          sound.playClothWipe();
-          const newProgress = Math.min(100, d.progress + 35);
-          return {
-            ...d,
-            progress: newProgress,
-            repaired: newProgress >= 100
-          };
-        }
-        return d;
-      }));
-    }
-
-    // Station 3: Mobile Touch & Mouse Rotary Buffer & Paste
-    if (station === 'rotaryBuffer' && (e.buttons === 1 || isDrawingInk || e.pointerType === 'touch')) {
-      sound.playUltrasonicWeldPulse();
-      setScuffSpots(prev => prev.map(s => {
-        const dist = Math.hypot(s.x - x, s.y - y);
-        if (dist < 25) { // High touch sensitivity
-          if (!s.pasted) {
-            return { ...s, pasted: true };
-          }
-          const newBuff = Math.min(100, s.buffProgress + 35);
-          return {
-            ...s,
-            buffProgress: newBuff,
-            buffed: newBuff >= 100
-          };
-        }
-        return s;
-      }));
-    }
-  };
 
   const handleCompleteRestoration = () => {
     if (!selectedCard) return;
@@ -503,374 +370,40 @@ export default function PrePSARestorationStudio({
 
               {selectedCard ? (
                 <div className="relative flex flex-col items-center max-w-md w-full my-auto">
-                  {/* Card Display Canvas with Screen Touch & Pointer Support */}
-                  <div
-                    onPointerDown={(e) => {
-                      setIsDrawingInk(true);
-                      handleCardPointerInteraction(e);
-                    }}
-                    onPointerUp={() => setIsDrawingInk(false)}
-                    onPointerMove={handleCardPointerInteraction}
-                    className="relative w-48 sm:w-60 md:w-72 aspect-[2.5/3.5] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 select-none group transition-transform duration-300 shrink-0 cursor-crosshair touch-none"
-                    style={{
-                      transform: `rotateY(${cardWarpAngle}deg) rotateX(${cardWarpAngle * 0.4}deg)`,
-                      transformStyle: 'preserve-3d'
-                    }}
-                  >
-                    <img
-                      src={selectedCard.imageUrl}
-                      alt={selectedCard.name}
-                      className="w-full h-full object-cover pointer-events-none"
+                  {station === 'press' && (
+                    <ThermalPressStation 
+                      key={selectedCard.id}
+                      activeCard={selectedCard}
+                      cardWarpAngle={cardWarpAngle}
+                      onWarpAngleChange={setCardWarpAngle}
                     />
-
-                    {/* Station 1: Thermal Steam Effect */}
-                    {station === 'press' && steamLevel > 0 && (
-                      <div className="absolute inset-0 bg-white/20] pointer-events-none animate-pulse flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-black bg-white/90 px-2.5 py-0.5 rounded-full shadow-lg">
-                          ♨️ Steam Applied ({steamLevel}%)
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Station 2: Touch & Pointer Edge Ink Pen Trail */}
-                    {station === 'edgePen' && (
-                      <div className="absolute inset-0">
-                        {edgeDings.map(d => (
-                          <div
-                            key={d.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              sound.playClothWipe();
-                              setEdgeDings(prev => prev.map(item => item.id === d.id ? { ...item, progress: 100, repaired: true } : item));
-                            }}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 transition-all cursor-pointer z-20"
-                            style={{ left: `${d.x}%`, top: `${d.y}%` }}
-                          >
-                            {d.repaired ? (
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[9px] font-black border border-white shadow-lg">
-                                ✓ Sealed
-                              </span>
-                            ) : (
-                              <div className="flex flex-col items-center">
-                                <span className="px-2 py-0.5 rounded-full bg-red-600 text-white text-[8px] font-black border border-white animate-bounce shadow-lg">
-                                  🖌️ Touch {d.edge} ({d.progress}%)
-                                </span>
-                                <div className="w-12 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
-                                  <div className="h-full bg-cyan-400" style={{ width: `${d.progress}%` }} />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-
-                        {/* Floating Pen Nib Cursor */}
-                        <div
-                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
-                          style={{ left: `${mousePos.x}%`, top: `${mousePos.y}%` }}
-                        >
-                          <div className="w-8 h-8 rounded-full bg-cyan-400/30 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.8)]">
-                            <PenTool className="w-4 h-4 text-cyan-200" />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Station 3: Touch & Pointer Rotary Buffing Overlays */}
-                    {station === 'rotaryBuffer' && (
-                      <div className="absolute inset-0">
-                        {scuffSpots.map(s => (
-                          <div
-                            key={s.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              sound.playLaserScan();
-                              setScuffSpots(prev => prev.map(item => item.id === s.id ? { ...item, pasted: true, buffProgress: 100, buffed: true } : item));
-                            }}
-                            className="absolute -translate-x-1/2 -translate-y-1/2 transition-all cursor-pointer z-20"
-                            style={{ left: `${s.x}%`, top: `${s.y}%` }}
-                          >
-                            {s.buffed ? (
-                              <div className="w-8 h-8 rounded-full border-2 border-amber-300 bg-gradient-to-tr from-amber-400/30 via-purple-500/30 to-amber-300/30 shadow-[0_0_20px_rgba(245,158,11,0.9)] flex items-center justify-center animate-pulse">
-                                <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
-                              </div>
-                            ) : s.pasted ? (
-                              <div className="flex flex-col items-center">
-                                <div className="w-7 h-7 rounded-full bg-white/90 border border-purple-400 shadow-md flex items-center justify-center text-[8px] font-bold text-black">
-                                  Buff
-                                </div>
-                                <div className="w-10 h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/30 mt-0.5">
-                                  <div className="h-full bg-purple-400" style={{ width: `${s.buffProgress}%` }} />
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="px-2 py-0.5 rounded-full bg-purple-600 text-white text-[8px] font-bold border border-white animate-bounce shadow-md">
-                                💧 Tap Paste
-                              </div>
-                            )}
-                          </div>
-                        ))}
-
-                        {/* Spinning Rotary Buffer Tool */}
-                        <div
-                          className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 z-10"
-                          style={{
-                            left: `${mousePos.x}%`,
-                            top: `${mousePos.y}%`,
-                          }}
-                        >
-                          <div
-                            className="w-12 h-12 rounded-full border-4 border-dashed border-purple-400 bg-purple-600/40 shadow-[0_0_25px_rgba(168,85,247,0.8)] flex items-center justify-center"
-                            style={{
-                              animation: `psa-buffer-spin ${(60 / Math.max(1, bufferRPM)).toFixed(3)}s linear infinite`,
-                            }}
-                          >
-                            <Disc className="w-6 h-6 text-purple-200" />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Station 4: Customized Penny Sleeve & Ultrasonic Laser Sealing */}
-                    {sleeveSlideProgress > 0 && (
-                      <div
-                        className={`absolute inset-x-0 top-0 border-2 transition-all duration-300 pointer-events-none flex items-center justify-center shadow-lg ${
-                          sleeveStyle === 'gold' 
-                            ? 'border-amber-400 bg-amber-500/20' 
-                            : sleeveStyle === 'holo' 
-                            ? 'border-purple-400 bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-cyan-500/20]' 
-                            : 'border-emerald-400/80 bg-emerald-400/20]'
-                        }`}
-                        style={{ height: `${sleeveSlideProgress}%` }}
-                      >
-                        <span className="text-[9px] font-black text-emerald-200 bg-black/80 px-2 py-0.5 rounded border border-emerald-400/40 uppercase">
-                          ✓ {sleeveStyle} Sleeve ({sleeveSlideProgress}%)
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Ultrasonic Laser Sealing Scanline Animation */}
-                    {isLaserSealing && (
-                      <div
-                        className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent shadow-[0_0_15px_rgba(34,211,238,1)] z-30 pointer-events-none"
-                        style={{ top: `${laserScanPos}%` }}
-                      />
-                    )}
-
-                    {/* Card Saver 1 Encapsulation Case */}
-                    {saverSnapProgress > 0 && (
-                      <div
-                        className="absolute inset-0 border-4 border-amber-400 bg-amber-500/25 pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300 shadow-[0_0_40px_rgba(245,158,11,0.6)] z-20"
-                        style={{ opacity: saverSnapProgress / 100 }}
-                      >
-                        {/* Top Holographic Tamper Seal Header */}
-                        <div className="w-full bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 text-black text-[9px] font-black uppercase text-center py-1 rounded shadow-md border border-white/50 tracking-wider">
-                          ⭐ PSA PREP - CARD SAVER 1 SEALED ⭐
-                        </div>
-
-                        <div className="px-3 py-1.5 rounded-xl bg-black/90 border border-amber-400/60 shadow-2xl flex flex-col items-center gap-1">
-                          <span className="text-[10px] font-black text-amber-300 flex items-center gap-1">
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                            CARD SAVER 1 ENCAPSULATED
-                          </span>
-                          <span className="text-[9px] text-gray-300 font-mono">
-                            PREDICTED SUB-GRADES: GEM MT 10
-                          </span>
-                        </div>
-
-                        {/* Bottom Security Barcode */}
-                        <div className="w-full bg-black/80 p-1 rounded border border-white/20 text-center font-mono text-[8px] text-amber-400 tracking-widest">
-                          |||||| |||| ||||||| #PSA-PREP-2026
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Station-Specific Interactive Controls */}
-                  <div className="mt-3 md:mt-4 w-full">
-                    {/* Station 1: Thermal Press Controls */}
-                    {station === 'press' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-amber-500/30 space-y-2.5">
-                        <div className="flex items-center gap-1.5 text-xs text-amber-300 font-bold border-b border-white/10 pb-1.5">
-                          <Info className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          <span>Goal: Flatten foil curve to 0° (Current: {cardWarpAngle}°)</span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-gray-300 font-medium">Temperature:</span>
-                          <span className={`font-mono font-bold ${targetTemp >= 48 && targetTemp <= 65 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                            {targetTemp}°C {targetTemp >= 48 && targetTemp <= 65 ? '(IDEAL TARGET)' : '(Target: 50°C-65°C)'}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Thermometer className="w-4 h-4 text-orange-400 shrink-0" />
-                          <input
-                            type="range"
-                            min="30"
-                            max="80"
-                            value={targetTemp}
-                            onChange={e => setTargetTemp(Number(e.target.value))}
-                            className="flex-1 accent-amber-400 cursor-pointer"
-                          />
-                        </div>
-
-                        <div className="flex gap-2 pt-1">
-                          <button
-                            onClick={handleApplySteam}
-                            className={`flex-1 py-2 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
-                              steamLevel > 0 ? 'bg-cyan-500/30 border-cyan-400 text-cyan-300' : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'
-                            }`}
-                          >
-                            <Droplets className="w-3.5 h-3.5" />
-                            <span>{steamLevel > 0 ? '✓ Steam Ready' : '1. Inject Steam'}</span>
-                          </button>
-
-                          <button
-                            onClick={handleAutoFlatten}
-                            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg shadow-amber-500/20 cursor-pointer hover:brightness-110"
-                          >
-                            <Flame className="w-3.5 h-3.5" />
-                            <span>🔥 1-Click Flatten</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Station 2: Edge Whitening Ink Pen Controls */}
-                    {station === 'edgePen' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-cyan-500/30 space-y-2.5">
-                        <div className="flex items-center justify-between text-xs text-cyan-300 font-bold border-b border-white/10 pb-1.5">
-                          <span className="flex items-center gap-1">
-                            <PenTool className="w-3.5 h-3.5 text-cyan-400" />
-                            <span>Touch or Drag Pen Along Card Borders</span>
-                          </span>
-                          <span className="text-gray-300 font-mono text-[11px]">{repairedDings}/{edgeDings.length} Sealed</span>
-                        </div>
-
-                        <div className="text-[11px] text-gray-300 text-center">
-                          Tap screen or drag your finger / mouse over the <strong className="text-cyan-300">Edge Dings</strong> to touch up paper wear!
-                        </div>
-
-                        <button
-                          onClick={handleFixAllEdgeDings}
-                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
-                        >
-                          <PenTool className="w-3.5 h-3.5" />
-                          <span>🖌️ Seal All Border Dings (1-Click)</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Station 3: Electric Rotary Polisher Controls */}
-                    {station === 'rotaryBuffer' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-purple-500/30 space-y-2.5">
-                        <div className="flex items-center justify-between text-xs text-purple-300 font-bold border-b border-white/10 pb-1.5">
-                          <span className="flex items-center gap-1">
-                            <Disc className="w-3.5 h-3.5 text-purple-400 animate-spin" />
-                            <span>Rotary Polisher Control ({bufferRPM} RPM)</span>
-                          </span>
-                          <span className="text-gray-300 font-mono text-[11px]">{buffedSpots}/{scuffSpots.length} Mirror Glare</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Gauge className="w-4 h-4 text-purple-400 shrink-0" />
-                          <input
-                            type="range"
-                            min="1000"
-                            max="8000"
-                            step="500"
-                            value={bufferRPM}
-                            onChange={e => setBufferRPM(Number(e.target.value))}
-                            className="flex-1 accent-purple-400 cursor-pointer"
-                          />
-                          <span className="text-xs font-mono font-bold text-purple-300 w-16 text-right">{bufferRPM} RPM</span>
-                        </div>
-
-                        <button
-                          onClick={handleBuffAllScuffs}
-                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-400 to-purple-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-lg cursor-pointer hover:brightness-110"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          <span>✨ Auto-Buff Holo Scuffs (1-Click)</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Station 4: Encapsulation Controls (Super High Tech overhaul) */}
-                    {station === 'cardSaver' && (
-                      <div className="p-3 rounded-2xl bg-black/80 border border-emerald-500/30 space-y-2.5">
-                        <div className="flex items-center justify-between text-xs text-emerald-300 font-bold border-b border-white/10 pb-1.5">
-                          <span className="flex items-center gap-1">
-                            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Ultrasonic Card Saver Encapsulation</span>
-                          </span>
-                          <span className="text-amber-300 font-mono text-[11px] font-bold">
-                            {saverSnapProgress === 100 ? '⭐ GEM MT 10 PREDICTED' : 'Awaiting Seal'}
-                          </span>
-                        </div>
-
-                        {/* Interactive Sleeve Slider & Customization */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-[11px] text-gray-300">
-                            <span>Sleeve Style:</span>
-                            <div className="flex gap-1">
-                              {(['clear', 'gold', 'holo'] as const).map(style => (
-                                <button
-                                  key={style}
-                                  onClick={() => { setSleeveStyle(style); sound.playButtonClick(); }}
-                                  className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border cursor-pointer ${
-                                    sleeveStyle === style 
-                                      ? 'border-amber-400 bg-amber-500/30 text-amber-300' 
-                                      : 'border-white/10 bg-white/5 text-gray-400'
-                                  }`}
-                                >
-                                  {style}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <input
-                              type="range"
-                              min="0"
-                              max="100"
-                              value={sleeveSlideProgress}
-                              onChange={e => {
-                                const val = Number(e.target.value);
-                                setSleeveSlideProgress(val);
-                                setHasPennySleeve(val > 50);
-                                if (val > 0) sound.playClothWipe();
-                              }}
-                              className="flex-1 accent-emerald-400 cursor-pointer"
-                            />
-                            <span className="text-xs font-mono text-emerald-300 w-10 text-right">{sleeveSlideProgress}%</span>
-                          </div>
-                        </div>
-
-                        {/* Laser Sealing & 1-Click Encapsulation Buttons */}
-                        <div className="flex gap-2">
-                          <button
-                            onClick={handleTriggerLaserSeal}
-                            disabled={isLaserSealing}
-                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg cursor-pointer hover:brightness-110 disabled:opacity-50"
-                          >
-                            <Zap className="w-3.5 h-3.5" />
-                            <span>{isLaserSealing ? 'Sealing...' : '⚡ Ultrasonic Laser Seal'}</span>
-                          </button>
-
-                          <button
-                            onClick={handleEncapsulateBoth}
-                            className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500 text-black text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-lg cursor-pointer hover:brightness-110"
-                          >
-                            <ShieldCheck className="w-3.5 h-3.5" />
-                            <span>1-Click Snap</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  )}
+                  {station === 'edgePen' && (
+                    <EdgeRepairStation
+                      key={selectedCard.id}
+                      activeCard={selectedCard}
+                      edgeDings={edgeDings}
+                      onEdgeDingsChange={setEdgeDings}
+                    />
+                  )}
+                  {station === 'rotaryBuffer' && (
+                    <RotaryBufferStation
+                      key={selectedCard.id}
+                      activeCard={selectedCard}
+                      scuffSpots={scuffSpots}
+                      onScuffSpotsChange={setScuffSpots}
+                    />
+                  )}
+                  {station === 'cardSaver' && (
+                    <CardSaverStation
+                      key={selectedCard.id}
+                      activeCard={selectedCard}
+                      hasPennySleeve={hasPennySleeve}
+                      onHasPennySleeveChange={setHasPennySleeve}
+                      hasCardSaver={hasCardSaver}
+                      onHasCardSaverChange={setHasCardSaver}
+                    />
+                  )}
 
                   {/* Action Button: Send to PSA Grading */}
                   <div className="mt-4 pb-6 w-full flex items-center justify-center">

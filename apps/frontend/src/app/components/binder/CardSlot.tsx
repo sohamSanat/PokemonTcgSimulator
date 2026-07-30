@@ -1,7 +1,14 @@
+/**
+ * @file CardSlot.tsx
+ * @description Individual binder slot component supporting drag-and-drop sortability,
+ * 3D card tilt effects, price tooltip hovers, favorite toggling, move card modals, and slabbed grade badges.
+ */
+
 import React, { useState, useRef, useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type Card, formatRarityTag } from "./types";
+import { type Card } from "./types";
+import { formatRarityTag } from "./utils";
 import PriceTooltip from "./PriceTooltip";
 import InteractiveCard3D from "./InteractiveCard3D";
 

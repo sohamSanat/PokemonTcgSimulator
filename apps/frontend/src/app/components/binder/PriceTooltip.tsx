@@ -1,13 +1,24 @@
+/**
+ * @file PriceTooltip.tsx
+ * @description Hover popover component displaying live market pricing, rarity, and a 30-day sparkline price chart.
+ * Renders an SVG chart calculated dynamically without external chart library dependencies.
+ */
+
 import React from "react";
 import type { Card } from "./types";
-import { formatRarityTag } from "./types";
+import { formatRarityTag } from "./utils";
 import { resolveVendorCardRealPrice } from "../../services/scrydex";
 
 interface Props {
+  /** The Pokémon card object whose pricing data will be displayed */
   card: Card;
+  /** Index position within 3x3 grid to determine tooltip orientation/side */
   index?: number;
 }
 
+/**
+ * PriceTooltip renders detailed valuation statistics, price changes, and an inline SVG sparkline.
+ */
 function PriceTooltip({ card, index = 4 }: Props) {
   const c = card as any;
   const priceVal = typeof c?.currentPrice === 'number' && !isNaN(c.currentPrice) && c.currentPrice > 0

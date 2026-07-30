@@ -1,3 +1,10 @@
+/**
+ * @file BinderView.tsx
+ * @description Main top-level controller for the Card Vault / Binder module.
+ * Coordinates sidebar navigation, active binder selection, card filtering/sorting,
+ * drag-and-drop reordering using @dnd-kit, and modal triggers (Create Binder, Move Card).
+ */
+
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Loader2 } from 'lucide-react';
 import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
@@ -6,13 +13,20 @@ import Sidebar from "./Sidebar";
 import BinderPage from "./BinderPage";
 import CreateBinderModal from "./CreateBinderModal";
 import MoveCardModal from "./MoveCardModal";
-import { getBinders, saveBinders, getCollectedCards, getStorageKey, SAMPLE_CARDS, moveCardToBinder, type Card, type Binder } from "./types";
+import { filterCards, sortCards } from "./filterUtils";
+import { getBinders, saveBinders, getCollectedCards, getStorageKey, moveCardToBinder } from "./store";
+import { type Card, type Binder } from "./types";
 
 interface Props {
+  /** Callback to navigate to the booster pack opening screen */
   onSwitchToPacks?: () => void;
+  /** Callback to open full-screen 3D card inspector */
   onInspectCard?: (card: Card) => void;
 }
 
+/**
+ * BinderView is the primary entry-point container for the Vault feature.
+ */
 export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   const [binders, setBinders] = useState<Binder[]>([]);
   const [activeBinder, setActiveBinder] = useState<string>("my-collection");
@@ -123,86 +137,18 @@ export default function BinderView({ onSwitchToPacks, onInspectCard }: Props) {
   }, [rawCards]);
 
   const filteredCards = useMemo(() => {
-    return rawCards.filter(card => {
-      // Search query filter
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = card.name.toLowerCase().includes(q);
-        const matchesSet = card.setName?.toLowerCase().includes(q);
-        const matchesNumber = card.setNumber?.toLowerCase().includes(q);
-        const matchesRarity = card.rarity?.toLowerCase().includes(q);
-        if (!matchesName && !matchesSet && !matchesNumber && !matchesRarity) return false;
-      }
-
-      // Set filter
-      if (activeSetFilter !== "All Sets" && card.setName !== activeSetFilter) return false;
-
-      // Type filter
-      if (activeTypeFilter !== "All Types" && card.type !== activeTypeFilter) return false;
-
-        // Rarity filter
-        if (activeRarityFilter !== "All Rarities") {
-          const cRarity = (card.rarity || "").toLowerCase();
-          const fRarity = activeRarityFilter.toLowerCase();
-
-          if (fRarity === "sir" || fRarity.includes("special illustration") || fRarity.includes("sir")) {
-            const isSir = cRarity.includes("special illustration") || cRarity === "sir" || cRarity === "sar" || cRarity.includes("special art");
-            if (!isSir) return false;
-          } else if (fRarity === "sr" || fRarity.includes("secret rare") || fRarity === "secret") {
-            const isSr = (cRarity.includes("secret") || cRarity === "sr" || cRarity.includes("super rare")) && !cRarity.includes("special illustration");
-            if (!isSr) return false;
-          } else if (fRarity === "ur" || fRarity.includes("ultra rare")) {
-            const isUr = cRarity.includes("ultra") || cRarity === "ur" || cRarity.includes("double rare") || cRarity.includes("hyper rare") || cRarity.includes("vmax") || cRarity.includes("vstar") || (cRarity.includes("ex") && !cRarity.includes("special illustration"));
-            if (!isUr) return false;
-          } else if (fRarity === "ir" || fRarity.includes("illustration rare")) {
-            const isIr = (cRarity.includes("illustration") || cRarity === "ir" || cRarity.includes("art rare") || cRarity === "ar") && !cRarity.includes("special illustration");
-            if (!isIr) return false;
-          } else if (fRarity === "common") {
-            if (!cRarity.includes("common")) return false;
-          } else if (fRarity === "uncommon") {
-            if (!cRarity.includes("uncommon")) return false;
-          } else if (fRarity === "rare") {
-            if (!cRarity.includes("rare") || cRarity.includes("ultra") || cRarity.includes("secret") || cRarity.includes("illustration") || cRarity.includes("special")) return false;
-          } else if (fRarity.includes("promo")) {
-            if (!cRarity.includes("promo") && !card.id.toLowerCase().includes("promo")) return false;
-          } else if (fRarity.includes("shiny vault")) {
-            if (!cRarity.includes("shiny vault") && !cRarity.includes("shiny")) return false;
-          } else {
-            // Exact or partial match for custom rarity strings
-            if (card.rarity !== activeRarityFilter && !cRarity.includes(fRarity)) return false;
-          }
-        }
-
-      // Holofoil filter
-      if (holofoilOnly && !card.holofoil) return false;
-
-      // Favorites filter
-      if (favoritesOnly && !card.favorite) return false;
-
-      return true;
+    return filterCards(rawCards, {
+      searchQuery,
+      activeSetFilter,
+      activeRarityFilter,
+      activeTypeFilter,
+      holofoilOnly,
+      favoritesOnly
     });
   }, [rawCards, searchQuery, activeSetFilter, activeRarityFilter, activeTypeFilter, holofoilOnly, favoritesOnly]);
 
   const sortedCards = useMemo(() => {
-    const list = [...filteredCards];
-    if (sortBy === "price-desc") {
-      list.sort((a, b) => (b.currentPrice || 0) - (a.currentPrice || 0));
-    } else if (sortBy === "price-asc") {
-      list.sort((a, b) => (a.currentPrice || 0) - (b.currentPrice || 0));
-    } else if (sortBy === "name") {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "rarity") {
-      const rarityRank = (r: string) => {
-        const lr = (r || "").toLowerCase();
-        if (lr.includes("secret") || lr.includes("hyper") || lr.includes("special illustration")) return 5;
-        if (lr.includes("ultra") || lr.includes("illustration") || lr.includes("double")) return 4;
-        if (lr.includes("rare")) return 3;
-        if (lr.includes("uncommon")) return 2;
-        return 1;
-      };
-      list.sort((a, b) => rarityRank(b.rarity) - rarityRank(a.rarity));
-    }
-    return list;
+    return sortCards(filteredCards, sortBy);
   }, [filteredCards, sortBy]);
 
   const pageSize = 9;

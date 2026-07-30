@@ -1,76 +1,54 @@
+/**
+ * @file Sidebar.tsx
+ * @description Navigation sidebar component for the Card Vault.
+ * Renders user profile summary, aggregated portfolio dollar valuation, binder list selectors,
+ * custom binder creation triggers, and collapsible Vault filter controls.
+ */
+
 import React from "react";
 import type { Binder } from "./types";
+import BinderIcon from "./BinderIcon";
 
 interface Props {
+  /** Array of available binders */
   binders: Binder[];
+  /** ID of the currently selected binder */
   activeBinder: string;
+  /** Callback fired when a binder item is clicked */
   onSelectBinder: (id: string) => void;
+  /** Callback fired when "+ Create Binder" is clicked */
   onNewBinder: () => void;
+  /** Callback fired when a binder delete button is clicked */
   onDeleteBinder?: (id: string) => void;
+  /** Currently selected set filter option */
   activeSetFilter?: string;
+  /** Set filter selection handler */
   onSetFilterChange?: (s: string) => void;
+  /** Currently selected rarity filter option */
   activeRarityFilter?: string;
+  /** Rarity filter selection handler */
   onRarityFilterChange?: (r: string) => void;
+  /** Currently selected energy/card type filter option */
   activeTypeFilter?: string;
+  /** Type filter selection handler */
   onTypeFilterChange?: (t: string) => void;
+  /** Holofoil-only toggle state */
   holofoilOnly?: boolean;
+  /** Holofoil toggle handler */
   onToggleHolofoil?: () => void;
+  /** Favorites-only toggle state */
   favoritesOnly?: boolean;
+  /** Favorites toggle handler */
   onToggleFavorites?: () => void;
+  /** Total count of cards matching current criteria */
   totalCardsCount: number;
+  /** Calculated total portfolio market value in USD */
   totalPortfolioValue: number;
+  /** List of set expansion names present in raw cards */
   setsList?: string[];
+  /** List of rarity tags present in raw cards */
   raritiesList?: string[];
 }
-
-const BinderIcon = React.memo(({ name, isMasterSet, isActive }: { name: string; isMasterSet?: boolean; isActive?: boolean }) => {
-  const colors: Record<string, string> = {
-    "My Collection (Opened)": "linear-gradient(135deg, #10b981, #059669)",
-    "Chase Cards": "linear-gradient(135deg, #f59e0b, #d97706)",
-    "Charizard Collection": "linear-gradient(135deg, #ef4444, #b91c1c)",
-    "Master Set — SV": "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-    "Evolving Skies": "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-  };
-  const icons: Record<string, string> = {
-    "My Collection (Opened)": "🌟",
-    "Chase Cards": "🔥",
-    "Charizard Collection": "🐉",
-    "Master Set — SV": "👑",
-    "Evolving Skies": "⚡",
-  };
-
-  const isMaster = isMasterSet || name.includes("👑") || name.includes("Master Set");
-
-  return (
-    <div
-      style={{
-        width: 44,
-        height: 44,
-        borderRadius: 12,
-        background: isMaster
-          ? "linear-gradient(135deg, #f59e0b, #a855f7)"
-          : colors[name] || "linear-gradient(135deg, #6366f1, #4f46e5)",
-        border: isActive
-          ? isMaster ? "1px solid rgba(251,191,36,0.8)" : "1px solid rgba(255,255,255,0.4)"
-          : "1px solid rgba(255,255,255,0.15)",
-        flexShrink: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 20,
-        color: "white",
-        fontWeight: "bold",
-        boxShadow: isMaster
-          ? "0 0 16px rgba(245,158,11,0.5), 0 0 30px rgba(168,85,247,0.3)"
-          : isActive ? "0 0 16px rgba(245,158,11,0.35)" : "0 2px 8px rgba(0,0,0,0.3)",
-        transition: "transform 0.2s",
-        transform: isActive ? "scale(1.05)" : "scale(1)"
-      }}
-    >
-      {isMaster ? "👑" : icons[name] || "📁"}
-    </div>
-  );
-});
 
 function Sidebar({
   binders,
@@ -91,82 +69,47 @@ function Sidebar({
   totalCardsCount,
   totalPortfolioValue,
   setsList = ["All Sets"],
-  raritiesList = ["All Rarities", "Common", "Uncommon", "Rare", "Ultra / Secret Rare", "Illustration Rare", "Promo", "Shiny Vault"]
+  raritiesList = ["All Rarities"]
 }: Props) {
   const [showFilters, setShowFilters] = React.useState<boolean>(true);
 
   const hasActiveFilters = activeRarityFilter !== "All Rarities" || activeSetFilter !== "All Sets" || activeTypeFilter !== "All Types" || holofoilOnly || favoritesOnly;
 
   return (
-    <aside
-      className="w-full md:w-[300px] md:min-w-[300px] h-auto md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10"
-      style={{
-        background: "rgba(20, 20, 26, 0.6)",
-        backdropFilter: "blur(24px)",
-      }}
-    >
+    <aside className="w-full md:w-[300px] md:min-w-[300px] h-auto md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-[#14141a]/60 backdrop-blur-2xl">
       {/* Profile header */}
       <div className="hidden md:block">
-        <div style={{ padding: "24px 20px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #f59e0b, #ea580c)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 15,
-                fontWeight: 700,
-                color: "white",
-                boxShadow: "0 4px 12px rgba(245,158,11,0.3)"
-              }}
-            >
+        <div className="pt-6 px-5 pb-0">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-[15px] font-bold text-white shadow-[0_4px_12px_rgba(245,158,11,0.3)]">
               TP
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f2" }}>TrainerPro</div>
-              <div style={{ fontSize: 11, color: "#a1a1aa", fontWeight: 500 }}>Elite Collector</div>
+              <div className="text-sm font-bold text-[#f0f0f2]">TrainerPro</div>
+              <div className="text-[11px] text-zinc-400 font-medium">Elite Collector</div>
             </div>
-            <div style={{ marginLeft: "auto" }}>
-              <div style={{
-                width: 8, height: 8, borderRadius: "50%",
-                background: "#10b981", boxShadow: "0 0 10px #10b981"
-              }} />
+            <div className="ml-auto">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
             </div>
           </div>
 
           {/* Portfolio value */}
-          <div
-            style={{
-              background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 16,
-              padding: "16px 18px",
-              marginBottom: 24,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", color: "#a1a1aa", textTransform: "uppercase", marginBottom: 6 }}>
+          <div className="bg-gradient-to-br from-white/5 to-white/5 border border-white/10 rounded-2xl p-4 mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+            <div className="text-[11px] font-bold tracking-widest text-zinc-400 uppercase mb-1.5">
               Portfolio Value
             </div>
-            <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.03em", color: "#f0f0f2" }}>
-              ${Math.floor(totalPortfolioValue).toLocaleString()}<span style={{ fontSize: 18, color: "#a1a1aa" }}>.{((totalPortfolioValue % 1) * 100).toFixed(0).padStart(2, '0')}</span>
+            <div className="text-3xl font-extrabold tracking-tight text-[#f0f0f2]">
+              ${Math.floor(totalPortfolioValue).toLocaleString()}<span className="text-lg text-zinc-400">.{((totalPortfolioValue % 1) * 100).toFixed(0).padStart(2, '0')}</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-              <span style={{
-                fontSize: 11, color: "#10b981", fontWeight: 700,
-                background: "rgba(16,185,129,0.15)", borderRadius: 6, padding: "2px 8px"
-              }}>
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="text-[11px] text-emerald-500 font-bold bg-emerald-500/15 rounded-md px-2 py-0.5">
                 ▲ Active
               </span>
-              <span style={{ fontSize: 11, color: "#a1a1aa", fontWeight: 500 }}>live tracking</span>
+              <span className="text-[11px] text-zinc-400 font-medium">live tracking</span>
             </div>
           </div>
         </div>
-        <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "0 20px 18px" }} />
+        <div className="h-px bg-white/5 mx-5 mb-4" />
       </div>
 
       {/* Vault Filters Accordion/Section */}
