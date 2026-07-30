@@ -97,6 +97,19 @@ export function filterCards(rawCards: Card[], filters: CardFilters): Card[] {
 }
 
 /**
+ * Calculates a numerical rank score for a card's rarity grade.
+ * Higher rank indicates higher rarity tier.
+ */
+export function rarityRank(r: string): number {
+  const lr = (r || "").toLowerCase();
+  if (lr.includes("secret") || lr.includes("hyper") || lr.includes("special illustration") || lr.includes("sir") || lr.includes("sar") || lr.includes("gold")) return 5;
+  if (lr.includes("ultra") || lr.includes("illustration") || lr.includes("double") || lr.includes("ur") || lr.includes("ir") || lr.includes("vmax") || lr.includes("vstar") || lr.includes("ex")) return 4;
+  if (lr.includes("rare") || lr.includes("holo")) return 3;
+  if (lr.includes("uncommon")) return 2;
+  return 1;
+}
+
+/**
  * Sorts an array of cards based on the selected sort criteria.
  * 
  * @param cards - Array of cards to sort.
@@ -112,15 +125,11 @@ export function sortCards(cards: Card[], sortBy: SortOption): Card[] {
   } else if (sortBy === "name") {
     list.sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortBy === "rarity") {
-    const rarityRank = (r: string) => {
-      const lr = (r || "").toLowerCase();
-      if (lr.includes("secret") || lr.includes("hyper") || lr.includes("special illustration")) return 5;
-      if (lr.includes("ultra") || lr.includes("illustration") || lr.includes("double")) return 4;
-      if (lr.includes("rare")) return 3;
-      if (lr.includes("uncommon")) return 2;
-      return 1;
-    };
-    list.sort((a, b) => rarityRank(b.rarity) - rarityRank(a.rarity));
+    list.sort((a, b) => {
+      const diff = rarityRank(b.rarity) - rarityRank(a.rarity);
+      if (diff !== 0) return diff;
+      return a.name.localeCompare(b.name);
+    });
   }
   return list;
 }
