@@ -5,9 +5,10 @@
  * custom binder creation triggers, and collapsible Vault filter controls.
  */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import type { Binder } from "./types";
 import BinderIcon from "./BinderIcon";
+import { getProfile, getPackCount, getTrainerTitle } from "./store";
 
 interface Props {
   /** Array of available binders */
@@ -56,24 +57,30 @@ function Sidebar({
   onSelectBinder,
   onNewBinder,
   onDeleteBinder,
-  activeSetFilter = "All Sets",
-  onSetFilterChange,
-  activeRarityFilter = "All Rarities",
-  onRarityFilterChange,
-  activeTypeFilter = "All Types",
-  onTypeFilterChange,
-  holofoilOnly = false,
-  onToggleHolofoil,
-  favoritesOnly = false,
-  onToggleFavorites,
-  totalCardsCount,
   totalPortfolioValue,
-  setsList = ["All Sets"],
-  raritiesList = ["All Rarities"]
 }: Props) {
-  const [showFilters, setShowFilters] = React.useState<boolean>(true);
+  const [userProfile, setUserProfile] = useState(() => getProfile());
+  const [packCount, setPackCount] = useState(() => getPackCount());
 
-  const hasActiveFilters = activeRarityFilter !== "All Rarities" || activeSetFilter !== "All Sets" || activeTypeFilter !== "All Types" || holofoilOnly || favoritesOnly;
+  useEffect(() => {
+    const handleUpdate = () => {
+      setUserProfile(getProfile());
+      setPackCount(getPackCount());
+    };
+    handleUpdate();
+    window.addEventListener('storage', handleUpdate);
+    return () => window.removeEventListener('storage', handleUpdate);
+  }, []);
+
+  const displayName = userProfile.displayName || 'Trainer';
+  const avatarUrl = userProfile.avatarUrl;
+  const trainerTitle = getTrainerTitle(packCount);
+  const initials = displayName
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'TP';
 
   return (
     <aside className="w-full md:w-[300px] md:min-w-[300px] h-auto md:h-full flex flex-col shrink-0 border-b md:border-b-0 md:border-r border-white/10 bg-[#14141a]/60 backdrop-blur-2xl">
@@ -81,14 +88,18 @@ function Sidebar({
       <div className="hidden md:block">
         <div className="pt-6 px-5 pb-0">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-[15px] font-bold text-white shadow-[0_4px_12px_rgba(245,158,11,0.3)]">
-              TP
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-[15px] font-bold text-white shadow-[0_4px_12px_rgba(245,158,11,0.3)] overflow-hidden shrink-0">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+              ) : (
+                initials
+              )}
             </div>
-            <div>
-              <div className="text-sm font-bold text-[#f0f0f2]">TrainerPro</div>
-              <div className="text-[11px] text-zinc-400 font-medium">Elite Collector</div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-bold text-[#f0f0f2] truncate" title={displayName}>{displayName}</div>
+              <div className="text-[11px] text-amber-400/90 font-semibold truncate" title={trainerTitle}>{trainerTitle}</div>
             </div>
-            <div className="ml-auto">
+            <div className="ml-auto shrink-0">
               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
             </div>
           </div>
@@ -110,94 +121,6 @@ function Sidebar({
           </div>
         </div>
         <div className="h-px bg-white/5 mx-5 mb-4" />
-      </div>
-
-      {/* Vault Filters Accordion/Section */}
-      <div className="hidden md:block px-4 mb-4">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-3">
-          <div 
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center justify-between cursor-pointer select-none"
-          >
-            <div className="text-[11px] font-extrabold tracking-widest text-[#a1a1aa] uppercase flex items-center gap-2">
-              <span>💎 VAULT FILTERS</span>
-              {hasActiveFilters && (
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              )}
-            </div>
-            <span className="text-xs text-zinc-400 font-bold">{showFilters ? "▲" : "▼"}</span>
-          </div>
-
-          {showFilters && (
-            <div className="mt-3 space-y-3 pt-2 border-t border-white/5">
-              {/* Rarity Selector */}
-              <div>
-                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                  Card Rarity
-                </label>
-                <select
-                  value={activeRarityFilter}
-                  onChange={(e) => onRarityFilterChange && onRarityFilterChange(e.target.value)}
-                  className="w-full bg-black/50 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400/80 cursor-pointer"
-                >
-                  {raritiesList.map((rarity) => (
-                    <option key={rarity} value={rarity} className="bg-zinc-900 text-white">
-                      {rarity}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Set Selector */}
-              {onSetFilterChange && (
-                <div>
-                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-                    Set
-                  </label>
-                  <select
-                    value={activeSetFilter}
-                    onChange={(e) => onSetFilterChange(e.target.value)}
-                    className="w-full bg-black/50 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400/80 cursor-pointer"
-                  >
-                    {setsList.map((set) => (
-                      <option key={set} value={set} className="bg-zinc-900 text-white">
-                        {set}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Quick Filter Toggles */}
-              <div className="flex flex-wrap gap-2 pt-1">
-                {onToggleHolofoil && (
-                  <button
-                    onClick={onToggleHolofoil}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
-                      holofoilOnly
-                        ? "bg-amber-500/20 border-amber-400 text-amber-300"
-                        : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    ✨ Holofoil
-                  </button>
-                )}
-                {onToggleFavorites && (
-                  <button
-                    onClick={onToggleFavorites}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
-                      favoritesOnly
-                        ? "bg-amber-500/20 border-amber-400 text-amber-300"
-                        : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    ⭐ Favorites
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Binder list - Uncluttered, Spacious, and User-Friendly */}
@@ -309,18 +232,9 @@ function Sidebar({
           </button>
         </div>
       </div>
-
-      {/* Stats footer */}
-      <div className="hidden md:flex justify-between px-5 py-4 border-t border-white/10 bg-black/20">
-        {[[String(totalCardsCount), "Cards"], [String(binders.length), "Binders"], ["100%", "Active"]].map(([val, lbl]) => (
-          <div key={lbl} className="text-center">
-            <div className="text-[15px] font-bold text-white">{val}</div>
-            <div className="text-[10px] text-zinc-400 font-semibold mt-0.5">{lbl}</div>
-          </div>
-        ))}
-      </div>
     </aside>
   );
 }
 
 export default React.memo(Sidebar);
+

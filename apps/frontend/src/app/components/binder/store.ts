@@ -363,6 +363,26 @@ export async function saveProfile(profile: UserProfile, forceUid?: string | null
   } catch { }
 }
 
+export function getPackCount(forceUid?: string | null): number {
+  try {
+    const saved = localStorage.getItem(getStorageKey('tcg_session_pack_count', forceUid));
+    return saved !== null ? parseInt(saved, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function getTrainerTitle(packsOpened: number): string {
+  if (packsOpened >= 500) return "Legendary Collector";
+  if (packsOpened >= 250) return "Vault Master";
+  if (packsOpened >= 100) return "Master Collector";
+  if (packsOpened >= 50) return "Elite Collector";
+  if (packsOpened >= 20) return "Seasoned Collector";
+  if (packsOpened >= 5) return "Pack Ripper";
+  return "Rookie Trainer";
+}
+
+
 // ── Net returns (real earning power used by the auction wallet) ──────────────
 // Net return = value of pulled cards minus money spent on packs. This is what
 // the user has *actually* earned, so the auction uses it instead of an absurd
