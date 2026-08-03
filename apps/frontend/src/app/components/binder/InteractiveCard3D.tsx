@@ -5,467 +5,467 @@ import { extractMajorityColor, getFallbackColor, type ExtractedColor } from '../
 import CodedSlab from './CodedSlab';
 
 interface CardInput {
-  id?: string | number;
-  name?: string;
-  rarity?: string;
-  type?: string;
-  imageUrl?: string;
-  holofoil?: boolean;
-  value?: number;
-  pokemon?: PokemonCard;
-  [key: string]: any;
+ id?: string | number;
+ name?: string;
+ rarity?: string;
+ type?: string;
+ imageUrl?: string;
+ holofoil?: boolean;
+ value?: number;
+ pokemon?: PokemonCard;
+ [key: string]: any;
 }
 
 interface Props {
-  card: CardInput | Card | any | null;
-  className?: string;
-  interactive?: boolean;
-  active?: boolean;
-  style?: React.CSSProperties;
-  showcase?: boolean;
-  onClick?: () => void;
-  disableTilt?: boolean;
-  children?: React.ReactNode;
+ card: CardInput | Card | any | null;
+ className?: string;
+ interactive?: boolean;
+ active?: boolean;
+ style?: React.CSSProperties;
+ showcase?: boolean;
+ onClick?: () => void;
+ disableTilt?: boolean;
+ children?: React.ReactNode;
 }
 
 export const InteractiveCard3D: React.FC<Props> = ({
-  card,
-  className = '',
-  interactive = true,
-  active = false,
-  style = {},
-  showcase = false,
-  onClick,
-  disableTilt = true,
-  children,
+ card,
+ className = '',
+ interactive = true,
+ active = false,
+ style = {},
+ showcase = false,
+ onClick,
+ disableTilt = true,
+ children,
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const tiltRef = useRef<HTMLDivElement>(null);
+ const cardRef = useRef<HTMLDivElement>(null);
+ const tiltRef = useRef<HTMLDivElement>(null);
 
-  // Extract properties safely
-  const c = card as any;
-  const name = c?.name || c?.pokemon?.name || 'Pokemon Card';
-  let rawImage = c?.imageUrl || c?.pokemon?.images?.large || c?.pokemon?.images?.small || c?.pokemon?.image || c?.image || '';
-  let computedImageUrl = c?.pokemon?.images?.large || c?.images?.large || '';
-  
-  if (!computedImageUrl) {
-    if (rawImage) {
-      computedImageUrl = getCardImageUrl(rawImage, 'high');
-    } else {
-      const cardId = c?.pokemon?.id || c?.id;
-      if (cardId) {
-        const parts = cardId.split('-');
-        const setId = parts[0].toLowerCase();
-        const num = parts[1] || '1';
-        let paddedNum = num;
-        if ((setId.startsWith('me') || setId.startsWith('sv') || setId.startsWith('sm') || setId.startsWith('xy') || setId.startsWith('swsh')) && !setId.endsWith('_ja')) {
-          paddedNum = num.padStart(3, '0');
-        }
-        computedImageUrl = `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/large`;
-      }
-    }
-  }
-  const imageUrl = computedImageUrl;
-  // Force pure card (no slab) if in showcase mode per user request, and ignore 'N/A' grade
-  const isSlabbed = !showcase && Boolean(c?.isSlabbed || (c?.slabGrade && c?.slabGrade !== 'N/A'));
+ // Extract properties safely
+ const c = card as any;
+ const name = c?.name || c?.pokemon?.name || 'Pokemon Card';
+ let rawImage = c?.imageUrl || c?.pokemon?.images?.large || c?.pokemon?.images?.small || c?.pokemon?.image || c?.image || '';
+ let computedImageUrl = c?.pokemon?.images?.large || c?.images?.large || '';
+ 
+ if (!computedImageUrl) {
+ if (rawImage) {
+ computedImageUrl = getCardImageUrl(rawImage, 'high');
+ } else {
+ const cardId = c?.pokemon?.id || c?.id;
+ if (cardId) {
+ const parts = cardId.split('-');
+ const setId = parts[0].toLowerCase();
+ const num = parts[1] || '1';
+ let paddedNum = num;
+ if ((setId.startsWith('me') || setId.startsWith('sv') || setId.startsWith('sm') || setId.startsWith('xy') || setId.startsWith('swsh')) && !setId.endsWith('_ja')) {
+ paddedNum = num.padStart(3, '0');
+ }
+ computedImageUrl = `https://images.scrydex.com/pokemon/${setId}-${paddedNum}/large`;
+ }
+ }
+ }
+ const imageUrl = computedImageUrl;
+ // Force pure card (no slab) if in showcase mode per user request, and ignore 'N/A' grade
+ const isSlabbed = !showcase && Boolean(c?.isSlabbed || (c?.slabGrade && c?.slabGrade !== 'N/A'));
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const img = e.currentTarget;
-    if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return;
-    setTimeout(() => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 8;
-        canvas.height = 8;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        if (!ctx) return;
-        ctx.drawImage(img, 0, 0, 8, 8);
-        const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
-        if (r < 50 && g < 75 && b > 90) {
-          const cardIdStr = String(c?.pokemon?.id || c?.id || '');
-          const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
-          const setId = cardIdStr.split('-')[0] || 'swsh3';
-          handleCardImageError(img, setId, num);
-        }
-      } catch {
-        // ignore canvas CORS taint errors
-      }
-    }, 0);
-  };
+ const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+ const img = e.currentTarget;
+ if (!img.src.includes('pokemontcg.io') && !img.src.includes('scrydex.com') && !img.src.includes('tcgdex')) return;
+ setTimeout(() => {
+ try {
+ const canvas = document.createElement('canvas');
+ canvas.width = 8;
+ canvas.height = 8;
+ const ctx = canvas.getContext('2d', { willReadFrequently: true });
+ if (!ctx) return;
+ ctx.drawImage(img, 0, 0, 8, 8);
+ const [r, g, b] = ctx.getImageData(1, 1, 1, 1).data;
+ if (r < 50 && g < 75 && b > 90) {
+ const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+ const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+ const setId = cardIdStr.split('-')[0] || 'swsh3';
+ handleCardImageError(img, setId, num);
+ }
+ } catch {
+ // ignore canvas CORS taint errors
+ }
+ }, 0);
+ };
 
-  // Determine type
-  let cardType = c?.type || '';
-  if (!cardType && c?.pokemon?.types && c.pokemon.types.length > 0) {
-    cardType = c.pokemon.types[0];
-  }
-  if (!cardType) cardType = 'Colorless';
-  const typeClass = cardType.toLowerCase();
+ // Determine type
+ let cardType = c?.type || '';
+ if (!cardType && c?.pokemon?.types && c.pokemon.types.length > 0) {
+ cardType = c.pokemon.types[0];
+ }
+ if (!cardType) cardType = 'Colorless';
+ const typeClass = cardType.toLowerCase();
 
-  const tiltEnabled = interactive && !showcase && !disableTilt;
+ const tiltEnabled = interactive && !showcase && !disableTilt;
 
-  // Synchronously compute dynamic color tokens from card type & name (zero async re-renders or canvas overhead)
-  const majorityColor = useMemo<ExtractedColor>(() =>
-    getFallbackColor(cardType, name),
-    [cardType, name]
-  );
+ // Synchronously compute dynamic color tokens from card type & name (zero async re-renders or canvas overhead)
+ const majorityColor = useMemo<ExtractedColor>(() =>
+ getFallbackColor(cardType, name),
+ [cardType, name]
+ );
 
-  // Position updates for lighting & 3D tilt (bypassed if tilt is disabled)
-  const updateTiltAndLighting = useCallback(
-    (clientX: number, clientY: number) => {
-      if (!cardRef.current || !interactive || !tiltEnabled) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-      
-      const xPos = clientX - rect.left;
-      const yPos = clientY - rect.top;
-      const x = (xPos / rect.width) * 100;
-      const y = (yPos / rect.height) * 100;
-      
-      cardRef.current.style.setProperty('--pointer-x', `${x}%`);
-      cardRef.current.style.setProperty('--pointer-y', `${y}%`);
+ // Position updates for lighting & 3D tilt (bypassed if tilt is disabled)
+ const updateTiltAndLighting = useCallback(
+ (clientX: number, clientY: number) => {
+ if (!cardRef.current || !interactive || !tiltEnabled) return;
+ const rect = cardRef.current.getBoundingClientRect();
+ if (rect.width === 0 || rect.height === 0) return;
+ 
+ const xPos = clientX - rect.left;
+ const yPos = clientY - rect.top;
+ const x = (xPos / rect.width) * 100;
+ const y = (yPos / rect.height) * 100;
+ 
+ cardRef.current.style.setProperty('--pointer-x', `${x}%`);
+ cardRef.current.style.setProperty('--pointer-y', `${y}%`);
 
-      if (tiltRef.current) {
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const maxAngleX = 16;
-        const maxAngleY = 16;
-        
-        const rotateX = ((centerY - yPos) / centerY) * maxAngleX;
-        const rotateY = ((xPos - centerX) / centerX) * maxAngleY;
-        
-        tiltRef.current.style.transform = `rotateX(${rotateX.toFixed(4)}deg) rotateY(${rotateY.toFixed(4)}deg) scale3d(1.03, 1.03, 1.03)`;
-      }
-    },
-    [interactive, tiltEnabled]
-  );
+ if (tiltRef.current) {
+ const centerX = rect.width / 2;
+ const centerY = rect.height / 2;
+ const maxAngleX = 16;
+ const maxAngleY = 16;
+ 
+ const rotateX = ((centerY - yPos) / centerY) * maxAngleX;
+ const rotateY = ((xPos - centerX) / centerX) * maxAngleY;
+ 
+ tiltRef.current.style.transform = `rotateX(${rotateX.toFixed(4)}deg) rotateY(${rotateY.toFixed(4)}deg) scale3d(1.03, 1.03, 1.03)`;
+ }
+ },
+ [interactive, tiltEnabled]
+ );
 
-  const rafMoveId = useRef<number | null>(null);
+ const rafMoveId = useRef<number | null>(null);
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!tiltEnabled) return;
-      const clientX = e.clientX;
-      const clientY = e.clientY;
-      if (rafMoveId.current !== null) return;
-      rafMoveId.current = requestAnimationFrame(() => {
-        updateTiltAndLighting(clientX, clientY);
-        rafMoveId.current = null;
-      });
-    },
-    [updateTiltAndLighting, tiltEnabled]
-  );
+ const handleMouseMove = useCallback(
+ (e: React.MouseEvent<HTMLDivElement>) => {
+ if (!tiltEnabled) return;
+ const clientX = e.clientX;
+ const clientY = e.clientY;
+ if (rafMoveId.current !== null) return;
+ rafMoveId.current = requestAnimationFrame(() => {
+ updateTiltAndLighting(clientX, clientY);
+ rafMoveId.current = null;
+ });
+ },
+ [updateTiltAndLighting, tiltEnabled]
+ );
 
-  const handleMouseEnter = useCallback(() => {
-    if (tiltEnabled && tiltRef.current) {
-      tiltRef.current.style.transition = 'transform 0.12s ease-out';
-    }
-  }, [tiltEnabled]);
+ const handleMouseEnter = useCallback(() => {
+ if (tiltEnabled && tiltRef.current) {
+ tiltRef.current.style.transition = 'transform 0.12s ease-out';
+ }
+ }, [tiltEnabled]);
 
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      if (!tiltEnabled) return;
-      const touch = e.touches[0] || e.changedTouches[0];
-      if (!touch) return;
-      const clientX = touch.clientX;
-      const clientY = touch.clientY;
-      if (rafMoveId.current !== null) return;
-      rafMoveId.current = requestAnimationFrame(() => {
-        updateTiltAndLighting(clientX, clientY);
-        rafMoveId.current = null;
-      });
-    },
-    [updateTiltAndLighting, tiltEnabled]
-  );
+ const handleTouchMove = useCallback(
+ (e: React.TouchEvent<HTMLDivElement>) => {
+ if (!tiltEnabled) return;
+ const touch = e.touches[0] || e.changedTouches[0];
+ if (!touch) return;
+ const clientX = touch.clientX;
+ const clientY = touch.clientY;
+ if (rafMoveId.current !== null) return;
+ rafMoveId.current = requestAnimationFrame(() => {
+ updateTiltAndLighting(clientX, clientY);
+ rafMoveId.current = null;
+ });
+ },
+ [updateTiltAndLighting, tiltEnabled]
+ );
 
-  const handleMouseLeave = useCallback(() => {
-    if (!tiltEnabled) return;
-    if (rafMoveId.current !== null) {
-      cancelAnimationFrame(rafMoveId.current);
-      rafMoveId.current = null;
-    }
-    if (!cardRef.current) return;
-    cardRef.current.style.setProperty('--pointer-x', '50%');
-    cardRef.current.style.setProperty('--pointer-y', '50%');
+ const handleMouseLeave = useCallback(() => {
+ if (!tiltEnabled) return;
+ if (rafMoveId.current !== null) {
+ cancelAnimationFrame(rafMoveId.current);
+ rafMoveId.current = null;
+ }
+ if (!cardRef.current) return;
+ cardRef.current.style.setProperty('--pointer-x', '50%');
+ cardRef.current.style.setProperty('--pointer-y', '50%');
 
-    if (tiltRef.current) {
-      tiltRef.current.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
-      tiltRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-    }
-  }, [tiltEnabled]);
+ if (tiltRef.current) {
+ tiltRef.current.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
+ tiltRef.current.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+ }
+ }, [tiltEnabled]);
 
-  useEffect(() => {
-    return () => {
-      if (rafMoveId.current !== null) {
-        cancelAnimationFrame(rafMoveId.current);
-      }
-    };
-  }, []);
+ useEffect(() => {
+ return () => {
+ if (rafMoveId.current !== null) {
+ cancelAnimationFrame(rafMoveId.current);
+ }
+ };
+ }, []);
 
-  return (
-    <div
-      ref={cardRef}
-      className={`pkmn-card group ${typeClass} ${interactive ? 'interactive' : ''} ${
-        active ? 'active' : ''
-      } ${className}`}
-      style={
-        {
-          ...style,
-          '--card-edge': majorityColor.edge,
-          '--card-glow': majorityColor.glow,
-          '--pointer-x': '50%',
-          '--pointer-y': '50%',
-          ...(tiltEnabled ? { perspective: '1000px' } : {}),
-        } as React.CSSProperties
-      }
-      data-type={cardType}
-      onClick={onClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onTouchStart={handleTouchMove}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleMouseLeave}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div
-        ref={tiltRef}
-        className="w-full h-full rounded-xl overflow-hidden relative"
-        style={
-          tiltEnabled
-            ? {
-                transform: 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-                transformStyle: 'preserve-3d',
-                willChange: 'transform',
-                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              }
-            : undefined
-        }
-      >
-        <div className="pkmn-card__translater w-full h-full" data-type={cardType}>
-          <div className="pkmn-card__rotator w-full h-full relative cursor-pointer">
-            {/* Card Back */}
-            {isSlabbed ? (
-              <div className="pkmn-card__back w-full h-full absolute inset-0 rounded-[10px] sm:rounded-[12px] bg-[#06080e] overflow-hidden select-none">
-                <CodedSlab variant="back">
-                  <img
-                    className="w-full h-full object-contain block"
-                    src="https://images.pokemontcg.io/cardback.png"
-                    alt="Card Back"
-                    loading="lazy"
-                  />
-                </CodedSlab>
-              </div>
-            ) : (
-              <img
-                className="pkmn-card__back w-full h-full object-contain absolute inset-0 rounded-[var(--card-radius)]"
-                src="https://images.pokemontcg.io/cardback.png"
-                alt="Card Back"
-                loading="lazy"
-              />
-            )}
+ return (
+ <div
+ ref={cardRef}
+ className={`pkmn-card group ${typeClass} ${interactive ? 'interactive' : ''} ${
+ active ? 'active' : ''
+ } ${className}`}
+ style={
+ {
+ ...style,
+ '--card-edge': majorityColor.edge,
+ '--card-glow': majorityColor.glow,
+ '--pointer-x': '50%',
+ '--pointer-y': '50%',
+ ...(tiltEnabled ? { perspective: '1000px' } : {}),
+ } as React.CSSProperties
+ }
+ data-type={cardType}
+ onClick={onClick}
+ onMouseEnter={handleMouseEnter}
+ onMouseMove={handleMouseMove}
+ onTouchStart={handleTouchMove}
+ onTouchMove={handleTouchMove}
+ onTouchEnd={handleMouseLeave}
+ onMouseLeave={handleMouseLeave}
+ >
+ <div
+ ref={tiltRef}
+ className="w-full h-full rounded-xl overflow-hidden relative"
+ style={
+ tiltEnabled
+ ? {
+ transform: 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+ transformStyle: 'preserve-3d',
+ willChange: 'transform',
+ transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+ }
+ : undefined
+ }
+ >
+ <div className="pkmn-card__translater w-full h-full" data-type={cardType}>
+ <div className="pkmn-card__rotator w-full h-full relative cursor-pointer">
+ {/* Card Back */}
+ {isSlabbed ? (
+ <div className="pkmn-card__back w-full h-full absolute inset-0 rounded-[10px] sm:rounded-[12px] bg-[#06080e] overflow-hidden select-none">
+ <CodedSlab variant="back">
+ <img
+ className="w-full h-full object-contain block"
+ src="https://images.pokemontcg.io/cardback.png"
+ alt="Card Back"
+ loading="lazy"
+ />
+ </CodedSlab>
+ </div>
+ ) : (
+ <img
+ className="pkmn-card__back w-full h-full object-contain absolute inset-0 rounded-[var(--card-radius)]"
+ src="https://images.pokemontcg.io/cardback.png"
+ alt="Card Back"
+ loading="lazy"
+ />
+ )}
 
-            {/* Card Front - Clean artwork or Graded Slab Encasement */}
-            <div
-              className={`pkmn-card__front w-full h-full absolute inset-0 overflow-hidden ${
-                isSlabbed
-                  ? 'bg-transparent rounded-[12px]'
-                  : 'bg-gray-950 rounded-[var(--card-radius)]'
-              }`}
-            >
-              {isSlabbed ? (
-                /* =========================================================
-                   🛡️ RAW PROTECTIVE SLAB ENCASEMENT (GRADE: N/A) 🛡️
-                   ========================================================= */
-                <div className="w-full h-full relative flex items-center justify-center bg-[#06080e] rounded-[10px] overflow-hidden select-none">
-                  {/* 1. Crystal Acrylic Slab Frame (Coded Asset - zero blur) */}
-                  <CodedSlab variant="front" />
+ {/* Card Front - Clean artwork or Graded Slab Encasement */}
+ <div
+ className={`pkmn-card__front w-full h-full absolute inset-0 overflow-hidden ${
+ isSlabbed
+ ? 'bg-transparent rounded-[12px]'
+ : 'bg-gray-950 rounded-[var(--card-radius)]'
+ }`}
+ >
+ {isSlabbed ? (
+ /* =========================================================
+ RAW PROTECTIVE SLAB ENCASEMENT (GRADE: N/A) 
+ ========================================================= */
+ <div className="w-full h-full relative flex items-center justify-center bg-[#06080e] rounded-[10px] overflow-hidden select-none">
+ {/* 1. Crystal Acrylic Slab Frame (Coded Asset - zero blur) */}
+ <CodedSlab variant="front" />
 
-                  {/* Protective Slab Top Label Bar (Exactly fitted to acrylic recess slot: x=18, y=16, w=364, h=56) */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '2.86%',
-                      left: '4.5%',
-                      width: '91%',
-                      height: '10%',
-                      zIndex: 20,
-                    }}
-                    className={`rounded-[4px] sm:rounded-[7px] px-1.5 py-0.5 sm:px-2.5 sm:py-1 flex items-center justify-between overflow-hidden pointer-events-none select-none ${
-                      c?.slabGrade && c.slabGrade !== 'N/A'
-                        ? 'bg-gradient-to-r from-[#b91c1c] via-[#dc2626] to-[#b91c1c] border border-white/35 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
-                        : 'bg-[#0a0e18]/95 border border-white/15 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
-                    }`}
-                  >
-                    {c?.slabGrade && c.slabGrade !== 'N/A' ? (
-                      /* PSA Graded Header */
-                      <>
-                        <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
-                          <span className="text-[6px] sm:text-[8px] font-black tracking-tight text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
-                            {(c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
-                              ? 'PSA GEM MT 10'
-                              : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
-                              ? 'PSA MINT 9'
-                              : (c.psaDetails?.gradeNum === 8 || c.slabGrade?.includes('8'))
-                              ? 'PSA NM-MT 8'
-                              : `PSA ${c.psaDetails?.gradeNum || c.slabGrade.replace(/[^0-9]/g, '') || '7'} AUTHENTIC`}
-                          </span>
-                          <span className="text-[5px] sm:text-[7px] font-mono font-black text-amber-300 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
-                            {name?.split('—')[0]?.trim()} {c.setName ? `• ${c.setName.split('(')[0].trim()}` : ''}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                          {/* Simulated Barcode */}
-                          <div className="hidden sm:flex items-center gap-[1px] opacity-75 bg-white/10 px-1 py-0.5 rounded">
-                            <div className="w-[1px] h-3 bg-white" />
-                            <div className="w-[2px] h-3 bg-white" />
-                            <div className="w-[1px] h-3 bg-white" />
-                            <div className="w-[3px] h-3 bg-white" />
-                            <div className="w-[1px] h-3 bg-white" />
-                            <div className="w-[2px] h-3 bg-white" />
-                          </div>
-                          {/* Grade Pill */}
-                          <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-[2px] sm:rounded-[3px] font-black text-[7.5px] sm:text-[10px] flex items-center justify-center shrink-0 border ${
-                            (c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
-                              ? 'bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 border-white text-black shadow-[0_0_8px_rgba(245,158,11,0.9)]'
-                              : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
-                              ? 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 border-white text-white shadow-[0_0_8px_rgba(56,189,248,0.8)]'
-                              : (c.psaDetails?.gradeNum === 8 || c.slabGrade?.includes('8'))
-                              ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-700 border-white text-white shadow-[0_0_8px_rgba(168,85,247,0.8)]'
-                              : 'bg-gradient-to-br from-rose-600 via-red-600 to-red-700 border-white text-white shadow-[0_0_8px_rgba(244,63,94,0.8)]'
-                          }`}>
-                            {c.psaDetails?.gradeNum || c.slabGrade.replace(/[^0-9]/g, '') || '10'}
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      /* Ungraded Raw Header */
-                      <>
-                        <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
-                          <span className="text-[5px] sm:text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
-                            TITAN ENCASEMENT CO.
-                          </span>
-                          <span className="text-[6.5px] sm:text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
-                            UNGRADED AUTHENTIC
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                          <div className="w-4 h-3 sm:w-6 sm:h-4 rounded-[2px] bg-slate-200/90 border border-slate-400 flex flex-col items-center justify-center leading-none">
-                            <span className="text-[4px] sm:text-[5px] font-black text-slate-800 uppercase">Grade</span>
-                            <span className="text-[6.5px] sm:text-[8px] font-black text-slate-900 uppercase">N/A</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
+ {/* Protective Slab Top Label Bar (Exactly fitted to acrylic recess slot: x=18, y=16, w=364, h=56) */}
+ <div
+ style={{
+ position: 'absolute',
+ top: '2.86%',
+ left: '4.5%',
+ width: '91%',
+ height: '10%',
+ zIndex: 20,
+ }}
+ className={`rounded-[4px] sm:rounded-[7px] px-1.5 py-0.5 sm:px-2.5 sm:py-1 flex items-center justify-between overflow-hidden pointer-events-none select-none ${
+ c?.slabGrade && c.slabGrade !== 'N/A'
+ ? 'bg-gradient-to-r from-[#b91c1c] via-[#dc2626] to-[#b91c1c] border border-white/35 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
+ : 'bg-[#0a0e18]/95 border border-white/15 shadow-[0_2px_8px_rgba(0,0,0,0.8)]'
+ }`}
+ >
+ {c?.slabGrade && c.slabGrade !== 'N/A' ? (
+ /* PSA Graded Header */
+ <>
+ <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
+ <span className="text-[6px] sm:text-[8px] font-black tracking-tight text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+ {(c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
+ ? 'PSA GEM MT 10'
+ : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
+ ? 'PSA MINT 9'
+ : (c.psaDetails?.gradeNum === 8 || c.slabGrade?.includes('8'))
+ ? 'PSA NM-MT 8'
+ : `PSA ${c.psaDetails?.gradeNum || c.slabGrade.replace(/[^0-9]/g, '') || '7'} AUTHENTIC`}
+ </span>
+ <span className="text-[5px] sm:text-[7px] font-mono font-black text-amber-300 truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
+ {name?.split('—')[0]?.trim()} {c.setName ? `• ${c.setName.split('(')[0].trim()}` : ''}
+ </span>
+ </div>
+ <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+ {/* Simulated Barcode */}
+ <div className="hidden sm:flex items-center gap-[1px] opacity-75 bg-white/10 px-1 py-0.5 rounded">
+ <div className="w-[1px] h-3 bg-white" />
+ <div className="w-[2px] h-3 bg-white" />
+ <div className="w-[1px] h-3 bg-white" />
+ <div className="w-[3px] h-3 bg-white" />
+ <div className="w-[1px] h-3 bg-white" />
+ <div className="w-[2px] h-3 bg-white" />
+ </div>
+ {/* Grade Pill */}
+ <div className={`w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-[2px] sm:rounded-[3px] font-black text-[7.5px] sm:text-[10px] flex items-center justify-center shrink-0 border ${
+ (c.psaDetails?.gradeNum === 10 || c.slabGrade?.includes('10'))
+ ? 'bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 border-white text-black shadow-[0_0_8px_rgba(245,158,11,0.9)]'
+ : (c.psaDetails?.gradeNum === 9 || c.slabGrade?.includes('9'))
+ ? 'bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 border-white text-white shadow-[0_0_8px_rgba(56,189,248,0.8)]'
+ : (c.psaDetails?.gradeNum === 8 || c.slabGrade?.includes('8'))
+ ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-700 border-white text-white shadow-[0_0_8px_rgba(168,85,247,0.8)]'
+ : 'bg-gradient-to-br from-rose-600 via-red-600 to-red-700 border-white text-white shadow-[0_0_8px_rgba(244,63,94,0.8)]'
+ }`}>
+ {c.psaDetails?.gradeNum || c.slabGrade.replace(/[^0-9]/g, '') || '10'}
+ </div>
+ </div>
+ </>
+ ) : (
+ /* Ungraded Raw Header */
+ <>
+ <div className="flex flex-col justify-center leading-none sm:leading-tight min-w-0 pr-1 flex-1 overflow-hidden">
+ <span className="text-[5px] sm:text-[6.5px] font-mono font-bold tracking-widest text-slate-300 uppercase truncate">
+ TITAN ENCASEMENT CO.
+ </span>
+ <span className="text-[6.5px] sm:text-[8.5px] font-black tracking-wide text-white uppercase truncate drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] mt-[1px] sm:mt-0">
+ UNGRADED AUTHENTIC
+ </span>
+ </div>
+ <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+ <div className="w-4 h-3 sm:w-6 sm:h-4 rounded-[2px] bg-slate-200/90 border border-slate-400 flex flex-col items-center justify-center leading-none">
+ <span className="text-[4px] sm:text-[5px] font-black text-slate-800 uppercase">Grade</span>
+ <span className="text-[6.5px] sm:text-[8px] font-black text-slate-900 uppercase">N/A</span>
+ </div>
+ </div>
+ </>
+ )}
+ </div>
 
-                  {/* 2. Recessed Card Chamber */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '14.3%',
-                      left: '4.5%',
-                      width: '91%',
-                      height: '82.8%',
-                      borderRadius: 4,
-                      overflow: 'hidden',
-                      zIndex: 5,
-                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.85), 0 3px 10px rgba(0,0,0,0.9)',
-                    }}
-                  >
-                    {imageUrl ? (
-                      <img
-                        className="w-full h-full object-contain block relative z-10"
-                        src={imageUrl}
-                        alt={name || 'Pokemon Card Front'}
-                        decoding="async"
-                        onLoad={handleImageLoad}
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          const cardIdStr = String(c?.pokemon?.id || c?.id || '');
-                          const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
-                          const setId = cardIdStr.split('-')[0] || 'swsh3';
-                          handleCardImageError(img, setId, num);
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-bold p-2 text-center bg-gray-900">
-                        {name}
-                      </div>
-                    )}
-                  </div>
+ {/* 2. Recessed Card Chamber */}
+ <div
+ style={{
+ position: 'absolute',
+ top: '14.3%',
+ left: '4.5%',
+ width: '91%',
+ height: '82.8%',
+ borderRadius: 4,
+ overflow: 'hidden',
+ zIndex: 5,
+ boxShadow: 'inset 0 0 8px rgba(0,0,0,0.85), 0 3px 10px rgba(0,0,0,0.9)',
+ }}
+ >
+ {imageUrl ? (
+ <img
+ className="w-full h-full object-contain block relative z-10"
+ src={imageUrl}
+ alt={name || 'Pokemon Card Front'}
+ decoding="async"
+ onLoad={handleImageLoad}
+ onError={(e) => {
+ const img = e.target as HTMLImageElement;
+ const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+ const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+ const setId = cardIdStr.split('-')[0] || 'swsh3';
+ handleCardImageError(img, setId, num);
+ }}
+ />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-bold p-2 text-center bg-gray-900">
+ {name}
+ </div>
+ )}
+ </div>
 
-                  {/* 3. Custom Children Overlay positioned across full outer slab case */}
-                  {children && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        pointerEvents: 'auto',
-                        zIndex: 20,
-                      }}
-                    >
-                      {children}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                /* =========================================================
-                   REGULAR UN-SLABBED CARD FRONT
-                   ========================================================= */
-                <>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={name}
-                      decoding="async"
-                      className="w-full h-full object-cover block rounded-[var(--card-radius)]"
-                      onLoad={handleImageLoad}
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        const cardIdStr = String(c?.pokemon?.id || c?.id || '');
-                        const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
-                        const setId = cardIdStr.split('-')[0] || 'swsh3';
-                        handleCardImageError(img, setId, num);
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-bold p-4 text-center bg-gray-900">
-                      {name}
-                    </div>
-                  )}
+ {/* 3. Custom Children Overlay positioned across full outer slab case */}
+ {children && (
+ <div
+ style={{
+ position: 'absolute',
+ inset: 0,
+ pointerEvents: 'auto',
+ zIndex: 20,
+ }}
+ >
+ {children}
+ </div>
+ )}
+ </div>
+ ) : (
+ /* =========================================================
+ REGULAR UN-SLABBED CARD FRONT
+ ========================================================= */
+ <>
+ {imageUrl ? (
+ <img
+ src={imageUrl}
+ alt={name}
+ decoding="async"
+ className="w-full h-full object-cover block rounded-[var(--card-radius)]"
+ onLoad={handleImageLoad}
+ onError={(e) => {
+ const img = e.target as HTMLImageElement;
+ const cardIdStr = String(c?.pokemon?.id || c?.id || '');
+ const num = c?.pokemon?.localId || c?.localId || cardIdStr.split('-')[1] || '1';
+ const setId = cardIdStr.split('-')[0] || 'swsh3';
+ handleCardImageError(img, setId, num);
+ }}
+ />
+ ) : (
+ <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-bold p-4 text-center bg-gray-900">
+ {name}
+ </div>
+ )}
 
-                  {/* Custom Children Overlay */}
-                  {children && (
-                    <div className="absolute inset-0 pointer-events-auto z-20">{children}</div>
-                  )}
-                </>
-              )}
+ {/* Custom Children Overlay */}
+ {children && (
+ <div className="absolute inset-0 pointer-events-auto z-20">{children}</div>
+ )}
+ </>
+ )}
 
-              {/* ✨ Crisp Majority-Color Perimeter Outline Border ✨ */}
-              {interactive && !showcase && (
-                <div
-                  className="absolute inset-0 rounded-[var(--card-radius)] pointer-events-none z-30 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                  style={{
-                    boxShadow: `inset 0 0 0 1.5px ${majorityColor.edge}, 0 0 16px -2px ${majorityColor.glow}`,
-                  }}
-                />
-              )}
+ {/* Crisp Majority-Color Perimeter Outline Border */}
+ {interactive && !showcase && (
+ <div
+ className="absolute inset-0 rounded-[var(--card-radius)] pointer-events-none z-30 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+ style={{
+ boxShadow: `inset 0 0 0 1.5px ${majorityColor.edge}, 0 0 16px -2px ${majorityColor.glow}`,
+ }}
+ />
+ )}
 
-              {/* ✨ Ultra-Subtle, Low-Intensity Cursor Spotlight (15% opacity so artwork is crystal clear) ✨ */}
-              {interactive && !showcase && (
-                <div
-                  className="absolute inset-0 rounded-[var(--card-radius)] pointer-events-none z-30 transition-opacity duration-300 opacity-0 group-hover:opacity-15"
-                  style={{
-                    background: `radial-gradient(circle 140px at var(--pointer-x, 50%) var(--pointer-y, 50%), ${majorityColor.edge} 0%, transparent 70%)`,
-                    mixBlendMode: 'plus-lighter',
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+ {/* Ultra-Subtle, Low-Intensity Cursor Spotlight (15% opacity so artwork is crystal clear) */}
+ {interactive && !showcase && (
+ <div
+ className="absolute inset-0 rounded-[var(--card-radius)] pointer-events-none z-30 transition-opacity duration-300 opacity-0 group-hover:opacity-15"
+ style={{
+ background: `radial-gradient(circle 140px at var(--pointer-x, 50%) var(--pointer-y, 50%), ${majorityColor.edge} 0%, transparent 70%)`,
+ mixBlendMode: 'plus-lighter',
+ }}
+ />
+ )}
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ );
 };
 
 export default React.memo(InteractiveCard3D);

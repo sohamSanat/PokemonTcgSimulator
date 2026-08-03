@@ -1,10 +1,5 @@
-/**
- * @file BinderIcon.tsx
- * @description Visual icon badge component for binders and Master Set binders.
- * Renders custom gradient backgrounds, active glow borders, and thematic icons/emoji based on binder name.
- */
-
 import React from "react";
+import { Folder, Crown } from "lucide-react";
 
 interface BinderIconProps {
   /** Name of the binder used to match color themes and icons */
@@ -28,16 +23,7 @@ const BinderIcon = React.memo(({ name, isMasterSet, isActive }: BinderIconProps)
     "Evolving Skies": "from-blue-500 to-blue-800",
   };
 
-  // Preset emoji icons mapped by binder title
-  const icons: Record<string, string> = {
-    "My Collection (Opened)": "🌟",
-    "Chase Cards": "🔥",
-    "Charizard Collection": "🐉",
-    "Master Set — SV": "👑",
-    "Evolving Skies": "⚡",
-  };
-
-  const isMaster = isMasterSet || name.includes("👑") || name.includes("Master Set");
+  const isMaster = isMasterSet || name.includes("Master Set");
   
   const bgGradient = isMaster
     ? "from-amber-500 to-purple-600"
@@ -55,9 +41,9 @@ const BinderIcon = React.memo(({ name, isMasterSet, isActive }: BinderIconProps)
 
   return (
     <div
-      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${bgGradient} border ${borderStyle} flex-shrink-0 flex items-center justify-center text-xl text-[#f0f0f2] font-bold ${shadowStyle} transition-transform duration-200 ${transformStyle}`}
+      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${bgGradient} border ${borderStyle} flex-shrink-0 flex items-center justify-center text-[#f0f0f2] ${shadowStyle} transition-transform duration-200 ${transformStyle}`}
     >
-      {isMaster ? "👑" : icons[name] || "📁"}
+      {isMaster ? <Crown className="w-5 h-5 text-amber-200 drop-shadow" /> : <Folder className="w-5 h-5 text-white/90" />}
     </div>
   );
 });

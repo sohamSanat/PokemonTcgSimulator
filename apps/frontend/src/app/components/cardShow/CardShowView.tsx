@@ -9,46 +9,46 @@ import React, { useState, useMemo, useEffect } from "react";
 import { loadJapaneseMetadata, getCardShowDynamicJapaneseCards, resolveVendorCardRealPrice, cacheEnglishPrice } from "../../services/scrydex";
 import { handleCardImageError, fetchCardFull } from "../../services/tcgdex";
 import {
-  Menu,
-  Search,
-  Bell,
-  Check,
-  Play,
-  Camera,
-  Star,
-  ArrowUpRight,
-  Crosshair,
-  Zap,
-  Activity,
-  ArrowLeft,
-  Package,
-  ShieldCheck,
-  TrendingUp,
-  Award,
-  Filter,
-  Maximize2,
-  Minimize2,
-  MapPin,
-  SlidersHorizontal,
-  Users,
-  Eye,
-  RotateCcw,
-  TrendingDown,
-  Coins,
-  X,
-  Wallet,
-  Repeat,
-  CheckCircle2
+ Menu,
+ Search,
+ Bell,
+ Check,
+ Play,
+ Camera,
+ Star,
+ ArrowUpRight,
+ Crosshair,
+ Zap,
+ Activity,
+ ArrowLeft,
+ Package,
+ ShieldCheck,
+ TrendingUp,
+ Award,
+ Filter,
+ Maximize2,
+ Minimize2,
+ MapPin,
+ SlidersHorizontal,
+ Users,
+ Eye,
+ RotateCcw,
+ TrendingDown,
+ Coins,
+ X,
+ Wallet,
+ Repeat,
+ CheckCircle2
 } from "lucide-react";
 import { AuctionDashboard } from '../auction/AuctionDashboard';
 import {
-  getCollectedCards,
-  saveCollectedCard,
-  updateCardSlabStatus,
-  getCash,
-  spendCash,
-  removeCollectedCard,
-  type Card,
+ getCollectedCards,
+ saveCollectedCard,
+ updateCardSlabStatus,
+ getCash,
+ spendCash,
+ removeCollectedCard,
+ type Card,
 } from '../binder/types';
 import { TradeModal } from './TradeModal';
 import { VENDORS, type VendorDef } from './vendorData';
@@ -63,11 +63,11 @@ const _knownBadScrydexUrls = new Set<string>();
 const _confirmedLoadedCardIds = new Set<string>();
 
 interface CardShowViewProps {
-  initialShowAuction?: boolean;
-  onBackToPacks?: () => void;
-  onInspectCard?: (card: any) => void;
-  onAddNetReturn?: (amount: number) => void;
-  onSpendNetReturn?: (amount: number) => void;
+ initialShowAuction?: boolean;
+ onBackToPacks?: () => void;
+ onInspectCard?: (card: any) => void;
+ onAddNetReturn?: (amount: number) => void;
+ onSpendNetReturn?: (amount: number) => void;
 }
 
 // ── CLEAN FLOOR ROSTER ────────────────────────────────────────────────────────
@@ -78,1607 +78,1607 @@ interface CardShowViewProps {
 
 
 export const CardShowView: React.FC<CardShowViewProps> = ({
-  initialShowAuction = false,
-  onBackToPacks,
-  onInspectCard,
-  onAddNetReturn,
-  onSpendNetReturn,
+ initialShowAuction = false,
+ onBackToPacks,
+ onInspectCard,
+ onAddNetReturn,
+ onSpendNetReturn,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("All");
-  const [showArbSpotlight, setShowArbSpotlight] = useState(false);
-  const [isMapExpanded, setIsMapExpanded] = useState(false);
-  const [mapZoom, setMapZoom] = useState<number>(130);
-  const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
-  const [showAuctionDashboard, setShowAuctionDashboard] = useState(initialShowAuction);
-  useEffect(() => {
-    setShowAuctionDashboard(initialShowAuction);
-  }, [initialShowAuction]);
-
-  // Vendor "Buy · Trade or Cash" purchase flow
-  const [tradeTarget, setTradeTarget] = useState<any>(null);
-  const [metadataLoaded, setMetadataLoaded] = useState(false);
-  const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
-  const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(30);
-  const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
-  const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
-  const [enPriceOverrides, setEnPriceOverrides] = useState<Record<string, number>>({});
-
-  const onCardRenderComplete = (cardId?: string) => {
-    if (!cardId) return;
-    _confirmedLoadedCardIds.add(cardId);
-    setCompletedCardIds(prev => {
-      if (prev.has(cardId)) return prev;
-      const next = new Set(prev);
-      next.add(cardId);
-      return next;
-    });
-  };
-
-  const isCardCompleted = (id: string, originalId?: string, imgUrl?: string) => {
-    return (
-      completedCardIds.has(id) ||
-      _confirmedLoadedCardIds.has(id) ||
-      Boolean(originalId && (completedCardIds.has(originalId) || _confirmedLoadedCardIds.has(originalId))) ||
-      Boolean(imgUrl && _confirmedLoadedCardIds.has(imgUrl))
-    );
-  };
-
-  useEffect(() => {
-    loadJapaneseMetadata().then(() => {
-      setMetadataLoaded(true);
-    });
-  }, []);
-
-  const handleCardShowImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
-    const img = e.currentTarget;
-    let setId = 'swsh3';
-    let num = '1';
-
-    const targetId = cardId || img.dataset.imgId;
-    const cardItem = activeVendorCards.find(c => c.id === targetId || c.originalId === targetId || (c as any).id === targetId);
-    if (cardItem) {
-      if ((cardItem as any).setId) setId = (cardItem as any).setId;
-      if ((cardItem as any).num) num = String((cardItem as any).num);
-      const orig = cardItem.originalId || cardItem.id || '';
-      if (orig.includes('-')) {
-        const parts = orig.split('-');
-        const lowerPrefix = parts[0].toLowerCase();
-        const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
-          lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
-          lowerPrefix.includes('retro') || lowerPrefix.includes('tcg') || lowerPrefix.includes('special') || lowerPrefix.includes('gold') ||
-          lowerPrefix.includes('sealed') || lowerPrefix.includes('modern') || lowerPrefix.includes('japanese') || lowerPrefix.includes('display') ||
-          lowerPrefix.includes('filmera') || lowerPrefix.includes('carbanda') || lowerPrefix.includes('trading') || lowerPrefix.includes('brodes') ||
-          lowerPrefix.includes('wikrats') || lowerPrefix.includes('uds') || lowerPrefix.includes('specs') || lowerPrefix.includes('dovakinji') ||
-          lowerPrefix === 'jp' || (parts[1] && parts[1] === 'core') || (parts[1] && parts[1].includes('jp'));
-
-        if (!isVendorOrBoothPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
-          setId = parts[0];
-          num = parts[1];
-        }
-      }
-    }
-
-    const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
-      img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
-      img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i);
-
-    if (match && (!cardItem || setId === 'swsh3')) {
-      setId = match[1];
-      num = match[2];
-    } else if (!cardItem && targetId && targetId.includes('-')) {
-      const parts = targetId.split('-');
-      const lowerPrefix = parts[0].toLowerCase();
-      const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
-        lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
-        lowerPrefix.includes('retro') || lowerPrefix.includes('tcg') || lowerPrefix.includes('special') || lowerPrefix.includes('gold') ||
-        lowerPrefix.includes('sealed') || lowerPrefix.includes('modern') || lowerPrefix.includes('japanese') || lowerPrefix.includes('display') ||
-        lowerPrefix.includes('filmera') || lowerPrefix.includes('carbanda') || lowerPrefix.includes('trading') || lowerPrefix.includes('brodes') ||
-        lowerPrefix.includes('wikrats') || lowerPrefix.includes('uds') || lowerPrefix.includes('specs') || lowerPrefix.includes('dovakinji') ||
-        lowerPrefix === 'jp' || parts[1] === 'core' || parts[1].includes('jp');
-
-      if (!isVendorOrBoothPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
-        setId = parts[0];
-        num = parts[1];
-      }
-    }
-
-    const origStr = cardItem?.originalId || cardItem?.id || targetId || '';
-    const isKnownJpPrefix = /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(origStr) || /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(setId);
-
-    const isJpnCard = Boolean(isJpn || isKnownJpPrefix || setId.toLowerCase().includes('_ja') || cardItem?.name?.includes('Japanese') || origStr.includes('_ja') || img.src.includes('_ja') || img.src.includes('/ja/'));
-    if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
-      setId = `${setId.replace(/_ja$/i, '')}_ja`;
-    }
-
-    // Bypass the mutative fallback loop in tcgdex.ts which conflicts with React re-renders.
-    // Instantly mark this card as broken and replace it with a new one from the pool.
-    const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
-    if (cardContainer) {
-      cardContainer.style.display = 'none';
-    }
-    setBrokenOriginalIds(prev => prev.includes(origStr) ? prev : [...prev, origStr]);
-    onCardRenderComplete(targetId);
-  };
-
-  const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
-    const img = e.currentTarget;
-    const targetId = cardId || img.dataset.imgId;
-    const src = img.src;
-
-    // If this URL was previously confirmed as a placeholder, reject it immediately.
-    if (_knownBadScrydexUrls.has(src)) {
-      handleCardShowImageError(
-        { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-        targetId,
-        isJpn
-      );
-      return;
-    }
-
-    if (!src.includes('pokemontcg.io') && !src.includes('scrydex.com') && !src.includes('tcgdex')) {
-      onCardRenderComplete(targetId);
-      return;
-    }
-
-    // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
-    // 350441 = Japanese) for missing cards. We must verify via fetch since all scrydex
-    // images are cross-origin and the CORS canvas check always throws.
-    if (src.includes('scrydex.com')) {
-      // If this card/URL has already been verified and confirmed, don't run fetch again
-      if ((targetId && _confirmedLoadedCardIds.has(targetId)) || _confirmedLoadedCardIds.has(src)) {
-        img.style.visibility = 'visible';
-        if (targetId) onCardRenderComplete(targetId);
-        return;
-      }
-
-      // Hide the image while we verify whether it is a placeholder card-back
-      img.style.visibility = 'hidden';
-
-      fetch(src, { signal: AbortSignal.timeout(15000) })
-        .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
-        .then((buf) => {
-          if (buf.byteLength === 186316 || buf.byteLength === 350441) {
-            // PROVEN PLACEHOLDER: Only replace card when it is mathematically confirmed to be a card-back placeholder
-            _knownBadScrydexUrls.add(src);
-            handleCardShowImageError(
-              { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
-              targetId,
-              isJpn
-            );
-          } else {
-            // Confirmed real card art — make it visible.
-            img.style.visibility = 'visible';
-            if (targetId) _confirmedLoadedCardIds.add(targetId);
-            _confirmedLoadedCardIds.add(src);
-            onCardRenderComplete(targetId);
-          }
-        })
-        .catch(() => {
-          // If network fetch timed out or failed to inspect bytes, DO NOT discard the card!
-          // Treat it as real card art that is loading slowly over the network.
-          img.style.visibility = 'visible';
-          if (targetId) _confirmedLoadedCardIds.add(targetId);
-          _confirmedLoadedCardIds.add(src);
-          onCardRenderComplete(targetId);
-        });
-      return;
-    }
-
-    onCardRenderComplete(targetId);
-  };
-
-
-  const [selectedVendor, setSelectedVendor] = useState<any>(VENDORS.find(v => v.type === 'vendor'));
-
-  const [hoveredBooth, setHoveredBooth] = useState<any>(null);
-
-  // --- AUDIENCE FOOTPATH & RANDOMIZED CROWD POPULARITY ENGINE ---
-  const { stallPopularity, hotBoothNames, footpathNetwork, animatedAudienceDots, staticClusterDots } = useMemo(() => {
-    const stalls = VENDORS;
-
-    const eligibleStalls = [...stalls.filter(s => s.type !== 'auction')].sort(() => Math.random() - 0.5);
-    const hotBooths = eligibleStalls.slice(0, 4);
-    const hotNamesSet = new Set(hotBooths.map(s => s.name));
-
-    const remainingEligible = eligibleStalls.slice(4);
-    const highTrafficBooths = remainingEligible.slice(0, 6);
-    const highTrafficNamesSet = new Set(highTrafficBooths.map(s => s.name));
-
-    const popMap: Record<string, { level: 'HOT 🔥🔥' | 'HIGH TRAFFIC ⚡' | 'MODERATE 👥' | 'STEADY 🟢', score: number, color: string }> = {};
-    stalls.forEach(s => {
-      if (hotNamesSet.has(s.name)) {
-        popMap[s.name] = { level: 'HOT 🔥🔥', score: 95 + Math.floor(Math.random() * 5), color: s.color };
-      } else if (highTrafficNamesSet.has(s.name)) {
-        popMap[s.name] = { level: 'HIGH TRAFFIC ⚡', score: 75 + Math.floor(Math.random() * 15), color: s.color };
-      } else {
-        popMap[s.name] = { level: Math.random() > 0.4 ? 'MODERATE 👥' : 'STEADY 🟢', score: 45 + Math.floor(Math.random() * 25), color: s.color };
-      }
-    });
-
-    const hubs = [
-      { id: "hub_nw", x: 130, y: 125, color: "#38bdf8" },
-      { id: "hub_n", x: 310, y: 125, color: "#f472b6" },
-      { id: "hub_ne", x: 450, y: 125, color: "#38bdf8" },
-      { id: "hub_cw", x: 130, y: 195, color: "#c084fc" },
-      { id: "hub_c", x: 310, y: 195, color: "#ffffff" },
-      { id: "hub_ce", x: 450, y: 195, color: "#fbbf24" },
-      { id: "hub_sw", x: 130, y: 268, color: "#2dd4bf" },
-      { id: "hub_s", x: 310, y: 268, color: "#34d399" },
-      { id: "hub_se", x: 450, y: 268, color: "#f472b6" },
-      { id: "hub_bot", x: 310, y: 340, color: "#38bdf8" }
-    ];
-
-    const corridors = [
-      { x1: 130, y1: 125, x2: 310, y2: 125, color: "#38bdf8", isHot: false },
-      { x1: 310, y1: 125, x2: 450, y2: 125, color: "#f472b6", isHot: false },
-      { x1: 130, y1: 125, x2: 130, y2: 195, color: "#c084fc", isHot: false },
-      { x1: 310, y1: 125, x2: 310, y2: 195, color: "#ffffff", isHot: false },
-      { x1: 450, y1: 125, x2: 450, y2: 195, color: "#38bdf8", isHot: false },
-      { x1: 130, y1: 195, x2: 310, y2: 195, color: "#fbbf24", isHot: false },
-      { x1: 310, y1: 195, x2: 450, y2: 195, color: "#2dd4bf", isHot: false },
-      { x1: 130, y1: 195, x2: 130, y2: 268, color: "#34d399", isHot: false },
-      { x1: 310, y1: 195, x2: 310, y2: 268, color: "#f472b6", isHot: false },
-      { x1: 450, y1: 195, x2: 450, y2: 268, color: "#38bdf8", isHot: false },
-      { x1: 130, y1: 268, x2: 310, y2: 268, color: "#c084fc", isHot: false },
-      { x1: 310, y1: 268, x2: 450, y2: 268, color: "#fbbf24", isHot: false },
-      { x1: 310, y1: 268, x2: 310, y2: 340, color: "#38bdf8", isHot: false },
-      { x1: 130, y1: 340, x2: 450, y2: 340, color: "#2dd4bf", isHot: false },
-    ];
-
-    hotBooths.forEach(hb => {
-      let closestHub = hubs[0];
-      let minDist = 999999;
-      hubs.forEach(h => {
-        const d = Math.hypot(h.x - hb.x, h.y - hb.y);
-        if (d < minDist) { minDist = d; closestHub = h; }
-      });
-      corridors.push({
-        x1: closestHub.x, y1: closestHub.y,
-        x2: hb.x, y2: hb.y,
-        color: hb.color,
-        isHot: true
-      });
-    });
-
-    const movingDots: Array<{ id: string, x1: number, y1: number, x2: number, y2: number, r: number, color: string, dur: number, delay: number }> = [];
-    const staticDots: Array<{ id: string, cx: number, cy: number, r: number, color: string, opacity: number, dur: number }> = [];
-
-    let dotId = 0;
-    corridors.forEach(c => {
-      const numDots = c.isHot ? 3 : 1;
-      for (let i = 0; i < numDots; i++) {
-        dotId++;
-        const isForward = Math.random() > 0.5;
-        const xStart = isForward ? c.x1 : c.x2;
-        const yStart = isForward ? c.y1 : c.y2;
-        const xEnd = isForward ? c.x2 : c.x1;
-        const yEnd = isForward ? c.y2 : c.y1;
-        const dur = (c.isHot ? 2.2 : 3.5) + Math.random() * 2;
-        const delay = Math.random() * 3;
-        movingDots.push({
-          id: `move_${dotId}`,
-          x1: xStart, y1: yStart,
-          x2: xEnd, y2: yEnd,
-          r: c.isHot ? 2.5 : 1.8,
-          color: c.color,
-          dur,
-          delay
-        });
-      }
-    });
-
-    stalls.forEach(stall => {
-      const status = popMap[stall.name]?.level || 'STEADY 🟢';
-      let clusterCount = 1;
-      if (status.includes('HOT')) clusterCount = 4;
-      else if (status.includes('HIGH TRAFFIC')) clusterCount = 2;
-
-      for (let i = 0; i < clusterCount; i++) {
-        dotId++;
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 6 + Math.random() * (status.includes('HOT') ? 30 : 15);
-        const cx = stall.x + Math.cos(angle) * dist;
-        const cy = stall.y + Math.sin(angle) * dist;
-        staticDots.push({
-          id: `static_${dotId}`,
-          cx, cy,
-          r: status.includes('HOT') && Math.random() > 0.6 ? 2.8 : 1.8,
-          color: stall.color,
-          opacity: 0.5 + Math.random() * 0.5,
-          dur: 1.5 + Math.random() * 2
-        });
-      }
-    });
-
-    return {
-      stallPopularity: popMap,
-      hotBoothNames: Array.from(hotNamesSet),
-      footpathNetwork: { hubs, corridors },
-      animatedAudienceDots: movingDots,
-      staticClusterDots: staticDots
-    };
-  }, []);
-
-  const handleBoothSelect = (vendorObj: any) => {
-    if (vendorObj.type === 'auction' || vendorObj.name.includes("AUCTION")) {
-      setShowAuctionDashboard(true);
-      return;
-    }
-    setSelectedVendor(vendorObj);
-    if (window.innerWidth < 1024) setMobileSection('vendor');
-  };
-
-  const handleBoothHover = (vendorObj: any) => {
-    setHoveredBooth(vendorObj);
-  };
-
-  const handleBoothLeave = () => {
-    setHoveredBooth(null);
-  };
-
-  // ── MASTER THEMATIC CARD POOLS ──────────────────────────────────────────────
-  const pools = useMemo(() => ({
-    vintageEng: [
-      { name: "Charizard Base Set Holo", grade: "PSA 10", price: 12450.0, change: "+3.4%", id: "base1-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
-      { name: "Blastoise 1st Ed Shadowless", grade: "PSA 9", price: 7400.0, change: "+0.5%", id: "base1-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
-      { name: "Lugia 1st Ed Neo Genesis", grade: "PSA 10", price: 18200.0, change: "+1.8%", id: "neo1-9", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
-      { name: "Shining Charizard Neo Destiny", grade: "PSA 9", price: 3800.0, change: "+1.2%", id: "neo4-107", img: "https://images.scrydex.com/pokemon/neo4-107/large" },
-      { name: "Venusaur 1st Ed Base Set", grade: "PSA 9", price: 2100.0, change: "+4.1%", id: "base1-15", img: "https://images.scrydex.com/pokemon/base1-15/large" },
-      { name: "Alakazam Base Set Holo", grade: "PSA 9", price: 340.0, change: "+2.0%", id: "base1-1", img: "https://images.scrydex.com/pokemon/base1-1/large" },
-      { name: "Gengar Fossil Holo 1st Ed", grade: "PSA 9", price: 420.0, change: "+5.1%", id: "fo1-5", img: "https://images.scrydex.com/pokemon/fo1-5/large" },
-      { name: "Dragonite Fossil Holo", grade: "PSA 9", price: 310.0, change: "-0.4%", id: "fo1-4", img: "https://images.scrydex.com/pokemon/fo1-4/large" },
-      { name: "Pikachu E3 Stamp Promo", grade: "PSA 9", price: 185.0, change: "+8.3%", id: "pr-1", img: "https://images.scrydex.com/pokemon/basep-1/large" },
-      { name: "Mewtwo Base Set Holo", grade: "PSA 8", price: 120.0, change: "+1.1%", id: "base1-10", img: "https://images.scrydex.com/pokemon/base1-10/large" },
-      { name: "Zapdos 1st Ed Fossil Holo", grade: "PSA 9", price: 240.0, change: "+3.2%", id: "fo1-15", img: "https://images.scrydex.com/pokemon/fo1-15/large" },
-      { name: "Dark Charizard Team Rocket", grade: "PSA 9", price: 480.0, change: "+6.4%", id: "tr1-4", img: "https://images.scrydex.com/pokemon/tr1-4/large" },
-      { name: "Dark Dragonite Team Rocket", grade: "PSA 9", price: 290.0, change: "+2.8%", id: "tr1-5", img: "https://images.scrydex.com/pokemon/tr1-5/large" },
-      { name: "Dark Raichu Secret Rare 1st Ed", grade: "PSA 9", price: 360.0, change: "+4.5%", id: "tr1-83", img: "https://images.scrydex.com/pokemon/tr1-83/large" },
-      { name: "Sabrina's Gengar Gym Heroes", grade: "PSA 9", price: 340.0, change: "+7.1%", id: "gh1-14", img: "https://images.scrydex.com/pokemon/gh1-14/large" },
-      { name: "Blaine's Moltres Gym Heroes", grade: "PSA 9", price: 195.0, change: "+1.9%", id: "gh1-1", img: "https://images.scrydex.com/pokemon/gh1-1/large" },
-      { name: "Erika's Venusaur Gym Challenge", grade: "PSA 9", price: 280.0, change: "+3.8%", id: "gc1-4", img: "https://images.scrydex.com/pokemon/gc1-4/large" },
-      { name: "Typhlosion 1st Ed Neo Genesis", grade: "PSA 9", price: 680.0, change: "+5.2%", id: "neo1-17", img: "https://images.scrydex.com/pokemon/neo1-17/large" },
-      { name: "Pichu 1st Ed Neo Genesis", grade: "PSA 9", price: 220.0, change: "+2.4%", id: "neo1-12", img: "https://images.scrydex.com/pokemon/neo1-12/large" },
-      { name: "Shining Mewtwo Neo Destiny", grade: "PSA 9", price: 1150.0, change: "+8.9%", id: "neo4-109", img: "https://images.scrydex.com/pokemon/neo4-109/large" },
-      { name: "Shining Celebi Neo Destiny", grade: "PSA 9", price: 540.0, change: "+4.0%", id: "neo4-106", img: "https://images.scrydex.com/pokemon/neo4-106/large" }
-    ],
-    vintageJpn: [
-      { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "base1_ja-4", img: "https://images.pokemontcg.io/base1/4_hires.png" },
-      { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.scrydex.com/pokemon/coro_ja-1/large" },
-      { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "neo2_ja-30", img: "https://images.scrydex.com/pokemon/neo2_ja-30/large" },
-      { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "fo1_ja-5", img: "https://images.pokemontcg.io/fo1/5_hires.png" },
-      { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "vs_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
-      { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "skyridge_ja-146", img: "https://images.pokemontcg.io/ecard3/146_hires.png" },
-      { name: "Crystal Ho-Oh e-Series (JPN)", grade: "PSA 9", price: 1120.0, change: "+5.3%", id: "skyridge_ja-149", img: "https://images.pokemontcg.io/ecard3/149_hires.png" },
-      { name: "Japanese Vending Series 3 Mewtwo", grade: "PSA 10", price: 340.0, change: "+4.2%", id: "base1_ja-10", img: "https://images.pokemontcg.io/base1/10_hires.png" },
-      { name: "Japanese Vending Series 1 Pikachu", grade: "PSA 10", price: 280.0, change: "+6.7%", id: "base1_ja-58", img: "https://images.pokemontcg.io/base1/58_hires.png" },
-      { name: "Imakuni's Doduo Vending Promo", grade: "PSA 10", price: 210.0, change: "+3.1%", id: "gym1_ja-112", img: "https://images.pokemontcg.io/gym1/112_hires.png" },
-      { name: "GB Dragonite Promo Holo (JPN)", grade: "PSA 10", price: 390.0, change: "+8.0%", id: "fo1_ja-4", img: "https://images.pokemontcg.io/fo1/4_hires.png" },
-      { name: "CD Promo Charizard Holo (JPN)", grade: "PSA 10", price: 650.0, change: "+9.2%", id: "cd_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
-      { name: "CD Promo Blastoise Holo (JPN)", grade: "PSA 10", price: 380.0, change: "+5.4%", id: "cd_ja-blastoise", img: "https://images.pokemontcg.io/base1/2_hires.png" },
-      { name: "CD Promo Venusaur Holo (JPN)", grade: "PSA 10", price: 360.0, change: "+4.9%", id: "cd_ja-venusaur", img: "https://images.pokemontcg.io/base1/15_hires.png" },
-      { name: "Japanese Gym Leader Erika Holo", grade: "PSA 9", price: 145.0, change: "+2.8%", id: "gc1_ja-16", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
-      { name: "Kanji Lugia Neo Genesis (JPN)", grade: "PSA 9", price: 420.0, change: "+7.5%", id: "neo1_ja-9", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
-      { name: "Japanese Neo Discovery Umbreon Holo", grade: "PSA 9", price: 380.0, change: "+6.8%", id: "neo2_ja-13", img: "https://images.pokemontcg.io/neo2/13_hires.png" },
-      { name: "Japanese Blaine's Arcanine Holo", grade: "PSA 9", price: 165.0, change: "+3.5%", id: "gh1_ja-1", img: "https://images.pokemontcg.io/gym1/1_hires.png" }
-    ],
-    modernAlt: [
-      { name: "Umbreon VMAX Alt Art (Moonbreon)", grade: "PSA 10", price: 1420.0, change: "+5.6%", id: "evs-215", img: "https://images.scrydex.com/pokemon/swsh7-215/large" },
-      { name: "Giratina V Alt Art Lost Origin", grade: "PSA 10", price: 650.0, change: "+4.1%", id: "lor-186", img: "https://images.scrydex.com/pokemon/swsh11-186/large" },
-      { name: "Rayquaza VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 580.0, change: "+6.2%", id: "evs-218", img: "https://images.scrydex.com/pokemon/swsh7-218/large" },
-      { name: "Lugia V Alt Art Silver Tempest", grade: "PSA 10", price: 320.0, change: "+3.9%", id: "sit-186", img: "https://images.scrydex.com/pokemon/swsh12-186/large" },
-      { name: "Charizard V Alt Art Brilliant Stars", grade: "PSA 10", price: 240.0, change: "+2.1%", id: "brs-154", img: "https://images.scrydex.com/pokemon/swsh9-154/large" },
-      { name: "Sylveon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 310.0, change: "+4.8%", id: "evs-212", img: "https://images.scrydex.com/pokemon/swsh7-212/large" },
-      { name: "Gengar VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 390.0, change: "+7.4%", id: "fst-271", img: "https://images.scrydex.com/pokemon/swsh8-271/large" },
-      { name: "Mewtwo V Alt Art Pokemon GO", grade: "PSA 10", price: 110.0, change: "+1.9%", id: "pgo-72", img: "https://images.scrydex.com/pokemon/pgo-72/large" },
-      { name: "Espeon VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 290.0, change: "+5.0%", id: "fst-270", img: "https://images.scrydex.com/pokemon/swsh8-270/large" },
-      { name: "Leafeon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 270.0, change: "+4.3%", id: "evs-205", img: "https://images.scrydex.com/pokemon/swsh7-205/large" },
-      { name: "Dragonite V Alt Art Evolving Skies", grade: "PSA 10", price: 165.0, change: "+3.1%", id: "evs-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
-      { name: "Aerodactyl V Alt Art Lost Origin", grade: "PSA 10", price: 155.0, change: "+2.8%", id: "lor-180", img: "https://images.scrydex.com/pokemon/swsh11-180/large" },
-      { name: "Charizard ex SIR Obsidian Flames", grade: "PSA 10", price: 165.0, change: "+4.4%", id: "obf-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
-      { name: "Mew ex SIR 151", grade: "PSA 10", price: 140.0, change: "+3.2%", id: "meo-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" }
-    ],
-    jpnModern: [
-      { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, rawPrice: 240.0, change: "+12.4%", id: "sv2d_ja-96", img: "https://images.scrydex.com/pokemon/sv2d_ja-96/large" },
-      { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, rawPrice: 110.0, change: "+8.1%", id: "sv1v_ja-105", img: "https://images.scrydex.com/pokemon/sv1v_ja-105/large" },
-      { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, rawPrice: 135.0, change: "+9.6%", id: "sv3pt5_ja-25", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-25/large" },
-      { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, rawPrice: 85.0, change: "+7.2%", id: "sv3pt5_ja-94", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-94/large" },
-      { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+5.4%", id: "sv3pt5_ja-206", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-206/large" },
-      { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, rawPrice: 90.0, change: "+6.8%", id: "sv3_ja-223", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
-      { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, rawPrice: 65.0, change: "+4.5%", id: "sv3pt5_ja-205", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
-      { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, rawPrice: 24.0, change: "+3.8%", id: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
-      { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, rawPrice: 1600.0, change: "+9.4%", id: "swsh12a_ja-262", img: "https://images.scrydex.com/pokemon/swsh12a_ja-262/large" },
-      { name: "Japanese Erika's Hospitality SR", grade: "PSA 10", price: 650.0, rawPrice: 220.0, change: "+5.1%", id: "sm12a_ja-190", img: "https://images.scrydex.com/pokemon/sm12a_ja-190/large" },
-      { name: "Japanese Mewtwo VSTAR SAR (Universe)", grade: "PSA 10", price: 120.0, rawPrice: 45.0, change: "+8.9%", id: "swsh12a_ja-221", img: "https://images.scrydex.com/pokemon/swsh12a_ja-221/large" },
-      { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+4.2%", id: "swsh8b_ja-260", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
-    ],
-    tagTeams: [
-      { name: "Latios & Latias GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-170", img: "https://images.scrydex.com/pokemon/sm9-170/large" },
-      { name: "Gengar & Mimikyu GX Alt Art", grade: "PSA 10", price: 450.0, change: "+6.4%", id: "sm9-165", img: "https://images.scrydex.com/pokemon/sm9-165/large" },
-      { name: "Magikarp & Wailord GX Alt Art", grade: "PSA 10", price: 380.0, change: "+5.8%", id: "sm9-161", img: "https://images.scrydex.com/pokemon/sm9-161/large" },
-      { name: "Charizard & Reshiram GX Alt Art", grade: "PSA 10", price: 310.0, change: "+4.5%", id: "sm10-214", img: "https://images.scrydex.com/pokemon/sm10-214/large" },
-      { name: "Mewtwo & Mew GX Alt Art", grade: "PSA 10", price: 280.0, change: "+5.1%", id: "sm11-222", img: "https://images.scrydex.com/pokemon/sm11-222/large" },
-      { name: "Arceus & Dialga & Palkia GX Alt Art", grade: "PSA 10", price: 230.0, change: "+3.7%", id: "sm12-221", img: "https://images.scrydex.com/pokemon/sm12-221/large" },
-      { name: "Solgaleo & Lunala GX Full Art", grade: "PSA 10", price: 165.0, change: "+2.9%", id: "sm12-216", img: "https://images.scrydex.com/pokemon/sm12-216/large" },
-      { name: "Blastoise & Piplup GX Alt Art", grade: "PSA 10", price: 195.0, change: "+4.1%", id: "sm12-215", img: "https://images.scrydex.com/pokemon/sm12-215/large" }
-    ],
-    goldStarsEx: [
-      { name: "Rayquaza Gold Star Holo Deoxys", grade: "CGC 9.5", price: 9800.0, change: "-0.8%", id: "ex8-107", img: "https://images.scrydex.com/pokemon/ex8-107/large" },
-      { name: "Charizard Gold Star Delta Species", grade: "PSA 9", price: 2900.0, change: "+5.4%", id: "ex13-100", img: "https://images.scrydex.com/pokemon/ex13-100/large" },
-      { name: "Mew Gold Star Holo Dragon Frontiers", grade: "PSA 9", price: 1250.0, change: "+4.1%", id: "ex15-101", img: "https://images.scrydex.com/pokemon/ex15-101/large" },
-      { name: "Pikachu Gold Star Holo Holon Phantoms", grade: "PSA 9", price: 1480.0, change: "+6.2%", id: "ex13-104", img: "https://images.scrydex.com/pokemon/ex13-104/large" },
-      { name: "Torchic Gold Star Holo Team Rocket Returns", grade: "PSA 9", price: 1100.0, change: "+3.8%", id: "ex7-108", img: "https://images.scrydex.com/pokemon/ex7-108/large" },
-      { name: "Lugia ex Unseen Forces Holo", grade: "PSA 9", price: 890.0, change: "+5.0%", id: "ex10-105", img: "https://images.scrydex.com/pokemon/ex10-105/large" },
-      { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
-      { name: "Latias Gold Star Holo Deoxys", grade: "PSA 9", price: 3200.0, change: "+4.5%", id: "ex8-105", img: "https://images.scrydex.com/pokemon/ex8-105/large" },
-      { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" }
-    ],
-    rawBinderSingles: [
-      { name: "Pikachu IR Paldea Evolved", grade: "Raw NM", price: 38.0, change: "+3.1%", id: "bgt-1", originalId: "sv2-203", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
-      { name: "Charmander IR 151", grade: "Raw NM", price: 32.0, change: "+4.2%", id: "bgt-2", originalId: "sv3pt5-168", img: "https://images.scrydex.com/pokemon/sv3pt5-168/large" },
-      { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", originalId: "sv3pt5-170", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
-      { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", originalId: "sv3pt5-166", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
-      { name: "Snorlax IR 151", grade: "Raw NM", price: 24.0, change: "+0.8%", id: "bgt-5", originalId: "sv3pt5-181", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
-      { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", originalId: "sv2a_ja-133", img: "https://images.scrydex.com/pokemon/sv2a_ja-133/large" },
-      { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", originalId: "sv2a_ja-149", img: "https://images.scrydex.com/pokemon/sv2a_ja-149/large" },
-      { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", originalId: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
-      { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", originalId: "gym2-16", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
-      { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", originalId: "base1-58", img: "https://images.pokemontcg.io/base1/58_hires.png" },
-      { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", originalId: "sv3-225", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
-      { name: "Magikarp IR Triplet Beat", grade: "Raw NM", price: 110.0, change: "+7.8%", id: "bgt-12", originalId: "sv1a-80", img: "https://images.scrydex.com/pokemon/sv1a-80/large" },
-      { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", originalId: "swsh7-175", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
-      { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", originalId: "swsh8-245", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
-      { name: "Japanese VSTAR Universe Mew VMAX SAR", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", originalId: "swsh12a_ja-183", img: "https://images.scrydex.com/pokemon/swsh12a_ja-183/large" },
-      { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", originalId: "base1-63", img: "https://images.pokemontcg.io/base1/63_hires.png" },
-      { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", originalId: "base1-46", img: "https://images.pokemontcg.io/base1/46_hires.png" },
-      { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", originalId: "ju1-10", img: "https://images.pokemontcg.io/ju1/10_hires.png" },
-      { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", originalId: "fo1-6", img: "https://images.pokemontcg.io/fo1/6_hires.png" },
-      { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", originalId: "neo1-9", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
-      { name: "Mew ex SIR 151", grade: "Raw NM", price: 85.0, change: "+5.1%", id: "bgt-21", originalId: "sv3pt5-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
-      { name: "Zapdos ex SIR 151", grade: "Raw NM", price: 42.0, change: "+3.4%", id: "bgt-22", originalId: "sv3pt5-202", img: "https://images.scrydex.com/pokemon/sv3pt5-202/large" },
-      { name: "Alakazam ex SIR 151", grade: "Raw NM", price: 34.0, change: "+2.8%", id: "bgt-23", originalId: "sv3pt5-201", img: "https://images.scrydex.com/pokemon/sv3pt5-201/large" },
-      { name: "Erika's Invitation SIR 151", grade: "Raw NM", price: 36.0, change: "+1.9%", id: "bgt-24", originalId: "sv3pt5-203", img: "https://images.scrydex.com/pokemon/sv3pt5-203/large" },
-      { name: "Charizard ex SIR Obsidian Flames", grade: "Raw NM", price: 55.0, change: "+4.0%", id: "bgt-25", originalId: "sv3-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
-      { name: "Tyranitar V Alt Art Battle Styles", grade: "Raw NM", price: 115.0, change: "+6.1%", id: "bgt-26", originalId: "swsh5-155", img: "https://images.scrydex.com/pokemon/swsh5-155/large" },
-      { name: "Empoleon V Alt Art Battle Styles", grade: "Raw NM", price: 40.0, change: "+2.2%", id: "bgt-27", originalId: "swsh5-146", img: "https://images.scrydex.com/pokemon/swsh5-146/large" },
-      { name: "Dragonite V Alt Art Evolving Skies", grade: "Raw NM", price: 130.0, change: "+5.8%", id: "bgt-28", originalId: "swsh7-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
-      { name: "Noivern V Alt Art Evolving Skies", grade: "Raw NM", price: 35.0, change: "+1.5%", id: "bgt-29", originalId: "swsh7-196", img: "https://images.scrydex.com/pokemon/swsh7-196/large" },
-      { name: "Charizard VMAX Rainbow Shiny", grade: "Raw NM", price: 120.0, change: "+3.9%", id: "bgt-30", originalId: "swsh3-20", img: "https://images.scrydex.com/pokemon/swsh3-20/large" }
-    ],
-  }), []);
-
-  const getThemePool = (category?: string): any[] => {
-    switch (category) {
-      case "vintage": return [...pools.vintageEng, ...pools.vintageJpn];
-      case "modern": return [...pools.modernAlt, ...pools.tagTeams, ...pools.rawBinderSingles, ...pools.jpnModern];
-      case "japanese": return [...pools.jpnModern, ...pools.vintageJpn];
-      case "goldstar": return [...pools.goldStarsEx];
-      default: return [...pools.rawBinderSingles, ...pools.modernAlt];
-    }
-  };
-
-  // ── DISJOINT VENDOR CATALOG PARTITION ───────────────────────────────────────
-  // Build ONE global partition so every vendor receives a fully disjoint set of
-  // 300 cards (no card ever appears in two vendor catalogs). A shared `usedIds`
-  // set guarantees uniqueness; a per-vendor window into the 30000-card Japanese
-  // pool supplies the bulk and keeps the sets from ever overlapping.
-  const vendorCardMap = useMemo(() => {
-    const map: Record<string, any[]> = {};
-    const used = new Set<string>();
-    const dynamicJpnPool = getCardShowDynamicJapaneseCards(30000);
-
-    VENDORS.filter(v => v.type === 'vendor').forEach((vendor, vi) => {
-      const cards: any[] = [];
-
-      const tryAdd = (c: any): boolean => {
-        const key = c.originalId || c.id;
-        if (!key || used.has(key)) return false;
-        used.add(key);
-        cards.push({
-          ...c,
-          originalId: key,
-          id: `${vendor.booth}-${key}`,
-        });
-        return true;
-      };
-
-      // 1. Themed signature cards (these add flavor / relevance per vendor)
-      getThemePool(vendor.category).forEach(c => tryAdd(c));
-
-      // 2. A large, per-vendor disjoint window into the Japanese pool (the bulk)
-      const windowStart = vi * 500;
-      for (let i = 0; i < 500 && windowStart + i < dynamicJpnPool.length; i++) {
-        tryAdd(dynamicJpnPool[windowStart + i]);
-      }
-
-      // 3. Top up (and guarantee uniqueness) from the rest of the Japanese pool
-      let k = 0;
-      while (cards.length < 300 && k < dynamicJpnPool.length) {
-        tryAdd(dynamicJpnPool[k]);
-        k++;
-      }
-
-      let mappedCards = cards.slice(0, 300).map((c) => {
-        const orig = c.originalId;
-        
-        // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
-        // taking into account grades and caching. We use c.price directly if available.
-        // If it's missing, we fallback to resolveVendorCardRealPrice.
-        const finalPrice = typeof c.price === 'number' ? c.price : resolveVendorCardRealPrice(c);
-
-        return {
-          ...c,
-          setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') ? orig.split('-')[0] : 'swsh3'),
-          num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1'),
-          price: finalPrice,
-        };
-      });
-
-      // Shuffle the cards so they don't appear in sorted price order
-      for (let i = mappedCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [mappedCards[i], mappedCards[j]] = [mappedCards[j], mappedCards[i]];
-      }
-
-      map[vendor.name] = mappedCards;
-    });
-
-    return map;
-  }, [metadataLoaded, pools]);
-
-  // Async English price fetching — populates runtime cache + triggers override re-render
-  useEffect(() => {
-    const allCards = Object.values(vendorCardMap).flat();
-    const toFetch: { id: string; setId: string; num: string }[] = [];
-    const seen = new Set<string>();
-    for (const c of allCards) {
-      const orig = c.originalId || c.id || '';
-      if (seen.has(orig)) continue;
-      seen.add(orig);
-      const setStr = c.setId || '';
-      const numStr = c.num || '';
-      if (setStr && numStr && !orig.toLowerCase().includes('_ja') && !orig.startsWith('bgt-')) {
-        toFetch.push({ id: orig, setId: setStr, num: numStr });
-      }
-    }
-    if (toFetch.length === 0) return;
-    let cancelled = false;
-    const overrides: Record<string, number> = {};
-    const BATCH_SIZE = 5;
-    const fetchOne = async (cardId: string, setId: string, num: string) => {
-      if (cancelled) return;
-      try {
-        const full = await fetchCardFull(cardId);
-        const tcg = full?.pricing?.tcgplayer;
-        let p = tcg?.holofoil?.market ?? tcg?.normal?.market ?? null;
-        if (p == null || p <= 0) {
-          const src = ['tcgplayer', 'cardmarket', 'ebay'].find(s => full?.pricing?.[s]);
-          if (src) {
-            const srcP = full!.pricing![src as keyof typeof full.pricing] as any;
-            p = srcP?.market ?? srcP?.low ?? null;
-          }
-        }
-        if (p != null && p > 0) {
-          cacheEnglishPrice(cardId, p);
-          cacheEnglishPrice(`${setId}-${num}`, p);
-          overrides[cardId] = Number(p.toFixed(2));
-        }
-      } catch {}
-    };
-    (async () => {
-      for (let i = 0; i < toFetch.length && !cancelled; i += BATCH_SIZE) {
-        const batch = toFetch.slice(i, i + BATCH_SIZE);
-        await Promise.all(batch.map(({ id, setId, num }) => fetchOne(id, setId, num)));
-      }
-      if (!cancelled && Object.keys(overrides).length > 0) setEnPriceOverrides(prev => ({ ...prev, ...overrides }));
-    })();
-    return () => { cancelled = true; };
-  }, [vendorCardMap]);
-
-  const activeVendorCards = useMemo(() => {
-    const cards = vendorCardMap[selectedVendor?.name] || [];
-    if (Object.keys(enPriceOverrides).length === 0) return cards;
-    return cards.map(c => {
-      const overrideKey = c.originalId || c.id || '';
-      const override = enPriceOverrides[overrideKey];
-      if (override != null) return { ...c, price: override };
-      return c;
-    });
-  }, [selectedVendor?.name, vendorCardMap, enPriceOverrides]);
-
-  // Reset sequential visible batch limit when active vendor or search filters change
-  useEffect(() => {
-    setVisibleBatchLimit(30);
-  }, [selectedVendor?.name, searchQuery, selectedFilter]);
-
-  // Advance sequential batch as soon as all currently visible cards have rendered (or after safety timeout)
-  useEffect(() => {
-    const filtered = activeVendorCards.filter((c) => {
-      if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
-      const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
-      if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
-      if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
-      if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
-      if (selectedFilter === "WOTC / Vintage") return matchesSearch && (c.name.includes("Base") || c.name.includes("Neo") || c.name.includes("1st"));
-      if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
-      return matchesSearch;
-    });
-
-    if (visibleBatchLimit >= filtered.length) return;
-
-    const currentBatch = filtered.slice(0, visibleBatchLimit);
-    const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => isCardCompleted(c.id, c.originalId, c.img));
-
-    if (allBatchDone) {
-      setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 30));
-    }
-  }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter, brokenOriginalIds]);
-
-  // IntersectionObserver: immediately load any card container that scrolls into the user's viewport
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const imgId = entry.target.getAttribute('data-img-id');
-          if (imgId) {
-            setIntersectingCardIds(prev => {
-              if (prev.has(imgId)) return prev;
-              const next = new Set(prev);
-              next.add(imgId);
-              return next;
-            });
-            // Stop observing elements once intersected to free memory & CPU
-            observer.unobserve(entry.target);
-          }
-        }
-      });
-    }, { rootMargin: '800px' });
-
-    const elements = document.querySelectorAll('[data-card-container]');
-    elements.forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, [activeVendorCards, visibleBatchLimit, searchQuery, selectedFilter]);
-
-  const filteredCards = activeVendorCards.filter((c) => {
-    if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
-    const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
-    if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
-    if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
-    if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
-    if (selectedFilter === "WOTC / Vintage") return matchesSearch && (c.name.includes("Base") || c.name.includes("Neo") || c.name.includes("1st"));
-    if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
-    return matchesSearch;
-  });
-
-  if (showAuctionDashboard) {
-    return <AuctionDashboard onBack={() => setShowAuctionDashboard(false)} onSpendNetReturn={onSpendNetReturn} />;
-  }
-
-  return (
-    <>
-      <div className="w-full h-full min-h-[calc(100vh-5rem)] bg-[#090a0c] text-[#f8fafc] flex flex-col font-sans overflow-hidden">
-
-        {/* Slim Top Bar */}
-        <header className="h-10 sm:h-12 border-b border-[#1e293b]/50 bg-[#111418]/95 flex items-center justify-between px-3 sm:px-5 shrink-0 z-30">
-          <div className="flex items-center gap-3">
-            {onBackToPacks && (
-              <button
-                onClick={onBackToPacks}
-                className="px-2 py-1 hover:bg-white/10 rounded transition-colors text-[#94a3b8] hover:text-[#f8fafc] flex items-center gap-1.5 text-xs font-mono border border-white/10"
-                title="Back to Packs"
-              >
-                <ArrowLeft className="w-3.5 h-3.5 text-[#38bdf8]" />
-                <span className="hidden sm:inline font-bold">BACK</span>
-              </button>
-            )}
-            <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm font-black tracking-widest text-white flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-[#2dd4bf] animate-pulse" /> GLOBAL CARD SHOW CIRCUIT
-              </span>
-              <span className="hidden md:inline px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30 font-bold">
-                LA EXPO DAY 2
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-[11px] font-mono text-[#94a3b8] hidden lg:flex">
-              <span>LIVE BASH FLOOR:</span>
-              <span className="text-green-400 font-bold flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> 3,420 ACTIVE BUYERS
-              </span>
-            </div>
-
-            <div className="relative">
-              <Bell className="w-4 h-4 text-[#94a3b8] hover:text-white cursor-pointer transition-colors" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#f472b6] rounded-full animate-pulse shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
-            </div>
-          </div>
-        </header>
-
-        {/* Mobile Mode Switcher Bar (< 1024px only) */}
-        <div className="lg:hidden flex items-center justify-between gap-1.5 bg-[#111418] border-b border-[#1e293b]/60 px-2 sm:px-3 py-1.5 shrink-0 z-20">
-          <button
-            onClick={() => setMobileSection('market')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'market'
-              ? 'bg-[#2dd4bf]/20 text-[#2dd4bf] border border-[#2dd4bf]/50 shadow-[0_0_10px_rgba(45,212,191,0.2)]'
-              : 'text-[#94a3b8] hover:bg-white/5'
-              }`}
-          >
-            <Package className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">MARKET ({filteredCards.length})</span>
-          </button>
-
-          <button
-            onClick={() => setMobileSection('map')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'map'
-              ? 'bg-[#38bdf8]/20 text-[#38bdf8] border border-[#38bdf8]/50 shadow-[0_0_10px_rgba(56,189,248,0.2)]'
-              : 'text-[#94a3b8] hover:bg-white/5'
-              }`}
-          >
-            <MapPin className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">FLOOR MAP</span>
-          </button>
-
-          <button
-            onClick={() => setMobileSection('vendor')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'vendor'
-              ? 'bg-[#f472b6]/20 text-[#f472b6] border border-[#f472b6]/50 shadow-[0_0_10px_rgba(236,72,153,0.2)]'
-              : 'text-[#94a3b8] hover:bg-white/5'
-              }`}
-          >
-            <Star className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">VENDOR VIP</span>
-          </button>
-        </div>
-
-        {/* Main 3-Column Grid */}
-        <main className="flex-1 p-2 sm:p-3 lg:grid lg:grid-cols-12 gap-3 lg:gap-4 overflow-y-auto lg:overflow-hidden min-h-0">
-
-          {/* Column A: EXPO MARKETPLACE & VENDOR GALLERY */}
-          <section
-            className={`${isMapExpanded ? 'hidden' : ''
-              } ${mobileSection === 'market' ? 'flex' : 'hidden lg:flex'
-              } lg:col-span-3 flex-col gap-2 h-full min-h-[480px] lg:min-h-0`}
-          >
-            {/* Top Search & Filter Bar */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  placeholder="Search cards..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#111418] border border-[#1e293b] rounded-lg py-1.5 pl-8 pr-3 text-xs text-white placeholder:text-[#94a3b8] focus:outline-none focus:border-[#38bdf8] transition-colors font-mono"
-                />
-                <Search className="w-3.5 h-3.5 text-[#94a3b8] absolute left-2.5 top-1/2 -translate-y-1/2" />
-              </div>
-
-              <div className="flex items-center gap-1 bg-[#111418] border border-[#1e293b] rounded-lg p-1 shrink-0 overflow-x-auto no-scrollbar max-w-[210px] sm:max-w-none">
-                {["All", "Raw Ungraded", "PSA 10", "BGS/CGC", "WOTC / Vintage", "Modern Alt"].map((filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setSelectedFilter(filter)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap transition-colors ${selectedFilter === filter
-                      ? "bg-[#38bdf8] text-black shadow-sm"
-                      : "text-[#94a3b8] hover:text-white"
-                      }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setShowArbSpotlight(!showArbSpotlight)}
-                className={`px-2 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all shrink-0 flex items-center gap-1 ${showArbSpotlight
-                  ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
-                  : "bg-[#111418] text-[#94a3b8] border-[#1e293b] hover:text-white"
-                  }`}
-                title="Toggle Arbitrage Spotlight Cards"
-              >
-                <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">Arb (+54%)</span>
-              </button>
-            </div>
-
-            {/* Arbitrage Spotlight Overlay Drawer */}
-            {showArbSpotlight && (
-              <div className="grid grid-cols-2 gap-2 bg-[#111418]/90 border border-amber-500/30 p-2 rounded-xl shrink-0 animate-in fade-in slide-in-from-top-1 duration-200">
-                {[
-                  { name: "PSA 10 Charizard Base Set", potential: 37, price: 12450.0, id: 1040, change: "+3.4%" },
-                  { name: "PSA 10 Lugia 1st Ed Neo", potential: 54, price: 18200.0, id: 1041, change: "+1.8%" },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="bg-black/60 border border-white/10 p-2 rounded-lg flex flex-col justify-between gap-1"
-                  >
-                    <div className="flex justify-between items-start gap-1">
-                      <span className="text-[10px] font-bold text-white uppercase truncate">
-                        {item.name}
-                      </span>
-                      <span className="text-[9px] text-green-400 font-mono font-bold shrink-0">
-                        {item.change}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-[10px] font-mono">
-                      <span className="text-amber-400 font-bold">Arb: +{item.potential}%</span>
-                      <span className="text-white font-black">${item.price.toLocaleString()}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Catalog Header */}
-            <div className="flex flex-col gap-1.5 bg-[#111418] px-3 py-2 border border-[#1e293b] rounded-lg shrink-0 text-[11px] font-mono">
-              <div className="flex items-center justify-between">
-                <span className="text-white font-bold flex items-center gap-1.5 truncate">
-                  <span className="truncate">📦 {selectedVendor?.name?.toUpperCase()} CATALOG ({filteredCards.length} CARDS)</span>
-                </span>
-                <span className="text-[#38bdf8] font-bold animate-pulse flex items-center gap-1 shrink-0 ml-2">
-                  📜 SCROLL DOWN ▾
-                </span>
-              </div>
-            </div>
-
-            {/* MARKETPLACE CARDS GRID */}
-            <div
-              style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 220px)' }}
-              className="grid grid-cols-2 gap-3 pb-6 pr-1"
-            >
-              {filteredCards.map((card, i) => (
-                <div
-                  key={card.id}
-                  onClick={() => {
-                    if (onInspectCard) {
-                      onInspectCard({
-                        id: card.id,
-                        name: card.name,
-                        currentPrice: card.price,
-                        isSlabbed: true,
-                        slabGrade: card.grade,
-                        imageUrl: card.img,
-                        isVendorCatalog: true,
-                        vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
-                        vendorBooth: selectedVendor?.booth || "5B",
-                        vendorRating: selectedVendor?.rating || "4.8 / 5"
-                      });
-                    }
-                  }}
-                  className="bg-[#111418] border border-[#1e293b] rounded-xl group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] transform hover:-translate-y-0.5"
-                  data-card-container="true"
-                  data-img-id={card.id}
-                >
-                  <div className="w-full relative p-2 bg-black/40 rounded-t-xl min-h-[160px] flex items-center justify-center">
-                    {(i < visibleBatchLimit || intersectingCardIds.has(card.id)) ? (
-                      <>
-                        <img
-                          src={card.img}
-                          alt={card.name}
-                          className={`w-full h-auto block rounded-md filter drop-shadow-xl transition-all duration-300 group-hover:scale-[1.02] ${isCardCompleted(card.id, card.originalId, card.img) ? 'opacity-100' : 'opacity-0'}`}
-                          onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                          onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
-                        />
-                        {!isCardCompleted(card.id, card.originalId, card.img) && (
-                          <div className="absolute inset-0 bg-[#0b0e14]/95 rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
-                            <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
-                              <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
-                            </div>
-                            <span className="text-[9px] font-mono font-bold text-[#38bdf8] tracking-wider uppercase leading-tight">
-                              Retrieving card
-                            </span>
-                            <span className="text-[8px] font-mono text-[#94a3b8] tracking-tight uppercase">
-                              from binder...
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-full aspect-[3/4] bg-gradient-to-tr from-[#111418] to-[#1e293b] rounded-md animate-pulse flex flex-col items-center justify-center border border-white/5 gap-1.5 p-2">
-                        <Package className="w-5 h-5 text-[#38bdf8]/40 animate-bounce" />
-                        <span className="text-[9px] font-mono text-[#64748b] tracking-wider uppercase font-bold text-center">In Sequence...</span>
-                      </div>
-                    )}
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/50 text-amber-300 font-bold shadow">
-                        {card.grade}
-                      </span>
-                    </div>
-                    <div className="absolute top-3 right-3 z-10">
-                      <div className="w-5 h-5 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8]">
-                        <Check className="w-3 h-3 text-[#38bdf8]" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="px-2.5 py-2 bg-[#0e1117] border-t border-white/10 rounded-b-xl">
-                    <p className="text-xs font-bold text-white truncate group-hover:text-[#38bdf8] transition-colors mb-1">
-                      {card.name}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-mono font-black text-white">${card.price.toLocaleString()}</span>
-                      <span className="text-green-400 font-bold text-[10px] font-mono">{card.change}</span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setTradeTarget(card);
-                      }}
-                      className="mt-2 w-full py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-[11px] uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-1"
-                    >
-                      <Coins className="w-3.5 h-3.5" /> Buy · Trade or Cash
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Column B: LIVE INTERACTIVE FLOOR PLAN */}
-          <section
-            className={`${isMapExpanded ? 'lg:col-span-12' : 'lg:col-span-6'
-              } ${mobileSection === 'map' ? 'flex' : 'hidden lg:flex'
-              } flex-col gap-2 border-y lg:border-y-0 lg:border-x border-[#1e293b]/60 px-1 sm:px-2 overflow-hidden h-full min-h-[520px] lg:min-h-0`}
-          >
-            {/* Map Header */}
-            <div className="flex items-center justify-between bg-[#0a0e14] py-1.5 px-3 border border-[#1e293b] rounded-xl shrink-0">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#38bdf8]" />
-                <span className="text-xs font-black tracking-[0.2em] text-white uppercase font-mono">
-                  LIVE INTERACTIVE FLOOR PLAN
-                </span>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                <button
-                  onClick={() => setMapZoom(Math.max(80, mapZoom - 20))}
-                  className="w-6 h-6 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-xs font-mono font-bold text-white flex items-center justify-center transition-all"
-                  title="Zoom Out"
-                >
-                  -
-                </button>
-                <button
-                  onClick={() => setMapZoom(130)}
-                  className="px-1.5 py-0.5 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-[10px] font-mono font-bold text-[#38bdf8] transition-all min-w-[40px] text-center"
-                  title="Reset Zoom to 130%"
-                >
-                  {mapZoom}%
-                </button>
-                <button
-                  onClick={() => setMapZoom(Math.min(300, mapZoom + 20))}
-                  className="w-6 h-6 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-xs font-mono font-bold text-white flex items-center justify-center transition-all"
-                  title="Zoom In"
-                >
-                  +
-                </button>
-
-                <div className="w-[1px] h-4 bg-white/15 mx-0.5 sm:mx-1"></div>
-
-                <button
-                  onClick={() => setIsMapExpanded(!isMapExpanded)}
-                  className="flex items-center gap-1 px-2 py-1 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-[10px] font-mono font-bold text-[#38bdf8] transition-all"
-                >
-                  {isMapExpanded ? (
-                    <><Minimize2 className="w-3 h-3" /> <span>RESTORE</span></>
-                  ) : (
-                    <><Maximize2 className="w-3 h-3" /> <span>EXPAND</span></>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Cyberpunk HUD Floor Map */}
-            <div className="relative flex-1 bg-[#060a10] border border-[#0f2840] rounded-2xl overflow-hidden min-h-[460px] lg:min-h-[520px] shadow-2xl flex flex-col">
-              {/* Live Audience Footpath HUD Ticker */}
-              <div className="bg-[#0c1626] border-b border-[#1e3a5f]/80 px-3.5 py-1.5 flex flex-wrap items-center justify-between gap-2 z-20 shrink-0">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#f472b6] animate-ping" />
-                  <span className="text-[11px] font-mono font-black text-white tracking-wide uppercase flex items-center gap-1">
-                    👥 LIVE AUDIENCE FOOTPATH TARGETS 🔥:
-                  </span>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {hotBoothNames.map((name, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded bg-[#f472b6]/15 border border-[#f472b6]/40 text-[10px] font-mono font-bold text-[#f472b6] shadow-[0_0_8px_rgba(244,114,182,0.3)]">
-                        {name.split('(')[0].split('—')[0].trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <span className="text-[10px] font-mono text-[#64748b] hidden sm:inline">
-                  ⚡ Footpaths & crowd heatmaps randomize per session
-                </span>
-              </div>
-
-              {/* Floating Cyberpunk HUD Tooltip when hovering over any booth */}
-              {hoveredBooth && (
-                <div className="absolute top-12 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
-                    <span className="px-2 py-0.5 rounded bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-xs font-mono font-black text-[#38bdf8] shrink-0">
-                      {hoveredBooth.booth}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-sm font-black text-white font-mono tracking-wide uppercase truncate">
-                          {hoveredBooth.name}
-                        </h4>
-                        {stallPopularity[hoveredBooth.name] && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold bg-[#0f2840] border border-[#38bdf8]/50 text-white shadow-[0_0_8px_rgba(56,189,248,0.4)] shrink-0">
-                            👥 Crowd: {stallPopularity[hoveredBooth.name].level} ({stallPopularity[hoveredBooth.name].score}% Heat)
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#94a3b8] font-mono truncate">
-                        {hoveredBooth.specialties?.join(' • ')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right hidden md:block shrink-0">
-                    <span className="text-xs font-mono font-bold text-[#2dd4bf]">
-                      {hoveredBooth.activeListings}
-                    </span>
-                    <p className="text-[10px] text-[#64748b] font-mono">
-                      Rating: {hoveredBooth.rating}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Scrollable Map Viewport */}
-              <div className="relative flex-1 w-full h-full overflow-auto scrollbar-thin scrollbar-thumb-[#38bdf8]/40 scrollbar-track-transparent">
-                <div
-                  style={{
-                    width: `${mapZoom}%`,
-                    height: `${mapZoom}%`,
-                    minWidth: `${Math.max(680, 680 * (mapZoom / 100))}px`,
-                    minHeight: `${Math.max(480, 480 * (mapZoom / 100))}px`,
-                    position: 'relative'
-                  }}
-                  className="transition-all duration-200"
-                >
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#0d1f3512_1px,transparent_1px),linear-gradient(to_bottom,#0d1f3512_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_600px_at_50%_40%,rgba(56,189,248,0.06),transparent)] pointer-events-none"></div>
-
-                  <svg viewBox="20 25 600 415" className="w-full h-full relative z-10" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <style>{`
-                        svg text, svg circle, svg path, svg line {
-                          pointer-events: none !important;
-                          user-select: none !important;
-                        }
-                        svg rect {
-                          pointer-events: auto;
-                        }
-                      `}</style>
-                      <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="6" result="blur" />
-                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                      </filter>
-                      <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
-                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                      </filter>
-                      <filter id="glowWhite" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="8" result="blur" />
-                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                      </filter>
-                      <linearGradient id="gradVintage" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#d97706" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#059669" stopOpacity="0.9" />
-                      </linearGradient>
-                      <linearGradient id="gradJapanese" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#db2777" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
-                      </linearGradient>
-                      <linearGradient id="gradModern" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#0284c7" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.9" />
-                      </linearGradient>
-                      <linearGradient id="gradGoldstar" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#e11d48" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#d97706" stopOpacity="0.9" />
-                      </linearGradient>
-                      <linearGradient id="gradSlab" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#0f766e" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* MAIN GRID LINES */}
-                    <line x1="30" y1="60" x2="610" y2="60" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="30" y1="130" x2="610" y2="130" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="30" y1="200" x2="610" y2="200" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="30" y1="270" x2="610" y2="270" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="30" y1="340" x2="610" y2="340" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="80" y1="30" x2="80" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="190" y1="30" x2="190" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="320" y1="30" x2="320" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="450" y1="30" x2="450" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
-                    <line x1="560" y1="30" x2="560" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
-
-                    {/* RANDOMIZED AUDIENCE FOOTPATH CORRIDORS */}
-                    {footpathNetwork.corridors.map((c, idx) => (
-                      <g key={`corr_${idx}`}>
-                        {c.isHot && (
-                          <line
-                            x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
-                            stroke={c.color} strokeWidth="5" opacity="0.25"
-                            filter="url(#glowWhite)"
-                          />
-                        )}
-                        <line
-                          x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
-                          stroke={c.color}
-                          strokeWidth={c.isHot ? "2.2" : "1"}
-                          opacity={c.isHot ? "0.85" : "0.3"}
-                          strokeDasharray={c.isHot ? "none" : "6,4"}
-                        />
-                      </g>
-                    ))}
-
-                    {/* GLOWING INTERSECTION HUBS */}
-                    {footpathNetwork.hubs.map((h, idx) => (
-                      <g key={`hub_${idx}`}>
-                        <circle cx={h.x} cy={h.y} r="11" fill={h.color} opacity="0.18" filter="url(#glowWhite)" />
-                        <circle cx={h.x} cy={h.y} r="4.5" fill={h.color} opacity="0.95">
-                          <animate attributeName="opacity" values="0.4;1;0.4" dur={`${2 + (idx % 2)}s`} repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={h.x} cy={h.y} r="2" fill="#ffffff" opacity="0.8" />
-                      </g>
-                    ))}
-
-                    {/* OUTER BOUNDARY */}
-                    <rect x="30" y="30" width="580" height="400" rx="6" fill="none" stroke="#1e3a5f" strokeWidth="1.5" style={{ pointerEvents: 'none' }} />
-
-                    {/* AUCTION BOOTH (left stage) */}
-                    {VENDORS.filter(v => v.type === 'auction').map((v) => (
-                      <g key={v.id}>
-                        <rect
-                          x={v.x} y={v.y} width={v.w} height={v.h} rx="4"
-                          fill="#ef4444" fillOpacity="0.1" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 4"
-                          className="cursor-pointer hover:stroke-[#f87171] hover:fill-[#ef4444]/[0.25] transition-all"
-                          onMouseEnter={() => handleBoothHover(v)}
-                          onMouseLeave={handleBoothLeave}
-                          onClick={() => handleBoothSelect(v)}
-                        />
-                        <circle cx={v.x + 15} cy={v.y + 15} r="10" fill="#ef4444" fillOpacity="0.3" stroke="#ef4444" strokeWidth="1.5" className="animate-pulse" />
-                        <text x={v.x + 15} y={v.y + 19} textAnchor="middle" fill="#ef4444" fontSize="10" fontFamily="monospace" fontWeight="900">A</text>
-                        <text x={v.x + v.w / 2 + 15} y={v.y + 40} textAnchor="middle" fill="#fca5a5" fontSize="9" fontFamily="monospace" fontWeight="bold">MAIN STAGE</text>
-                        <text x={v.x + v.w / 2 + 15} y={v.y + 56} textAnchor="middle" fill="#ef4444" fontSize="7" fontFamily="monospace" fontWeight="900" className="animate-pulse">🔴 LIVE AUCTION ARENA</text>
-                        <text x={v.x + v.w / 2 + 15} y={v.y + 90} textAnchor="middle" fill="#fbbf24" fontSize="6" fontFamily="monospace" fontWeight="bold">CLICK TO ENTER</text>
-                      </g>
-                    ))}
-
-                    {/* VENDOR BOOTHS (generated architectural grid with custom shapes & sizes) */}
-                    {VENDORS.filter(v => v.type === 'vendor').map((v) => {
-                      const isSelected = selectedVendor?.name === v.name;
-                      const cat = v.category || "modern";
-                      const boothShape = v.shape || "compact";
-
-                      let headerGrad = "url(#gradModern)";
-                      let headerTitle = "✨ ALT ART & SIR";
-                      let catThemeColor = "#38bdf8";
-
-                      if (cat === "vintage") {
-                        headerGrad = "url(#gradVintage)";
-                        headerTitle = "🏛️ VINTAGE VAULT";
-                        catThemeColor = "#fbbf24";
-                      } else if (cat === "japanese") {
-                        headerGrad = "url(#gradJapanese)";
-                        headerTitle = "⚡ JPN HUB [日本]";
-                        catThemeColor = "#f472b6";
-                      } else if (cat === "goldstar") {
-                        headerGrad = "url(#gradGoldstar)";
-                        headerTitle = "⭐ CROWN GRAILS";
-                        catThemeColor = "#f43f5e";
-                      } else if (cat === "slab") {
-                        headerGrad = "url(#gradSlab)";
-                        headerTitle = "💎 PSA 10 SLABS";
-                        catThemeColor = "#2dd4bf";
-                      }
-
-                      return (
-                        <g key={v.id}>
-                          {/* Selection Outer Pulsing Halo */}
-                          {isSelected && (
-                            <rect
-                              x={v.x - 4} y={v.y - 4} width={v.w + 8} height={v.h + 8} rx="8"
-                              fill="none" stroke={v.color} strokeWidth="2" strokeDasharray="5,3"
-                              className="animate-pulse"
-                            />
-                          )}
-
-                          {/* ── UNIQUE SHAPE GEOMETRY RENDERING ─────────────────────── */}
-                          {boothShape === "mega-island" && (
-                            <>
-                              {/* Island Outer Canopy Shadow */}
-                              <rect x={v.x - 2} y={v.y - 2} width={v.w + 4} height={v.h + 4} rx="6" fill="#0f172a" stroke={v.color} strokeWidth="0.8" opacity="0.6" />
-                              {/* Main Body */}
-                              <rect
-                                x={v.x} y={v.y} width={v.w} height={v.h} rx="5"
-                                fill="#070d17" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.5}
-                                className="cursor-pointer transition-all hover:stroke-white"
-                                style={{ filter: isSelected ? `drop-shadow(0 0 12px ${v.color})` : undefined }}
-                                onMouseEnter={() => handleBoothHover(v)}
-                                onMouseLeave={handleBoothLeave}
-                                onClick={() => handleBoothSelect(v)}
-                              />
-                              {/* 4 Corner Island Pillars */}
-                              <rect x={v.x + 2} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
-                              <rect x={v.x + v.w - 7} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
-                              <rect x={v.x + 2} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
-                              <rect x={v.x + v.w - 7} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
-                            </>
-                          )}
-
-                          {boothShape === "chamfered" && (
-                            <polygon
-                              points={`${v.x + 9},${v.y} ${v.x + v.w - 9},${v.y} ${v.x + v.w},${v.y + 9} ${v.x + v.w},${v.y + v.h - 9} ${v.x + v.w - 9},${v.y + v.h} ${v.x + 9},${v.y + v.h} ${v.x},${v.y + v.h - 9} ${v.x},${v.y + 9}`}
-                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
-                              className="cursor-pointer transition-all hover:stroke-white"
-                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
-                              onMouseEnter={() => handleBoothHover(v)}
-                              onMouseLeave={handleBoothLeave}
-                              onClick={() => handleBoothSelect(v)}
-                            />
-                          )}
-
-                          {boothShape === "arched" && (
-                            <path
-                              d={`M ${v.x} ${v.y + 10} Q ${v.x + v.w / 2} ${v.y - 5} ${v.x + v.w} ${v.y + 10} L ${v.x + v.w} ${v.y + v.h - 5} Q ${v.x + v.w / 2} ${v.y + v.h + 4} ${v.x} ${v.y + v.h - 5} Z`}
-                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
-                              className="cursor-pointer transition-all hover:stroke-white"
-                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
-                              onMouseEnter={() => handleBoothHover(v)}
-                              onMouseLeave={handleBoothLeave}
-                              onClick={() => handleBoothSelect(v)}
-                            />
-                          )}
-
-                          {boothShape === "diamond" && (
-                            <polygon
-                              points={`${v.x + 12},${v.y} ${v.x + v.w - 12},${v.y} ${v.x + v.w},${v.y + 12} ${v.x + v.w - 6},${v.y + v.h} ${v.x + 6},${v.y + v.h} ${v.x},${v.y + 12}`}
-                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
-                              className="cursor-pointer transition-all hover:stroke-white"
-                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
-                              onMouseEnter={() => handleBoothHover(v)}
-                              onMouseLeave={handleBoothLeave}
-                              onClick={() => handleBoothSelect(v)}
-                            />
-                          )}
-
-                          {(boothShape === "tower" || boothShape === "wide-pavilion" || boothShape === "compact") && (
-                            <rect
-                              x={v.x} y={v.y} width={v.w} height={v.h} rx={boothShape === "tower" ? "2" : "4"}
-                              fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.2 : 1}
-                              className="cursor-pointer transition-all hover:stroke-white"
-                              style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
-                              onMouseEnter={() => handleBoothHover(v)}
-                              onMouseLeave={handleBoothLeave}
-                              onClick={() => handleBoothSelect(v)}
-                            />
-                          )}
-
-                          {/* Tower Vertical Beams */}
-                          {boothShape === "tower" && (
-                            <>
-                              <line x1={v.x + 3} y1={v.y + 16} x2={v.x + 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
-                              <line x1={v.x + v.w - 3} y1={v.y + 16} x2={v.x + v.w - 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
-                            </>
-                          )}
-
-                          {/* Architectural Corner Brackets */}
-                          {boothShape !== "chamfered" && boothShape !== "arched" && boothShape !== "diamond" && (
-                            <>
-                              <path d={`M ${v.x} ${v.y + 8} L ${v.x} ${v.y} L ${v.x + 8} ${v.y}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                              <path d={`M ${v.x + v.w - 8} ${v.y} L ${v.x + v.w} ${v.y} L ${v.x + v.w} ${v.y + 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                              <path d={`M ${v.x} ${v.y + v.h - 8} L ${v.x} ${v.y + v.h} L ${v.x + 8} ${v.y + v.h}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                              <path d={`M ${v.x + v.w - 8} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h - 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
-                            </>
-                          )}
-
-                          {/* Category Top Banner */}
-                          <rect x={v.x} y={v.y} width={v.w} height="15" rx="3" fill={headerGrad} />
-                          <text x={v.x + 6} y={v.y + 10.5} fill="#ffffff" fontSize="5.5" fontFamily="monospace" fontWeight="900" letterSpacing="0.3">{headerTitle}</text>
-                          
-                          {/* Active Pulse LED */}
-                          <circle cx={v.x + v.w - 7} cy={v.y + 7.5} r="2" fill="#22c55e">
-                            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite" />
-                          </circle>
-
-                          {/* Booth Number Pill */}
-                          <rect x={v.x + 6} y={v.y + 18} width="22" height="11" rx="2" fill="rgba(0,0,0,0.7)" stroke={v.color} strokeWidth="0.8" />
-                          <text x={v.x + 17} y={v.y + 26} textAnchor="middle" fill={v.color} fontSize="6.5" fontFamily="monospace" fontWeight="900">{v.booth}</text>
-
-                          {/* Vendor Title */}
-                          <text x={v.x + 32} y={v.y + 26} fill="#f1f5f9" fontSize="6.2" fontFamily="monospace" fontWeight="bold">
-                            {v.name.length > 13 ? v.name.slice(0, 12) + "…" : v.name}
-                          </text>
-
-                          {/* Specialty Pill 1 */}
-                          <text x={v.x + 6} y={v.y + 42} fill="#94a3b8" fontSize="4.8" fontFamily="monospace">
-                            • {v.specialties[0]?.slice(0, 20)}
-                          </text>
-
-                          {/* Glass Display Case Counter */}
-                          <rect x={v.x + 5} y={v.y + v.h - 22} width={v.w - 10} height="16" rx="2" fill="rgba(15, 23, 42, 0.85)" stroke={v.color} strokeWidth="0.6" />
-                          
-                          {/* Cards inside glass counter */}
-                          <rect x={v.x + 9} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
-                          <rect x={v.x + 17} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill="#f8fafc" opacity="0.9" />
-                          <rect x={v.x + 25} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
-
-                          {/* Counter text */}
-                          <text x={v.x + 35} y={v.y + v.h - 11} fill="#e2e8f0" fontSize="4.8" fontFamily="monospace" fontWeight="bold">
-                            {v.specialties[1]?.slice(0, 11)}
-                          </text>
-
-                          {/* Selected Indicator */}
-                          {isSelected && (
-                            <text x={v.x + v.w / 2} y={v.y + v.h - 2} textAnchor="middle" fill={v.color} fontSize="5" fontFamily="monospace" fontWeight="900">
-                              ● SELECTED
-                            </text>
-                          )}
-                        </g>
-                      );
-                    })}
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Column C: SELECTED VENDOR PROFILE */}
-          <section
-            className={`${isMapExpanded ? 'hidden' : ''
-              } ${mobileSection === 'vendor' ? 'flex' : 'hidden lg:flex'
-              } lg:col-span-3 flex-col gap-2.5 overflow-y-auto pl-1 h-full min-h-[450px] lg:min-h-0`}
-          >
-            {/* Compact Horizontal Intelligence Ticker */}
-            <div className="flex flex-col gap-1.5 shrink-0 bg-[#111418] border border-[#1e293b] p-2 rounded-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Crosshair className="w-3.5 h-3.5 text-[#c084fc]" />
-                  <span className="text-[11px] font-black tracking-wider text-white uppercase font-mono">
-                    LIVE INTELLIGENCE FEEDS
-                  </span>
-                </div>
-                <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-[#c084fc]/20 text-[#c084fc] font-bold">
-                  3 CAMS LIVE
-                </span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-1.5">
-                {[
-                  { title: "Circuit Cam", code: "SYS-00" },
-                  { title: "Stage Cam", code: "J-101" },
-                  { title: "Vendor Cam", code: "V-104", active: true },
-                ].map((feed, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center justify-between p-1.5 rounded-lg border text-center ${feed.active
-                      ? "bg-[#f472b6]/15 border-[#f472b6]/50 text-[#f472b6]"
-                      : "bg-black/40 border-white/10 text-white"
-                      }`}
-                  >
-                    <span className="text-[9px] font-bold truncate w-full font-mono">
-                      🔴 {feed.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Selected Vendor Spotlight Card */}
-            <div className="flex flex-col gap-2 flex-1">
-              <div className="flex items-center gap-1.5 px-1">
-                <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" />
-                <h2 className="text-xs sm:text-sm font-black tracking-wider text-white uppercase font-mono">
-                  SELECTED VENDOR SPOTLIGHT
-                </h2>
-              </div>
-
-              <div className={`bg-gradient-to-b from-[#111418] to-[#0d1015] border border-[#38bdf8]/40 shadow-[0_0_25px_rgba(56,189,248,0.12)] border rounded-2xl p-3.5 flex flex-col gap-3 flex-1`}>
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono font-bold">
-                    Active Vendor Profile:
-                  </span>
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <h3 className="text-base sm:text-lg font-black text-white tracking-wide">
-                      {selectedVendor?.name}
-                    </h3>
-                    <span className={`px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/50 text-[8px] font-black uppercase rounded-full border flex items-center gap-1 shadow-sm`}>
-                      Premier Vendor <Check className="w-2.5 h-2.5" />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-xs bg-black/60 p-2 rounded-xl border border-white/5">
-                  <div className="flex flex-col">
-                    <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                      Active Listings
-                    </span>
-                    <span className="font-mono font-black text-white text-xs sm:text-sm">
-                      {selectedVendor.activeListings}
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                      Completed Trans.
-                    </span>
-                    <span className="font-mono font-black text-white text-xs sm:text-sm">
-                      {selectedVendor.completedTrans}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 col-span-2 pt-1.5 border-t border-white/5">
-                    <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
-                      Reputation Score
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono font-black text-amber-300 text-xs sm:text-sm">
-                        {selectedVendor.rating}
-                      </span>
-                      <div className="flex gap-0.5 text-yellow-500">
-                        <Star className="w-3 h-3 fill-current" />
-                        <Star className="w-3 h-3 fill-current" />
-                        <Star className="w-3 h-3 fill-current" />
-                        <Star className="w-3 h-3 fill-current" />
-                        <Star className="w-3 h-3 text-[#94a3b8]" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedVendor.specialties && selectedVendor.specialties.length > 0 && (
-                  <div className="flex flex-col gap-1.5 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
-                    <h4 className="text-[9px] text-[#38bdf8] uppercase tracking-widest border-b border-[#38bdf8]/30 pb-1 font-bold flex items-center gap-1">
-                      👑 KNOWN FOR / SPECIALTIES
-                    </h4>
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {selectedVendor.specialties.map((spec: string, idx: number) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 rounded bg-[#38bdf8]/10 text-[#38bdf8] text-[10px] border border-[#38bdf8]/20 font-bold"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-1.5">
-                  <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
-                    Featured Inventory Grails
-                  </h4>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {activeVendorCards.filter(item => !brokenOriginalIds.includes(item.originalId || item.id)).slice(0, 3).map((item, i) => (
-                      <div
-                        key={item.id || `grail-${i}`}
-                        onClick={() => {
-                          if (onInspectCard) {
-                            onInspectCard({
-                              id: item.id || `grail-${i}`,
-                              name: item.name,
-                              currentPrice: typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('k', '')) * 1000,
-                              isSlabbed: true,
-                              slabGrade: item.grade,
-                              imageUrl: item.img,
-                              isVendorCatalog: true,
-                              vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
-                              vendorBooth: selectedVendor?.booth || "5B",
-                              vendorRating: selectedVendor?.rating || "4.8 / 5"
-                            });
-                          }
-                        }}
-                        className="bg-black/70 border border-[#1e293b]/60 rounded-lg p-1.5 flex flex-col items-center text-center gap-0.5 hover:border-[#38bdf8] transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md group"
-                        data-card-container="true"
-                      >
-                        <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
-                          {item.img ? (
-                            <>
-                              <img
-                                src={item.img}
-                                alt={item.name}
-                                className={`w-full h-full object-cover transition-opacity duration-300 ${isCardCompleted(item.id, item.originalId, item.img) ? 'opacity-100' : 'opacity-0'}`}
-                                onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
-                                onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
-                              />
-                              {!isCardCompleted(item.id, item.originalId, item.img) && (
-                                <div className="absolute inset-0 bg-[#0b0e14]/95 z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
-                                  <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce mb-0.5" />
-                                  <span className="text-[7px] font-mono text-[#38bdf8] font-bold leading-tight">Retrieving...</span>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <Award className="w-3.5 h-3.5 text-amber-400" />
-                          )}
-                        </div>
-                        <span className="text-[8px] font-bold leading-tight text-white truncate w-full">
-                          {item.name}
-                        </span>
-                        <div className="flex w-full justify-between items-center px-0.5 pt-0.5 border-t border-white/5">
-                          <span className="text-[7px] text-[#38bdf8] font-bold truncate">
-                            {item.grade}
-                          </span>
-                          <span className="text-[7px] font-mono text-green-400 font-black">
-                            ${typeof item.price === 'number' ? item.price.toLocaleString() : item.price}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5 pt-0.5">
-                  <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
-                    Vendor Specialties & Insights
-                  </h4>
-                  <div className="flex gap-2 items-center">
-                    <ul className="text-[11px] text-white/90 list-disc list-inside flex-1 leading-relaxed font-mono">
-                      {(selectedVendor?.specialties || []).map((spec: string, index: number) => (
-                        <li key={index} className="truncate">{spec}</li>
-                      ))}
-                    </ul>
-
-                    <div className="relative w-10 h-10 shrink-0 flex items-center justify-center">
-                      <svg
-                        viewBox="0 0 36 36"
-                        className="w-full h-full transform -rotate-90"
-                      >
-                        <path
-                          className="text-black/70"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        />
-                        <path
-                          className="text-[#2dd4bf]"
-                          strokeDasharray={`${selectedVendor?.discountScore || 75}, 100`}
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        />
-                      </svg>
-                      <span className="absolute text-[9px] font-mono font-bold text-white">
-                        {selectedVendor?.discountScore || 75}%
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-[8px] text-[#2dd4bf] font-black tracking-wider uppercase text-right block mt-[-4px]">
-                    ⚡ TENDS TO OFFER PREMIER DEALS
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-[#1e293b]/60">
-                  <button
-                    onClick={() => {
-                      if (window.innerWidth < 1024) setMobileSection('market');
-                    }}
-                    className="bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold py-2 px-2 rounded-xl transition-all text-center truncate border border-white/10"
-                  >
-                    [Catalog ({filteredCards.length})]
-                  </button>
-                  <button
-                    onClick={() => alert(`Direct Secure Comm Channel opened with ${selectedVendor.name}.`)}
-                    className="bg-gradient-to-r from-[#38bdf8] to-[#2dd4bf] hover:from-[#38bdf8]/90 hover:to-[#2dd4bf]/90 text-black text-[11px] font-black py-2 px-2 rounded-xl transition-all text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
-                  >
-                    [Message VIP] <Zap className="w-3 h-3 fill-current" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <TradeModal target={tradeTarget} vendorName={selectedVendor?.name} onClose={() => setTradeTarget(null)} onAddNetReturn={onAddNetReturn} />
-
-      </div>
-    </>
-  );
+ const [searchQuery, setSearchQuery] = useState("");
+ const [selectedFilter, setSelectedFilter] = useState("All");
+ const [showArbSpotlight, setShowArbSpotlight] = useState(false);
+ const [isMapExpanded, setIsMapExpanded] = useState(false);
+ const [mapZoom, setMapZoom] = useState<number>(130);
+ const [mobileSection, setMobileSection] = useState<'map' | 'market' | 'vendor'>('market');
+ const [showAuctionDashboard, setShowAuctionDashboard] = useState(initialShowAuction);
+ useEffect(() => {
+ setShowAuctionDashboard(initialShowAuction);
+ }, [initialShowAuction]);
+
+ // Vendor "Buy · Trade or Cash" purchase flow
+ const [tradeTarget, setTradeTarget] = useState<any>(null);
+ const [metadataLoaded, setMetadataLoaded] = useState(false);
+ const [brokenOriginalIds, setBrokenOriginalIds] = useState<string[]>([]);
+ const [visibleBatchLimit, setVisibleBatchLimit] = useState<number>(30);
+ const [completedCardIds, setCompletedCardIds] = useState<Set<string>>(new Set());
+ const [intersectingCardIds, setIntersectingCardIds] = useState<Set<string>>(new Set());
+ const [enPriceOverrides, setEnPriceOverrides] = useState<Record<string, number>>({});
+
+ const onCardRenderComplete = (cardId?: string) => {
+ if (!cardId) return;
+ _confirmedLoadedCardIds.add(cardId);
+ setCompletedCardIds(prev => {
+ if (prev.has(cardId)) return prev;
+ const next = new Set(prev);
+ next.add(cardId);
+ return next;
+ });
+ };
+
+ const isCardCompleted = (id: string, originalId?: string, imgUrl?: string) => {
+ return (
+ completedCardIds.has(id) ||
+ _confirmedLoadedCardIds.has(id) ||
+ Boolean(originalId && (completedCardIds.has(originalId) || _confirmedLoadedCardIds.has(originalId))) ||
+ Boolean(imgUrl && _confirmedLoadedCardIds.has(imgUrl))
+ );
+ };
+
+ useEffect(() => {
+ loadJapaneseMetadata().then(() => {
+ setMetadataLoaded(true);
+ });
+ }, []);
+
+ const handleCardShowImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
+ const img = e.currentTarget;
+ let setId = 'swsh3';
+ let num = '1';
+
+ const targetId = cardId || img.dataset.imgId;
+ const cardItem = activeVendorCards.find(c => c.id === targetId || c.originalId === targetId || (c as any).id === targetId);
+ if (cardItem) {
+ if ((cardItem as any).setId) setId = (cardItem as any).setId;
+ if ((cardItem as any).num) num = String((cardItem as any).num);
+ const orig = cardItem.originalId || cardItem.id || '';
+ if (orig.includes('-')) {
+ const parts = orig.split('-');
+ const lowerPrefix = parts[0].toLowerCase();
+ const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
+ lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
+ lowerPrefix.includes('retro') || lowerPrefix.includes('tcg') || lowerPrefix.includes('special') || lowerPrefix.includes('gold') ||
+ lowerPrefix.includes('sealed') || lowerPrefix.includes('modern') || lowerPrefix.includes('japanese') || lowerPrefix.includes('display') ||
+ lowerPrefix.includes('filmera') || lowerPrefix.includes('carbanda') || lowerPrefix.includes('trading') || lowerPrefix.includes('brodes') ||
+ lowerPrefix.includes('wikrats') || lowerPrefix.includes('uds') || lowerPrefix.includes('specs') || lowerPrefix.includes('dovakinji') ||
+ lowerPrefix === 'jp' || (parts[1] && parts[1] === 'core') || (parts[1] && parts[1].includes('jp'));
+
+ if (!isVendorOrBoothPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
+ setId = parts[0];
+ num = parts[1];
+ }
+ }
+ }
+
+ const match = img.src.match(/\/pokemon\/([a-z0-9_-]+)[/-]([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
+ img.src.match(/\/([a-z0-9_-]+)\/([0-9]+)(\/large|\/high|\.png|\.webp|_hires)/i) ||
+ img.src.match(/\/([a-z0-9_-]+)[/-]([0-9]+)(\.png|\.webp|_hires)/i);
+
+ if (match && (!cardItem || setId === 'swsh3')) {
+ setId = match[1];
+ num = match[2];
+ } else if (!cardItem && targetId && targetId.includes('-')) {
+ const parts = targetId.split('-');
+ const lowerPrefix = parts[0].toLowerCase();
+ const isVendorOrBoothPrefix = lowerPrefix.includes('booth') || lowerPrefix.includes('core') || lowerPrefix.includes('vintage') ||
+ lowerPrefix.includes('alpha') || lowerPrefix.includes('digimon') || lowerPrefix.includes('his') || lowerPrefix.includes('slab') ||
+ lowerPrefix.includes('retro') || lowerPrefix.includes('tcg') || lowerPrefix.includes('special') || lowerPrefix.includes('gold') ||
+ lowerPrefix.includes('sealed') || lowerPrefix.includes('modern') || lowerPrefix.includes('japanese') || lowerPrefix.includes('display') ||
+ lowerPrefix.includes('filmera') || lowerPrefix.includes('carbanda') || lowerPrefix.includes('trading') || lowerPrefix.includes('brodes') ||
+ lowerPrefix.includes('wikrats') || lowerPrefix.includes('uds') || lowerPrefix.includes('specs') || lowerPrefix.includes('dovakinji') ||
+ lowerPrefix === 'jp' || parts[1] === 'core' || parts[1].includes('jp');
+
+ if (!isVendorOrBoothPrefix && parts.length >= 2 && !parts[0].match(/^[0-9]+$/)) {
+ setId = parts[0];
+ num = parts[1];
+ }
+ }
+
+ const origStr = cardItem?.originalId || cardItem?.id || targetId || '';
+ const isKnownJpPrefix = /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(origStr) || /^(sm11a|sm9a|sm8b|sm12a|s12a|s8b|s6a|s7r|s11|s12|s9|sm9|sm11b|sm12|sv2a|sv3pt5|sv8a|sv1a|sv1v|sv1s|sv2p|sv2d|sv3|sv3a|sv4a|sv4m|sv4k|sv5m|sv5k|sv5a|sv6|sv6a|sv6m|sv7|sv7a|sv8|sv9|sv9a|sv10|sv11a|sv11b|sv11w|s4a|swsh12a|swsh8b|swsh5a|swsh6a)(_ja)?(-|$)/i.test(setId);
+
+ const isJpnCard = Boolean(isJpn || isKnownJpPrefix || setId.toLowerCase().includes('_ja') || cardItem?.name?.includes('Japanese') || origStr.includes('_ja') || img.src.includes('_ja') || img.src.includes('/ja/'));
+ if (isJpnCard && !setId.toLowerCase().includes('_ja')) {
+ setId = `${setId.replace(/_ja$/i, '')}_ja`;
+ }
+
+ // Bypass the mutative fallback loop in tcgdex.ts which conflicts with React re-renders.
+ // Instantly mark this card as broken and replace it with a new one from the pool.
+ const cardContainer = img.closest('[data-card-container]') as HTMLElement | null;
+ if (cardContainer) {
+ cardContainer.style.display = 'none';
+ }
+ setBrokenOriginalIds(prev => prev.includes(origStr) ? prev : [...prev, origStr]);
+ onCardRenderComplete(targetId);
+ };
+
+ const handleCardShowImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>, cardId?: string, isJpn?: boolean) => {
+ const img = e.currentTarget;
+ const targetId = cardId || img.dataset.imgId;
+ const src = img.src;
+
+ // If this URL was previously confirmed as a placeholder, reject it immediately.
+ if (_knownBadScrydexUrls.has(src)) {
+ handleCardShowImageError(
+ { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+ targetId,
+ isJpn
+ );
+ return;
+ }
+
+ if (!src.includes('pokemontcg.io') && !src.includes('scrydex.com') && !src.includes('tcgdex')) {
+ onCardRenderComplete(targetId);
+ return;
+ }
+
+ // Scrydex returns HTTP 200 + a fixed-size card-back placeholder (186316 = English,
+ // 350441 = Japanese) for missing cards. We must verify via fetch since all scrydex
+ // images are cross-origin and the CORS canvas check always throws.
+ if (src.includes('scrydex.com')) {
+ // If this card/URL has already been verified and confirmed, don't run fetch again
+ if ((targetId && _confirmedLoadedCardIds.has(targetId)) || _confirmedLoadedCardIds.has(src)) {
+ img.style.visibility = 'visible';
+ if (targetId) onCardRenderComplete(targetId);
+ return;
+ }
+
+ // Hide the image while we verify whether it is a placeholder card-back
+ img.style.visibility = 'hidden';
+
+ fetch(src, { signal: AbortSignal.timeout(15000) })
+ .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject()))
+ .then((buf) => {
+ if (buf.byteLength === 186316 || buf.byteLength === 350441) {
+ // PROVEN PLACEHOLDER: Only replace card when it is mathematically confirmed to be a card-back placeholder
+ _knownBadScrydexUrls.add(src);
+ handleCardShowImageError(
+ { currentTarget: img } as React.SyntheticEvent<HTMLImageElement, Event>,
+ targetId,
+ isJpn
+ );
+ } else {
+ // Confirmed real card art — make it visible.
+ img.style.visibility = 'visible';
+ if (targetId) _confirmedLoadedCardIds.add(targetId);
+ _confirmedLoadedCardIds.add(src);
+ onCardRenderComplete(targetId);
+ }
+ })
+ .catch(() => {
+ // If network fetch timed out or failed to inspect bytes, DO NOT discard the card!
+ // Treat it as real card art that is loading slowly over the network.
+ img.style.visibility = 'visible';
+ if (targetId) _confirmedLoadedCardIds.add(targetId);
+ _confirmedLoadedCardIds.add(src);
+ onCardRenderComplete(targetId);
+ });
+ return;
+ }
+
+ onCardRenderComplete(targetId);
+ };
+
+
+ const [selectedVendor, setSelectedVendor] = useState<any>(VENDORS.find(v => v.type === 'vendor'));
+
+ const [hoveredBooth, setHoveredBooth] = useState<any>(null);
+
+ // --- AUDIENCE FOOTPATH & RANDOMIZED CROWD POPULARITY ENGINE ---
+ const { stallPopularity, hotBoothNames, footpathNetwork, animatedAudienceDots, staticClusterDots } = useMemo(() => {
+ const stalls = VENDORS;
+
+ const eligibleStalls = [...stalls.filter(s => s.type !== 'auction')].sort(() => Math.random() - 0.5);
+ const hotBooths = eligibleStalls.slice(0, 4);
+ const hotNamesSet = new Set(hotBooths.map(s => s.name));
+
+ const remainingEligible = eligibleStalls.slice(4);
+ const highTrafficBooths = remainingEligible.slice(0, 6);
+ const highTrafficNamesSet = new Set(highTrafficBooths.map(s => s.name));
+
+ const popMap: Record<string, { level: 'HOT ' | 'HIGH TRAFFIC ' | 'MODERATE ' | 'STEADY ', score: number, color: string }> = {};
+ stalls.forEach(s => {
+ if (hotNamesSet.has(s.name)) {
+ popMap[s.name] = { level: 'HOT ', score: 95 + Math.floor(Math.random() * 5), color: s.color };
+ } else if (highTrafficNamesSet.has(s.name)) {
+ popMap[s.name] = { level: 'HIGH TRAFFIC ', score: 75 + Math.floor(Math.random() * 15), color: s.color };
+ } else {
+ popMap[s.name] = { level: Math.random() > 0.4 ? 'MODERATE ' : 'STEADY ', score: 45 + Math.floor(Math.random() * 25), color: s.color };
+ }
+ });
+
+ const hubs = [
+ { id: "hub_nw", x: 130, y: 125, color: "#38bdf8" },
+ { id: "hub_n", x: 310, y: 125, color: "#f472b6" },
+ { id: "hub_ne", x: 450, y: 125, color: "#38bdf8" },
+ { id: "hub_cw", x: 130, y: 195, color: "#c084fc" },
+ { id: "hub_c", x: 310, y: 195, color: "#ffffff" },
+ { id: "hub_ce", x: 450, y: 195, color: "#fbbf24" },
+ { id: "hub_sw", x: 130, y: 268, color: "#2dd4bf" },
+ { id: "hub_s", x: 310, y: 268, color: "#34d399" },
+ { id: "hub_se", x: 450, y: 268, color: "#f472b6" },
+ { id: "hub_bot", x: 310, y: 340, color: "#38bdf8" }
+ ];
+
+ const corridors = [
+ { x1: 130, y1: 125, x2: 310, y2: 125, color: "#38bdf8", isHot: false },
+ { x1: 310, y1: 125, x2: 450, y2: 125, color: "#f472b6", isHot: false },
+ { x1: 130, y1: 125, x2: 130, y2: 195, color: "#c084fc", isHot: false },
+ { x1: 310, y1: 125, x2: 310, y2: 195, color: "#ffffff", isHot: false },
+ { x1: 450, y1: 125, x2: 450, y2: 195, color: "#38bdf8", isHot: false },
+ { x1: 130, y1: 195, x2: 310, y2: 195, color: "#fbbf24", isHot: false },
+ { x1: 310, y1: 195, x2: 450, y2: 195, color: "#2dd4bf", isHot: false },
+ { x1: 130, y1: 195, x2: 130, y2: 268, color: "#34d399", isHot: false },
+ { x1: 310, y1: 195, x2: 310, y2: 268, color: "#f472b6", isHot: false },
+ { x1: 450, y1: 195, x2: 450, y2: 268, color: "#38bdf8", isHot: false },
+ { x1: 130, y1: 268, x2: 310, y2: 268, color: "#c084fc", isHot: false },
+ { x1: 310, y1: 268, x2: 450, y2: 268, color: "#fbbf24", isHot: false },
+ { x1: 310, y1: 268, x2: 310, y2: 340, color: "#38bdf8", isHot: false },
+ { x1: 130, y1: 340, x2: 450, y2: 340, color: "#2dd4bf", isHot: false },
+ ];
+
+ hotBooths.forEach(hb => {
+ let closestHub = hubs[0];
+ let minDist = 999999;
+ hubs.forEach(h => {
+ const d = Math.hypot(h.x - hb.x, h.y - hb.y);
+ if (d < minDist) { minDist = d; closestHub = h; }
+ });
+ corridors.push({
+ x1: closestHub.x, y1: closestHub.y,
+ x2: hb.x, y2: hb.y,
+ color: hb.color,
+ isHot: true
+ });
+ });
+
+ const movingDots: Array<{ id: string, x1: number, y1: number, x2: number, y2: number, r: number, color: string, dur: number, delay: number }> = [];
+ const staticDots: Array<{ id: string, cx: number, cy: number, r: number, color: string, opacity: number, dur: number }> = [];
+
+ let dotId = 0;
+ corridors.forEach(c => {
+ const numDots = c.isHot ? 3 : 1;
+ for (let i = 0; i < numDots; i++) {
+ dotId++;
+ const isForward = Math.random() > 0.5;
+ const xStart = isForward ? c.x1 : c.x2;
+ const yStart = isForward ? c.y1 : c.y2;
+ const xEnd = isForward ? c.x2 : c.x1;
+ const yEnd = isForward ? c.y2 : c.y1;
+ const dur = (c.isHot ? 2.2 : 3.5) + Math.random() * 2;
+ const delay = Math.random() * 3;
+ movingDots.push({
+ id: `move_${dotId}`,
+ x1: xStart, y1: yStart,
+ x2: xEnd, y2: yEnd,
+ r: c.isHot ? 2.5 : 1.8,
+ color: c.color,
+ dur,
+ delay
+ });
+ }
+ });
+
+ stalls.forEach(stall => {
+ const status = popMap[stall.name]?.level || 'STEADY ';
+ let clusterCount = 1;
+ if (status.includes('HOT')) clusterCount = 4;
+ else if (status.includes('HIGH TRAFFIC')) clusterCount = 2;
+
+ for (let i = 0; i < clusterCount; i++) {
+ dotId++;
+ const angle = Math.random() * Math.PI * 2;
+ const dist = 6 + Math.random() * (status.includes('HOT') ? 30 : 15);
+ const cx = stall.x + Math.cos(angle) * dist;
+ const cy = stall.y + Math.sin(angle) * dist;
+ staticDots.push({
+ id: `static_${dotId}`,
+ cx, cy,
+ r: status.includes('HOT') && Math.random() > 0.6 ? 2.8 : 1.8,
+ color: stall.color,
+ opacity: 0.5 + Math.random() * 0.5,
+ dur: 1.5 + Math.random() * 2
+ });
+ }
+ });
+
+ return {
+ stallPopularity: popMap,
+ hotBoothNames: Array.from(hotNamesSet),
+ footpathNetwork: { hubs, corridors },
+ animatedAudienceDots: movingDots,
+ staticClusterDots: staticDots
+ };
+ }, []);
+
+ const handleBoothSelect = (vendorObj: any) => {
+ if (vendorObj.type === 'auction' || vendorObj.name.includes("AUCTION")) {
+ setShowAuctionDashboard(true);
+ return;
+ }
+ setSelectedVendor(vendorObj);
+ if (window.innerWidth < 1024) setMobileSection('vendor');
+ };
+
+ const handleBoothHover = (vendorObj: any) => {
+ setHoveredBooth(vendorObj);
+ };
+
+ const handleBoothLeave = () => {
+ setHoveredBooth(null);
+ };
+
+ // ── MASTER THEMATIC CARD POOLS ──────────────────────────────────────────────
+ const pools = useMemo(() => ({
+ vintageEng: [
+ { name: "Charizard Base Set Holo", grade: "PSA 10", price: 12450.0, change: "+3.4%", id: "base1-4", img: "https://images.scrydex.com/pokemon/base1-4/large" },
+ { name: "Blastoise 1st Ed Shadowless", grade: "PSA 9", price: 7400.0, change: "+0.5%", id: "base1-2", img: "https://images.scrydex.com/pokemon/base1-2/large" },
+ { name: "Lugia 1st Ed Neo Genesis", grade: "PSA 10", price: 18200.0, change: "+1.8%", id: "neo1-9", img: "https://images.scrydex.com/pokemon/neo1-9/large" },
+ { name: "Shining Charizard Neo Destiny", grade: "PSA 9", price: 3800.0, change: "+1.2%", id: "neo4-107", img: "https://images.scrydex.com/pokemon/neo4-107/large" },
+ { name: "Venusaur 1st Ed Base Set", grade: "PSA 9", price: 2100.0, change: "+4.1%", id: "base1-15", img: "https://images.scrydex.com/pokemon/base1-15/large" },
+ { name: "Alakazam Base Set Holo", grade: "PSA 9", price: 340.0, change: "+2.0%", id: "base1-1", img: "https://images.scrydex.com/pokemon/base1-1/large" },
+ { name: "Gengar Fossil Holo 1st Ed", grade: "PSA 9", price: 420.0, change: "+5.1%", id: "fo1-5", img: "https://images.scrydex.com/pokemon/fo1-5/large" },
+ { name: "Dragonite Fossil Holo", grade: "PSA 9", price: 310.0, change: "-0.4%", id: "fo1-4", img: "https://images.scrydex.com/pokemon/fo1-4/large" },
+ { name: "Pikachu E3 Stamp Promo", grade: "PSA 9", price: 185.0, change: "+8.3%", id: "pr-1", img: "https://images.scrydex.com/pokemon/basep-1/large" },
+ { name: "Mewtwo Base Set Holo", grade: "PSA 8", price: 120.0, change: "+1.1%", id: "base1-10", img: "https://images.scrydex.com/pokemon/base1-10/large" },
+ { name: "Zapdos 1st Ed Fossil Holo", grade: "PSA 9", price: 240.0, change: "+3.2%", id: "fo1-15", img: "https://images.scrydex.com/pokemon/fo1-15/large" },
+ { name: "Dark Charizard Team Rocket", grade: "PSA 9", price: 480.0, change: "+6.4%", id: "tr1-4", img: "https://images.scrydex.com/pokemon/tr1-4/large" },
+ { name: "Dark Dragonite Team Rocket", grade: "PSA 9", price: 290.0, change: "+2.8%", id: "tr1-5", img: "https://images.scrydex.com/pokemon/tr1-5/large" },
+ { name: "Dark Raichu Secret Rare 1st Ed", grade: "PSA 9", price: 360.0, change: "+4.5%", id: "tr1-83", img: "https://images.scrydex.com/pokemon/tr1-83/large" },
+ { name: "Sabrina's Gengar Gym Heroes", grade: "PSA 9", price: 340.0, change: "+7.1%", id: "gh1-14", img: "https://images.scrydex.com/pokemon/gh1-14/large" },
+ { name: "Blaine's Moltres Gym Heroes", grade: "PSA 9", price: 195.0, change: "+1.9%", id: "gh1-1", img: "https://images.scrydex.com/pokemon/gh1-1/large" },
+ { name: "Erika's Venusaur Gym Challenge", grade: "PSA 9", price: 280.0, change: "+3.8%", id: "gc1-4", img: "https://images.scrydex.com/pokemon/gc1-4/large" },
+ { name: "Typhlosion 1st Ed Neo Genesis", grade: "PSA 9", price: 680.0, change: "+5.2%", id: "neo1-17", img: "https://images.scrydex.com/pokemon/neo1-17/large" },
+ { name: "Pichu 1st Ed Neo Genesis", grade: "PSA 9", price: 220.0, change: "+2.4%", id: "neo1-12", img: "https://images.scrydex.com/pokemon/neo1-12/large" },
+ { name: "Shining Mewtwo Neo Destiny", grade: "PSA 9", price: 1150.0, change: "+8.9%", id: "neo4-109", img: "https://images.scrydex.com/pokemon/neo4-109/large" },
+ { name: "Shining Celebi Neo Destiny", grade: "PSA 9", price: 540.0, change: "+4.0%", id: "neo4-106", img: "https://images.scrydex.com/pokemon/neo4-106/large" }
+ ],
+ vintageJpn: [
+ { name: "Japanese Base Charizard (No Rarity)", grade: "PSA 9", price: 3400.0, change: "+14.2%", id: "base1_ja-4", img: "https://images.pokemontcg.io/base1/4_hires.png" },
+ { name: "CoroCoro Shining Mew Holo (JPN)", grade: "PSA 10", price: 1650.0, change: "+9.8%", id: "coro_ja-1", img: "https://images.scrydex.com/pokemon/coro_ja-1/large" },
+ { name: "Japanese Neo 2 Charizard Holo", grade: "PSA 10", price: 890.0, change: "+6.1%", id: "neo2_ja-30", img: "https://images.scrydex.com/pokemon/neo2_ja-30/large" },
+ { name: "Japanese Web Series Gengar Holo", grade: "PSA 10", price: 920.0, change: "+8.5%", id: "fo1_ja-5", img: "https://images.pokemontcg.io/fo1/5_hires.png" },
+ { name: "VS Series Lance's Charizard (JPN)", grade: "PSA 10", price: 780.0, change: "+11.4%", id: "vs_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
+ { name: "Japanese e-Series Crystal Charizard", grade: "PSA 9", price: 2650.0, change: "+7.9%", id: "skyridge_ja-146", img: "https://images.pokemontcg.io/ecard3/146_hires.png" },
+ { name: "Crystal Ho-Oh e-Series (JPN)", grade: "PSA 9", price: 1120.0, change: "+5.3%", id: "skyridge_ja-149", img: "https://images.pokemontcg.io/ecard3/149_hires.png" },
+ { name: "Japanese Vending Series 3 Mewtwo", grade: "PSA 10", price: 340.0, change: "+4.2%", id: "base1_ja-10", img: "https://images.pokemontcg.io/base1/10_hires.png" },
+ { name: "Japanese Vending Series 1 Pikachu", grade: "PSA 10", price: 280.0, change: "+6.7%", id: "base1_ja-58", img: "https://images.pokemontcg.io/base1/58_hires.png" },
+ { name: "Imakuni's Doduo Vending Promo", grade: "PSA 10", price: 210.0, change: "+3.1%", id: "gym1_ja-112", img: "https://images.pokemontcg.io/gym1/112_hires.png" },
+ { name: "GB Dragonite Promo Holo (JPN)", grade: "PSA 10", price: 390.0, change: "+8.0%", id: "fo1_ja-4", img: "https://images.pokemontcg.io/fo1/4_hires.png" },
+ { name: "CD Promo Charizard Holo (JPN)", grade: "PSA 10", price: 650.0, change: "+9.2%", id: "cd_ja-charizard", img: "https://images.pokemontcg.io/base1/4_hires.png" },
+ { name: "CD Promo Blastoise Holo (JPN)", grade: "PSA 10", price: 380.0, change: "+5.4%", id: "cd_ja-blastoise", img: "https://images.pokemontcg.io/base1/2_hires.png" },
+ { name: "CD Promo Venusaur Holo (JPN)", grade: "PSA 10", price: 360.0, change: "+4.9%", id: "cd_ja-venusaur", img: "https://images.pokemontcg.io/base1/15_hires.png" },
+ { name: "Japanese Gym Leader Erika Holo", grade: "PSA 9", price: 145.0, change: "+2.8%", id: "gc1_ja-16", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
+ { name: "Kanji Lugia Neo Genesis (JPN)", grade: "PSA 9", price: 420.0, change: "+7.5%", id: "neo1_ja-9", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
+ { name: "Japanese Neo Discovery Umbreon Holo", grade: "PSA 9", price: 380.0, change: "+6.8%", id: "neo2_ja-13", img: "https://images.pokemontcg.io/neo2/13_hires.png" },
+ { name: "Japanese Blaine's Arcanine Holo", grade: "PSA 9", price: 165.0, change: "+3.5%", id: "gh1_ja-1", img: "https://images.pokemontcg.io/gym1/1_hires.png" }
+ ],
+ modernAlt: [
+ { name: "Umbreon VMAX Alt Art (Moonbreon)", grade: "PSA 10", price: 1420.0, change: "+5.6%", id: "evs-215", img: "https://images.scrydex.com/pokemon/swsh7-215/large" },
+ { name: "Giratina V Alt Art Lost Origin", grade: "PSA 10", price: 650.0, change: "+4.1%", id: "lor-186", img: "https://images.scrydex.com/pokemon/swsh11-186/large" },
+ { name: "Rayquaza VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 580.0, change: "+6.2%", id: "evs-218", img: "https://images.scrydex.com/pokemon/swsh7-218/large" },
+ { name: "Lugia V Alt Art Silver Tempest", grade: "PSA 10", price: 320.0, change: "+3.9%", id: "sit-186", img: "https://images.scrydex.com/pokemon/swsh12-186/large" },
+ { name: "Charizard V Alt Art Brilliant Stars", grade: "PSA 10", price: 240.0, change: "+2.1%", id: "brs-154", img: "https://images.scrydex.com/pokemon/swsh9-154/large" },
+ { name: "Sylveon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 310.0, change: "+4.8%", id: "evs-212", img: "https://images.scrydex.com/pokemon/swsh7-212/large" },
+ { name: "Gengar VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 390.0, change: "+7.4%", id: "fst-271", img: "https://images.scrydex.com/pokemon/swsh8-271/large" },
+ { name: "Mewtwo V Alt Art Pokemon GO", grade: "PSA 10", price: 110.0, change: "+1.9%", id: "pgo-72", img: "https://images.scrydex.com/pokemon/pgo-72/large" },
+ { name: "Espeon VMAX Alt Art Fusion Strike", grade: "PSA 10", price: 290.0, change: "+5.0%", id: "fst-270", img: "https://images.scrydex.com/pokemon/swsh8-270/large" },
+ { name: "Leafeon VMAX Alt Art Evolving Skies", grade: "PSA 10", price: 270.0, change: "+4.3%", id: "evs-205", img: "https://images.scrydex.com/pokemon/swsh7-205/large" },
+ { name: "Dragonite V Alt Art Evolving Skies", grade: "PSA 10", price: 165.0, change: "+3.1%", id: "evs-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
+ { name: "Aerodactyl V Alt Art Lost Origin", grade: "PSA 10", price: 155.0, change: "+2.8%", id: "lor-180", img: "https://images.scrydex.com/pokemon/swsh11-180/large" },
+ { name: "Charizard ex SIR Obsidian Flames", grade: "PSA 10", price: 165.0, change: "+4.4%", id: "obf-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
+ { name: "Mew ex SIR 151", grade: "PSA 10", price: 140.0, change: "+3.2%", id: "meo-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" }
+ ],
+ jpnModern: [
+ { name: "Japanese Iono SAR (Clay Burst)", grade: "PSA 10", price: 850.0, rawPrice: 240.0, change: "+12.4%", id: "sv2d_ja-96", img: "https://images.scrydex.com/pokemon/sv2d_ja-96/large" },
+ { name: "Japanese Miriam SAR (Violet ex)", grade: "PSA 10", price: 340.0, rawPrice: 110.0, change: "+8.1%", id: "sv1v_ja-105", img: "https://images.scrydex.com/pokemon/sv1v_ja-105/large" },
+ { name: "Japanese 151 Master Ball Pikachu", grade: "PSA 10", price: 380.0, rawPrice: 135.0, change: "+9.6%", id: "sv3pt5_ja-25", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-25/large" },
+ { name: "Japanese 151 Master Ball Gengar", grade: "PSA 10", price: 220.0, rawPrice: 85.0, change: "+7.2%", id: "sv3pt5_ja-94", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-94/large" },
+ { name: "Japanese Erika's Invitation SAR (151)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+5.4%", id: "sv3pt5_ja-206", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-206/large" },
+ { name: "Japanese Charizard ex SAR (Ruler)", grade: "PSA 10", price: 240.0, rawPrice: 90.0, change: "+6.8%", id: "sv3_ja-223", img: "https://images.scrydex.com/pokemon/sv3_ja-223/large" },
+ { name: "Japanese Mew ex SAR (151 JPN)", grade: "PSA 10", price: 185.0, rawPrice: 65.0, change: "+4.5%", id: "sv3pt5_ja-205", img: "https://images.scrydex.com/pokemon/sv3pt5_ja-205/large" },
+ { name: "Japanese Pikachu AR (VSTAR Universe)", grade: "PSA 10", price: 65.0, rawPrice: 24.0, change: "+3.8%", id: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+ { name: "Japanese Poncho Pikachu (Charizard X)", grade: "PSA 10", price: 4600.0, rawPrice: 1600.0, change: "+9.4%", id: "swsh12a_ja-262", img: "https://images.scrydex.com/pokemon/swsh12a_ja-262/large" },
+ { name: "Japanese Erika's Hospitality SR", grade: "PSA 10", price: 650.0, rawPrice: 220.0, change: "+5.1%", id: "sm12a_ja-190", img: "https://images.scrydex.com/pokemon/sm12a_ja-190/large" },
+ { name: "Japanese Mewtwo VSTAR SAR (Universe)", grade: "PSA 10", price: 120.0, rawPrice: 45.0, change: "+8.9%", id: "swsh12a_ja-221", img: "https://images.scrydex.com/pokemon/swsh12a_ja-221/large" },
+ { name: "Japanese God Pack Charizard VMAX (Climax)", grade: "PSA 10", price: 210.0, rawPrice: 80.0, change: "+4.2%", id: "swsh8b_ja-260", img: "https://images.scrydex.com/pokemon/swsh8b_ja-260/large" }
+ ],
+ tagTeams: [
+ { name: "Latios & Latias GX Alt Art", grade: "PSA 10", price: 890.0, change: "+8.9%", id: "sm9-170", img: "https://images.scrydex.com/pokemon/sm9-170/large" },
+ { name: "Gengar & Mimikyu GX Alt Art", grade: "PSA 10", price: 450.0, change: "+6.4%", id: "sm9-165", img: "https://images.scrydex.com/pokemon/sm9-165/large" },
+ { name: "Magikarp & Wailord GX Alt Art", grade: "PSA 10", price: 380.0, change: "+5.8%", id: "sm9-161", img: "https://images.scrydex.com/pokemon/sm9-161/large" },
+ { name: "Charizard & Reshiram GX Alt Art", grade: "PSA 10", price: 310.0, change: "+4.5%", id: "sm10-214", img: "https://images.scrydex.com/pokemon/sm10-214/large" },
+ { name: "Mewtwo & Mew GX Alt Art", grade: "PSA 10", price: 280.0, change: "+5.1%", id: "sm11-222", img: "https://images.scrydex.com/pokemon/sm11-222/large" },
+ { name: "Arceus & Dialga & Palkia GX Alt Art", grade: "PSA 10", price: 230.0, change: "+3.7%", id: "sm12-221", img: "https://images.scrydex.com/pokemon/sm12-221/large" },
+ { name: "Solgaleo & Lunala GX Full Art", grade: "PSA 10", price: 165.0, change: "+2.9%", id: "sm12-216", img: "https://images.scrydex.com/pokemon/sm12-216/large" },
+ { name: "Blastoise & Piplup GX Alt Art", grade: "PSA 10", price: 195.0, change: "+4.1%", id: "sm12-215", img: "https://images.scrydex.com/pokemon/sm12-215/large" }
+ ],
+ goldStarsEx: [
+ { name: "Rayquaza Gold Star Holo Deoxys", grade: "CGC 9.5", price: 9800.0, change: "-0.8%", id: "ex8-107", img: "https://images.scrydex.com/pokemon/ex8-107/large" },
+ { name: "Charizard Gold Star Delta Species", grade: "PSA 9", price: 2900.0, change: "+5.4%", id: "ex13-100", img: "https://images.scrydex.com/pokemon/ex13-100/large" },
+ { name: "Mew Gold Star Holo Dragon Frontiers", grade: "PSA 9", price: 1250.0, change: "+4.1%", id: "ex15-101", img: "https://images.scrydex.com/pokemon/ex15-101/large" },
+ { name: "Pikachu Gold Star Holo Holon Phantoms", grade: "PSA 9", price: 1480.0, change: "+6.2%", id: "ex13-104", img: "https://images.scrydex.com/pokemon/ex13-104/large" },
+ { name: "Torchic Gold Star Holo Team Rocket Returns", grade: "PSA 9", price: 1100.0, change: "+3.8%", id: "ex7-108", img: "https://images.scrydex.com/pokemon/ex7-108/large" },
+ { name: "Lugia ex Unseen Forces Holo", grade: "PSA 9", price: 890.0, change: "+5.0%", id: "ex10-105", img: "https://images.scrydex.com/pokemon/ex10-105/large" },
+ { name: "Mewtwo EX Full Art Secret Rare", grade: "PSA 10", price: 2150.0, change: "+2.3%", id: "xy8-164", img: "https://images.scrydex.com/pokemon/xy8-164/large" },
+ { name: "Latias Gold Star Holo Deoxys", grade: "PSA 9", price: 3200.0, change: "+4.5%", id: "ex8-105", img: "https://images.scrydex.com/pokemon/ex8-105/large" },
+ { name: "Lillie Full Art Ultra Prism", grade: "PSA 10", price: 3200.0, change: "+6.7%", id: "ulp-151", img: "https://images.scrydex.com/pokemon/sm5-151/large" }
+ ],
+ rawBinderSingles: [
+ { name: "Pikachu IR Paldea Evolved", grade: "Raw NM", price: 38.0, change: "+3.1%", id: "bgt-1", originalId: "sv2-203", img: "https://images.scrydex.com/pokemon/sv2-203/large" },
+ { name: "Charmander IR 151", grade: "Raw NM", price: 32.0, change: "+4.2%", id: "bgt-2", originalId: "sv3pt5-168", img: "https://images.scrydex.com/pokemon/sv3pt5-168/large" },
+ { name: "Squirtle IR 151", grade: "Raw NM", price: 28.0, change: "+2.5%", id: "bgt-3", originalId: "sv3pt5-170", img: "https://images.scrydex.com/pokemon/sv3pt5-170/large" },
+ { name: "Bulbasaur IR 151", grade: "Raw NM", price: 26.0, change: "+1.9%", id: "bgt-4", originalId: "sv3pt5-166", img: "https://images.scrydex.com/pokemon/sv3pt5-166/large" },
+ { name: "Snorlax IR 151", grade: "Raw NM", price: 24.0, change: "+0.8%", id: "bgt-5", originalId: "sv3pt5-181", img: "https://images.scrydex.com/pokemon/sv3pt5-181/large" },
+ { name: "Japanese 151 Master Ball Eevee", grade: "Raw NM", price: 65.0, change: "+6.4%", id: "bgt-6", originalId: "sv2a_ja-133", img: "https://images.scrydex.com/pokemon/sv2a_ja-133/large" },
+ { name: "Japanese 151 Master Ball Dragonite", grade: "Raw NM", price: 75.0, change: "+5.1%", id: "bgt-7", originalId: "sv2a_ja-149", img: "https://images.scrydex.com/pokemon/sv2a_ja-149/large" },
+ { name: "Japanese Pikachu AR VSTAR Universe", grade: "Raw NM", price: 42.0, change: "+3.8%", id: "bgt-8", originalId: "swsh12a_ja-205", img: "https://images.scrydex.com/pokemon/swsh12a_ja-205/large" },
+ { name: "Japanese Kanji Gym Erika Holo", grade: "Raw LP/NM", price: 35.0, change: "+2.1%", id: "bgt-9", originalId: "gym2-16", img: "https://images.pokemontcg.io/gym2/16_hires.png" },
+ { name: "Japanese Vending Series Pikachu", grade: "Raw NM", price: 48.0, change: "+4.5%", id: "bgt-10", originalId: "base1-58", img: "https://images.pokemontcg.io/base1/58_hires.png" },
+ { name: "Pidgeot ex SIR Obsidian Flames", grade: "Raw NM", price: 15.0, change: "+1.2%", id: "bgt-11", originalId: "sv3-225", img: "https://images.scrydex.com/pokemon/sv3-225/large" },
+ { name: "Magikarp IR Triplet Beat", grade: "Raw NM", price: 110.0, change: "+7.8%", id: "bgt-12", originalId: "sv1a-80", img: "https://images.scrydex.com/pokemon/sv1a-80/large" },
+ { name: "Glaceon V Alt Art Evolving Skies", grade: "Raw NM", price: 90.0, change: "+4.1%", id: "bgt-13", originalId: "swsh7-175", img: "https://images.scrydex.com/pokemon/swsh7-175/large" },
+ { name: "Celebi V Alt Art Fusion Strike", grade: "Raw NM", price: 45.0, change: "+3.2%", id: "bgt-14", originalId: "swsh8-245", img: "https://images.scrydex.com/pokemon/swsh8-245/large" },
+ { name: "Japanese VSTAR Universe Mew VMAX SAR", grade: "Raw NM", price: 48.0, change: "+2.9%", id: "bgt-15", originalId: "swsh12a_ja-183", img: "https://images.scrydex.com/pokemon/swsh12a_ja-183/large" },
+ { name: "1st Ed Base Set Squirtle", grade: "Raw LP/NM", price: 45.0, change: "+3.5%", id: "bgt-16", originalId: "base1-63", img: "https://images.pokemontcg.io/base1/63_hires.png" },
+ { name: "1st Ed Base Set Charmander", grade: "Raw LP", price: 38.0, change: "+2.1%", id: "bgt-17", originalId: "base1-46", img: "https://images.pokemontcg.io/base1/46_hires.png" },
+ { name: "Jungle Scyther Holo", grade: "Raw NM", price: 42.0, change: "+1.8%", id: "bgt-18", originalId: "ju1-10", img: "https://images.pokemontcg.io/ju1/10_hires.png" },
+ { name: "Fossil Haunter Holo", grade: "Raw NM", price: 38.0, change: "+2.4%", id: "bgt-19", originalId: "fo1-6", img: "https://images.pokemontcg.io/fo1/6_hires.png" },
+ { name: "Japanese Neo Genesis Lugia Holo", grade: "Raw LP", price: 135.0, change: "+4.8%", id: "bgt-20", originalId: "neo1-9", img: "https://images.pokemontcg.io/neo1/9_hires.png" },
+ { name: "Mew ex SIR 151", grade: "Raw NM", price: 85.0, change: "+5.1%", id: "bgt-21", originalId: "sv3pt5-205", img: "https://images.scrydex.com/pokemon/sv3pt5-205/large" },
+ { name: "Zapdos ex SIR 151", grade: "Raw NM", price: 42.0, change: "+3.4%", id: "bgt-22", originalId: "sv3pt5-202", img: "https://images.scrydex.com/pokemon/sv3pt5-202/large" },
+ { name: "Alakazam ex SIR 151", grade: "Raw NM", price: 34.0, change: "+2.8%", id: "bgt-23", originalId: "sv3pt5-201", img: "https://images.scrydex.com/pokemon/sv3pt5-201/large" },
+ { name: "Erika's Invitation SIR 151", grade: "Raw NM", price: 36.0, change: "+1.9%", id: "bgt-24", originalId: "sv3pt5-203", img: "https://images.scrydex.com/pokemon/sv3pt5-203/large" },
+ { name: "Charizard ex SIR Obsidian Flames", grade: "Raw NM", price: 55.0, change: "+4.0%", id: "bgt-25", originalId: "sv3-223", img: "https://images.scrydex.com/pokemon/sv3-223/large" },
+ { name: "Tyranitar V Alt Art Battle Styles", grade: "Raw NM", price: 115.0, change: "+6.1%", id: "bgt-26", originalId: "swsh5-155", img: "https://images.scrydex.com/pokemon/swsh5-155/large" },
+ { name: "Empoleon V Alt Art Battle Styles", grade: "Raw NM", price: 40.0, change: "+2.2%", id: "bgt-27", originalId: "swsh5-146", img: "https://images.scrydex.com/pokemon/swsh5-146/large" },
+ { name: "Dragonite V Alt Art Evolving Skies", grade: "Raw NM", price: 130.0, change: "+5.8%", id: "bgt-28", originalId: "swsh7-192", img: "https://images.scrydex.com/pokemon/swsh7-192/large" },
+ { name: "Noivern V Alt Art Evolving Skies", grade: "Raw NM", price: 35.0, change: "+1.5%", id: "bgt-29", originalId: "swsh7-196", img: "https://images.scrydex.com/pokemon/swsh7-196/large" },
+ { name: "Charizard VMAX Rainbow Shiny", grade: "Raw NM", price: 120.0, change: "+3.9%", id: "bgt-30", originalId: "swsh3-20", img: "https://images.scrydex.com/pokemon/swsh3-20/large" }
+ ],
+ }), []);
+
+ const getThemePool = (category?: string): any[] => {
+ switch (category) {
+ case "vintage": return [...pools.vintageEng, ...pools.vintageJpn];
+ case "modern": return [...pools.modernAlt, ...pools.tagTeams, ...pools.rawBinderSingles, ...pools.jpnModern];
+ case "japanese": return [...pools.jpnModern, ...pools.vintageJpn];
+ case "goldstar": return [...pools.goldStarsEx];
+ default: return [...pools.rawBinderSingles, ...pools.modernAlt];
+ }
+ };
+
+ // ── DISJOINT VENDOR CATALOG PARTITION ───────────────────────────────────────
+ // Build ONE global partition so every vendor receives a fully disjoint set of
+ // 300 cards (no card ever appears in two vendor catalogs). A shared `usedIds`
+ // set guarantees uniqueness; a per-vendor window into the 30000-card Japanese
+ // pool supplies the bulk and keeps the sets from ever overlapping.
+ const vendorCardMap = useMemo(() => {
+ const map: Record<string, any[]> = {};
+ const used = new Set<string>();
+ const dynamicJpnPool = getCardShowDynamicJapaneseCards(30000);
+
+ VENDORS.filter(v => v.type === 'vendor').forEach((vendor, vi) => {
+ const cards: any[] = [];
+
+ const tryAdd = (c: any): boolean => {
+ const key = c.originalId || c.id;
+ if (!key || used.has(key)) return false;
+ used.add(key);
+ cards.push({
+ ...c,
+ originalId: key,
+ id: `${vendor.booth}-${key}`,
+ });
+ return true;
+ };
+
+ // 1. Themed signature cards (these add flavor / relevance per vendor)
+ getThemePool(vendor.category).forEach(c => tryAdd(c));
+
+ // 2. A large, per-vendor disjoint window into the Japanese pool (the bulk)
+ const windowStart = vi * 500;
+ for (let i = 0; i < 500 && windowStart + i < dynamicJpnPool.length; i++) {
+ tryAdd(dynamicJpnPool[windowStart + i]);
+ }
+
+ // 3. Top up (and guarantee uniqueness) from the rest of the Japanese pool
+ let k = 0;
+ while (cards.length < 300 && k < dynamicJpnPool.length) {
+ tryAdd(dynamicJpnPool[k]);
+ k++;
+ }
+
+ let mappedCards = cards.slice(0, 300).map((c) => {
+ const orig = c.originalId;
+ 
+ // The pool generators (getThemePool and getCardShowDynamicJapaneseCards) already calculate the correct price
+ // taking into account grades and caching. We use c.price directly if available.
+ // If it's missing, we fallback to resolveVendorCardRealPrice.
+ const finalPrice = typeof c.price === 'number' ? c.price : resolveVendorCardRealPrice(c);
+
+ return {
+ ...c,
+ setId: (c as any).setId || (orig && orig.includes('-') && !orig.toLowerCase().includes('booth') ? orig.split('-')[0] : 'swsh3'),
+ num: (c as any).num || (orig && orig.includes('-') ? orig.split('-')[1] : '1'),
+ price: finalPrice,
+ };
+ });
+
+ // Shuffle the cards so they don't appear in sorted price order
+ for (let i = mappedCards.length - 1; i > 0; i--) {
+ const j = Math.floor(Math.random() * (i + 1));
+ [mappedCards[i], mappedCards[j]] = [mappedCards[j], mappedCards[i]];
+ }
+
+ map[vendor.name] = mappedCards;
+ });
+
+ return map;
+ }, [metadataLoaded, pools]);
+
+ // Async English price fetching — populates runtime cache + triggers override re-render
+ useEffect(() => {
+ const allCards = Object.values(vendorCardMap).flat();
+ const toFetch: { id: string; setId: string; num: string }[] = [];
+ const seen = new Set<string>();
+ for (const c of allCards) {
+ const orig = c.originalId || c.id || '';
+ if (seen.has(orig)) continue;
+ seen.add(orig);
+ const setStr = c.setId || '';
+ const numStr = c.num || '';
+ if (setStr && numStr && !orig.toLowerCase().includes('_ja') && !orig.startsWith('bgt-')) {
+ toFetch.push({ id: orig, setId: setStr, num: numStr });
+ }
+ }
+ if (toFetch.length === 0) return;
+ let cancelled = false;
+ const overrides: Record<string, number> = {};
+ const BATCH_SIZE = 5;
+ const fetchOne = async (cardId: string, setId: string, num: string) => {
+ if (cancelled) return;
+ try {
+ const full = await fetchCardFull(cardId);
+ const tcg = full?.pricing?.tcgplayer;
+ let p = tcg?.holofoil?.market ?? tcg?.normal?.market ?? null;
+ if (p == null || p <= 0) {
+ const src = ['tcgplayer', 'cardmarket', 'ebay'].find(s => full?.pricing?.[s]);
+ if (src) {
+ const srcP = full!.pricing![src as keyof typeof full.pricing] as any;
+ p = srcP?.market ?? srcP?.low ?? null;
+ }
+ }
+ if (p != null && p > 0) {
+ cacheEnglishPrice(cardId, p);
+ cacheEnglishPrice(`${setId}-${num}`, p);
+ overrides[cardId] = Number(p.toFixed(2));
+ }
+ } catch {}
+ };
+ (async () => {
+ for (let i = 0; i < toFetch.length && !cancelled; i += BATCH_SIZE) {
+ const batch = toFetch.slice(i, i + BATCH_SIZE);
+ await Promise.all(batch.map(({ id, setId, num }) => fetchOne(id, setId, num)));
+ }
+ if (!cancelled && Object.keys(overrides).length > 0) setEnPriceOverrides(prev => ({ ...prev, ...overrides }));
+ })();
+ return () => { cancelled = true; };
+ }, [vendorCardMap]);
+
+ const activeVendorCards = useMemo(() => {
+ const cards = vendorCardMap[selectedVendor?.name] || [];
+ if (Object.keys(enPriceOverrides).length === 0) return cards;
+ return cards.map(c => {
+ const overrideKey = c.originalId || c.id || '';
+ const override = enPriceOverrides[overrideKey];
+ if (override != null) return { ...c, price: override };
+ return c;
+ });
+ }, [selectedVendor?.name, vendorCardMap, enPriceOverrides]);
+
+ // Reset sequential visible batch limit when active vendor or search filters change
+ useEffect(() => {
+ setVisibleBatchLimit(30);
+ }, [selectedVendor?.name, searchQuery, selectedFilter]);
+
+ // Advance sequential batch as soon as all currently visible cards have rendered (or after safety timeout)
+ useEffect(() => {
+ const filtered = activeVendorCards.filter((c) => {
+ if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
+ const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
+ if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
+ if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
+ if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
+ if (selectedFilter === "WOTC / Vintage") return matchesSearch && (c.name.includes("Base") || c.name.includes("Neo") || c.name.includes("1st"));
+ if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
+ return matchesSearch;
+ });
+
+ if (visibleBatchLimit >= filtered.length) return;
+
+ const currentBatch = filtered.slice(0, visibleBatchLimit);
+ const allBatchDone = currentBatch.length > 0 && currentBatch.every(c => isCardCompleted(c.id, c.originalId, c.img));
+
+ if (allBatchDone) {
+ setVisibleBatchLimit(prev => Math.min(filtered.length, prev + 30));
+ }
+ }, [completedCardIds, visibleBatchLimit, activeVendorCards, searchQuery, selectedFilter, brokenOriginalIds]);
+
+ // IntersectionObserver: immediately load any card container that scrolls into the user's viewport
+ useEffect(() => {
+ const observer = new IntersectionObserver((entries) => {
+ entries.forEach(entry => {
+ if (entry.isIntersecting) {
+ const imgId = entry.target.getAttribute('data-img-id');
+ if (imgId) {
+ setIntersectingCardIds(prev => {
+ if (prev.has(imgId)) return prev;
+ const next = new Set(prev);
+ next.add(imgId);
+ return next;
+ });
+ // Stop observing elements once intersected to free memory & CPU
+ observer.unobserve(entry.target);
+ }
+ }
+ });
+ }, { rootMargin: '800px' });
+
+ const elements = document.querySelectorAll('[data-card-container]');
+ elements.forEach(el => observer.observe(el));
+
+ return () => observer.disconnect();
+ }, [activeVendorCards, visibleBatchLimit, searchQuery, selectedFilter]);
+
+ const filteredCards = activeVendorCards.filter((c) => {
+ if (brokenOriginalIds.includes(c.originalId) || brokenOriginalIds.includes(c.id)) return false;
+ const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
+ if (selectedFilter === "Raw Ungraded") return matchesSearch && c.grade.includes("Raw");
+ if (selectedFilter === "PSA 10") return matchesSearch && c.grade === "PSA 10";
+ if (selectedFilter === "BGS/CGC") return matchesSearch && (c.grade.includes("BGS") || c.grade.includes("CGC"));
+ if (selectedFilter === "WOTC / Vintage") return matchesSearch && (c.name.includes("Base") || c.name.includes("Neo") || c.name.includes("1st"));
+ if (selectedFilter === "Modern Alt") return matchesSearch && (c.name.includes("Alt") || c.name.includes("VMAX") || c.name.includes("GX") || c.name.includes("IR") || c.name.includes("SAR"));
+ return matchesSearch;
+ });
+
+ if (showAuctionDashboard) {
+ return <AuctionDashboard onBack={() => setShowAuctionDashboard(false)} onSpendNetReturn={onSpendNetReturn} />;
+ }
+
+ return (
+ <>
+ <div className="w-full h-full min-h-[calc(100vh-5rem)] bg-[#090a0c] text-[#f8fafc] flex flex-col font-sans overflow-hidden">
+
+ {/* Slim Top Bar */}
+ <header className="h-10 sm:h-12 border-b border-[#1e293b]/50 bg-[#111418]/95 flex items-center justify-between px-3 sm:px-5 shrink-0 z-30">
+ <div className="flex items-center gap-3">
+ {onBackToPacks && (
+ <button
+ onClick={onBackToPacks}
+ className="px-2 py-1 hover:bg-white/10 rounded transition-colors text-[#94a3b8] hover:text-[#f8fafc] flex items-center gap-1.5 text-xs font-mono border border-white/10"
+ title="Back to Packs"
+ >
+ <ArrowLeft className="w-3.5 h-3.5 text-[#38bdf8]" />
+ <span className="hidden sm:inline font-bold">BACK</span>
+ </button>
+ )}
+ <div className="flex items-center gap-2">
+ <span className="text-xs sm:text-sm font-black tracking-widest text-white flex items-center gap-1.5">
+ <Activity className="w-3.5 h-3.5 text-[#2dd4bf] animate-pulse" /> GLOBAL CARD SHOW CIRCUIT
+ </span>
+ <span className="hidden md:inline px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30 font-bold">
+ LA EXPO DAY 2
+ </span>
+ </div>
+ </div>
+
+ <div className="flex items-center gap-3">
+ <div className="flex items-center gap-2 text-[11px] font-mono text-[#94a3b8] hidden lg:flex">
+ <span>LIVE BASH FLOOR:</span>
+ <span className="text-green-400 font-bold flex items-center gap-1">
+ <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> 3,420 ACTIVE BUYERS
+ </span>
+ </div>
+
+ <div className="relative">
+ <Bell className="w-4 h-4 text-[#94a3b8] hover:text-white cursor-pointer transition-colors" />
+ <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#f472b6] rounded-full animate-pulse shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
+ </div>
+ </div>
+ </header>
+
+ {/* Mobile Mode Switcher Bar (< 1024px only) */}
+ <div className="lg:hidden flex items-center justify-between gap-1.5 bg-[#111418] border-b border-[#1e293b]/60 px-2 sm:px-3 py-1.5 shrink-0 z-20">
+ <button
+ onClick={() => setMobileSection('market')}
+ className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'market'
+ ? 'bg-[#2dd4bf]/20 text-[#2dd4bf] border border-[#2dd4bf]/50 shadow-[0_0_10px_rgba(45,212,191,0.2)]'
+ : 'text-[#94a3b8] hover:bg-white/5'
+ }`}
+ >
+ <Package className="w-3.5 h-3.5 shrink-0" />
+ <span className="truncate">MARKET ({filteredCards.length})</span>
+ </button>
+
+ <button
+ onClick={() => setMobileSection('map')}
+ className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'map'
+ ? 'bg-[#38bdf8]/20 text-[#38bdf8] border border-[#38bdf8]/50 shadow-[0_0_10px_rgba(56,189,248,0.2)]'
+ : 'text-[#94a3b8] hover:bg-white/5'
+ }`}
+ >
+ <MapPin className="w-3.5 h-3.5 shrink-0" />
+ <span className="truncate">FLOOR MAP</span>
+ </button>
+
+ <button
+ onClick={() => setMobileSection('vendor')}
+ className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold font-mono transition-all ${mobileSection === 'vendor'
+ ? 'bg-[#f472b6]/20 text-[#f472b6] border border-[#f472b6]/50 shadow-[0_0_10px_rgba(236,72,153,0.2)]'
+ : 'text-[#94a3b8] hover:bg-white/5'
+ }`}
+ >
+ <Star className="w-3.5 h-3.5 shrink-0" />
+ <span className="truncate">VENDOR VIP</span>
+ </button>
+ </div>
+
+ {/* Main 3-Column Grid */}
+ <main className="flex-1 p-2 sm:p-3 lg:grid lg:grid-cols-12 gap-3 lg:gap-4 overflow-y-auto lg:overflow-hidden min-h-0">
+
+ {/* Column A: EXPO MARKETPLACE & VENDOR GALLERY */}
+ <section
+ className={`${isMapExpanded ? 'hidden' : ''
+ } ${mobileSection === 'market' ? 'flex' : 'hidden lg:flex'
+ } lg:col-span-3 flex-col gap-2 h-full min-h-[480px] lg:min-h-0`}
+ >
+ {/* Top Search & Filter Bar */}
+ <div className="flex items-center gap-1.5 shrink-0">
+ <div className="relative flex-1">
+ <input
+ type="text"
+ placeholder="Search cards..."
+ value={searchQuery}
+ onChange={(e) => setSearchQuery(e.target.value)}
+ className="w-full bg-[#111418] border border-[#1e293b] rounded-lg py-1.5 pl-8 pr-3 text-xs text-white placeholder:text-[#94a3b8] focus:outline-none focus:border-[#38bdf8] transition-colors font-mono"
+ />
+ <Search className="w-3.5 h-3.5 text-[#94a3b8] absolute left-2.5 top-1/2 -translate-y-1/2" />
+ </div>
+
+ <div className="flex items-center gap-1 bg-[#111418] border border-[#1e293b] rounded-lg p-1 shrink-0 overflow-x-auto no-scrollbar max-w-[210px] sm:max-w-none">
+ {["All", "Raw Ungraded", "PSA 10", "BGS/CGC", "WOTC / Vintage", "Modern Alt"].map((filter) => (
+ <button
+ key={filter}
+ onClick={() => setSelectedFilter(filter)}
+ className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold whitespace-nowrap transition-colors ${selectedFilter === filter
+ ? "bg-[#38bdf8] text-black shadow-sm"
+ : "text-[#94a3b8] hover:text-white"
+ }`}
+ >
+ {filter}
+ </button>
+ ))}
+ </div>
+
+ <button
+ onClick={() => setShowArbSpotlight(!showArbSpotlight)}
+ className={`px-2 py-1.5 rounded-lg border text-[10px] font-mono font-bold transition-all shrink-0 flex items-center gap-1 ${showArbSpotlight
+ ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
+ : "bg-[#111418] text-[#94a3b8] border-[#1e293b] hover:text-white"
+ }`}
+ title="Toggle Arbitrage Spotlight Cards"
+ >
+ <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+ <span className="hidden sm:inline">Arb (+54%)</span>
+ </button>
+ </div>
+
+ {/* Arbitrage Spotlight Overlay Drawer */}
+ {showArbSpotlight && (
+ <div className="grid grid-cols-2 gap-2 bg-[#111418]/90 border border-amber-500/30 p-2 rounded-xl shrink-0 animate-in fade-in slide-in-from-top-1 duration-200">
+ {[
+ { name: "PSA 10 Charizard Base Set", potential: 37, price: 12450.0, id: 1040, change: "+3.4%" },
+ { name: "PSA 10 Lugia 1st Ed Neo", potential: 54, price: 18200.0, id: 1041, change: "+1.8%" },
+ ].map((item, i) => (
+ <div
+ key={i}
+ className="bg-black/60 border border-white/10 p-2 rounded-lg flex flex-col justify-between gap-1"
+ >
+ <div className="flex justify-between items-start gap-1">
+ <span className="text-[10px] font-bold text-white uppercase truncate">
+ {item.name}
+ </span>
+ <span className="text-[9px] text-green-400 font-mono font-bold shrink-0">
+ {item.change}
+ </span>
+ </div>
+ <div className="flex justify-between items-center text-[10px] font-mono">
+ <span className="text-amber-400 font-bold">Arb: +{item.potential}%</span>
+ <span className="text-white font-black">${item.price.toLocaleString()}</span>
+ </div>
+ </div>
+ ))}
+ </div>
+ )}
+
+ {/* Catalog Header */}
+ <div className="flex flex-col gap-1.5 bg-[#111418] px-3 py-2 border border-[#1e293b] rounded-lg shrink-0 text-[11px] font-mono">
+ <div className="flex items-center justify-between">
+ <span className="text-white font-bold flex items-center gap-1.5 truncate">
+ <span className="truncate"> {selectedVendor?.name?.toUpperCase()} CATALOG ({filteredCards.length} CARDS)</span>
+ </span>
+ <span className="text-[#38bdf8] font-bold animate-pulse flex items-center gap-1 shrink-0 ml-2">
+ SCROLL DOWN ▾
+ </span>
+ </div>
+ </div>
+
+ {/* MARKETPLACE CARDS GRID */}
+ <div
+ style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 220px)' }}
+ className="grid grid-cols-2 gap-3 pb-6 pr-1"
+ >
+ {filteredCards.map((card, i) => (
+ <div
+ key={card.id}
+ onClick={() => {
+ if (onInspectCard) {
+ onInspectCard({
+ id: card.id,
+ name: card.name,
+ currentPrice: card.price,
+ isSlabbed: true,
+ slabGrade: card.grade,
+ imageUrl: card.img,
+ isVendorCatalog: true,
+ vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
+ vendorBooth: selectedVendor?.booth || "5B",
+ vendorRating: selectedVendor?.rating || "4.8 / 5"
+ });
+ }
+ }}
+ className="bg-[#111418] border border-[#1e293b] rounded-xl group hover:border-[#38bdf8] transition-all duration-300 flex flex-col cursor-pointer hover:shadow-[0_0_20px_rgba(56,189,248,0.25)] transform hover:-translate-y-0.5"
+ data-card-container="true"
+ data-img-id={card.id}
+ >
+ <div className="w-full relative p-2 bg-black/40 rounded-t-xl min-h-[160px] flex items-center justify-center">
+ {(i < visibleBatchLimit || intersectingCardIds.has(card.id)) ? (
+ <>
+ <img
+ src={card.img}
+ alt={card.name}
+ className={`w-full h-auto block rounded-md filter drop-shadow-xl transition-all duration-300 group-hover:scale-[1.02] ${isCardCompleted(card.id, card.originalId, card.img) ? 'opacity-100' : 'opacity-0'}`}
+ onLoad={(e) => handleCardShowImageLoad(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+ onError={(e) => handleCardShowImageError(e, card.id, card.name.includes("Japanese") || card.id.includes("jp") || card.id.includes("_ja"))}
+ />
+ {!isCardCompleted(card.id, card.originalId, card.img) && (
+ <div className="absolute inset-0 bg-[#0b0e14]/95 rounded-t-xl z-20 flex flex-col items-center justify-center p-2 text-center border-b border-white/5 animate-pulse">
+ <div className="w-7 h-7 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30 flex items-center justify-center mb-1.5 shadow-[0_0_12px_rgba(56,189,248,0.2)]">
+ <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce" />
+ </div>
+ <span className="text-[9px] font-mono font-bold text-[#38bdf8] tracking-wider uppercase leading-tight">
+ Retrieving card
+ </span>
+ <span className="text-[8px] font-mono text-[#94a3b8] tracking-tight uppercase">
+ from binder...
+ </span>
+ </div>
+ )}
+ </>
+ ) : (
+ <div className="w-full aspect-[3/4] bg-gradient-to-tr from-[#111418] to-[#1e293b] rounded-md animate-pulse flex flex-col items-center justify-center border border-white/5 gap-1.5 p-2">
+ <Package className="w-5 h-5 text-[#38bdf8]/40 animate-bounce" />
+ <span className="text-[9px] font-mono text-[#64748b] tracking-wider uppercase font-bold text-center">In Sequence...</span>
+ </div>
+ )}
+ <div className="absolute top-3 left-3 z-10">
+ <span className="bg-black/90 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/50 text-amber-300 font-bold shadow">
+ {card.grade}
+ </span>
+ </div>
+ <div className="absolute top-3 right-3 z-10">
+ <div className="w-5 h-5 rounded border border-white/20 bg-black/80 flex items-center justify-center group-hover:border-[#38bdf8]">
+ <Check className="w-3 h-3 text-[#38bdf8]" />
+ </div>
+ </div>
+ </div>
+
+ <div className="px-2.5 py-2 bg-[#0e1117] border-t border-white/10 rounded-b-xl">
+ <p className="text-xs font-bold text-white truncate group-hover:text-[#38bdf8] transition-colors mb-1">
+ {card.name}
+ </p>
+ <div className="flex justify-between items-center">
+ <span className="text-sm font-mono font-black text-white">${card.price.toLocaleString()}</span>
+ <span className="text-green-400 font-bold text-[10px] font-mono">{card.change}</span>
+ </div>
+ <button
+ onClick={(e) => {
+ e.stopPropagation();
+ setTradeTarget(card);
+ }}
+ className="mt-2 w-full py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-[11px] uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-1"
+ >
+ <Coins className="w-3.5 h-3.5" /> Buy · Trade or Cash
+ </button>
+ </div>
+ </div>
+ ))}
+ </div>
+ </section>
+
+ {/* Column B: LIVE INTERACTIVE FLOOR PLAN */}
+ <section
+ className={`${isMapExpanded ? 'lg:col-span-12' : 'lg:col-span-6'
+ } ${mobileSection === 'map' ? 'flex' : 'hidden lg:flex'
+ } flex-col gap-2 border-y lg:border-y-0 lg:border-x border-[#1e293b]/60 px-1 sm:px-2 overflow-hidden h-full min-h-[520px] lg:min-h-0`}
+ >
+ {/* Map Header */}
+ <div className="flex items-center justify-between bg-[#0a0e14] py-1.5 px-3 border border-[#1e293b] rounded-xl shrink-0">
+ <div className="flex items-center gap-2">
+ <MapPin className="w-4 h-4 text-[#38bdf8]" />
+ <span className="text-xs font-black tracking-[0.2em] text-white uppercase font-mono">
+ LIVE INTERACTIVE FLOOR PLAN
+ </span>
+ </div>
+ <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+ <button
+ onClick={() => setMapZoom(Math.max(80, mapZoom - 20))}
+ className="w-6 h-6 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-xs font-mono font-bold text-white flex items-center justify-center transition-all"
+ title="Zoom Out"
+ >
+ -
+ </button>
+ <button
+ onClick={() => setMapZoom(130)}
+ className="px-1.5 py-0.5 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-[10px] font-mono font-bold text-[#38bdf8] transition-all min-w-[40px] text-center"
+ title="Reset Zoom to 130%"
+ >
+ {mapZoom}%
+ </button>
+ <button
+ onClick={() => setMapZoom(Math.min(300, mapZoom + 20))}
+ className="w-6 h-6 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-xs font-mono font-bold text-white flex items-center justify-center transition-all"
+ title="Zoom In"
+ >
+ +
+ </button>
+
+ <div className="w-[1px] h-4 bg-white/15 mx-0.5 sm:mx-1"></div>
+
+ <button
+ onClick={() => setIsMapExpanded(!isMapExpanded)}
+ className="flex items-center gap-1 px-2 py-1 rounded bg-white/5 hover:bg-[#38bdf8]/20 border border-white/10 text-[10px] font-mono font-bold text-[#38bdf8] transition-all"
+ >
+ {isMapExpanded ? (
+ <><Minimize2 className="w-3 h-3" /> <span>RESTORE</span></>
+ ) : (
+ <><Maximize2 className="w-3 h-3" /> <span>EXPAND</span></>
+ )}
+ </button>
+ </div>
+ </div>
+
+ {/* Cyberpunk HUD Floor Map */}
+ <div className="relative flex-1 bg-[#060a10] border border-[#0f2840] rounded-2xl overflow-hidden min-h-[460px] lg:min-h-[520px] shadow-2xl flex flex-col">
+ {/* Live Audience Footpath HUD Ticker */}
+ <div className="bg-[#0c1626] border-b border-[#1e3a5f]/80 px-3.5 py-1.5 flex flex-wrap items-center justify-between gap-2 z-20 shrink-0">
+ <div className="flex items-center gap-2">
+ <span className="w-2 h-2 rounded-full bg-[#f472b6] animate-ping" />
+ <span className="text-[11px] font-mono font-black text-white tracking-wide uppercase flex items-center gap-1">
+ LIVE AUDIENCE FOOTPATH TARGETS :
+ </span>
+ <div className="flex flex-wrap items-center gap-1.5">
+ {hotBoothNames.map((name, i) => (
+ <span key={i} className="px-2 py-0.5 rounded bg-[#f472b6]/15 border border-[#f472b6]/40 text-[10px] font-mono font-bold text-[#f472b6] shadow-[0_0_8px_rgba(244,114,182,0.3)]">
+ {name.split('(')[0].split('—')[0].trim()}
+ </span>
+ ))}
+ </div>
+ </div>
+ <span className="text-[10px] font-mono text-[#64748b] hidden sm:inline">
+ Footpaths & crowd heatmaps randomize per session
+ </span>
+ </div>
+
+ {/* Floating Cyberpunk HUD Tooltip when hovering over any booth */}
+ {hoveredBooth && (
+ <div className="absolute top-12 left-3 right-3 z-30 bg-[#0c1420]/95 border border-[#38bdf8] px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] flex items-center justify-between pointer-events-none transition-all animate-in fade-in duration-150">
+ <div className="flex items-center gap-3 min-w-0 pr-2">
+ <span className="px-2 py-0.5 rounded bg-[#38bdf8]/20 border border-[#38bdf8]/40 text-xs font-mono font-black text-[#38bdf8] shrink-0">
+ {hoveredBooth.booth}
+ </span>
+ <div className="min-w-0">
+ <div className="flex items-center gap-2 flex-wrap">
+ <h4 className="text-sm font-black text-white font-mono tracking-wide uppercase truncate">
+ {hoveredBooth.name}
+ </h4>
+ {stallPopularity[hoveredBooth.name] && (
+ <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-extrabold bg-[#0f2840] border border-[#38bdf8]/50 text-white shadow-[0_0_8px_rgba(56,189,248,0.4)] shrink-0">
+ Crowd: {stallPopularity[hoveredBooth.name].level} ({stallPopularity[hoveredBooth.name].score}% Heat)
+ </span>
+ )}
+ </div>
+ <p className="text-[11px] text-[#94a3b8] font-mono truncate">
+ {hoveredBooth.specialties?.join(' • ')}
+ </p>
+ </div>
+ </div>
+ <div className="text-right hidden md:block shrink-0">
+ <span className="text-xs font-mono font-bold text-[#2dd4bf]">
+ {hoveredBooth.activeListings}
+ </span>
+ <p className="text-[10px] text-[#64748b] font-mono">
+ Rating: {hoveredBooth.rating}
+ </p>
+ </div>
+ </div>
+ )}
+
+ {/* Scrollable Map Viewport */}
+ <div className="relative flex-1 w-full h-full overflow-auto scrollbar-thin scrollbar-thumb-[#38bdf8]/40 scrollbar-track-transparent">
+ <div
+ style={{
+ width: `${mapZoom}%`,
+ height: `${mapZoom}%`,
+ minWidth: `${Math.max(680, 680 * (mapZoom / 100))}px`,
+ minHeight: `${Math.max(480, 480 * (mapZoom / 100))}px`,
+ position: 'relative'
+ }}
+ className="transition-all duration-200"
+ >
+ <div className="absolute inset-0 bg-[linear-gradient(to_right,#0d1f3512_1px,transparent_1px),linear-gradient(to_bottom,#0d1f3512_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+ <div className="absolute inset-0 bg-[radial-gradient(circle_600px_at_50%_40%,rgba(56,189,248,0.06),transparent)] pointer-events-none"></div>
+
+ <svg viewBox="20 25 600 415" className="w-full h-full relative z-10" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+ <style>{`
+ svg text, svg circle, svg path, svg line {
+ pointer-events: none !important;
+ user-select: none !important;
+ }
+ svg rect {
+ pointer-events: auto;
+ }
+ `}</style>
+ <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+ <feGaussianBlur stdDeviation="6" result="blur" />
+ <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+ </filter>
+ <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+ <feGaussianBlur stdDeviation="4" result="blur" />
+ <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+ </filter>
+ <filter id="glowWhite" x="-50%" y="-50%" width="200%" height="200%">
+ <feGaussianBlur stdDeviation="8" result="blur" />
+ <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+ </filter>
+ <linearGradient id="gradVintage" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" stopColor="#d97706" stopOpacity="0.9" />
+ <stop offset="100%" stopColor="#059669" stopOpacity="0.9" />
+ </linearGradient>
+ <linearGradient id="gradJapanese" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" stopColor="#db2777" stopOpacity="0.9" />
+ <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
+ </linearGradient>
+ <linearGradient id="gradModern" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" stopColor="#0284c7" stopOpacity="0.9" />
+ <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.9" />
+ </linearGradient>
+ <linearGradient id="gradGoldstar" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" stopColor="#e11d48" stopOpacity="0.9" />
+ <stop offset="100%" stopColor="#d97706" stopOpacity="0.9" />
+ </linearGradient>
+ <linearGradient id="gradSlab" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" stopColor="#0f766e" stopOpacity="0.9" />
+ <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
+ </linearGradient>
+ </defs>
+
+ {/* MAIN GRID LINES */}
+ <line x1="30" y1="60" x2="610" y2="60" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="30" y1="130" x2="610" y2="130" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="30" y1="200" x2="610" y2="200" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="30" y1="270" x2="610" y2="270" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="30" y1="340" x2="610" y2="340" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="80" y1="30" x2="80" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="190" y1="30" x2="190" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="320" y1="30" x2="320" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="450" y1="30" x2="450" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
+ <line x1="560" y1="30" x2="560" y2="430" stroke="#0d3b5c" strokeWidth="0.5" />
+
+ {/* RANDOMIZED AUDIENCE FOOTPATH CORRIDORS */}
+ {footpathNetwork.corridors.map((c, idx) => (
+ <g key={`corr_${idx}`}>
+ {c.isHot && (
+ <line
+ x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+ stroke={c.color} strokeWidth="5" opacity="0.25"
+ filter="url(#glowWhite)"
+ />
+ )}
+ <line
+ x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+ stroke={c.color}
+ strokeWidth={c.isHot ? "2.2" : "1"}
+ opacity={c.isHot ? "0.85" : "0.3"}
+ strokeDasharray={c.isHot ? "none" : "6,4"}
+ />
+ </g>
+ ))}
+
+ {/* GLOWING INTERSECTION HUBS */}
+ {footpathNetwork.hubs.map((h, idx) => (
+ <g key={`hub_${idx}`}>
+ <circle cx={h.x} cy={h.y} r="11" fill={h.color} opacity="0.18" filter="url(#glowWhite)" />
+ <circle cx={h.x} cy={h.y} r="4.5" fill={h.color} opacity="0.95">
+ <animate attributeName="opacity" values="0.4;1;0.4" dur={`${2 + (idx % 2)}s`} repeatCount="indefinite" />
+ </circle>
+ <circle cx={h.x} cy={h.y} r="2" fill="#ffffff" opacity="0.8" />
+ </g>
+ ))}
+
+ {/* OUTER BOUNDARY */}
+ <rect x="30" y="30" width="580" height="400" rx="6" fill="none" stroke="#1e3a5f" strokeWidth="1.5" style={{ pointerEvents: 'none' }} />
+
+ {/* AUCTION BOOTH (left stage) */}
+ {VENDORS.filter(v => v.type === 'auction').map((v) => (
+ <g key={v.id}>
+ <rect
+ x={v.x} y={v.y} width={v.w} height={v.h} rx="4"
+ fill="#ef4444" fillOpacity="0.1" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 4"
+ className="cursor-pointer hover:stroke-[#f87171] hover:fill-[#ef4444]/[0.25] transition-all"
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ <circle cx={v.x + 15} cy={v.y + 15} r="10" fill="#ef4444" fillOpacity="0.3" stroke="#ef4444" strokeWidth="1.5" className="animate-pulse" />
+ <text x={v.x + 15} y={v.y + 19} textAnchor="middle" fill="#ef4444" fontSize="10" fontFamily="monospace" fontWeight="900">A</text>
+ <text x={v.x + v.w / 2 + 15} y={v.y + 40} textAnchor="middle" fill="#fca5a5" fontSize="9" fontFamily="monospace" fontWeight="bold">MAIN STAGE</text>
+ <text x={v.x + v.w / 2 + 15} y={v.y + 56} textAnchor="middle" fill="#ef4444" fontSize="7" fontFamily="monospace" fontWeight="900" className="animate-pulse"> LIVE AUCTION ARENA</text>
+ <text x={v.x + v.w / 2 + 15} y={v.y + 90} textAnchor="middle" fill="#fbbf24" fontSize="6" fontFamily="monospace" fontWeight="bold">CLICK TO ENTER</text>
+ </g>
+ ))}
+
+ {/* VENDOR BOOTHS (generated architectural grid with custom shapes & sizes) */}
+ {VENDORS.filter(v => v.type === 'vendor').map((v) => {
+ const isSelected = selectedVendor?.name === v.name;
+ const cat = v.category || "modern";
+ const boothShape = v.shape || "compact";
+
+ let headerGrad = "url(#gradModern)";
+ let headerTitle = " ALT ART & SIR";
+ let catThemeColor = "#38bdf8";
+
+ if (cat === "vintage") {
+ headerGrad = "url(#gradVintage)";
+ headerTitle = " VINTAGE VAULT";
+ catThemeColor = "#fbbf24";
+ } else if (cat === "japanese") {
+ headerGrad = "url(#gradJapanese)";
+ headerTitle = " JPN HUB [日本]";
+ catThemeColor = "#f472b6";
+ } else if (cat === "goldstar") {
+ headerGrad = "url(#gradGoldstar)";
+ headerTitle = " CROWN GRAILS";
+ catThemeColor = "#f43f5e";
+ } else if (cat === "slab") {
+ headerGrad = "url(#gradSlab)";
+ headerTitle = " PSA 10 SLABS";
+ catThemeColor = "#2dd4bf";
+ }
+
+ return (
+ <g key={v.id}>
+ {/* Selection Outer Pulsing Halo */}
+ {isSelected && (
+ <rect
+ x={v.x - 4} y={v.y - 4} width={v.w + 8} height={v.h + 8} rx="8"
+ fill="none" stroke={v.color} strokeWidth="2" strokeDasharray="5,3"
+ className="animate-pulse"
+ />
+ )}
+
+ {/* ── UNIQUE SHAPE GEOMETRY RENDERING ─────────────────────── */}
+ {boothShape === "mega-island" && (
+ <>
+ {/* Island Outer Canopy Shadow */}
+ <rect x={v.x - 2} y={v.y - 2} width={v.w + 4} height={v.h + 4} rx="6" fill="#0f172a" stroke={v.color} strokeWidth="0.8" opacity="0.6" />
+ {/* Main Body */}
+ <rect
+ x={v.x} y={v.y} width={v.w} height={v.h} rx="5"
+ fill="#070d17" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.5}
+ className="cursor-pointer transition-all hover:stroke-white"
+ style={{ filter: isSelected ? `drop-shadow(0 0 12px ${v.color})` : undefined }}
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ {/* 4 Corner Island Pillars */}
+ <rect x={v.x + 2} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+ <rect x={v.x + v.w - 7} y={v.y + 2} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+ <rect x={v.x + 2} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+ <rect x={v.x + v.w - 7} y={v.y + v.h - 7} width="5" height="5" rx="1" fill={v.color} opacity="0.9" />
+ </>
+ )}
+
+ {boothShape === "chamfered" && (
+ <polygon
+ points={`${v.x + 9},${v.y} ${v.x + v.w - 9},${v.y} ${v.x + v.w},${v.y + 9} ${v.x + v.w},${v.y + v.h - 9} ${v.x + v.w - 9},${v.y + v.h} ${v.x + 9},${v.y + v.h} ${v.x},${v.y + v.h - 9} ${v.x},${v.y + 9}`}
+ fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+ className="cursor-pointer transition-all hover:stroke-white"
+ style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ )}
+
+ {boothShape === "arched" && (
+ <path
+ d={`M ${v.x} ${v.y + 10} Q ${v.x + v.w / 2} ${v.y - 5} ${v.x + v.w} ${v.y + 10} L ${v.x + v.w} ${v.y + v.h - 5} Q ${v.x + v.w / 2} ${v.y + v.h + 4} ${v.x} ${v.y + v.h - 5} Z`}
+ fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+ className="cursor-pointer transition-all hover:stroke-white"
+ style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ )}
+
+ {boothShape === "diamond" && (
+ <polygon
+ points={`${v.x + 12},${v.y} ${v.x + v.w - 12},${v.y} ${v.x + v.w},${v.y + 12} ${v.x + v.w - 6},${v.y + v.h} ${v.x + 6},${v.y + v.h} ${v.x},${v.y + 12}`}
+ fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.5 : 1.2}
+ className="cursor-pointer transition-all hover:stroke-white"
+ style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ )}
+
+ {(boothShape === "tower" || boothShape === "wide-pavilion" || boothShape === "compact") && (
+ <rect
+ x={v.x} y={v.y} width={v.w} height={v.h} rx={boothShape === "tower" ? "2" : "4"}
+ fill="#080e18" stroke={isSelected ? v.color : catThemeColor} strokeWidth={isSelected ? 2.2 : 1}
+ className="cursor-pointer transition-all hover:stroke-white"
+ style={{ filter: isSelected ? `drop-shadow(0 0 10px ${v.color})` : undefined }}
+ onMouseEnter={() => handleBoothHover(v)}
+ onMouseLeave={handleBoothLeave}
+ onClick={() => handleBoothSelect(v)}
+ />
+ )}
+
+ {/* Tower Vertical Beams */}
+ {boothShape === "tower" && (
+ <>
+ <line x1={v.x + 3} y1={v.y + 16} x2={v.x + 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
+ <line x1={v.x + v.w - 3} y1={v.y + 16} x2={v.x + v.w - 3} y2={v.y + v.h - 4} stroke={v.color} strokeWidth="1" opacity="0.6" />
+ </>
+ )}
+
+ {/* Architectural Corner Brackets */}
+ {boothShape !== "chamfered" && boothShape !== "arched" && boothShape !== "diamond" && (
+ <>
+ <path d={`M ${v.x} ${v.y + 8} L ${v.x} ${v.y} L ${v.x + 8} ${v.y}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+ <path d={`M ${v.x + v.w - 8} ${v.y} L ${v.x + v.w} ${v.y} L ${v.x + v.w} ${v.y + 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+ <path d={`M ${v.x} ${v.y + v.h - 8} L ${v.x} ${v.y + v.h} L ${v.x + 8} ${v.y + v.h}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+ <path d={`M ${v.x + v.w - 8} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h} L ${v.x + v.w} ${v.y + v.h - 8}`} stroke={v.color} strokeWidth="1.5" fill="none" opacity="0.8" />
+ </>
+ )}
+
+ {/* Category Top Banner */}
+ <rect x={v.x} y={v.y} width={v.w} height="15" rx="3" fill={headerGrad} />
+ <text x={v.x + 6} y={v.y + 10.5} fill="#ffffff" fontSize="5.5" fontFamily="monospace" fontWeight="900" letterSpacing="0.3">{headerTitle}</text>
+ 
+ {/* Active Pulse LED */}
+ <circle cx={v.x + v.w - 7} cy={v.y + 7.5} r="2" fill="#22c55e">
+ <animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite" />
+ </circle>
+
+ {/* Booth Number Pill */}
+ <rect x={v.x + 6} y={v.y + 18} width="22" height="11" rx="2" fill="rgba(0,0,0,0.7)" stroke={v.color} strokeWidth="0.8" />
+ <text x={v.x + 17} y={v.y + 26} textAnchor="middle" fill={v.color} fontSize="6.5" fontFamily="monospace" fontWeight="900">{v.booth}</text>
+
+ {/* Vendor Title */}
+ <text x={v.x + 32} y={v.y + 26} fill="#f1f5f9" fontSize="6.2" fontFamily="monospace" fontWeight="bold">
+ {v.name.length > 13 ? v.name.slice(0, 12) + "…" : v.name}
+ </text>
+
+ {/* Specialty Pill 1 */}
+ <text x={v.x + 6} y={v.y + 42} fill="#94a3b8" fontSize="4.8" fontFamily="monospace">
+ • {v.specialties[0]?.slice(0, 20)}
+ </text>
+
+ {/* Glass Display Case Counter */}
+ <rect x={v.x + 5} y={v.y + v.h - 22} width={v.w - 10} height="16" rx="2" fill="rgba(15, 23, 42, 0.85)" stroke={v.color} strokeWidth="0.6" />
+ 
+ {/* Cards inside glass counter */}
+ <rect x={v.x + 9} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
+ <rect x={v.x + 17} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill="#f8fafc" opacity="0.9" />
+ <rect x={v.x + 25} y={v.y + v.h - 19} width="6" height="10" rx="0.5" fill={v.color} opacity="0.85" />
+
+ {/* Counter text */}
+ <text x={v.x + 35} y={v.y + v.h - 11} fill="#e2e8f0" fontSize="4.8" fontFamily="monospace" fontWeight="bold">
+ {v.specialties[1]?.slice(0, 11)}
+ </text>
+
+ {/* Selected Indicator */}
+ {isSelected && (
+ <text x={v.x + v.w / 2} y={v.y + v.h - 2} textAnchor="middle" fill={v.color} fontSize="5" fontFamily="monospace" fontWeight="900">
+ ● SELECTED
+ </text>
+ )}
+ </g>
+ );
+ })}
+ </svg>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ {/* Column C: SELECTED VENDOR PROFILE */}
+ <section
+ className={`${isMapExpanded ? 'hidden' : ''
+ } ${mobileSection === 'vendor' ? 'flex' : 'hidden lg:flex'
+ } lg:col-span-3 flex-col gap-2.5 overflow-y-auto pl-1 h-full min-h-[450px] lg:min-h-0`}
+ >
+ {/* Compact Horizontal Intelligence Ticker */}
+ <div className="flex flex-col gap-1.5 shrink-0 bg-[#111418] border border-[#1e293b] p-2 rounded-xl">
+ <div className="flex items-center justify-between">
+ <div className="flex items-center gap-1.5">
+ <Crosshair className="w-3.5 h-3.5 text-[#c084fc]" />
+ <span className="text-[11px] font-black tracking-wider text-white uppercase font-mono">
+ LIVE INTELLIGENCE FEEDS
+ </span>
+ </div>
+ <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-[#c084fc]/20 text-[#c084fc] font-bold">
+ 3 CAMS LIVE
+ </span>
+ </div>
+
+ <div className="grid grid-cols-3 gap-1.5">
+ {[
+ { title: "Circuit Cam", code: "SYS-00" },
+ { title: "Stage Cam", code: "J-101" },
+ { title: "Vendor Cam", code: "V-104", active: true },
+ ].map((feed, i) => (
+ <div
+ key={i}
+ className={`flex items-center justify-between p-1.5 rounded-lg border text-center ${feed.active
+ ? "bg-[#f472b6]/15 border-[#f472b6]/50 text-[#f472b6]"
+ : "bg-black/40 border-white/10 text-white"
+ }`}
+ >
+ <span className="text-[9px] font-bold truncate w-full font-mono">
+ {feed.title}
+ </span>
+ </div>
+ ))}
+ </div>
+ </div>
+
+ {/* Selected Vendor Spotlight Card */}
+ <div className="flex flex-col gap-2 flex-1">
+ <div className="flex items-center gap-1.5 px-1">
+ <Star className="w-3.5 h-3.5 text-yellow-500 fill-current" />
+ <h2 className="text-xs sm:text-sm font-black tracking-wider text-white uppercase font-mono">
+ SELECTED VENDOR SPOTLIGHT
+ </h2>
+ </div>
+
+ <div className={`bg-gradient-to-b from-[#111418] to-[#0d1015] border border-[#38bdf8]/40 shadow-[0_0_25px_rgba(56,189,248,0.12)] border rounded-2xl p-3.5 flex flex-col gap-3 flex-1`}>
+ <div className="flex flex-col gap-0.5">
+ <span className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono font-bold">
+ Active Vendor Profile:
+ </span>
+ <div className="flex items-center justify-between gap-2 flex-wrap">
+ <h3 className="text-base sm:text-lg font-black text-white tracking-wide">
+ {selectedVendor?.name}
+ </h3>
+ <span className={`px-2 py-0.5 bg-yellow-500/20 text-yellow-300 border-yellow-500/50 text-[8px] font-black uppercase rounded-full border flex items-center gap-1 shadow-sm`}>
+ Premier Vendor <Check className="w-2.5 h-2.5" />
+ </span>
+ </div>
+ </div>
+
+ <div className="grid grid-cols-2 gap-2 text-xs bg-black/60 p-2 rounded-xl border border-white/5">
+ <div className="flex flex-col">
+ <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+ Active Listings
+ </span>
+ <span className="font-mono font-black text-white text-xs sm:text-sm">
+ {selectedVendor.activeListings}
+ </span>
+ </div>
+ <div className="flex flex-col">
+ <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+ Completed Trans.
+ </span>
+ <span className="font-mono font-black text-white text-xs sm:text-sm">
+ {selectedVendor.completedTrans}
+ </span>
+ </div>
+ <div className="flex flex-col gap-0.5 col-span-2 pt-1.5 border-t border-white/5">
+ <span className="text-[8px] text-[#94a3b8] uppercase font-mono">
+ Reputation Score
+ </span>
+ <div className="flex items-center justify-between">
+ <span className="font-mono font-black text-amber-300 text-xs sm:text-sm">
+ {selectedVendor.rating}
+ </span>
+ <div className="flex gap-0.5 text-yellow-500">
+ <Star className="w-3 h-3 fill-current" />
+ <Star className="w-3 h-3 fill-current" />
+ <Star className="w-3 h-3 fill-current" />
+ <Star className="w-3 h-3 fill-current" />
+ <Star className="w-3 h-3 text-[#94a3b8]" />
+ </div>
+ </div>
+ </div>
+ </div>
+
+ {selectedVendor.specialties && selectedVendor.specialties.length > 0 && (
+ <div className="flex flex-col gap-1.5 bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono">
+ <h4 className="text-[9px] text-[#38bdf8] uppercase tracking-widest border-b border-[#38bdf8]/30 pb-1 font-bold flex items-center gap-1">
+ KNOWN FOR / SPECIALTIES
+ </h4>
+ <div className="flex flex-wrap gap-1.5 pt-1">
+ {selectedVendor.specialties.map((spec: string, idx: number) => (
+ <span
+ key={idx}
+ className="px-2 py-0.5 rounded bg-[#38bdf8]/10 text-[#38bdf8] text-[10px] border border-[#38bdf8]/20 font-bold"
+ >
+ {spec}
+ </span>
+ ))}
+ </div>
+ </div>
+ )}
+
+ <div className="flex flex-col gap-1.5">
+ <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
+ Featured Inventory Grails
+ </h4>
+ <div className="grid grid-cols-3 gap-1.5">
+ {activeVendorCards.filter(item => !brokenOriginalIds.includes(item.originalId || item.id)).slice(0, 3).map((item, i) => (
+ <div
+ key={item.id || `grail-${i}`}
+ onClick={() => {
+ if (onInspectCard) {
+ onInspectCard({
+ id: item.id || `grail-${i}`,
+ name: item.name,
+ currentPrice: typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('k', '')) * 1000,
+ isSlabbed: true,
+ slabGrade: item.grade,
+ imageUrl: item.img,
+ isVendorCatalog: true,
+ vendorName: selectedVendor?.name || "VINTAGEVAULT TCG",
+ vendorBooth: selectedVendor?.booth || "5B",
+ vendorRating: selectedVendor?.rating || "4.8 / 5"
+ });
+ }
+ }}
+ className="bg-black/70 border border-[#1e293b]/60 rounded-lg p-1.5 flex flex-col items-center text-center gap-0.5 hover:border-[#38bdf8] transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md group"
+ data-card-container="true"
+ >
+ <div className="w-full aspect-[3/4] bg-gradient-to-tr from-amber-500/20 to-purple-500/20 rounded-md flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform overflow-hidden relative">
+ {item.img ? (
+ <>
+ <img
+ src={item.img}
+ alt={item.name}
+ className={`w-full h-full object-cover transition-opacity duration-300 ${isCardCompleted(item.id, item.originalId, item.img) ? 'opacity-100' : 'opacity-0'}`}
+ onLoad={(e) => handleCardShowImageLoad(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
+ onError={(e) => handleCardShowImageError(e, item.id, item.name?.includes("Japanese") || item.id?.includes("jp") || item.id?.includes("_ja"))}
+ />
+ {!isCardCompleted(item.id, item.originalId, item.img) && (
+ <div className="absolute inset-0 bg-[#0b0e14]/95 z-20 flex flex-col items-center justify-center p-1 text-center animate-pulse">
+ <Package className="w-3.5 h-3.5 text-[#38bdf8] animate-bounce mb-0.5" />
+ <span className="text-[7px] font-mono text-[#38bdf8] font-bold leading-tight">Retrieving...</span>
+ </div>
+ )}
+ </>
+ ) : (
+ <Award className="w-3.5 h-3.5 text-amber-400" />
+ )}
+ </div>
+ <span className="text-[8px] font-bold leading-tight text-white truncate w-full">
+ {item.name}
+ </span>
+ <div className="flex w-full justify-between items-center px-0.5 pt-0.5 border-t border-white/5">
+ <span className="text-[7px] text-[#38bdf8] font-bold truncate">
+ {item.grade}
+ </span>
+ <span className="text-[7px] font-mono text-green-400 font-black">
+ ${typeof item.price === 'number' ? item.price.toLocaleString() : item.price}
+ </span>
+ </div>
+ </div>
+ ))}
+ </div>
+ </div>
+
+ <div className="flex flex-col gap-1.5 pt-0.5">
+ <h4 className="text-[9px] text-[#94a3b8] uppercase tracking-widest font-mono border-b border-[#1e293b]/60 pb-1 font-bold">
+ Vendor Specialties & Insights
+ </h4>
+ <div className="flex gap-2 items-center">
+ <ul className="text-[11px] text-white/90 list-disc list-inside flex-1 leading-relaxed font-mono">
+ {(selectedVendor?.specialties || []).map((spec: string, index: number) => (
+ <li key={index} className="truncate">{spec}</li>
+ ))}
+ </ul>
+
+ <div className="relative w-10 h-10 shrink-0 flex items-center justify-center">
+ <svg
+ viewBox="0 0 36 36"
+ className="w-full h-full transform -rotate-90"
+ >
+ <path
+ className="text-black/70"
+ d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+ fill="none"
+ stroke="currentColor"
+ strokeWidth="3"
+ />
+ <path
+ className="text-[#2dd4bf]"
+ strokeDasharray={`${selectedVendor?.discountScore || 75}, 100`}
+ d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+ fill="none"
+ stroke="currentColor"
+ strokeWidth="3"
+ />
+ </svg>
+ <span className="absolute text-[9px] font-mono font-bold text-white">
+ {selectedVendor?.discountScore || 75}%
+ </span>
+ </div>
+ </div>
+ <span className="text-[8px] text-[#2dd4bf] font-black tracking-wider uppercase text-right block mt-[-4px]">
+ TENDS TO OFFER PREMIER DEALS
+ </span>
+ </div>
+
+ <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-[#1e293b]/60">
+ <button
+ onClick={() => {
+ if (window.innerWidth < 1024) setMobileSection('market');
+ }}
+ className="bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold py-2 px-2 rounded-xl transition-all text-center truncate border border-white/10"
+ >
+ [Catalog ({filteredCards.length})]
+ </button>
+ <button
+ onClick={() => alert(`Direct Secure Comm Channel opened with ${selectedVendor.name}.`)}
+ className="bg-gradient-to-r from-[#38bdf8] to-[#2dd4bf] hover:from-[#38bdf8]/90 hover:to-[#2dd4bf]/90 text-black text-[11px] font-black py-2 px-2 rounded-xl transition-all text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+ >
+ [Message VIP] <Zap className="w-3 h-3 fill-current" />
+ </button>
+ </div>
+ </div>
+ </div>
+ </section>
+ </main>
+
+ <TradeModal target={tradeTarget} vendorName={selectedVendor?.name} onClose={() => setTradeTarget(null)} onAddNetReturn={onAddNetReturn} />
+
+ </div>
+ </>
+ );
 };
 
 export default CardShowView;
