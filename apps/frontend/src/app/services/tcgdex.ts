@@ -1010,7 +1010,7 @@ interface EnglishBoxParams {
   set: TCGDexSet;
   pool: TCGDexCardSummary[];
   currentEra: EnergyEra;
-  boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'base';
+  boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'base';
   commonPool: TCGDexCardSummary[];
   uncommonPool: TCGDexCardSummary[];
   nonHoloRarePool: TCGDexCardSummary[];
@@ -1072,13 +1072,18 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   let hitTable: HitTier[];
   let defaultTier: { label: string; pool: TCGDexCardSummary[]; fb: TCGDexCardSummary[][] };
 
-  if (boxEra === 'sv' || boxEra === 'me') {
+  if (boxEra === 'me') {
     hitTable = [
-      { p: 0.008, label: 'Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.sirPool, p.fullArtPool, p.irPool, p.vPool, p.holoRarePool] },
-      { p: 0.03, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.irPool, p.fullArtPool, p.vPool, p.holoRarePool] },
-      { p: 0.06, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.irPool, p.vPool, p.holoRarePool] },
-      { p: 0.10, label: 'Illustration Rare', pool: p.irPool, fb: [p.vPool, p.holoRarePool] },
-      { p: 0.17, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.0008, label: 'Mega Hyper Rare (Gold)', pool: p.goldSecretPool, fb: [p.sirPool, p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.01, label: 'Special Illustration Rare', pool: p.sirPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.08, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.21, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
+  } else if (boxEra === 'sv') {
+    hitTable = [
+      { p: 0.065, label: 'Ultra Rare (Full Art)', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.14, label: 'Double Rare (ex)', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
     ];
     defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
   } else if (boxEra === 'swsh') {
@@ -1096,16 +1101,34 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
       { p: 0.015, label: 'Rainbow Rare', pool: p.rainbowSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
       { p: 0.06, label: 'Full Art', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
       { p: 0.12, label: 'Pokémon-GX', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.20, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
   } else if (boxEra === 'xy') {
     hitTable = [
       { p: 0.01, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.rainbowSecretPool, p.fullArtPool, p.vPool, p.holoRarePool] },
       { p: 0.05, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
-      { p: 0.08, label: 'Pokémon EX', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.12, label: 'Pokémon EX (incl. Mega EX)', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
       { p: 0.04, label: 'Pokémon BREAK', pool: p.breakPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.22, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
     ];
-    defaultTier = { label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool, p.commonPool] };
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
+  } else if (boxEra === 'bw') {
+    hitTable = [
+      { p: 0.008, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.045, label: 'Full Art EX', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.105, label: 'Pokémon EX', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.22, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
+  } else if (boxEra === 'hgss') {
+    hitTable = [
+      { p: 0.01, label: 'Shiny Secret Rare', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.035, label: 'Pokémon LEGEND', pool: p.fullArtPool, fb: [p.vPool, p.holoRarePool] },
+      { p: 0.125, label: 'Pokémon Prime', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.22, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
   } else {
     // Base / vintage: ~1/200 secret, ~1/3 holo rare, otherwise non-holo rare
     hitTable = [
@@ -1148,18 +1171,6 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
           isHit: true
         };
       }
-    } else if (boxEra === 'sv' || boxEra === 'me') {
-      const irOdds = (p.irPool.length > 0) ? 0.28 : 0;
-      if (irOdds > 0 && Math.random() < irOdds) {
-        return {
-          slotData: {
-            summary: getFromPool(p.irPool, [p.reverseHoloPool]),
-            defaultRarity: 'Illustration Rare',
-            isReverseHolo: true
-          },
-          isHit: true
-        };
-      }
     } else if (boxEra === 'sm') {
       if (p.isCosmicEclipse && p.characterRarePool.length > 0 && Math.random() < 0.22) {
         return { slotData: { summary: getFromPool(p.characterRarePool, [p.reverseHoloPool]), defaultRarity: 'Character Rare (CHR)', isReverseHolo: true }, isHit: true };
@@ -1176,9 +1187,9 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
   };
 
   const packs: EnglishBoxPackData[] = [];
-  // pack_architecture.txt: SV/ME = 5 commons, SWSH/SM/XY = 4 commons, Base = 5 commons
-  const commonCount = (boxEra === 'sv' || boxEra === 'me' || boxEra === 'base') ? 5 : 4;
-  const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh' || boxEra === 'sv' || boxEra === 'me';
+  // Mega Evolution & SV packs contain 4 commons, 3 uncommons, 2 dedicated foil slots, 1 hit slot, 1 energy = 11 cards total
+  const commonCount = (boxEra === 'sv' || boxEra === 'me') ? 4 : (boxEra === 'base' ? 5 : 4);
+  const hasSpecialSlot = boxEra === 'sm' || boxEra === 'swsh';
 
   for (let idx = 0; idx < packsPerBox; idx++) {
     const pickedIds = new Set<string>();
@@ -1222,16 +1233,61 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
     }
     pickedIds.add(energy.id); pickedNames.add(energy.name);
 
-    // Commons
+    // Commons (4 Commons for Mega Evolution & SV)
     for (let i = 0; i < commonCount; i++) {
       slots.push({ summary: getFromPool(p.commonPool, [[...p.uncommonPool, ...pool]]), defaultRarity: 'Common' });
     }
-    // Uncommons
+    // Uncommons (3 Uncommons)
     for (let i = 0; i < 3; i++) {
       slots.push({ summary: getFromPool(p.uncommonPool, [p.commonPool, pool]), defaultRarity: 'Uncommon' });
     }
 
-    if (boxEra === 'base') {
+    if (boxEra === 'me' || boxEra === 'sv') {
+      // Mega Evolution & Scarlet/Violet Generation Pack Logic (11 cards total):
+      // Slot 9: Foil Slot 1 (Illustration Rare ~12% for SV / ~11% for ME, else Reverse Holo)
+      let slot9Hit = false;
+      const irOdds = boxEra === 'sv' ? 0.12 : 0.11;
+      if (p.irPool.length > 0 && Math.random() < irOdds) {
+        const ir = getFromPool(p.irPool, [p.reverseHoloPool]);
+        slots.push({ summary: ir, isReverseHolo: true, defaultRarity: 'Illustration Rare' });
+        pickedIds.add(ir.id); pickedNames.add(ir.name);
+        slot9Hit = true;
+      } else {
+        const rh1 = getFromPool(p.reverseHoloPool, [p.uncommonPool, p.commonPool]);
+        slots.push({ summary: rh1, isReverseHolo: true, defaultRarity: 'Reverse Holo' });
+        pickedIds.add(rh1.id); pickedNames.add(rh1.name);
+      }
+
+      // Slot 10: Foil Slot 2
+      // For ME: SIR ~1%, MHR ~0.08%
+      // For SV: SIR ~3%, HR Gold ~1.8%
+      let slot10Hit = false;
+      const foil2Roll = Math.random();
+      const sirOdds = boxEra === 'sv' ? 0.03 : 0.01;
+      const goldOdds = boxEra === 'sv' ? 0.018 : 0.0008;
+
+      if (p.sirPool.length > 0 && foil2Roll < sirOdds) {
+        const sir = getFromPool(p.sirPool, [p.irPool, p.reverseHoloPool]);
+        slots.push({ summary: sir, isReverseHolo: true, defaultRarity: 'Special Illustration Rare' });
+        pickedIds.add(sir.id); pickedNames.add(sir.name);
+        slot10Hit = true;
+      } else if (p.goldSecretPool.length > 0 && foil2Roll < (sirOdds + goldOdds)) {
+        const goldCard = getFromPool(p.goldSecretPool, [p.sirPool, p.reverseHoloPool]);
+        const rarityLabel = boxEra === 'sv' ? 'Hyper Rare (Gold)' : 'Mega Hyper Rare (Gold)';
+        slots.push({ summary: goldCard, isReverseHolo: true, defaultRarity: rarityLabel });
+        pickedIds.add(goldCard.id); pickedNames.add(goldCard.name);
+        slot10Hit = true;
+      } else {
+        const rh2 = getFromPool(p.reverseHoloPool, [p.uncommonPool, p.commonPool]);
+        slots.push({ summary: rh2, isReverseHolo: true, defaultRarity: 'Reverse Holo' });
+        pickedIds.add(rh2.id); pickedNames.add(rh2.name);
+      }
+
+      // Slot 11: Main Rare Slot (Guaranteed Holo Rare, Double Rare ex ~14% SV / ~21% ME, Ultra Rare ~6.5% SV / ~8% ME)
+      const hit = rollHit(getFromPool, slot9Hit || slot10Hit);
+      slots.push(hit);
+      if (hit.summary) { pickedIds.add(hit.summary.id); pickedNames.add(hit.summary.name); }
+    } else if (boxEra === 'base') {
       const trainerPool = pool.filter(c => c.name.includes('Energy') || c.name.includes('Trainer') || c.name.includes('Professor') || c.name.includes('Bill') || c.name.includes('Potion'));
       if (Math.random() < 0.35 || trainerPool.length === 0) {
         const e2 = await fetchBasicEnergyCard('base');
@@ -1289,7 +1345,9 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
 
   const isXYEra = setIdLower.startsWith('xy') || setIdLower === 'g1' || setIdLower === 'dc1' || setNameLower.includes('flashfire') || setNameLower.includes('furious fists') || setNameLower.includes('phantom forces') || setNameLower.includes('primal clash') || setNameLower.includes('double crisis') || setNameLower.includes('roaring skies') || setNameLower.includes('ancient origins') || setNameLower.includes('breakthrough') || setNameLower.includes('breakpoint') || setNameLower.includes('generation') || setNameLower.includes('fates collide') || setNameLower.includes('steam siege') || setNameLower.includes('evolutions');
   const isBreakSet = setIdLower === 'xy8' || setNameLower.includes('breakthrough') || setIdLower === 'xy9' || setNameLower.includes('breakpoint') || setIdLower === 'xy10' || setNameLower.includes('fates collide') || setIdLower === 'xy11' || setNameLower.includes('steam siege');
-  const isBaseEra = setIdLower.startsWith('base') || setIdLower.startsWith('hgss') || setIdLower.startsWith('dp') || setIdLower.startsWith('pl') || setIdLower.startsWith('bw') || setIdLower.startsWith('ex') || setIdLower.startsWith('neo') || setIdLower.startsWith('gym') || setIdLower.startsWith('ecard') || setIdLower === 'bs1' || setIdLower === 'bs2' || setIdLower === 'ju' || setIdLower === 'fo' || setIdLower === 'tr' || setIdLower === 'col' || setNameLower.includes('base set') || setNameLower.includes('jungle') || setNameLower.includes('fossil') || setNameLower.includes('team rocket') || setNameLower.includes('heartgold') || setNameLower.includes('soulsilver') || setNameLower.includes('diamond') || setNameLower.includes('pearl') || setNameLower.includes('platinum') || setNameLower.includes('black & white') || setNameLower.includes('black and white') || setNameLower.includes('call of legends');
+  const isBWEra = setIdLower.startsWith('bw') || setNameLower.includes('black & white') || setNameLower.includes('black and white') || setNameLower.includes('emerging powers') || setNameLower.includes('noble victories') || setNameLower.includes('next destinies') || setNameLower.includes('dark explorers') || setNameLower.includes('dragons exalted') || setNameLower.includes('boundaries crossed') || setNameLower.includes('plasma storm') || setNameLower.includes('plasma freeze') || setNameLower.includes('plasma blast') || setNameLower.includes('legendary treasures');
+  const isHGSSEra = setIdLower.startsWith('hgss') || setNameLower.includes('heartgold') || setNameLower.includes('soulsilver') || setNameLower.includes('unleashed') || setNameLower.includes('undaunted') || setNameLower.includes('triumphant') || setNameLower.includes('call of legends');
+  const isBaseEra = !isBWEra && !isHGSSEra && (setIdLower.startsWith('base') || setIdLower.startsWith('dp') || setIdLower.startsWith('pl') || setIdLower.startsWith('ex') || setIdLower.startsWith('neo') || setIdLower.startsWith('gym') || setIdLower.startsWith('ecard') || setIdLower === 'bs1' || setIdLower === 'bs2' || setIdLower === 'ju' || setIdLower === 'fo' || setIdLower === 'tr' || setNameLower.includes('base set') || setNameLower.includes('jungle') || setNameLower.includes('fossil') || setNameLower.includes('team rocket') || setNameLower.includes('diamond') || setNameLower.includes('pearl') || setNameLower.includes('platinum'));
 
   const currentEra: EnergyEra = isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBaseEra ? 'base' : 'swsh';
 
@@ -1535,8 +1593,8 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   // ---- Box-seeded booster box: build the whole box once per set, then
   //      consume one pack per open so the user experiences authentic
   //      box-level hit distribution & variance (no impossible streaks). ----
-  const boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'base' =
-    isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBaseEra ? 'base' : 'swsh';
+  const boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'base' =
+    isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBWEra ? 'bw' : isHGSSEra ? 'hgss' : isBaseEra ? 'base' : 'swsh';
 
   const boxKey = set.id;
   let boxEntry = englishBoxCache.get(boxKey);
