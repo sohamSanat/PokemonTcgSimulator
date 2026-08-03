@@ -1010,7 +1010,7 @@ interface EnglishBoxParams {
   set: TCGDexSet;
   pool: TCGDexCardSummary[];
   currentEra: EnergyEra;
-  boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'base';
+  boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'pl' | 'dp' | 'ex' | 'base';
   commonPool: TCGDexCardSummary[];
   uncommonPool: TCGDexCardSummary[];
   nonHoloRarePool: TCGDexCardSummary[];
@@ -1129,11 +1129,32 @@ export async function buildEnglishPacks(p: EnglishBoxParams): Promise<EnglishBox
       { p: 0.22, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
     ];
     defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
-  } else {
-    // Base / vintage: ~1/200 secret, ~1/3 holo rare, otherwise non-holo rare
+  } else if (boxEra === 'pl') {
     hitTable = [
-      { p: 0.005, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
-      { p: 0.33, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool] },
+      { p: 0.01, label: 'Shiny Secret Rare (SH)', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.08, label: 'Pokémon LV.X', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.28, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
+  } else if (boxEra === 'dp') {
+    hitTable = [
+      { p: 0.014, label: 'Secret Rare', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.055, label: 'Pokémon LV.X', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.22, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
+  } else if (boxEra === 'ex') {
+    hitTable = [
+      { p: 0.014, label: 'Gold Star ⭐ / Secret Rare', pool: p.goldSecretPool, fb: [p.fullArtPool, p.vPool, p.holoRarePool] },
+      { p: 0.083, label: 'Pokémon-ex', pool: p.vPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.25, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool] },
+    ];
+    defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
+  } else {
+    // Base / vintage WotC era: ~1/125 secret (Dark Raichu, Shining, Crystal), ~1/3 holo rare, otherwise non-holo rare
+    hitTable = [
+      { p: 0.008, label: 'Secret Rare / Shining / Crystal', pool: p.goldSecretPool, fb: [p.holoRarePool, p.nonHoloRarePool] },
+      { p: 0.333, label: 'Holo Rare', pool: p.holoRarePool, fb: [p.nonHoloRarePool, p.uncommonPool] },
     ];
     defaultTier = { label: 'Non-Holo Rare', pool: p.nonHoloRarePool, fb: [p.uncommonPool, p.commonPool] };
   }
@@ -1347,7 +1368,10 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   const isBreakSet = setIdLower === 'xy8' || setNameLower.includes('breakthrough') || setIdLower === 'xy9' || setNameLower.includes('breakpoint') || setIdLower === 'xy10' || setNameLower.includes('fates collide') || setIdLower === 'xy11' || setNameLower.includes('steam siege');
   const isBWEra = setIdLower.startsWith('bw') || setNameLower.includes('black & white') || setNameLower.includes('black and white') || setNameLower.includes('emerging powers') || setNameLower.includes('noble victories') || setNameLower.includes('next destinies') || setNameLower.includes('dark explorers') || setNameLower.includes('dragons exalted') || setNameLower.includes('boundaries crossed') || setNameLower.includes('plasma storm') || setNameLower.includes('plasma freeze') || setNameLower.includes('plasma blast') || setNameLower.includes('legendary treasures');
   const isHGSSEra = setIdLower.startsWith('hgss') || setNameLower.includes('heartgold') || setNameLower.includes('soulsilver') || setNameLower.includes('unleashed') || setNameLower.includes('undaunted') || setNameLower.includes('triumphant') || setNameLower.includes('call of legends');
-  const isBaseEra = !isBWEra && !isHGSSEra && (setIdLower.startsWith('base') || setIdLower.startsWith('dp') || setIdLower.startsWith('pl') || setIdLower.startsWith('ex') || setIdLower.startsWith('neo') || setIdLower.startsWith('gym') || setIdLower.startsWith('ecard') || setIdLower === 'bs1' || setIdLower === 'bs2' || setIdLower === 'ju' || setIdLower === 'fo' || setIdLower === 'tr' || setNameLower.includes('base set') || setNameLower.includes('jungle') || setNameLower.includes('fossil') || setNameLower.includes('team rocket') || setNameLower.includes('diamond') || setNameLower.includes('pearl') || setNameLower.includes('platinum'));
+  const isPLEra = setIdLower.startsWith('pl') || setIdLower.startsWith('pt') || setNameLower.includes('platinum') || setNameLower.includes('rising rivals') || setNameLower.includes('supreme victors') || setNameLower.includes('arceus');
+  const isDPEra = setIdLower.startsWith('dp') || setNameLower.includes('diamond') || setNameLower.includes('pearl') || setNameLower.includes('mysterious treasures') || setNameLower.includes('secret wonders') || setNameLower.includes('great encounters') || setNameLower.includes('majestic dawn') || setNameLower.includes('legends awakened') || setNameLower.includes('stormfront');
+  const isEXEra = setIdLower.startsWith('ex') || setNameLower.startsWith('ex ') || setNameLower.includes('ruby & sapphire') || setNameLower.includes('sandstorm') || setNameLower.includes('team magma') || setNameLower.includes('hidden legends') || setNameLower.includes('firered') || setNameLower.includes('leafgreen') || setNameLower.includes('team rocket returns') || setNameLower.includes('deoxys') || setNameLower.includes('emerald') || setNameLower.includes('unseen forces') || setNameLower.includes('delta species') || setNameLower.includes('legend maker') || setNameLower.includes('holon phantoms') || setNameLower.includes('crystal guardians') || setNameLower.includes('dragon frontiers') || setNameLower.includes('power keepers');
+  const isBaseEra = !isBWEra && !isHGSSEra && !isPLEra && !isDPEra && !isEXEra && (setIdLower.startsWith('base') || setIdLower.startsWith('neo') || setIdLower.startsWith('gym') || setIdLower.startsWith('ecard') || setIdLower === 'bs1' || setIdLower === 'bs2' || setIdLower === 'ju' || setIdLower === 'fo' || setIdLower === 'tr' || setNameLower.includes('base set') || setNameLower.includes('jungle') || setNameLower.includes('fossil') || setNameLower.includes('team rocket'));
 
   const currentEra: EnergyEra = isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBaseEra ? 'base' : 'swsh';
 
@@ -1593,8 +1617,8 @@ export async function generatePackFromSet(set: TCGDexSet, _count = 11): Promise<
   // ---- Box-seeded booster box: build the whole box once per set, then
   //      consume one pack per open so the user experiences authentic
   //      box-level hit distribution & variance (no impossible streaks). ----
-  const boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'base' =
-    isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBWEra ? 'bw' : isHGSSEra ? 'hgss' : isBaseEra ? 'base' : 'swsh';
+  const boxEra: 'sv' | 'me' | 'swsh' | 'sm' | 'xy' | 'bw' | 'hgss' | 'pl' | 'dp' | 'ex' | 'base' =
+    isMEEra ? 'me' : isSVEra ? 'sv' : isSMEra ? 'sm' : isXYEra ? 'xy' : isBWEra ? 'bw' : isHGSSEra ? 'hgss' : isPLEra ? 'pl' : isDPEra ? 'dp' : isEXEra ? 'ex' : isBaseEra ? 'base' : 'swsh';
 
   const boxKey = set.id;
   let boxEntry = englishBoxCache.get(boxKey);

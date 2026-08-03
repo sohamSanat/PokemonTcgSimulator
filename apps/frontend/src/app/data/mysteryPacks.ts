@@ -1,3 +1,10 @@
+export interface OddsBreakdown {
+  standard: number;
+  upgrade: number;
+  highUpgrade?: number;
+  jackpot: number;
+}
+
 export interface MysteryPackConfig {
   id: string;
   name: string;
@@ -12,6 +19,7 @@ export interface MysteryPackConfig {
   highlightSets: string[];
   icon: string;
   packArt: string;
+  oddsBreakdown: OddsBreakdown;
 }
 
 export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
@@ -27,8 +35,9 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(217,119,6,0.35)]',
     icon: '📦',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/bronze.webp',
-    setIds: ['me01', 'me03', 'me04', 'sv01', 'sv04', 'sv05', 'sv08', 'sv09', 'swsh04.5', 'swsh05', 'swsh10', 'bw1', 'dp1', 'pl1', 'xy2', 'ex1', 'g1'],
-    highlightSets: ['Mega Evolution', 'Scarlet & Violet Base', 'Flashfire', 'EX Ruby & Sapphire', 'Black & White', 'Gym Heroes']
+    setIds: ['me01', 'me03', 'me04', 'sv01', 'sv04', 'sv05', 'sv08', 'sv09', 'swsh04.5', 'swsh05', 'swsh10'],
+    highlightSets: ['Mega Evolution', 'Scarlet & Violet Base', 'Sword & Shield', 'Paldean Fates'],
+    oddsBreakdown: { standard: 75.0, upgrade: 19.5, highUpgrade: 5.0, jackpot: 0.5 }
   },
   {
     id: 'en_mystery_silver',
@@ -42,8 +51,9 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(203,213,225,0.35)]',
     icon: '🥈',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/silver.webp',
-    setIds: ['me02.5', 'sv02', 'sv03', 'sv06', 'sv07', 'swsh01', 'swsh02', 'swsh03', 'swsh06', 'swsh12', 'sm9', 'hgss1', 'dp3', 'ex6', 'bw5', 'dc1', 'ex3'],
-    highlightSets: ['Team Up', 'FireRed & LeafGreen', 'Paldea Evolved', 'HGSS Base', 'Dragon Vault', 'Silver Tempest']
+    setIds: ['me02.5', 'sv02', 'sv03', 'sv06', 'sv07', 'swsh01', 'swsh02', 'swsh03', 'swsh06', 'swsh12'],
+    highlightSets: ['Paldea Evolved', 'Obsidian Flames', 'Twilight Masquerade', 'Silver Tempest'],
+    oddsBreakdown: { standard: 65.0, upgrade: 24.0, highUpgrade: 10.0, jackpot: 1.0 }
   },
   {
     id: 'en_mystery_gold',
@@ -57,8 +67,9 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(245,158,11,0.45)]',
     icon: '✨',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/gold.webp',
-    setIds: ['sv03.5', 'sv08.5', 'swsh12.5', 'swsh11', 'swsh08', 'swsh09', 'paldean-fates', 'shrouded-fable', 'base5', 'ex8', 'ex15', 'pl3', 'col1', 'xy4', 'bw8', 'ex5'],
-    highlightSets: ['Pokémon 151', 'Prismatic Evolutions', 'Team Rocket', 'EX Deoxys', 'EX Dragon Frontiers', 'Crown Zenith']
+    setIds: ['sv03.5', 'sv08.5', 'swsh12.5', 'swsh11', 'swsh08', 'swsh09', 'paldean-fates', 'shrouded-fable'],
+    highlightSets: ['Pokémon 151', 'Prismatic Evolutions', 'Crown Zenith', 'Lost Origin'],
+    oddsBreakdown: { standard: 55.0, upgrade: 28.0, highUpgrade: 14.0, jackpot: 3.0 }
   },
   {
     id: 'en_mystery_diamond',
@@ -72,8 +83,9 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.5)]',
     icon: '💎',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/diamond.webp',
-    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault', 'bw2', 'dv1', 'base1', 'base2', 'base3', 'ex7', 'ex11', 'ex14', 'hgss4', 'dp7', 'bw6'],
-    highlightSets: ['WOTC Base Set', 'Evolving Skies', 'EX Team Rocket Returns', 'EX Delta Species', 'Jungle', 'Celebrations']
+    setIds: ['swsh07', 'celebrations', 'sm115', 'sm5', 'sm1', 'sm2', 'sm4', 'shining-fates-shiny-vault', 'bw2', 'dv1'],
+    highlightSets: ['Evolving Skies', 'Celebrations', 'Hidden Fates', 'Ultra Prism'],
+    oddsBreakdown: { standard: 45.0, upgrade: 35.0, highUpgrade: 15.0, jackpot: 5.0 }
   },
   {
     id: 'en_mystery_vintage',
@@ -87,8 +99,9 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(168,85,247,0.5)]',
     icon: '🔮',
     packArt: '/packArts/MysteryPacks/EN-MysteryPacks/vintage.webp',
-    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12', 'bw3', 'bw4', 'bw7', 'bw10', 'bw11', 'hgss2', 'hgss3', 'base1', 'base4', 'base5', 'ex1', 'ex7', 'ex8', 'ex15', 'dp6', 'pl4', 'bw9', 'sm9'],
-    highlightSets: ['WOTC Base Set', 'EX Deoxys', 'EX Team Rocket Returns', 'EX Dragon Frontiers', 'Team Up', 'Cosmic Eclipse']
+    setIds: ['sm3.5', 'sm7.5', 'sm6', 'sm7', 'sm8', 'sm10', 'sm11', 'sm12', 'xy1', 'xy3', 'xy5', 'xy6', 'xy12', 'bw3', 'bw4', 'bw7', 'bw10', 'bw11', 'hgss2', 'hgss3'],
+    highlightSets: ['Cosmic Eclipse', 'Team Up', 'Shining Legends', 'Dragon Majesty'],
+    oddsBreakdown: { standard: 40.0, upgrade: 40.0, highUpgrade: 15.0, jackpot: 5.0 }
   },
   {
     id: 'en_mystery_god',
@@ -110,7 +123,8 @@ export const ENGLISH_MYSTERY_PACKS: MysteryPackConfig[] = [
       'hgss1', 'hgss4', 'col1',
       'ex1', 'ex2', 'ex3', 'ex4', 'ex5', 'ex6', 'ex7', 'ex8', 'ex9', 'ex10', 'ex11', 'ex12', 'ex13', 'ex14', 'ex15', 'ex16'
     ],
-    highlightSets: ['WOTC Base Set', 'EX Deoxys', 'EX Team Rocket Returns', 'Diamond & Pearl', 'Platinum', 'HeartGold SoulSilver', 'Black & White Base', 'EX Dragon Frontiers']
+    highlightSets: ['WOTC Base Set', 'EX Deoxys', 'EX Team Rocket Returns', 'Diamond & Pearl', 'Platinum', 'HeartGold SoulSilver', 'Black & White Base', 'EX Dragon Frontiers'],
+    oddsBreakdown: { standard: 35.0, upgrade: 45.0, highUpgrade: 20.0, jackpot: 100.0 }
   }
 ];
 
@@ -127,8 +141,9 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_25px_rgba(244,114,182,0.35)]',
     icon: '🌸',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/starter.webp',
-    setIds: ['SV1S_ja', 'SV1V_ja', 'SV1a_ja', 'SV2P_ja', 'SV2D_ja', 'SV3_ja', 'SV5K_ja', 'SV5M_ja', 'PMCG1_ja', 'PMCG5_ja', 'neo1_ja'],
-    highlightSets: ['Violet ex', 'Scarlet ex', 'Expansion Pack (Base)', 'Team Rocket', 'Clay Burst', 'Neo Genesis']
+    setIds: ['SV1S_ja', 'SV1V_ja', 'SV1a_ja', 'SV2P_ja', 'SV2D_ja', 'SV3_ja', 'SV5K_ja', 'SV5M_ja'],
+    highlightSets: ['Violet ex', 'Scarlet ex', 'Triplet Beat', 'Clay Burst'],
+    oddsBreakdown: { standard: 80.0, upgrade: 18.5, jackpot: 1.5 }
   },
   {
     id: 'ja_mystery_highclass',
@@ -142,8 +157,9 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(52,211,153,0.45)]',
     icon: '✨',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/high-class.webp',
-    setIds: ['SV2a_ja', 'SV4a_ja', 'SV8a_ja', 'S12a_ja', 'S8b_ja', 'S4a_ja', 'S6a_ja', 'VS1_ja', 'web1_ja', 'SM12a_ja'],
-    highlightSets: ['Pokémon Card 151', 'Shiny Treasure ex', 'Terastal Fest ex', 'Pokémon VS', 'Pokémon Web', 'VSTAR Universe']
+    setIds: ['SV2a_ja', 'SV4a_ja', 'SV8a_ja', 'S12a_ja', 'S8b_ja', 'S4a_ja', 'S6a_ja'],
+    highlightSets: ['Pokémon Card 151', 'Shiny Treasure ex', 'Terastal Fest ex', 'VSTAR Universe'],
+    oddsBreakdown: { standard: 70.0, upgrade: 25.0, jackpot: 5.0 }
   },
   {
     id: 'ja_mystery_swsh',
@@ -157,8 +173,9 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_30px_rgba(96,165,250,0.45)]',
     icon: '⚔️',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/collector.webp',
-    setIds: ['S7R_ja', 'S7D_ja', 'S11_ja', 'S12_ja', 'S10P_ja', 'S10D_ja', 'S9_ja', 'S8a_ja', 'PMCG3_ja', 'neo3_ja'],
-    highlightSets: ['Blue Sky Stream', 'Skyscraping Perfection', 'Lost Abyss', 'Fossil', 'Neo Revelation', 'Space Juggler']
+    setIds: ['S7R_ja', 'S7D_ja', 'S11_ja', 'S12_ja', 'S10P_ja', 'S10D_ja', 'S9_ja', 'S8a_ja'],
+    highlightSets: ['Blue Sky Stream', 'Skyscraping Perfection', 'Lost Abyss', 'Space Juggler'],
+    oddsBreakdown: { standard: 60.0, upgrade: 32.0, jackpot: 8.0 }
   },
   {
     id: 'ja_mystery_sm',
@@ -172,8 +189,9 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     glowColor: 'shadow-[0_0_35px_rgba(251,146,60,0.5)]',
     icon: '☀️',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/sun&moon.webp',
-    setIds: ['SM12a_ja', 'SM11b_ja', 'SM8b_ja', 'SM9_ja', 'SM12_ja', 'SM10_ja', 'SM3+_ja', 'neo4_ja', 'PMCG1_ja'],
-    highlightSets: ['Tag Team All Stars', 'Dream League', 'Neo Destiny', 'Expansion Pack (Base)', 'GX Ultra Shiny', 'Tag Bolt']
+    setIds: ['SM12a_ja', 'SM11b_ja', 'SM8b_ja', 'SM9_ja', 'SM12_ja', 'SM10_ja', 'SM3+_ja'],
+    highlightSets: ['Tag Team All Stars', 'Dream League', 'GX Ultra Shiny', 'Tag Bolt'],
+    oddsBreakdown: { standard: 50.0, upgrade: 35.0, jackpot: 15.0 }
   },
   {
     id: 'ja_mystery_vintage',
@@ -188,7 +206,8 @@ export const JAPANESE_MYSTERY_PACKS: MysteryPackConfig[] = [
     icon: '⛩️',
     packArt: '/packArts/MysteryPacks/JP-MysteryPacks/Vintage.webp',
     setIds: ['PMCG1_ja', 'PMCG2_ja', 'PMCG3_ja', 'PMCG4_ja', 'PMCG5_ja', 'neo1_ja', 'neo2_ja', 'neo3_ja', 'neo4_ja', 'VS1_ja', 'web1_ja'],
-    highlightSets: ['Expansion Pack (Base)', 'Jungle', 'Fossil', 'Team Rocket', 'Neo Series', 'Pokémon VS', 'Pokémon Web']
+    highlightSets: ['Expansion Pack (Base)', 'Jungle', 'Fossil', 'Team Rocket', 'Neo Series', 'Pokémon VS', 'Pokémon Web'],
+    oddsBreakdown: { standard: 45.0, upgrade: 40.0, jackpot: 15.0 }
   }
 ];
 
@@ -203,51 +222,71 @@ export interface MysteryPackResult {
 export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResult {
   const packList = pack.language === 'ja' ? JAPANESE_MYSTERY_PACKS : ENGLISH_MYSTERY_PACKS;
   const tierIndex = packList.findIndex(p => p.id === pack.id);
+  const odds = pack.oddsBreakdown;
 
-  // Lucky Hit rates for cheaper/lower mystery packs to hit higher vintage & grail tiers
-  // Bronze (Index 0): 6% chance for Lucky Hit
-  // Silver (Index 1): 9% chance for Lucky Hit
-  // Gold (Index 2): 12% chance for Lucky Hit
-  // Diamond (Index 3): 15% chance for Lucky Hit
-  // Vintage (Index 4): 18% chance for Lucky Hit (to hit God Tier)
-  const luckyHitChances = [0.06, 0.09, 0.12, 0.15, 0.18];
-  const luckyHitChance = (tierIndex >= 0 && tierIndex < luckyHitChances.length) ? luckyHitChances[tierIndex] : 0;
+  const roll = Math.random() * 100;
 
-  const roll = Math.random();
-
-  // 1. Lucky Hit Jackpot check into higher tiers (e.g. hitting EX series, DP, HGSS, Vintage, God Tier!)
-  if (luckyHitChance > 0 && roll < luckyHitChance) {
+  // 1. Check for Jackpot roll (Top Tier Grails)
+  if (roll < odds.jackpot) {
     const higherTiers = packList.slice(tierIndex + 1);
-    if (higherTiers.length > 0) {
-      // Pick a random higher tier (weighted towards top tiers for epic jackpot excitement)
-      const targetHigherTier = higherTiers[Math.floor(Math.random() * higherTiers.length)];
-      const targetSetIds = targetHigherTier.setIds;
-      if (targetSetIds && targetSetIds.length > 0) {
-        const luckySetId = targetSetIds[Math.floor(Math.random() * targetSetIds.length)];
-        return {
-          setId: luckySetId,
-          isHighTier: true,
-          isLuckyHit: true,
-          bonusPacksCount: 0,
-          tierGap: 0
-        };
-      }
-    }
+    const jackpotTier = higherTiers.length > 0 ? higherTiers[higherTiers.length - 1] : pack;
+    const targetSetIds = jackpotTier.setIds;
+    const luckySetId = targetSetIds[Math.floor(Math.random() * targetSetIds.length)];
+    return {
+      setId: luckySetId,
+      isHighTier: true,
+      isLuckyHit: true,
+      bonusPacksCount: 0,
+      tierGap: 0
+    };
   }
 
-  // 2. Standard 60/40 tier roll
+  let cumulative = odds.jackpot;
+
+  // 2. Check for High Upgrade roll (+2 Tiers)
+  if (odds.highUpgrade && roll < cumulative + odds.highUpgrade) {
+    const higherTiers = packList.slice(tierIndex + 1);
+    const targetTier = higherTiers.length >= 2 ? higherTiers[1] : (higherTiers.length === 1 ? higherTiers[0] : pack);
+    const targetSetIds = targetTier.setIds;
+    const luckySetId = targetSetIds[Math.floor(Math.random() * targetSetIds.length)];
+    return {
+      setId: luckySetId,
+      isHighTier: true,
+      isLuckyHit: true,
+      bonusPacksCount: 0,
+      tierGap: 0
+    };
+  }
+
+  // 3. Check for Upgrade roll (+1 Tier)
+  if (odds.highUpgrade) cumulative += odds.highUpgrade;
+  if (roll < cumulative + odds.upgrade) {
+    const higherTiers = packList.slice(tierIndex + 1);
+    const targetTier = higherTiers.length > 0 ? higherTiers[0] : pack;
+    const targetSetIds = targetTier.setIds;
+    const luckySetId = targetSetIds[Math.floor(Math.random() * targetSetIds.length)];
+    return {
+      setId: luckySetId,
+      isHighTier: true,
+      isLuckyHit: true,
+      bonusPacksCount: 0,
+      tierGap: 0
+    };
+  }
+
+  // 4. Standard Tier Roll
   const standardRoll = Math.random();
 
-  if (tierIndex <= 0 || standardRoll < 0.60) {
-    const randomIndex = Math.floor(Math.random() * pack.setIds.length);
+  if (tierIndex <= 0 || standardRoll < 0.70) {
+    const selectedSetId = pack.setIds[Math.floor(Math.random() * pack.setIds.length)];
     return {
-      setId: pack.setIds[randomIndex],
+      setId: selectedSetId,
       isHighTier: true,
       bonusPacksCount: 0,
       tierGap: 0
     };
   } else {
-    // 40% chance: User loses the standard roll and gets a lower tier set with pity bonus packs
+    // Pity lower roll
     const targetLowerTierIndex = Math.floor(Math.random() * tierIndex);
     const targetLowerPack = packList[targetLowerTierIndex];
     const lowerSetIds = (targetLowerPack.setIds && targetLowerPack.setIds.length > 0)
@@ -257,16 +296,15 @@ export function rollMysteryPackResult(pack: MysteryPackConfig): MysteryPackResul
     const selectedSetId = lowerSetIds[Math.floor(Math.random() * lowerSetIds.length)];
     const tierGap = tierIndex - targetLowerTierIndex;
 
-    // Calculate pity bonus packs based on tier gap to compensate for the lower-tier roll
     let bonusPacksCount = 2;
     if (tierGap >= 4) {
-      bonusPacksCount = Math.floor(Math.random() * 2) + 5; // 5 to 6 bonus packs
+      bonusPacksCount = Math.floor(Math.random() * 2) + 5;
     } else if (tierGap === 3) {
-      bonusPacksCount = Math.floor(Math.random() * 2) + 4; // 4 to 5 bonus packs
+      bonusPacksCount = Math.floor(Math.random() * 2) + 4;
     } else if (tierGap === 2) {
-      bonusPacksCount = Math.floor(Math.random() * 2) + 3; // 3 to 4 bonus packs
+      bonusPacksCount = Math.floor(Math.random() * 2) + 3;
     } else {
-      bonusPacksCount = Math.floor(Math.random() * 2) + 2; // 2 to 3 bonus packs
+      bonusPacksCount = Math.floor(Math.random() * 2) + 2;
     }
 
     return {

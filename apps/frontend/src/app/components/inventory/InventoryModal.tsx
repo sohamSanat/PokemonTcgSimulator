@@ -368,8 +368,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                             <p className="text-[10px] text-gray-300 line-clamp-2 mt-0.5 font-medium">
                               {cfg.description}
                             </p>
-                            <div className="text-xs text-emerald-400 font-mono font-extrabold mt-1">
-                              ${cfg.price.toFixed(2)}
+                            <div className="flex items-center justify-between mt-1">
+                              <div className="text-xs text-emerald-400 font-mono font-extrabold">
+                                ${cfg.price.toFixed(2)}
+                              </div>
+                              {cfg.oddsBreakdown && (
+                                <div className="text-[9px] font-mono text-purple-300 bg-purple-950/70 border border-purple-500/30 px-1.5 py-0.5 rounded">
+                                  Grail: <span className="text-amber-400 font-black">{cfg.oddsBreakdown.jackpot}%</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
