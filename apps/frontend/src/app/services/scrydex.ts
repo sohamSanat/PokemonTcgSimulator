@@ -110,7 +110,14 @@ export async function loadJapaneseMetadata(): Promise<void> {
           .then(data => { if (Object.keys(data).length > 0) enCardPricesCache = data; })
           .catch(e => console.error('Failed to load en-card-prices.json:', e));
 
-    await Promise.all([topCardsPromise, cardNamesPromise, jaPricesPromise, enPricesPromise]);
+    const dictPromise = (pokeSpeciesDictCache && Object.keys(pokeSpeciesDictCache).length > 0)
+      ? Promise.resolve()
+      : fetch(`${base}pokemon-ja-en-dict.json`)
+          .then(res => res.ok ? res.json() : {})
+          .then(data => { if (Object.keys(data).length > 0) pokeSpeciesDictCache = data; })
+          .catch(e => console.error('Failed to load pokemon-ja-en-dict.json:', e));
+
+    await Promise.all([topCardsPromise, cardNamesPromise, jaPricesPromise, enPricesPromise, dictPromise]);
 
     if (!jaSetsCache) jaSetsCache = [];
     if (!jaEnNamesCache) jaEnNamesCache = {};
@@ -124,6 +131,118 @@ export async function loadJapaneseMetadata(): Promise<void> {
   });
 
   return metadataLoadingPromise;
+}
+
+export function translateJapaneseCardName(rawName: string, cardId?: string): string {
+  if (!rawName) return 'Pokemon Card';
+
+  // 1. Try exact lookup in jaCardNamesCache if cardId is available
+  if (cardId && jaCardNamesCache) {
+    const rawSetId = cardId.split('-')[0]?.replace(/_ja$/i, '').toLowerCase() || '';
+    const localNum = cardId.split('-')[1] || '';
+    const numStr = parseInt(localNum, 10).toString();
+    const lookup = jaCardNamesCache[cardId] ||
+      jaCardNamesCache[`${rawSetId}_ja-${localNum}`] ||
+      jaCardNamesCache[`${rawSetId}-${localNum}`] ||
+      jaCardNamesCache[`${rawSetId}_ja-${numStr}`] ||
+      jaCardNamesCache[`${rawSetId}-${numStr}`];
+    if (lookup) return lookup;
+  }
+
+  const hasJapaneseChars = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(rawName);
+  if (!hasJapaneseChars) return rawName;
+
+  let translated = rawName;
+  if (pokeSpeciesDictCache) {
+    const keys = Object.keys(pokeSpeciesDictCache).sort((a, b) => b.length - a.length);
+    for (const jaKey of keys) {
+      if (translated.includes(jaKey)) {
+        translated = translated.replace(new RegExp(jaKey, 'g'), pokeSpeciesDictCache[jaKey]);
+      }
+    }
+  }
+
+  if (/[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(translated)) {
+    const suffixMatch = translated.match(/([A-Za-z0-9\s\-]+)$/);
+    if (suffixMatch && suffixMatch[1].trim()) {
+      return `Special ${suffixMatch[1].trim()}`;
+    }
+  }
+
+  return translated.trim() || 'Pokemon Card';
+}
+
+export function resolveCardRarity(card: any): string {
+  const name = String(card.name || card.pokemon?.name || '').toUpperCase();
+  const rawRarity = String(card.rarity || '').trim();
+  const rawRarityLower = rawRarity.toLowerCase();
+
+  if (name.includes('VMAX') || name.includes('VSTAR')) {
+    return 'Ultra Rare';
+  }
+
+  if (name.includes(' EX') || name.includes('EX ') || name.endsWith(' EX') || name.includes(' GX') || name.includes('MEGA') || name.includes('BREAK')) {
+    return 'Double Rare';
+  }
+
+  if (name.includes('SECRET') || name.includes('GOLD') || rawRarityLower.includes('secret') || rawRarityLower === 'sr') {
+    return 'Secret Rare';
+  }
+  if (name.includes('SPECIAL ART') || name.includes('ALT ART') || rawRarityLower.includes('special illustration') || rawRarityLower === 'sar' || rawRarityLower === 'sir') {
+    return 'Special Illustration Rare';
+  }
+  if (name.includes('ILLUSTRATION RARE') || rawRarityLower === 'ar' || rawRarityLower === 'ir') {
+    return 'Illustration Rare';
+  }
+
+  if (rawRarity && rawRarityLower !== 'common' && rawRarityLower !== 'c' && rawRarityLower !== 'uncommon' && rawRarityLower !== 'u') {
+    return rawRarity;
+  }
+
+  const idStr = String(card.id || card.localId || '');
+  const matchNum = idStr.match(/[-_](\d+)$/);
+  if (matchNum) {
+    const num = parseInt(matchNum[1], 10);
+    if (!isNaN(num) && num > 100) {
+      return 'Secret Rare';
+    }
+  }
+
+  return rawRarity && rawRarityLower !== 'common' ? rawRarity : 'Rare';
+}
+
+export function sanitizeRewardCard(card: any): any {
+  if (!card) return card;
+
+  const cardId = card.id || card.originalId || '';
+  const translatedName = translateJapaneseCardName(card.name || card.pokemon?.name || '', cardId);
+  const cardWithNewName = { ...card, name: translatedName };
+  const resolvedRarity = resolveCardRarity(cardWithNewName);
+
+  let realPrice = resolveVendorCardRealPrice(cardWithNewName);
+  if (!realPrice || realPrice <= 0) {
+    realPrice = card.value || card.currentPrice || 15.00;
+  }
+  realPrice = Number(realPrice.toFixed(2));
+
+  const imgUrl = card.imageUrl || card.images?.large || card.images?.small || '';
+
+  return {
+    ...card,
+    name: translatedName,
+    rarity: resolvedRarity,
+    value: realPrice,
+    currentPrice: realPrice,
+    imageUrl: imgUrl,
+    images: card.images || { large: imgUrl, small: imgUrl },
+    pokemon: {
+      ...card,
+      name: translatedName,
+      rarity: resolvedRarity,
+      imageUrl: imgUrl,
+      images: card.images || { large: imgUrl, small: imgUrl }
+    }
+  };
 }
 
 export function getJapaneseCardRealPrice(setIdOrKey: string, localIdOrNum?: string | number): number | undefined {

@@ -8,7 +8,7 @@
 import { auth, db } from '../../services/firebase';
 import { doc, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { trackMissionProgress, collectMissionsForSync, restoreMissionsFromSync, buildMissionsPayloadFromGuest } from '../../services/missions';
-import { resolveVendorCardRealPrice } from '../../services/scrydex';
+import { resolveVendorCardRealPrice, sanitizeRewardCard } from '../../services/scrydex';
 import promoCardsData from '../../data/promo_cards.json';
 import type { BulkCard, CatalogueStore, Card, Binder, SetOption, GenerationOption, UserProfile, PricePoint } from './types';
 import { MASTER_SET_GENERATIONS, SAMPLE_CARDS, SAMPLE_BINDERS } from './constants';
@@ -232,11 +232,26 @@ export function getCollectedCards(): Card[] {
         }
       }
 
-      // Repair generic hardcoded $0.50 price with real live market price!
-      if (!c.currentPrice || c.currentPrice <= 0.50) {
-        const resolved = resolveVendorCardRealPrice(c);
-        if (resolved && resolved > 0.50) {
-          c.currentPrice = Number(resolved.toFixed(2));
+      // Repair card name if in Japanese, rarity if Common for hit cards, and price!
+      const hasJaChars = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(c.name || '');
+      const isCommonHit = (c.name || '').match(/VMAX|VSTAR| EX|EX | GX|MEGA/i) && (!c.rarity || c.rarity.toLowerCase() === 'common' || c.rarity.toLowerCase() === 'c');
+
+      if (hasJaChars || isCommonHit || !c.currentPrice || c.currentPrice <= 0.50) {
+        const sanitized = sanitizeRewardCard(c);
+        const cAny = c as any;
+        if (sanitized.name && sanitized.name !== c.name) {
+          c.name = sanitized.name;
+          if (cAny.pokemon) cAny.pokemon.name = sanitized.name;
+          repaired = true;
+        }
+        if (sanitized.rarity && sanitized.rarity !== c.rarity) {
+          c.rarity = sanitized.rarity;
+          if (cAny.pokemon) cAny.pokemon.rarity = sanitized.rarity;
+          repaired = true;
+        }
+        if (sanitized.currentPrice && (sanitized.currentPrice !== c.currentPrice || !c.currentPrice || c.currentPrice <= 0.50)) {
+          c.currentPrice = sanitized.currentPrice;
+          if (cAny.pokemon) cAny.pokemon.currentPrice = sanitized.currentPrice;
           repaired = true;
         }
       }

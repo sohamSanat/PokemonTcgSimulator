@@ -1,6 +1,7 @@
 import { PokemonCard } from './tcgdex';
 import { saveCollectedCard, getStorageKey, syncToFirestore } from '../components/binder/types';
 import promoCardsData from '../data/promo_cards.json';
+import { sanitizeRewardCard } from './scrydex';
 
 // --- Types ---
 export interface Mission {
@@ -46,12 +47,13 @@ const PROMO_CARDS_POOL = promoCardsData as any[];
 
 function getRandomRewardCard(promoTitle: string) {
   if (!PROMO_CARDS_POOL || PROMO_CARDS_POOL.length === 0) return undefined;
-  const card = PROMO_CARDS_POOL[Math.floor(Math.random() * PROMO_CARDS_POOL.length)];
-  const imgUrl = card.images?.large || card.images?.small || card.imageUrl || '';
+  const rawCard = PROMO_CARDS_POOL[Math.floor(Math.random() * PROMO_CARDS_POOL.length)];
+  const sanitized = sanitizeRewardCard(rawCard);
+  const imgUrl = sanitized.imageUrl || sanitized.images?.large || sanitized.images?.small || '';
   return {
-    ...card,
+    ...sanitized,
     imageUrl: imgUrl,
-    images: card.images || { large: imgUrl, small: imgUrl },
+    images: sanitized.images || { large: imgUrl, small: imgUrl },
     isVendorCatalog: false,
     promoTitle
   };
@@ -767,12 +769,12 @@ export function claimMissionReward(missionId: string): {
 
   // 2. Add promo reward card to binder if included
   if (mission.rewardCard) {
-    const promoCard = mission.rewardCard;
+    const promoCard = sanitizeRewardCard(mission.rewardCard);
     const imgUrl = promoCard.imageUrl || promoCard.images?.large || promoCard.images?.small || '';
     saveCollectedCard({
       ...promoCard,
-      value: promoCard.value || 150,
-      currentPrice: promoCard.value || 150,
+      value: promoCard.value || promoCard.currentPrice || 15,
+      currentPrice: promoCard.currentPrice || promoCard.value || 15,
       imageUrl: imgUrl,
       isVendorCatalog: false,
       pokemon: {
