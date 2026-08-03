@@ -233,26 +233,31 @@ export function getCollectedCards(): Card[] {
       }
 
       // Repair card name if in Japanese, rarity if Common for hit cards, and price!
-      const hasJaChars = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(c.name || '');
-      const isCommonHit = (c.name || '').match(/VMAX|VSTAR| EX|EX | GX|MEGA/i) && (!c.rarity || c.rarity.toLowerCase() === 'common' || c.rarity.toLowerCase() === 'c');
+      const nameStr = String(c.name || '');
+      const hasJaChars = /[\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\uFF00-\uFFEF\u4E00-\u9FAF]/.test(nameStr);
+      const isCommonHit = Boolean(nameStr.match(/VMAX|VSTAR| EX|EX | GX|MEGA/i)) && (!c.rarity || c.rarity.toLowerCase() === 'common' || c.rarity.toLowerCase() === 'c');
 
       if (hasJaChars || isCommonHit || !c.currentPrice || c.currentPrice <= 0.50) {
-        const sanitized = sanitizeRewardCard(c);
-        const cAny = c as any;
-        if (sanitized.name && sanitized.name !== c.name) {
-          c.name = sanitized.name;
-          if (cAny.pokemon) cAny.pokemon.name = sanitized.name;
-          repaired = true;
-        }
-        if (sanitized.rarity && sanitized.rarity !== c.rarity) {
-          c.rarity = sanitized.rarity;
-          if (cAny.pokemon) cAny.pokemon.rarity = sanitized.rarity;
-          repaired = true;
-        }
-        if (sanitized.currentPrice && (sanitized.currentPrice !== c.currentPrice || !c.currentPrice || c.currentPrice <= 0.50)) {
-          c.currentPrice = sanitized.currentPrice;
-          if (cAny.pokemon) cAny.pokemon.currentPrice = sanitized.currentPrice;
-          repaired = true;
+        try {
+          const sanitized = sanitizeRewardCard(c);
+          const cAny = c as any;
+          if (sanitized.name && sanitized.name !== c.name) {
+            c.name = sanitized.name;
+            if (cAny.pokemon) cAny.pokemon.name = sanitized.name;
+            repaired = true;
+          }
+          if (sanitized.rarity && sanitized.rarity !== c.rarity) {
+            c.rarity = sanitized.rarity;
+            if (cAny.pokemon) cAny.pokemon.rarity = sanitized.rarity;
+            repaired = true;
+          }
+          if (sanitized.currentPrice && (sanitized.currentPrice !== c.currentPrice || !c.currentPrice || c.currentPrice <= 0.50)) {
+            c.currentPrice = sanitized.currentPrice;
+            if (cAny.pokemon) cAny.pokemon.currentPrice = sanitized.currentPrice;
+            repaired = true;
+          }
+        } catch (err) {
+          console.error('Failed to sanitize collected card:', err);
         }
       }
     }

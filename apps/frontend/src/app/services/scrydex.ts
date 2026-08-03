@@ -156,8 +156,8 @@ export function translateJapaneseCardName(rawName: string, cardId?: string): str
   if (pokeSpeciesDictCache) {
     const keys = Object.keys(pokeSpeciesDictCache).sort((a, b) => b.length - a.length);
     for (const jaKey of keys) {
-      if (translated.includes(jaKey)) {
-        translated = translated.replace(new RegExp(jaKey, 'g'), pokeSpeciesDictCache[jaKey]);
+      if (jaKey && translated.includes(jaKey)) {
+        translated = translated.split(jaKey).join(pokeSpeciesDictCache[jaKey]);
       }
     }
   }
