@@ -26,22 +26,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user?.email?.toLowerCase() === 'admin@gmail.com') {
-        localStorage.setItem('is_admin_mode', 'true');
-        window.dispatchEvent(new Event('storage'));
-        window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
+      try {
+        setCurrentUser(user);
+        if (user?.email?.toLowerCase() === 'admin@gmail.com') {
+          localStorage.setItem('is_admin_mode', 'true');
+          window.dispatchEvent(new Event('storage'));
+          window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
+        }
+        
+        // Import store directly to avoid circular ESM export issues with types.ts
+        try {
+          const storeModule = await import('../components/binder/store');
+          if (storeModule && typeof storeModule.listenToFirestore === 'function') {
+            storeModule.listenToFirestore(user ? user.uid : null);
+          }
+        } catch (e) {
+          console.error('Failed to initialize listenToFirestore:', e);
+        }
+      } catch (err) {
+        console.error('Auth state change error:', err);
+      } finally {
+        setLoading(false);
       }
-      if (user) {
-        import('../components/binder/types').then(module => {
-          module.listenToFirestore(user.uid);
-        });
-      } else {
-        import('../components/binder/types').then(module => {
-          module.listenToFirestore(null);
-        });
-      }
-      setLoading(false);
     });
 
     return unsubscribe;
