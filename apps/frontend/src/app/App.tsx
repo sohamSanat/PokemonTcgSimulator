@@ -39,6 +39,7 @@ import { ChaseCardsModal } from './components/app/ChaseCardsModal';
 import { OutofPassesModal } from './components/app/OutofPassesModal';
 import { InsufficientCashModal } from './components/app/InsufficientCashModal';
 import { AppHeader } from './components/layout/AppHeader';
+import { PackOpeningConsole } from './components/app/PackOpeningConsole';
 import { FALLBACK_POKEMON_CARDS, OVERRIDE_CARD_PRICES, NAME_OVERRIDE_PRICES, toTitleCase, generateFallbackPack, ensureMostExpensiveLast } from './data/fallbackCards';
 
 
@@ -1676,271 +1677,27 @@ export default function App() {
  ) : (
  <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
- {/* Unified Command & Stats Console HUD */}
- <motion.div
- initial={{ opacity: 0, y: 15 }}
- animate={{ opacity: 1, y: 0 }}
- transition={{ duration: 0.4, delay: 0.1 }}
- className="w-full max-w-4xl mx-auto mb-6 shrink-0 rounded-3xl bg-gradient-to-b from-[#161622]/90 via-[#101018]/90 to-[#0a0a10]/95 border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.12)] p-4 sm:p-5 relative overflow-hidden z-20"
- >
- {/* Subtle ambient glowing background glow */}
- <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
- {/* Top Grid: Financial Performance & 5-Min Lucky Drop Pods */}
- <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3.5 relative z-10">
- {/* Pod 1: Pack Cost & Total Spent (Combined Column) */}
- <div className="bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group">
- <div className="flex items-center justify-between pb-2 border-b border-white/10">
- <span className="flex items-center gap-1.5 text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
- <Package className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
- Pack Cost
- </span>
- <span className="text-sm sm:text-base font-black font-mono tracking-tight text-white">
- ${getSetBoosterPrice(currentSet).toFixed(2)}
- </span>
- </div>
- <div className="flex items-center justify-between pt-2">
- <span className="flex items-center gap-1.5 text-gray-400 text-[11px] font-extrabold uppercase tracking-wider">
- <Coins className="w-3.5 h-3.5 text-blue-400 group-hover:scale-110 transition-transform" />
- Total Spent
- </span>
- <span className="text-sm sm:text-base font-black font-mono tracking-tight text-gray-200">
- ${sessionSpent.toFixed(2)}
- </span>
- </div>
- </div>
-
- {/* Pod 2: Value Opened & Net Return (Combined Column) */}
- <div className="bg-gradient-to-br from-amber-500/10 via-emerald-500/5 to-transparent border border-amber-500/30 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all group shadow-[inset_0_1px_2px_rgba(245,158,11,0.15)]">
- <div className="flex items-center justify-between pb-2 border-b border-white/10">
- <span className="flex items-center gap-1.5 text-amber-300/90 text-[11px] font-extrabold uppercase tracking-wider">
- <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
- Value Opened
- </span>
- <span className="text-sm sm:text-base font-black font-mono tracking-tight text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]">
- ${sessionTotal.toFixed(2)}
- </span>
- </div>
- <div className="flex items-center justify-between pt-2">
- <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider opacity-90">
- {(sessionTotal - sessionSpent) >= 0 ? (
- <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
- ) : (
- <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
- )}
- <span className={(sessionTotal - sessionSpent) >= 0 ? 'text-emerald-300' : 'text-rose-300'}>
- Net Return
- </span>
- </span>
- <span className={`text-sm sm:text-base font-black font-mono tracking-tight ${(sessionTotal - sessionSpent) >= 0
- ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]'
- : 'text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]'
- }`}>
- {(sessionTotal - sessionSpent) >= 0 ? '+' : '-'}${Math.abs(sessionTotal - sessionSpent).toFixed(2)}
- </span>
- </div>
- </div>
-
- {/* Pod 3: 5-Min Lucky Drop */}
- <div
- onClick={handleLuckyDropClick}
- className={`rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group ${
- luckyDropSeconds === 0
- ? 'bg-gradient-to-br from-amber-500/25 via-orange-500/20 to-purple-900/50 border border-amber-400/80 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)]'
- : 'bg-gradient-to-br from-purple-900/25 via-slate-900/40 to-indigo-950/40 border border-purple-500/30 hover:border-purple-400 shadow-[inset_0_1px_2px_rgba(168,85,247,0.2)]'
- }`}
- >
- <div className="flex items-center justify-between text-purple-300 text-[11px] font-extrabold uppercase tracking-wider">
- <span className="flex items-center gap-1.5 truncate">
- <Gift className={`w-3.5 h-3.5 shrink-0 ${luckyDropSeconds === 0 ? 'text-amber-300 animate-bounce' : 'text-purple-400 group-hover:scale-110 transition-transform'}`} />
- <span className="truncate">5-Min Lucky Drop</span>
- </span>
- <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded-full border shrink-0 ${
- luckyDropSeconds === 0 ? 'bg-amber-400 text-black border-black animate-pulse shadow-sm' : 'bg-black/60 text-purple-300 border-purple-500/40'
- }`}>
- {luckyDropSeconds === 0 ? 'READY!' : 'IN PROGRESS'}
- </span>
- </div>
-
- <div className="my-1.5">
- {luckyDropSeconds === 0 ? (
- <button
- onClick={(e) => { e.stopPropagation(); handleLuckyDropClick(); }}
- className="w-full py-1.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-black font-black text-[11px] uppercase tracking-wider shadow-[0_2px_10px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 animate-pulse"
- >
- <span></span>
- <span>Claim Free Drop!</span>
- </button>
- ) : (
- <div className="flex items-center justify-between">
- <span className="text-[11px] text-gray-400 font-semibold">Next Drop:</span>
- <span className="text-sm font-black font-mono text-purple-200 tracking-tight">
- {formatTimer(luckyDropSeconds)}
- </span>
- </div>
- )}
- </div>
-
- <div className="w-full">
- <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/10">
- <div
- className={`h-full transition-all duration-1000 ${
- luckyDropSeconds === 0
- ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-purple-500 shadow-[0_0_10px_rgba(245,158,11,0.9)]'
- : 'bg-gradient-to-r from-purple-500 to-indigo-400'
- }`}
- style={{ width: `${Math.round(((300 - luckyDropSeconds) / 300) * 100)}%` }}
- />
- </div>
- </div>
- </div>
- </div>
-
- {/* Standalone Row: Tasks & Missions Hub */}
- <div
- onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
- className="bg-gradient-to-r from-[#38bdf8]/15 via-[#0284c7]/10 to-indigo-900/20 border border-[#38bdf8]/40 hover:border-[#38bdf8] rounded-2xl p-3.5 sm:p-4 mb-4 relative z-10 flex flex-col gap-3 cursor-pointer transition-all shadow-[inset_0_1px_2px_rgba(56,189,248,0.2),0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.25)] group"
- >
- {/* Header: Title & Action Button */}
- <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 w-full">
- <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#38bdf8] via-[#0284c7] to-indigo-600 border border-white/40 flex items-center justify-center text-white shadow-[0_0_15px_rgba(56,189,248,0.5)] shrink-0 group-hover:scale-105 transition-transform">
- <ListChecks className="w-5 h-5 text-white" />
- </div>
- <div>
- <div className="flex items-center gap-2 flex-wrap">
- <span className="text-white text-sm sm:text-base font-black uppercase tracking-wider group-hover:text-[#38bdf8] transition-colors">
- Tasks & Free Packs Hub
- </span>
- <span className="bg-[#38bdf8]/20 text-[#38bdf8] text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-[#38bdf8]/40 uppercase tracking-widest">
- Daily Free Allowances
- </span>
- </div>
- <p className="text-xs text-gray-300 font-medium mt-0.5">
- Earn free daily booster passes, complete missions & claim bonus rewards
- </p>
- </div>
- </div>
-
- <div className="w-full sm:w-auto flex justify-end shrink-0 pt-1 sm:pt-0">
- <button
- onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setActiveTab('missions'); }}
- className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#38bdf8] via-[#0284c7] to-indigo-600 hover:from-[#38bdf8]/90 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.6)] active:scale-95"
- >
- <ListChecks className="w-4 h-4" />
- <span>Open Tasks & Missions</span>
- </button>
- </div>
- </div>
-
- {/* 4 Prominent Stat Badges Grid */}
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full pt-1">
- {/* Stat 1: EN Free Packs */}
- <div className="bg-black/50 hover:bg-black/70 border border-[#38bdf8]/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
- <div className="flex items-center gap-2">
- <span className="text-base sm:text-lg"></span>
- <div>
- <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-gray-300">
- Free EN Packs
- </div>
- <div className="text-[9px] text-gray-400 font-semibold">Daily Limit</div>
- </div>
- </div>
- <span className="text-sm sm:text-base font-black font-mono text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
- {dailyFreePacks.english}/5
- </span>
- </div>
-
- {/* Stat 2: JP Free Packs */}
- <div className="bg-black/50 hover:bg-black/70 border border-[#38bdf8]/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
- <div className="flex items-center gap-2">
- <span className="text-base sm:text-lg"></span>
- <div>
- <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-gray-300">
- Free JP Packs
- </div>
- <div className="text-[9px] text-gray-400 font-semibold">Daily Limit</div>
- </div>
- </div>
- <span className="text-sm sm:text-base font-black font-mono text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
- {dailyFreePacks.japanese}/5
- </span>
- </div>
-
- {/* Stat 3: Unopened Packs Inventory */}
- <div className="bg-black/50 hover:bg-black/70 border border-amber-500/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
- <div className="flex items-center gap-2">
- <span className="text-base sm:text-lg"></span>
- <div>
- <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300/90">
- Saved Packs
- </div>
- <div className="text-[9px] text-gray-400 font-semibold">In Inventory</div>
- </div>
- </div>
- <span className="text-sm sm:text-base font-black font-mono text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]">
- {earnedSetPacks.reduce((sum, p) => sum + p.count, 0) + ownedMysteryPacks.reduce((sum, p) => sum + p.count, 0)}
- </span>
- </div>
-
- {/* Stat 4: Daily Cash Balance */}
- <div className="bg-black/50 hover:bg-black/70 border border-emerald-500/30 rounded-xl p-2.5 sm:p-3 flex items-center justify-between transition-all">
- <div className="flex items-center gap-2">
- <span className="text-base sm:text-lg"></span>
- <div>
- <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300/90">
- Daily Cash
- </div>
- <div className="text-[9px] text-gray-400 font-semibold">Opening Fund</div>
- </div>
- </div>
- <span className="text-sm sm:text-base font-black font-mono text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)] truncate">
- {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
- </span>
- </div>
- </div>
- </div>
-
- {/* Bottom Bar: Pack Progress & Action Buttons */}
- <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-white/10 relative z-10">
- {/* Live Progress Indicator & Double Hit Badge */}
- <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-2xl px-4 py-2 w-full sm:w-auto justify-between sm:justify-start">
- <div className="flex items-center gap-2 text-xs font-bold text-gray-300">
- <Layers className="w-4 h-4 text-amber-400" />
- <span>{packStage === 'unopened' ? 'Ready to Rip:' : 'Revealed:'}</span>
- <span className="font-mono text-white text-sm">{packStage === 'unopened' ? 0 : (cards.length - remainingCards.length)}</span>
- <span className="text-gray-500">/</span>
- <span className="font-mono text-gray-400 text-sm">{cards.length || 11}</span>
- </div>
- <div className="w-20 sm:w-28 h-2 bg-white/10 rounded-full overflow-hidden shrink-0">
- <div
- className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(245,158,11,0.8)]"
- style={{ width: `${packStage === 'unopened' ? 0 : Math.round(((cards.length - remainingCards.length) / (cards.length || 11)) * 100)}%` }}
- />
- </div>
- </div>
-
- {/* Action Buttons */}
- <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
- <button
- onClick={handleResetStats}
- disabled={isLoadingPack}
- className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 text-gray-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 disabled:opacity-40 shrink-0"
- >
- <RefreshCcw className={`w-3.5 h-3.5 ${isLoadingPack ? 'animate-spin' : ''}`} />
- Reset Stats
- </button>
- <button
- onClick={() => { void handleResetPack(); }}
- disabled={isLoadingPack}
- className="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_4px_20px_rgba(245,158,11,0.5),inset_0_1px_2px_rgba(255,255,255,0.3)] hover:shadow-[0_6px_30px_rgba(245,158,11,0.8)] hover:from-amber-400 hover:to-orange-400 transition-all border border-amber-300/50 cursor-pointer active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shrink-0"
- >
- {isLoadingPack && <Loader2 className="w-4 h-4 animate-spin" />}
- Open Another Pack!
- </button>
- </div>
- </div>
- </motion.div>
+        {/* Pack Opening Command & Control HUD Console */}
+        <PackOpeningConsole
+          currentSet={currentSet}
+          sessionSpent={sessionSpent}
+          sessionTotal={sessionTotal}
+          luckyDropSeconds={luckyDropSeconds}
+          formatTimer={formatTimer}
+          handleLuckyDropClick={handleLuckyDropClick}
+          dailyFreePacks={dailyFreePacks}
+          earnedSetPacks={earnedSetPacks}
+          ownedMysteryPacks={ownedMysteryPacks}
+          dailyCash={dailyCash}
+          packStage={packStage}
+          cards={cards}
+          remainingCards={remainingCards}
+          handleResetStats={handleResetStats}
+          isLoadingPack={isLoadingPack}
+          handleResetPack={handleResetPack}
+          setActiveTab={setActiveTab}
+          sound={sound}
+        />
 
  {/* Mobile-Only Set Intelligence & Top Chase Grails Bar (Hidden on Desktop >= lg) */}
  <div className="flex lg:hidden flex-col gap-2.5 w-full max-w-md mx-auto px-3 my-3 shrink-0">
