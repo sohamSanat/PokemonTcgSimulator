@@ -9,7 +9,7 @@ interface ChaseCardsModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentSet: TCGDexSetSummary | null;
-  chaseCardsForActiveSet: Array<{ card: PokemonCard; value: number }>;
+  chaseCardsForActiveSet: Array<{ card: PokemonCard; value: number; setName?: string }>;
   isChaseCardsReady: boolean;
   onSelectChaseCard: (card: PokemonCard, value: number, index: number) => void;
 }
@@ -114,7 +114,7 @@ export function ChaseCardsModal({
                   ))}
                 </>
               ) : chaseCardsForActiveSet.length > 0 ? (
-                chaseCardsForActiveSet.map(({ card, value }, idx) => (
+                chaseCardsForActiveSet.map(({ card, value, setName }, idx) => (
                   <div
                     key={card.id || idx}
                     onClick={() => {
@@ -163,7 +163,7 @@ export function ChaseCardsModal({
                         {card.name}
                       </h4>
                       <div className="text-[9px] text-gray-400 truncate font-semibold mt-0.5">
-                        {card.rarity || 'Secret / Ultra Rare'}
+                        {setName || card.rarity || 'Secret / Ultra Rare'}
                       </div>
                       <div className="mt-1.5 flex items-center justify-between w-full bg-black/40 px-2 py-1 rounded-lg border border-white/5">
                         <span className="text-[9px] font-bold text-gray-400 uppercase">Est. Value</span>

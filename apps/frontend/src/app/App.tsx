@@ -31,7 +31,8 @@ import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
 import InventoryModal from './components/inventory/InventoryModal';
 import { LuckyDropModal } from './components/LuckyDropModal';
-import { getRemainingLuckyDropSeconds, claimLuckyDropReward } from './services/luckyDrop';
+import { getRemainingLuckyDropSeconds, claimLuckyDropReward, type LuckyDropReward } from './services/luckyDrop';
+import { getMysteryPackChaseCards, type MysteryPackChaseCard } from './services/mysteryPackChaseService';
 import { SetPurchaseOptionsModal } from './components/proceduralBox/SetPurchaseOptionsModal';
 import { BoosterBoxUnboxingModal } from './components/proceduralBox/BoosterBoxUnboxingModal';
 import { imageFallbacks, type CardData, DEFAULT_PACK_ARTS, getPackArtsForSet, getSetLogoUrl, getSetBoosterPrice, setPackPrices } from './utils/packUtils';
@@ -549,7 +550,7 @@ export default function App() {
  const [ownedMysteryPacks, setOwnedMysteryPacks] = useState<OwnedMysteryPack[]>(() => getOwnedMysteryPacks());
  const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
  const [luckyDropSeconds, setLuckyDropSeconds] = useState<number>(() => getRemainingLuckyDropSeconds());
- const [claimedLuckyPack, setClaimedLuckyPack] = useState<MysteryPackConfig | null>(null);
+ const [claimedLuckyPack, setClaimedLuckyPack] = useState<LuckyDropReward | null>(null);
  const [isLuckyDropModalOpen, setIsLuckyDropModalOpen] = useState<boolean>(false);
  const [purchaseTargetSet, setPurchaseTargetSet] = useState<any | null>(null);
  const [unboxingBoxTarget, setUnboxingBoxTarget] = useState<{
@@ -580,16 +581,30 @@ export default function App() {
  }
  };
 
- const handleLuckyDropOpenNow = (pack: MysteryPackConfig) => {
+ const handleLuckyDropOpenNow = async (reward: LuckyDropReward) => {
  setIsLuckyDropModalOpen(false);
  setActiveTab('pack');
- setSelectedLanguage(pack.language);
- const result = rollMysteryPackResult(pack);
- loadSetAndGeneratePack(result.setId, pack.language, pack, result);
+ setSelectedLanguage(reward.language);
+ if (reward.type === 'mystery' && reward.mysteryPackConfig) {
+ const result = rollMysteryPackResult(reward.mysteryPackConfig);
+ await loadSetAndGeneratePack(result.setId, reward.language, reward.mysteryPackConfig, result);
+ } else if (reward.type === 'standard' && reward.setId) {
+ await loadSetAndGeneratePack(reward.setId, reward.language);
+ }
  };
 
- const handleLuckyDropAddToInventory = (pack: MysteryPackConfig) => {
- addOwnedMysteryPacks(pack.id, 1);
+ const handleLuckyDropAddToInventory = (reward: LuckyDropReward) => {
+ if (reward.type === 'mystery' && reward.mysteryPackConfig) {
+ addOwnedMysteryPacks(reward.mysteryPackConfig.id, 1);
+ } else if (reward.type === 'standard' && reward.setId) {
+ addEarnedSetPacks([{
+ setId: reward.setId,
+ setName: reward.setName || reward.name,
+ language: reward.language,
+ count: 1
+ }]);
+ setEarnedSetPacks(getEarnedSetPacks());
+ }
  setIsLuckyDropModalOpen(false);
  sound.playPackOpen();
  };
@@ -1208,44 +1223,68 @@ export default function App() {
  }, [cards]);
 
  const chaseCardsForActiveSet = React.useMemo(() => {
- if (!currentSet || !currentSet.cards || currentSet.cards.length === 0) return [];
- const candidates = currentSet.cards.filter(c => !c.name.toLowerCase().includes('energy') && !c.id.toLowerCase().includes('energy'));
- const mapped = candidates.map((card, idx) => {
- const cached = cardFullCache.get(card.id) || scrydexCardFullCache.get(card.id);
- const baseUrl = cached?.image || card.image || `https://assets.tcgdex.net/en/swsh/${currentSet.id}/${card.localId || card.id?.split('-').pop() || idx + 1}`;
- const poke: PokemonCard = {
- ...card,
- id: cached?.id || card.id,
- name: cached?.name || card.name,
- images: {
- small: getCardImageUrl(baseUrl, 'low'),
- large: getCardImageUrl(baseUrl, 'high'),
- },
- rarity: cached?.rarity || card.rarity || 'Common',
- pricing: cached?.pricing || (card as any).pricing,
- tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
- cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
- illustrator: cached?.illustrator || (card as any).illustrator,
- };
- return {
- card: poke,
- value: getRealCardPrice(poke)
- };
- });
+    if (!currentSet || !currentSet.cards || currentSet.cards.length === 0) return [];
+    const candidates = currentSet.cards.filter(c => !c.name.toLowerCase().includes('energy') && !c.id.toLowerCase().includes('energy'));
+    const mapped = candidates.map((card, idx) => {
+      const cached = cardFullCache.get(card.id) || scrydexCardFullCache.get(card.id);
+      const baseUrl = cached?.image || card.image || `https://assets.tcgdex.net/en/swsh/${currentSet.id}/${card.localId || card.id?.split('-').pop() || idx + 1}`;
+      const poke: PokemonCard = {
+        ...card,
+        id: cached?.id || card.id,
+        name: cached?.name || card.name,
+        images: {
+          small: getCardImageUrl(baseUrl, 'low'),
+          large: getCardImageUrl(baseUrl, 'high'),
+        },
+        rarity: cached?.rarity || card.rarity || 'Common',
+        pricing: cached?.pricing || (card as any).pricing,
+        tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
+        cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
+        illustrator: cached?.illustrator || (card as any).illustrator,
+      };
+      return {
+        card: poke,
+        value: getRealCardPrice(poke),
+        setName: currentSet.name
+      };
+    });
 
- const filtered = mapped.filter(item => {
- const r = (item.card.rarity || '').toLowerCase();
- const n = (item.card.name || '').toLowerCase();
- const isPlainItem = (n.includes('balloon') || n.includes('candy') || n.includes('switch') || n.includes('potion') || n.includes('ball') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special');
- if (isPlainItem && item.value < 10) return false;
- return item.value >= 1.50 || r.includes('secret') || r.includes('illustration') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('holo');
- });
+    const filtered = mapped.filter(item => {
+      const r = (item.card.rarity || '').toLowerCase();
+      const n = (item.card.name || '').toLowerCase();
+      const isPlainItem = (n.includes('balloon') || n.includes('candy') || n.includes('switch') || n.includes('potion') || n.includes('ball') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special');
+      if (isPlainItem && item.value < 10) return false;
+      return item.value >= 1.50 || r.includes('secret') || r.includes('illustration') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('holo');
+    });
 
- filtered.sort((a, b) => b.value - a.value);
- return filtered.slice(0, 12);
- }, [currentSet, cacheTick]);
+    filtered.sort((a, b) => b.value - a.value);
+    return filtered.slice(0, 12);
+  }, [currentSet, cacheTick]);
 
+  const [mysteryPackChaseCards, setMysteryPackChaseCards] = useState<MysteryPackChaseCard[]>([]);
 
+  useEffect(() => {
+    if (!currentMysteryPack) {
+      setMysteryPackChaseCards([]);
+      return;
+    }
+    let isMounted = true;
+    setIsChaseCardsReady(false);
+    void getMysteryPackChaseCards(currentMysteryPack).then(cards => {
+      if (isMounted) {
+        setMysteryPackChaseCards(cards);
+        setIsChaseCardsReady(true);
+      }
+    });
+    return () => { isMounted = false; };
+  }, [currentMysteryPack]);
+
+  const effectiveChaseCards = React.useMemo(() => {
+    if (currentMysteryPack && mysteryPackChaseCards.length > 0) {
+      return mysteryPackChaseCards;
+    }
+    return chaseCardsForActiveSet;
+  }, [currentMysteryPack, mysteryPackChaseCards, chaseCardsForActiveSet]);
 
  const flipTimesRef = useRef<Record<string | number, number>>({});
 
@@ -1714,11 +1753,11 @@ export default function App() {
  <div className="text-[10px] font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
  <span>Top Chase Grails</span>
  <span className="bg-amber-400/20 text-amber-300 px-1.5 py-0.2 rounded text-[9px] border border-amber-400/30">
- {chaseCardsForActiveSet.length} Grails
+ {effectiveChaseCards.length} Grails
  </span>
  </div>
  <div className="text-xs font-black text-white truncate mt-0.5">
- {currentSet?.name || 'Scarlet & Violet: Prismatic Evolutions'}
+ {currentMysteryPack ? currentMysteryPack.name : (currentSet?.name || 'Active Set')}
  </div>
  </div>
  </div>
@@ -1733,7 +1772,7 @@ export default function App() {
 
  {/* Bottom Row: Compact Top 3 Chase Cards Gallery for Mobile */}
  <div className="grid grid-cols-3 gap-2 w-full relative">
- {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
+ {!isChaseCardsReady || effectiveChaseCards.length === 0 ? (
  <div className="col-span-3 flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b from-[#181824]/95 via-[#12121c]/95 to-[#0b0b10]/95 border border-amber-500/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-md min-h-[135px]">
  {/* Ambient Shimmer Light Effect */}
  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.12),transparent_70%)] animate-pulse pointer-events-none" />
@@ -1753,7 +1792,7 @@ export default function App() {
  ))}
  </div>
  </div>
- ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
+ ) : effectiveChaseCards.slice(0, 3).map(({ card, value }, idx) => (
  <div
  key={card.id || idx}
  onClick={() => {
@@ -1860,7 +1899,7 @@ export default function App() {
 
  {/* Mini List of Top 3 Chase Cards with Card Image Beside Price */}
  <div className="space-y-2 relative">
- {!isChaseCardsReady || !currentSet || chaseCardsForActiveSet.length === 0 ? (
+ {!isChaseCardsReady || effectiveChaseCards.length === 0 ? (
  <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-gradient-to-b from-[#181824]/95 via-[#12121c]/95 to-[#0b0b10]/95 border border-amber-500/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-md min-h-[180px]">
  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.12),transparent_70%)] animate-pulse pointer-events-none" />
  <div className="flex items-center gap-2 mb-3 relative z-10">
@@ -1885,7 +1924,7 @@ export default function App() {
  ))}
  </div>
  </div>
- ) : chaseCardsForActiveSet.slice(0, 3).map(({ card, value }, idx) => (
+ ) : effectiveChaseCards.slice(0, 3).map(({ card, value }, idx) => (
  <div
  key={card.id || idx}
  onClick={() => {
@@ -2959,8 +2998,8 @@ export default function App() {
  <ChaseCardsModal
  isOpen={showChaseModal}
  onClose={() => setShowChaseModal(false)}
- currentSet={currentSet}
- chaseCardsForActiveSet={chaseCardsForActiveSet}
+ currentSet={currentMysteryPack ? { id: currentMysteryPack.id, name: currentMysteryPack.name } : currentSet}
+ chaseCardsForActiveSet={effectiveChaseCards}
  isChaseCardsReady={isChaseCardsReady}
  onSelectChaseCard={(card, value, idx) => {
  setShowChaseModal(false);
