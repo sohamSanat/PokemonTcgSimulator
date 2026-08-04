@@ -2534,7 +2534,7 @@ export default function App() {
  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
  >
  <Zap className="w-3.5 h-3.5 text-yellow-200" />
- <span>Rip Live </span>
+ <span>Select</span>
  </button>
  <button
  onClick={(e) => {
