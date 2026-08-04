@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  Coins,
-  X,
-  Wallet,
-  Repeat,
-  Search,
-  Check,
-  CheckCircle2
+  Coins, X, Wallet, Repeat, Search, Check, CheckCircle2, 
+  Sparkles, ArrowRight, ShieldCheck, DollarSign
 } from "lucide-react";
 import {
   getCollectedCards,
@@ -17,6 +12,7 @@ import {
   removeCollectedCard,
   type Card,
 } from '../binder/types';
+import { sound } from '../../services/sound';
 
 interface TradeModalProps {
   target: any;
@@ -69,20 +65,24 @@ export const TradeModal: React.FC<TradeModalProps> = ({
   const cashOk = cash <= cashBalance;
   const canComplete = covered >= price && cashOk && !done;
 
-  const toggleSelect = (id: string) =>
+  const toggleSelect = (id: string) => {
+    sound.playButtonClick();
     setSelected((prev) => {
       const n = new Set(prev);
       if (n.has(id)) n.delete(id);
       else n.add(id);
       return n;
     });
+  };
 
   const payFullCash = () => {
+    sound.playButtonClick();
     setCashStr(String(price));
     setSelected(new Set());
   };
 
   const autoPickTrade = () => {
+    sound.playButtonClick();
     const sorted = [...owned].sort((a, b) => (b.currentPrice || 0) - (a.currentPrice || 0));
     const n = new Set<string>();
     let sum = 0;
@@ -97,6 +97,8 @@ export const TradeModal: React.FC<TradeModalProps> = ({
 
   const complete = () => {
     if (!canComplete) return;
+    sound.playButtonClick();
+    sound.playLegendaryFanfare();
     spendCash(cashPaid);
     selected.forEach((id) => removeCollectedCard(id));
     if (change > 0 && onAddNetReturn) onAddNetReturn(change);
@@ -130,190 +132,221 @@ export const TradeModal: React.FC<TradeModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[500] bg-black/80 flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-3xl max-h-[92vh] bg-[#0b0e13] border border-[#1e293b] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[500] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+      <div className="w-full max-w-3xl max-h-[92vh] bg-[#0c0919]/95 border border-white/15 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden text-white font-sans">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e293b] bg-[#0e1117] shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-              <Coins className="w-4 h-4 text-slate-950" />
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-[#120d24]/90 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-400 p-[1px] shadow-[0_0_20px_rgba(16,185,129,0.3)] shrink-0">
+              <div className="w-full h-full rounded-2xl bg-[#0b0819] flex items-center justify-center text-emerald-400">
+                <Coins className="w-5 h-5" />
+              </div>
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-black text-white tracking-wide uppercase">Complete Your Purchase</h3>
-              <p className="text-[10px] font-mono text-[#94a3b8]">Pay with cash, trade cards, or both</p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">Trade Desk Checkout</h3>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-mono font-bold">
+                  {vendorName || 'VENDOR BOOTH'}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 font-medium">Pay with cash, trade binder cards, or combine both.</p>
             </div>
           </div>
+
           <button
-            onClick={onClose}
+            onClick={() => { sound.playButtonClick(); onClose(); }}
             disabled={done}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-40"
+            className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 flex items-center justify-center text-gray-400 hover:text-white transition-all cursor-pointer disabled:opacity-40"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {done ? (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 py-16 text-center px-6">
-            <CheckCircle2 className="w-16 h-16 text-emerald-400" />
-            <h4 className="text-lg font-black text-white">Purchase Complete!</h4>
-            <p className="text-xs text-[#94a3b8] font-mono">
-              {target.name} added to your collection{selected.size > 0 ? ` • ${selected.size} card(s) traded in` : ""}.
-            </p>
-          </div>
-        ) : (
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {/* Vendor card summary */}
-            <div className="flex items-center gap-3 bg-[#111418] border border-[#1e293b] rounded-xl p-3">
-              <img
-                src={target.img}
-                alt={target.name}
-                className="w-16 h-[88px] sm:w-20 sm:h-[112px] object-cover rounded-md border border-white/10 bg-black"
-                onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = "hidden"; }}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-mono text-[#38bdf8] uppercase tracking-wider truncate">{vendorName}</p>
-                <h4 className="text-sm sm:text-base font-black text-white truncate">{target.name}</h4>
-                <span className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-mono border border-amber-500/50 text-amber-300 font-bold">
-                  {target.grade}
-                </span>
-                <div className="mt-2 text-2xl font-black text-white font-mono">${price.toLocaleString()}</div>
-              </div>
-            </div>
-
-            {/* Cash payment */}
-            <div className="bg-[#111418] border border-[#1e293b] rounded-xl p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-white">
-                  <Wallet className="w-4 h-4 text-emerald-400" /> Pay with Cash
-                </span>
-                <span className="text-[11px] font-mono text-[#94a3b8]">
-                  Balance: <span className="text-white font-bold">${cashBalance.toLocaleString()}</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono font-bold">$</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={cashStr}
-                  onChange={(e) => setCashStr(e.target.value)}
-                  className="flex-1 bg-black/40 border border-[#1e293b] rounded-lg px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-emerald-400"
-                  placeholder="0"
-                />
-                <button
-                  onClick={payFullCash}
-                  className="px-2.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] font-mono font-bold text-[#38bdf8] transition-all"
-                >
-                  Pay Full
-                </button>
-              </div>
-              {!cashOk && (
-                <p className="text-[10px] text-rose-400 font-mono mt-1.5">⚠ Cash entered exceeds your balance.</p>
-              )}
-            </div>
-
-            {/* Trade-in cards */}
-            <div className="bg-[#111418] border border-[#1e293b] rounded-xl p-3">
-              <div className="flex items-center justify-between mb-2 gap-2">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-white">
-                  <Repeat className="w-4 h-4 text-teal-400" /> Trade In Cards
-                  <span className="text-[11px] font-mono text-[#94a3b8]">
-                    ({selected.size} selected · <span className="text-teal-300 font-bold">${tradeValue.toLocaleString()}</span>)
-                  </span>
-                </span>
-                <button
-                  onClick={autoPickTrade}
-                  disabled={owned.length === 0}
-                  className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono font-bold text-teal-300 transition-all disabled:opacity-40"
-                >
-                  Auto-Cover
-                </button>
-              </div>
-
-              {owned.length === 0 ? (
-                <p className="text-[11px] text-[#64748b] font-mono py-4 text-center">
-                  You have no cards in your collection to trade. Pay with cash instead.
-                </p>
-              ) : (
-                <>
-                  <div className="relative mb-2">
-                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#64748b]" />
-                    <input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search your cards..."
-                      className="w-full bg-black/40 border border-[#1e293b] rounded-lg pl-8 pr-3 py-1.5 text-white font-mono text-xs focus:outline-none focus:border-teal-400"
-                    />
-                  </div>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-52 overflow-y-auto pr-1">
-                    {filteredOwned.map((c) => {
-                      const isSel = selected.has(c.id);
-                      return (
-                        <button
-                          key={c.id}
-                          onClick={() => toggleSelect(c.id)}
-                          className={`relative rounded-lg border p-1.5 flex flex-col items-center text-center transition-all ${
-                            isSel
-                              ? "border-emerald-400 bg-emerald-500/10 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
-                              : "border-[#1e293b] bg-black/30 hover:border-teal-400/60"
-                          }`}
-                        >
-                          {isSel && (
-                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-emerald-400 flex items-center justify-center shadow">
-                              <Check className="w-3 h-3 text-slate-950" />
-                            </span>
-                          )}
-                          <div className="w-full aspect-[3/4] bg-black rounded overflow-hidden mb-1">
-                            <img
-                              src={c.imageUrl}
-                              alt={c.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = "hidden"; }}
-                            />
-                          </div>
-                          <span className="text-[9px] text-white font-bold leading-tight line-clamp-2 w-full">{c.name}</span>
-                          <span className="text-[9px] font-mono text-teal-300 font-bold mt-0.5">${(c.currentPrice || 0).toLocaleString()}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Summary / Complete */}
-            <div className="bg-[#111418] border border-[#1e293b] rounded-xl p-3 flex flex-col gap-2">
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="text-[#94a3b8]">Price</span>
-                <span className="text-white font-black">${price.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="text-[#94a3b8]">Cash Applied</span>
-                <span className="text-emerald-400 font-black">${cashPaid.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="text-[#94a3b8]">Trade Value</span>
-                <span className="text-teal-300 font-black">${tradeTowardPrice.toLocaleString()}</span>
-              </div>
-              {change > 0 && (
-                <div className="flex items-center justify-between text-[11px] font-mono">
-                  <span className="text-[#94a3b8]">Change Due</span>
-                  <span className="text-amber-300 font-black">${change.toLocaleString()}</span>
+        {/* Content Body */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5">
+          {/* Target Item Showcase Banner */}
+          <div className="bg-gradient-to-r from-[#18122e] via-[#120d24] to-[#0c0919] p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between gap-4 shadow-lg">
+            <div className="flex items-center gap-3.5">
+              {target.img && (
+                <div className="w-14 h-20 rounded-xl bg-black/60 border border-white/15 overflow-hidden shrink-0 shadow-md">
+                  <img src={target.img} alt={target.name} className="w-full h-full object-cover" />
                 </div>
               )}
-              {remaining > 0 && (
-                <p className="text-[10px] text-rose-400 font-mono">⚠ Still need ${remaining.toLocaleString()} to complete.</p>
-              )}
-              <button
-                onClick={complete}
-                disabled={!canComplete}
-                className="mt-1 w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-sm font-black uppercase tracking-wider transition-all active:scale-[0.98] shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Complete Purchase
-              </button>
+              <div>
+                <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest block">Acquiring Item:</span>
+                <h4 className="text-base font-black text-white leading-tight">{target.name}</h4>
+                {target.grade && (
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-mono font-black">
+                    Grade: {target.grade}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="text-right shrink-0">
+              <span className="text-[10px] font-mono text-gray-400 uppercase block">Required Price</span>
+              <span className="text-2xl font-mono font-black text-emerald-400">${price.toFixed(2)}</span>
             </div>
           </div>
-        )}
+
+          {/* Trade Balance Gauge Bar */}
+          <div className="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono font-bold">
+              <span className="text-gray-400 uppercase tracking-wider text-[10px]">Trade Coverage Meter</span>
+              <span className={remaining === 0 ? "text-emerald-400 font-black" : "text-amber-400"}>
+                Covered: ${covered.toFixed(2)} / ${price.toFixed(2)} {remaining > 0 ? `(Need $${remaining.toFixed(2)})` : '✅'}
+              </span>
+            </div>
+            <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden p-0.5 border border-white/10">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-500 rounded-full transition-all duration-300"
+                style={{ width: `${Math.min(100, (covered / Math.max(1, price)) * 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Cash Input & Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#120d24]/90 p-4 rounded-2xl border border-white/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+                  <Wallet className="w-4 h-4 text-emerald-400" />
+                  <span>Cash Payment</span>
+                </span>
+                <span className="text-xs font-mono text-gray-400">Balance: ${cashBalance.toFixed(2)}</span>
+              </div>
+
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono font-bold text-gray-400 text-sm">$</span>
+                <input
+                  type="number"
+                  value={cashStr}
+                  onChange={(e) => setCashStr(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full pl-7 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-mono font-bold text-white focus:outline-none focus:border-emerald-400/60"
+                />
+              </div>
+
+              {!cashOk && (
+                <p className="text-[11px] text-rose-400 font-medium">Entered cash exceeds your balance (${cashBalance.toFixed(2)})</p>
+              )}
+            </div>
+
+            <div className="bg-[#120d24]/90 p-4 rounded-2xl border border-white/10 flex flex-col justify-between gap-2">
+              <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+                <Repeat className="w-4 h-4 text-amber-400" />
+                <span>Quick Payment Presets</span>
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={payFullCash}
+                  className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white transition-all cursor-pointer"
+                >
+                  Pay All Cash
+                </button>
+                <button
+                  onClick={autoPickTrade}
+                  className="flex-1 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 text-xs font-bold transition-all cursor-pointer"
+                >
+                  Auto Pick Trade
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Trade Cards Selector Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <span>Select Binder Cards for Trade-In</span>
+              </span>
+              <span className="text-xs font-mono font-bold text-amber-300">
+                Selected Trade Value: ${tradeValue.toFixed(2)}
+              </span>
+            </div>
+
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search binder cards..."
+                className="w-full pl-8 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/60"
+              />
+            </div>
+
+            {/* Binder Card Items List */}
+            <div className="max-h-56 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+              {filteredOwned.length === 0 ? (
+                <div className="py-8 text-center text-xs text-gray-500 bg-black/30 rounded-xl border border-dashed border-white/10">
+                  No cards available for trade-in.
+                </div>
+              ) : (
+                filteredOwned.map((card) => {
+                  const isSelected = selected.has(card.id);
+                  const cardPrice = card.currentPrice || 0;
+
+                  return (
+                    <div
+                      key={card.id}
+                      onClick={() => toggleSelect(card.id)}
+                      className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? "bg-amber-500/15 border-amber-400 text-amber-200 shadow-md"
+                          : "bg-white/5 border-white/5 hover:bg-white/10 text-gray-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${
+                          isSelected ? "bg-amber-400 border-amber-400 text-black" : "border-white/20 bg-black/40"
+                        }`}>
+                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </div>
+                        <div className="min-w-0">
+                          <h5 className="text-xs font-bold text-white truncate">{card.name}</h5>
+                          <span className="text-[10px] font-mono text-gray-400">{card.setName || 'Set'} • {card.rarity || 'Card'}</span>
+                        </div>
+                      </div>
+
+                      <span className="font-mono font-bold text-xs text-emerald-400 shrink-0">
+                        ${cardPrice.toFixed(2)}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Checkout Trigger */}
+        <div className="p-4 border-t border-white/10 bg-[#120d24] shrink-0 flex items-center justify-between gap-4">
+          <div>
+            <span className="text-[10px] font-mono text-gray-400 uppercase block">Total Covered</span>
+            <span className="text-lg font-mono font-black text-emerald-400">${covered.toFixed(2)}</span>
+          </div>
+
+          <button
+            onClick={complete}
+            disabled={!canComplete}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-black font-black text-xs uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer active:scale-95"
+          >
+            {done ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-black" />
+                <span>DEAL COMPLETED!</span>
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="w-4 h-4 text-black" />
+                <span>COMPLETE TRANSACTION</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
