@@ -216,78 +216,77 @@ export const PackOpeningConsole: React.FC<PackOpeningConsoleProps> = ({
       {/* Middle Row: Quests & Daily Allowances Panel */}
       <div 
         onClick={() => { sound.playTabSwitch(); setActiveTab('missions'); }}
-        className="bg-[#12141c]/60 hover:bg-[#151824] border border-white/[0.08] hover:border-amber-500/30 rounded-xl p-3 mb-3 cursor-pointer transition-all group"
+        className="bg-[#12141c]/60 hover:bg-[#151824] border border-white/[0.08] hover:border-amber-500/30 rounded-xl p-3 sm:p-3.5 mb-3 cursor-pointer transition-all group flex flex-col gap-3"
       >
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          {/* Section Info */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+        {/* Top Sub-Row: Title & CTA Button */}
+        <div className="flex items-center justify-between gap-3 w-full">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0 group-hover:scale-105 transition-transform">
               <ListChecks className="w-4 h-4" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gray-200 tracking-wide group-hover:text-amber-300 transition-colors">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs sm:text-sm font-bold text-gray-200 tracking-wide group-hover:text-amber-300 transition-colors">
                   Tasks & Booster Passes
                 </span>
-                <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold px-2 py-0.2 rounded-full uppercase tracking-wider">
-                  Daily Free
+                <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Daily Free Allowances
                 </span>
               </div>
-              <p className="text-[11px] text-gray-400 font-normal">
-                Complete quests, claim daily booster allowances & bonus rewards
+              <p className="text-[11px] text-gray-400 font-normal truncate mt-0.5">
+                Complete quests, claim daily booster passes & bonus rewards
               </p>
             </div>
           </div>
 
-          {/* Quick Metrics Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto grow max-w-xl">
-            {/* Stat 1: EN Packs */}
-            <div className="bg-black/40 border border-white/[0.06] rounded-lg p-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Ticket className="w-3 h-3 text-sky-400" />
-                <span className="text-[10px] font-medium text-gray-300">Free EN</span>
-              </div>
-              <span className="text-xs font-bold font-mono text-sky-400">{dailyFreePacks.english}/5</span>
-            </div>
-
-            {/* Stat 2: JP Packs */}
-            <div className="bg-black/40 border border-white/[0.06] rounded-lg p-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Ticket className="w-3 h-3 text-indigo-400" />
-                <span className="text-[10px] font-medium text-gray-300">Free JP</span>
-              </div>
-              <span className="text-xs font-bold font-mono text-indigo-400">{dailyFreePacks.japanese}/5</span>
-            </div>
-
-            {/* Stat 3: Saved Packs */}
-            <div className="bg-black/40 border border-white/[0.06] rounded-lg p-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Archive className="w-3 h-3 text-amber-400" />
-                <span className="text-[10px] font-medium text-gray-300">Saved</span>
-              </div>
-              <span className="text-xs font-bold font-mono text-amber-300">{totalSavedPacks}</span>
-            </div>
-
-            {/* Stat 4: Daily Cash */}
-            <div className="bg-black/40 border border-white/[0.06] rounded-lg p-2 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Wallet className="w-3 h-3 text-emerald-400" />
-                <span className="text-[10px] font-medium text-gray-300">Cash</span>
-              </div>
-              <span className="text-xs font-bold font-mono text-emerald-400 truncate max-w-[50px]">
-                {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
-              </span>
-            </div>
-          </div>
-
-          {/* CTA Trigger */}
           <button
             onClick={(e) => { e.stopPropagation(); sound.playTabSwitch(); setActiveTab('missions'); }}
-            className="w-full md:w-auto px-3.5 py-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-gray-200 text-xs font-semibold tracking-wide transition-all flex items-center justify-center gap-1.5 shrink-0 group-hover:border-amber-500/40"
+            className="px-3.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-gray-200 text-xs font-semibold tracking-wide transition-all flex items-center justify-center gap-1.5 shrink-0 group-hover:border-amber-500/40"
           >
-            <span>Open Tasks</span>
+            <span>Open Tasks & Missions</span>
             <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
           </button>
+        </div>
+
+        {/* Bottom Sub-Row: 4 Spacious Allowance Stat Badges */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full pt-2 border-t border-white/[0.06]">
+          {/* Stat 1: EN Free Packs */}
+          <div className="bg-black/40 hover:bg-black/60 border border-white/[0.06] rounded-lg p-2 sm:p-2.5 flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-2 min-w-0">
+              <Ticket className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <span className="text-[11px] font-semibold text-gray-300 whitespace-nowrap">Free EN Packs</span>
+            </div>
+            <span className="text-xs sm:text-sm font-bold font-mono text-sky-400 pl-1">{dailyFreePacks.english}/5</span>
+          </div>
+
+          {/* Stat 2: JP Free Packs */}
+          <div className="bg-black/40 hover:bg-black/60 border border-white/[0.06] rounded-lg p-2 sm:p-2.5 flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-2 min-w-0">
+              <Ticket className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <span className="text-[11px] font-semibold text-gray-300 whitespace-nowrap">Free JP Packs</span>
+            </div>
+            <span className="text-xs sm:text-sm font-bold font-mono text-indigo-400 pl-1">{dailyFreePacks.japanese}/5</span>
+          </div>
+
+          {/* Stat 3: Saved Packs */}
+          <div className="bg-black/40 hover:bg-black/60 border border-white/[0.06] rounded-lg p-2 sm:p-2.5 flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-2 min-w-0">
+              <Archive className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span className="text-[11px] font-semibold text-gray-300 whitespace-nowrap">Saved Packs</span>
+            </div>
+            <span className="text-xs sm:text-sm font-bold font-mono text-amber-300 pl-1">{totalSavedPacks}</span>
+          </div>
+
+          {/* Stat 4: Daily Cash */}
+          <div className="bg-black/40 hover:bg-black/60 border border-white/[0.06] rounded-lg p-2 sm:p-2.5 flex items-center justify-between transition-colors">
+            <div className="flex items-center gap-2 min-w-0">
+              <Wallet className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span className="text-[11px] font-semibold text-gray-300 whitespace-nowrap">Opening Fund</span>
+            </div>
+            <span className="text-xs sm:text-sm font-bold font-mono text-emerald-400 truncate pl-1">
+              {dailyCash >= 99999999 ? '∞' : `$${dailyCash.toFixed(0)}`}
+            </span>
+          </div>
         </div>
       </div>
 
