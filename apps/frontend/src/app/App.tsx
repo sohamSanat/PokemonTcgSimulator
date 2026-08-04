@@ -990,21 +990,24 @@ export default function App() {
  setTearProgress(0);
  setBinderAddedIds(new Set());
  setPityNotification(null);
-
  const finishCurtainReady = async () => {
- const elapsed = Date.now() - loadStartTime;
- const minCurtainTime = 1200; // Guaranteed 1.2s curtain display for EVERY set load
- const remainingDelay = Math.max(0, minCurtainTime - elapsed);
+    const elapsed = Date.now() - loadStartTime;
+    const minCurtainTime = 1200; // Guaranteed 1.2s curtain display for EVERY set load
+    const remainingDelay = Math.max(0, minCurtainTime - elapsed);
 
- // FORCE hardware pre-decoding of top chase card thumbnails into GPU memory before lifting chase curtain
- const topChaseUrls = chaseCardsForActiveSet.slice(0, 6).map(c => c.card.images?.large || c.card.images?.small).filter(Boolean);
- await Promise.allSettled(topChaseUrls.map(url => preloadSingleImage(url, 3000)));
+    // FORCE hardware pre-decoding of all 12 top chase card thumbnails into GPU memory before lifting chase curtain
+    const topChaseUrls: string[] = [];
+    chaseCardsForActiveSet.slice(0, 12).forEach(c => {
+      if (c.card.images?.large) topChaseUrls.push(c.card.images.large);
+      if (c.card.images?.small) topChaseUrls.push(c.card.images.small);
+    });
+    await Promise.allSettled(topChaseUrls.map(url => preloadSingleImage(url, 4000)));
 
- if (remainingDelay > 0) {
- await new Promise(r => setTimeout(r, remainingDelay));
- }
- setIsChaseCardsReady(true);
- };
+    if (remainingDelay > 0) {
+      await new Promise(r => setTimeout(r, remainingDelay));
+    }
+    setIsChaseCardsReady(true);
+  };
 
  if (mysteryPack !== undefined) {
  setCurrentMysteryPack(mysteryPack);

@@ -834,16 +834,7 @@ export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: 
 
  if (activeWarmupSetId !== set.id) return;
 
- // Phase 2: Identify top chase candidates
- const candidates = set.cards.filter(c =>
- !packCardIds.includes(c.id) &&
- !cardFullCache.has(c.id) &&
- !c.name.toLowerCase().includes('energy') &&
- !c.id.toLowerCase().includes('energy')
- );
-
- candidates.sort((a, b) => {
- const score = (card: TCGDexCardSummary) => {
+ const getCandidateScore = (card: TCGDexCardSummary) => {
  let s = 0;
  const n = (card.name || '').toLowerCase();
  const r = (card.rarity || '').toLowerCase();
@@ -869,40 +860,86 @@ export async function orchestrateSetLoading(set: TCGDexSet | null, packCardIds: 
 
  return s;
  };
- return score(b) - score(a);
- });
 
- // Extract top ~30 candidates for immediate fetching (Chase Cards Phase)
- const chaseCandidates = candidates.slice(0, 30);
- const backgroundCandidates = candidates.slice(30);
+ const candidates = set.cards.filter(c =>
+ !packCardIds.includes(c.id) &&
+ !c.name.toLowerCase().includes('energy') &&
+ !c.id.toLowerCase().includes('energy')
+ );
 
- // Fetch chase candidates
- const batchSize = 6;
+ candidates.sort((a, b) => getCandidateScore(b) - getCandidateScore(a));
+
+ // Extract top 60 candidates or all non-common rare cards for immediate fetching
+ const chaseCandidates = candidates.slice(0, Math.min(candidates.length, 60));
+ const backgroundCandidates = candidates.slice(chaseCandidates.length);
+
+ // Fetch all chase candidate cards in batches
+ const batchSize = 8;
  for (let i = 0; i < chaseCandidates.length; i += batchSize) {
  if (activeWarmupSetId !== set.id) return;
  const batch = chaseCandidates.slice(i, i + batchSize);
  await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
  onCardFullCacheUpdated.forEach(fn => fn());
- await new Promise(r => setTimeout(r, 50));
+ await new Promise(r => setTimeout(r, 40));
  }
 
- // Preload top chase card artwork so when curtain lifts, cards are 100% rendered with zero messiness
- const topImgs = set.cards.slice(0, 12).map(c => c.image || getTCGDexValidAssetPath(set.id, c.localId)).filter(Boolean);
- await Promise.allSettled(topImgs.slice(0, 12).map(url => preloadSingleImage(url, 3000)));
+ if (activeWarmupSetId !== set.id) return;
+
+ // Determine exact Top 12 Chase Cards by real prices after fetching full card details
+ const mappedAll = set.cards.map((card, idx) => {
+ const cached = cardFullCache.get(card.id);
+ const baseUrl = cached?.image || card.image || getTCGDexValidAssetPath(set.id, card.localId);
+ const poke: PokemonCard = {
+ ...card,
+ id: cached?.id || card.id,
+ name: cached?.name || card.name,
+ images: {
+ small: getCardImageUrl(baseUrl, 'low'),
+ large: getCardImageUrl(baseUrl, 'high'),
+ },
+ rarity: cached?.rarity || card.rarity || 'Common',
+ pricing: cached?.pricing || (card as any).pricing,
+ tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
+ cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
+ };
+ return {
+ card: poke,
+ value: getRealCardPrice(poke)
+ };
+ });
+
+ const filteredChase = mappedAll.filter(item => {
+ const r = (item.card.rarity || '').toLowerCase();
+ const n = (item.card.name || '').toLowerCase();
+ const isPlainItem = (n.includes('balloon') || n.includes('candy') || n.includes('switch') || n.includes('potion') || n.includes('ball') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special');
+ if (isPlainItem && item.value < 10) return false;
+ return item.value >= 1.50 || r.includes('secret') || r.includes('illustration') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('holo');
+ });
+
+ filteredChase.sort((a, b) => b.value - a.value);
+ const top12Chase = filteredChase.slice(0, 12);
+
+ // Preload top 12 chase card artwork (both small and large resolution thumbnails) into GPU memory
+ const topImgs: string[] = [];
+ top12Chase.forEach(({ card }) => {
+ if (card.images?.large) topImgs.push(card.images.large);
+ if (card.images?.small) topImgs.push(card.images.small);
+ });
+
+ await Promise.allSettled(topImgs.map(url => preloadSingleImage(url, 4000)));
 
  if (activeWarmupSetId !== set.id) return;
 
  // Chase cards are now fully populated in cache AND pre-decoded in GPU memory. Tell UI it's safe to lift the curtain.
  if (onChaseCardsReady) onChaseCardsReady();
 
- // Phase 3: Background warmup for the rest of the set (Low priority)
+ // Phase 3: Background warmup for remaining low-value common/uncommon cards (Low priority)
  setTimeout(async () => {
  for (let i = 0; i < backgroundCandidates.length; i += batchSize) {
  if (activeWarmupSetId !== set.id) break;
  const batch = backgroundCandidates.slice(i, i + batchSize);
  await Promise.allSettled(batch.map(c => fetchCardFull(c.id, true)));
  onCardFullCacheUpdated.forEach(fn => fn());
- // Give browser more breathing room for background tasks
  await new Promise(r => setTimeout(r, 150));
  }
  }, 500);

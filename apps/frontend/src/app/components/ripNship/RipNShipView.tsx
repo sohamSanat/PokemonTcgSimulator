@@ -876,14 +876,12 @@ export default function RipNShipView({ onBackToPacks }: RipNShipViewProps) {
  
  setCards(formatAndSortCards(newCards));
 
- // Delay background set warmup so it NEVER competes for network connections with the active pack
- if (!isJa) {
- setTimeout(() => {
- orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
- setIsChaseCardsReady(true);
- });
- }, 400);
- }
+        // Delay background set warmup so it NEVER competes for network connections with the active pack
+        setTimeout(() => {
+          orchestrateSetLoading(setDetails, newCards.map(c => c.id), () => {
+            setIsChaseCardsReady(true);
+          });
+        }, 300);
  } catch (e) {
  const fbCards = generateFallbackPack(FALLBACK_POKEMON_CARDS, setDetails || { id: order.setId });
  setCards(fbCards);
