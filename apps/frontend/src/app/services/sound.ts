@@ -1,6 +1,8 @@
 // Web Audio API Sound Engine & Public Sound Manager for TCGdex Pack Opening Simulator
 // Provides ultra-low latency, tactile procedural sound effects with realistic card mechanics.
 
+import { getItemSync, setItemSync } from './storageDb';
+
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
@@ -12,17 +14,17 @@ class SoundEngine {
     if (typeof window !== 'undefined') {
       this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
     }
-    // Gentle base volume so SFX won't hurt users' ears
     this.volume = this.isMobile ? 0.5 : 0.25;
 
-    // Restore settings from localStorage if available
     try {
-      this.enabled = true; // Always keep SFX active since toggle UI is removed
-      const savedVolume = localStorage.getItem('tcg_sound_volume');
+      const savedEnabled = getItemSync('tcg_sound_enabled');
+      if (savedEnabled !== null) {
+        this.enabled = savedEnabled !== 'false';
+      }
+      const savedVolume = getItemSync('tcg_sound_volume');
       if (savedVolume !== null) {
         const parsed = parseFloat(savedVolume);
-        // Cap overall volume to pleasant level
-        this.volume = Math.max(0, Math.min(0.35, parsed));
+        this.volume = Math.max(0, Math.min(1.0, parsed));
       }
     } catch {
       // Ignore storage errors
@@ -63,7 +65,7 @@ class SoundEngine {
   public setEnabled(enabled: boolean) {
     this.enabled = enabled;
     try {
-      localStorage.setItem('tcg_sound_enabled', String(enabled));
+      setItemSync('tcg_sound_enabled', String(enabled));
     } catch { }
     if (this.masterGain && this.ctx) {
       this.masterGain.gain.setTargetAtTime(this.enabled ? this.volume : 0, this.ctx.currentTime, 0.02);
@@ -74,10 +76,20 @@ class SoundEngine {
     return this.enabled;
   }
 
+  public toggleMute(): boolean {
+    const nextState = !this.enabled;
+    this.setEnabled(nextState);
+    return !nextState; // Returns true if muted
+  }
+
+  public isMuted(): boolean {
+    return !this.enabled;
+  }
+
   public setVolume(vol: number) {
-    this.volume = Math.max(0, Math.min(1, vol));
+    this.volume = Math.max(0, Math.min(1.0, vol));
     try {
-      localStorage.setItem('tcg_sound_volume', String(this.volume));
+      setItemSync('tcg_sound_volume', String(this.volume));
     } catch { }
     if (this.masterGain && this.ctx && this.enabled) {
       this.masterGain.gain.setTargetAtTime(this.volume, this.ctx.currentTime, 0.02);
