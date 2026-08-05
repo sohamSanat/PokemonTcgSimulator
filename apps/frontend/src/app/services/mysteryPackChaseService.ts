@@ -27,8 +27,6 @@ export async function getMysteryPackChaseCards(mysteryPack: MysteryPackConfig): 
     return mysteryPackChaseCache.get(mysteryPack.id)!;
   }
 
-  await loadJapaneseMetadata().catch(() => {});
-
   const aggregatedCandidates: MysteryPackChaseCard[] = [];
 
   // Helper candidate scoring function to select top cards per set for full price details fetch
@@ -51,83 +49,80 @@ export async function getMysteryPackChaseCards(mysteryPack: MysteryPackConfig): 
     return score;
   };
 
-  // 2. Inspect all sets in parallel
-  const setPromises = mysteryPack.setIds.map(async (setId) => {
-    try {
-      const setDetails = await fetchSetDetails(setId);
-      if (!setDetails || !setDetails.cards || setDetails.cards.length === 0) {
-        return [];
+  // Step A: Fetch set details for all sets in parallel (lightweight json summaries)
+  const setDetailsList = await Promise.allSettled(
+    mysteryPack.setIds.map(async (setId) => {
+      try {
+        const setDetails = await fetchSetDetails(setId);
+        return { setId, setDetails };
+      } catch {
+        return { setId, setDetails: null };
       }
+    })
+  );
 
-      // Filter non-energy cards
-      const candidates = setDetails.cards.filter(c => 
+  // Step B: Extract top 2 candidate cards per set
+  const candidatesToFetch: { cardSummary: any; setDetails: any; setId: string }[] = [];
+
+  setDetailsList.forEach(res => {
+    if (res.status === 'fulfilled' && res.value && res.value.setDetails) {
+      const { setId, setDetails } = res.value;
+      if (!setDetails.cards || setDetails.cards.length === 0) return;
+
+      const nonEnergyCards = setDetails.cards.filter(c => 
         !c.name.toLowerCase().includes('energy') && 
         !c.id.toLowerCase().includes('energy')
       );
 
-      // Score and select top candidates for live market pricing fetch
-      const sortedCandidates = [...candidates].sort((a, b) => getCandidateScore(b) - getCandidateScore(a));
-      const topCandidatesForSet = sortedCandidates.slice(0, Math.min(sortedCandidates.length, 12));
+      const sorted = [...nonEnergyCards].sort((a, b) => getCandidateScore(b) - getCandidateScore(a));
+      const topCandidates = sorted.slice(0, 2);
 
-      // Fetch full card details (pricing, tcgplayer, cardmarket data) for candidate cards
-      await Promise.allSettled(topCandidatesForSet.map(c => fetchCardFull(c.id, true)));
-
-      // Map cards with populated pricing and set details
-      const mapped = topCandidatesForSet.map((card, idx) => {
-        const cached = cardFullCache.get(card.id) || scrydexCardFullCache.get(card.id);
-        const cardSetId = setDetails.id || setId;
-        const rawNum = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
-        const baseUrl = cached?.image || card.image || getTCGDexValidAssetPath(cardSetId, rawNum);
-        
-        const poke: PokemonCard = {
-          ...card,
-          id: cached?.id || card.id,
-          name: cached?.name || card.name,
-          images: {
-            small: getCardImageUrl(baseUrl, 'low'),
-            large: getCardImageUrl(baseUrl, 'high'),
-          },
-          set: {
-            id: cardSetId,
-            name: setDetails.name || setId.toUpperCase()
-          },
-          rarity: cached?.rarity || card.rarity || 'Common',
-          pricing: cached?.pricing || (card as any).pricing,
-          tcgplayer: cached?.tcgplayer || (card as any).tcgplayer,
-          cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (card as any).cardmarket,
-          illustrator: cached?.illustrator || (card as any).illustrator,
-        };
-        return {
-          card: poke,
-          value: getRealCardPrice(poke),
-          setName: setDetails.name || setId.toUpperCase()
-        };
-      });
-
-      // Filter out low-value plain item trainers under $10
-      const filtered = mapped.filter(item => {
-        const r = (item.card.rarity || '').toLowerCase();
-        const n = (item.card.name || '').toLowerCase();
-        const isPlainItem = (n.includes('balloon') || n.includes('candy') || n.includes('switch') || n.includes('potion') || n.includes('ball') || n.includes('rope')) && !r.includes('secret') && !r.includes('gold') && !r.includes('special');
-        if (isPlainItem && item.value < 10) return false;
-        return item.value >= 1.50 || r.includes('secret') || r.includes('illustration') || r.includes('ultra') || r.includes('vmax') || r.includes('vstar') || r.includes('ex') || r.includes('gx') || r.includes('holo');
-      });
-
-      // Sort by value descending and pick top 3 for this set
-      filtered.sort((a, b) => b.value - a.value);
-      return filtered.slice(0, 3);
-    } catch (err) {
-      console.warn(`Background mystery chase fetch failed for set ${setId}:`, err);
-      return [];
+      for (const cardSummary of topCandidates) {
+        candidatesToFetch.push({ cardSummary, setDetails, setId });
+      }
     }
   });
 
-  const results = await Promise.allSettled(setPromises);
-  results.forEach(res => {
-    if (res.status === 'fulfilled' && Array.isArray(res.value)) {
-      aggregatedCandidates.push(...res.value);
-    }
-  });
+  // Step C: Fetch full card details in small controlled batches of 3 (prevents network socket choke)
+  const batchSize = 3;
+  for (let i = 0; i < candidatesToFetch.length; i += batchSize) {
+    const batch = candidatesToFetch.slice(i, i + batchSize);
+    await Promise.allSettled(batch.map(item => fetchCardFull(item.cardSummary.id, true)));
+    await new Promise(r => setTimeout(r, 15));
+  }
+
+  // Step D: Map and build final MysteryPackChaseCard objects with accurate prices & set IDs
+  for (const { cardSummary, setDetails, setId } of candidatesToFetch) {
+    const cached = cardFullCache.get(cardSummary.id) || scrydexCardFullCache.get(cardSummary.id);
+    const cardSetId = setDetails?.id || setId;
+    const rawNum = cardSummary.localId || cardSummary.id?.split('-').pop() || '1';
+    const baseUrl = cached?.image || cardSummary.image || getTCGDexValidAssetPath(cardSetId, rawNum);
+
+    const poke: PokemonCard = {
+      ...cardSummary,
+      id: cached?.id || cardSummary.id,
+      name: cached?.name || cardSummary.name,
+      images: {
+        small: getCardImageUrl(baseUrl, 'low'),
+        large: getCardImageUrl(baseUrl, 'high'),
+      },
+      set: {
+        id: cardSetId,
+        name: setDetails?.name || setId.toUpperCase()
+      },
+      rarity: cached?.rarity || cardSummary.rarity || 'Common',
+      pricing: cached?.pricing || (cardSummary as any).pricing,
+      tcgplayer: cached?.tcgplayer || (cardSummary as any).tcgplayer,
+      cardmarket: cached?.cardmarket || cached?.pricing?.cardmarket || (cardSummary as any).cardmarket,
+      illustrator: cached?.illustrator || (cardSummary as any).illustrator,
+    };
+
+    aggregatedCandidates.push({
+      card: poke,
+      value: getRealCardPrice(poke),
+      setName: setDetails?.name || setId.toUpperCase()
+    });
+  }
 
   // 3. Remove duplicate card IDs if any
   const uniqueMap = new Map<string, MysteryPackChaseCard>();
@@ -139,7 +134,7 @@ export async function getMysteryPackChaseCards(mysteryPack: MysteryPackConfig): 
 
   const uniqueCandidates = Array.from(uniqueMap.values());
 
-  // 4. Sort aggregated candidates (30+ cards) by market value descending and take top 12
+  // 4. Sort aggregated candidates by market value descending and take top 12
   uniqueCandidates.sort((a, b) => b.value - a.value);
   const top12Chase = uniqueCandidates.slice(0, 12);
 
