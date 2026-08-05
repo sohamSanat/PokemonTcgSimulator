@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  Coins, X, Wallet, Repeat, Search, Check, CheckCircle2,
-  Sparkles, ShieldCheck, Heart, MessageSquare, Flame
+  Coins, X, Wallet, Repeat, Search, Check, CheckCircle2, 
+  Sparkles, ArrowRight, ShieldCheck, DollarSign
 } from "lucide-react";
 import {
   getCollectedCards,
@@ -13,8 +13,6 @@ import {
   type Card,
 } from '../binder/types';
 import { sound } from '../../services/sound';
-import { VENDORS, type VendorDef } from './vendorData';
-import { evaluateVendorHaggle, calculateSpecialtyBonus } from './hagglingEngine';
 
 interface TradeModalProps {
   target: any;
@@ -26,7 +24,7 @@ interface TradeModalProps {
 /**
  * TradeModal Component
  * 
- * Handles vendor purchases via cash, card trade-ins, or interactive vendor haggling negotiations.
+ * Handles vendor purchases via cash, card trade-ins, or a combination of both.
  */
 export const TradeModal: React.FC<TradeModalProps> = ({
   target,
@@ -35,34 +33,12 @@ export const TradeModal: React.FC<TradeModalProps> = ({
   onAddNetReturn,
 }) => {
   const open = Boolean(target);
-  const initialAskingPrice = target?.price || 0;
-
-  const [currentAskingPrice, setCurrentAskingPrice] = useState(initialAskingPrice);
+  const price = target?.price || 0;
   const [owned, setOwned] = useState<Card[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [cashStr, setCashStr] = useState("0");
   const [search, setSearch] = useState("");
   const [done, setDone] = useState(false);
-
-  // Haggling states
-  const [patience, setPatience] = useState(3);
-  const [vendorMessage, setVendorMessage] = useState<string>("Welcome to my booth! What's your offer?");
-  const [haggleStatus, setHaggleStatus] = useState<'idle' | 'accepted' | 'countered' | 'insulted'>('idle');
-
-  const vendorDef: VendorDef = VENDORS.find(v => v.name === vendorName) || {
-    id: 'default',
-    name: vendorName || 'VENDOR BOOTH',
-    booth: '1A',
-    type: 'vendor',
-    x: 0, y: 0, w: 0, h: 0,
-    shape: 'compact',
-    color: '#38bdf8',
-    rating: '4.8 / 5',
-    activeListings: '1,000+',
-    completedTrans: '5,000+',
-    specialties: ['Modern', 'Vintage', 'Japanese'],
-    discountScore: 75
-  };
 
   useEffect(() => {
     if (open) {
@@ -71,34 +47,23 @@ export const TradeModal: React.FC<TradeModalProps> = ({
       setCashStr("0");
       setSearch("");
       setDone(false);
-      setCurrentAskingPrice(target?.price || 0);
-      setPatience(3);
-      setVendorMessage(`Welcome to ${vendorDef.name}! Let's make a deal.`);
-      setHaggleStatus('idle');
     }
-  }, [open, target, vendorName]);
+  }, [open, target]);
 
   const cashBalance = getCash();
   const cash = Math.max(0, Number(cashStr) || 0);
-
-  const selectedCardsList = owned.filter((c) => selected.has(c.id));
-  
-  // Calculate total trade value with specialty bonuses
-  const tradeValue = selectedCardsList.reduce((sum, card) => {
-    const isSpecialty = calculateSpecialtyBonus(vendorDef, card);
-    const baseVal = card.currentPrice || 0;
-    return sum + (isSpecialty ? baseVal * 1.15 : baseVal);
-  }, 0);
-
+  const tradeValue = owned
+    .filter((c) => selected.has(c.id))
+    .reduce((s, c) => s + (c.currentPrice || 0), 0);
   const covered = cash + tradeValue;
-  const cashTowardPrice = Math.max(0, currentAskingPrice - tradeValue);
+  const cashTowardPrice = Math.max(0, price - tradeValue);
   const cashPaid = Math.min(cash, cashTowardPrice);
   const leftoverCash = Math.max(0, cash - cashPaid);
-  const tradeTowardPrice = Math.min(tradeValue, currentAskingPrice - cashPaid);
+  const tradeTowardPrice = Math.min(tradeValue, price - cashPaid);
   const change = Math.max(0, leftoverCash + (tradeValue - tradeTowardPrice));
-  const remaining = Math.max(0, currentAskingPrice - covered);
+  const remaining = Math.max(0, price - covered);
   const cashOk = cash <= cashBalance;
-  const canComplete = covered >= currentAskingPrice && cashOk && !done;
+  const canComplete = covered >= price && cashOk && !done;
 
   const toggleSelect = (id: string) => {
     sound.playButtonClick();
@@ -110,38 +75,24 @@ export const TradeModal: React.FC<TradeModalProps> = ({
     });
   };
 
-  const applyQuickOffer = (percent: number) => {
+  const payFullCash = () => {
     sound.playButtonClick();
-    const offerPrice = Math.max(0, Math.round(initialAskingPrice * (1 - percent) * 100) / 100);
-    setCashStr(String(offerPrice));
+    setCashStr(String(price));
     setSelected(new Set());
   };
 
-  const handleHaggleOffer = () => {
-    if (patience <= 0) return;
+  const autoPickTrade = () => {
     sound.playButtonClick();
-
-    const result = evaluateVendorHaggle(
-      vendorDef,
-      currentAskingPrice,
-      cash,
-      selectedCardsList
-    );
-
-    setVendorMessage(result.dialogue);
-    setHaggleStatus(result.status);
-
-    if (result.status === 'accepted') {
-      sound.playLegendaryFanfare();
-      setCurrentAskingPrice(result.effectiveOfferValue);
-    } else if (result.status === 'countered') {
-      sound.playCardFlip();
-      setCurrentAskingPrice(result.counterPrice);
-      setPatience(prev => Math.max(0, prev - result.patienceCost));
-    } else if (result.status === 'insulted') {
-      sound.playCardFlip();
-      setPatience(prev => Math.max(0, prev - result.patienceCost));
+    const sorted = [...owned].sort((a, b) => (b.currentPrice || 0) - (a.currentPrice || 0));
+    const n = new Set<string>();
+    let sum = 0;
+    for (const c of sorted) {
+      if (sum >= price) break;
+      n.add(c.id);
+      sum += c.currentPrice || 0;
     }
+    setSelected(n);
+    setCashStr("0");
   };
 
   const complete = () => {
@@ -151,13 +102,13 @@ export const TradeModal: React.FC<TradeModalProps> = ({
     spendCash(cashPaid);
     selected.forEach((id) => removeCollectedCard(id));
     if (change > 0 && onAddNetReturn) onAddNetReturn(change);
-    const realMarketPrice = (target as any).marketPrice || target.value || currentAskingPrice;
+    const realMarketPrice = (target as any).marketPrice || target.value || price;
     const newCard = saveCollectedCard(
       {
         marketPrice: realMarketPrice,
         value: realMarketPrice,
-        acquiredPrice: currentAskingPrice,
-        originalValue: currentAskingPrice,
+        acquiredPrice: price,
+        originalValue: price,
         pokemon: {
           id: target.id,
           name: target.name,
@@ -167,7 +118,7 @@ export const TradeModal: React.FC<TradeModalProps> = ({
           rarity: target.grade || "Rare",
         },
       },
-      vendorDef.name
+      vendorName || "VINTAGEVAULT TCG"
     );
     if (target.grade && newCard) updateCardSlabStatus(newCard.id, target.grade);
     setDone(true);
@@ -193,12 +144,12 @@ export const TradeModal: React.FC<TradeModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">Vendor Negotiation Arena</h3>
+                <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">Trade Desk Checkout</h3>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-mono font-bold">
-                  {vendorDef.booth} • {vendorDef.name}
+                  {vendorName || 'VENDOR BOOTH'}
                 </span>
               </div>
-              <p className="text-xs text-gray-400 font-medium">Haggle with vendor, pay cash, or trade specialty cards.</p>
+              <p className="text-xs text-gray-400 font-medium">Pay with cash, trade binder cards, or combine both.</p>
             </div>
           </div>
 
@@ -213,34 +164,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-5">
-
-          {/* Vendor Speech Bubble & Patience Meter */}
-          <div className="bg-gradient-to-r from-[#17122b] via-[#110c22] to-[#0c0919] p-4 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-indigo-400 shrink-0 mt-0.5">
-                <MessageSquare className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-widest block">Vendor Dialogue</span>
-                <p className="text-sm font-semibold text-gray-200 italic">"{vendorMessage}"</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center bg-black/40 px-3 py-1.5 rounded-xl border border-white/10">
-              <span className="text-[10px] font-mono text-gray-400 uppercase mr-1">Vendor Patience:</span>
-              {[1, 2, 3].map(heartNum => (
-                <Heart
-                  key={heartNum}
-                  className={`w-4 h-4 transition-all ${
-                    heartNum <= patience
-                      ? "text-rose-500 fill-rose-500 scale-100"
-                      : "text-gray-600 fill-gray-800 opacity-40 scale-90"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
           {/* Target Item Showcase Banner */}
           <div className="bg-gradient-to-r from-[#18122e] via-[#120d24] to-[#0c0919] p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between gap-4 shadow-lg">
             <div className="flex items-center gap-3.5">
@@ -261,15 +184,8 @@ export const TradeModal: React.FC<TradeModalProps> = ({
             </div>
 
             <div className="text-right shrink-0">
-              <span className="text-[10px] font-mono text-gray-400 uppercase block">
-                {currentAskingPrice < initialAskingPrice ? "Negotiated Price" : "Asking Price"}
-              </span>
-              <div className="flex items-baseline gap-2">
-                {currentAskingPrice < initialAskingPrice && (
-                  <span className="text-sm font-mono text-gray-500 line-through">${initialAskingPrice.toFixed(2)}</span>
-                )}
-                <span className="text-2xl font-mono font-black text-emerald-400">${currentAskingPrice.toFixed(2)}</span>
-              </div>
+              <span className="text-[10px] font-mono text-gray-400 uppercase block">Required Price</span>
+              <span className="text-2xl font-mono font-black text-emerald-400">${price.toFixed(2)}</span>
             </div>
           </div>
 
@@ -278,24 +194,24 @@ export const TradeModal: React.FC<TradeModalProps> = ({
             <div className="flex items-center justify-between text-xs font-mono font-bold">
               <span className="text-gray-400 uppercase tracking-wider text-[10px]">Trade Coverage Meter</span>
               <span className={remaining === 0 ? "text-emerald-400 font-black" : "text-amber-400"}>
-                Covered: ${covered.toFixed(2)} / ${currentAskingPrice.toFixed(2)} {remaining > 0 ? `(Need $${remaining.toFixed(2)})` : '✅'}
+                Covered: ${covered.toFixed(2)} / ${price.toFixed(2)} {remaining > 0 ? `(Need $${remaining.toFixed(2)})` : '✅'}
               </span>
             </div>
             <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden p-0.5 border border-white/10">
               <div
                 className="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-500 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min(100, (covered / Math.max(1, currentAskingPrice)) * 100)}%` }}
+                style={{ width: `${Math.min(100, (covered / Math.max(1, price)) * 100)}%` }}
               />
             </div>
           </div>
 
-          {/* Cash Input & Quick Haggling Controls */}
+          {/* Cash Input & Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-[#120d24]/90 p-4 rounded-2xl border border-white/10 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                   <Wallet className="w-4 h-4 text-emerald-400" />
-                  <span>Cash Offer</span>
+                  <span>Cash Payment</span>
                 </span>
                 <span className="text-xs font-mono text-gray-400">Balance: ${cashBalance.toFixed(2)}</span>
               </div>
@@ -318,28 +234,22 @@ export const TradeModal: React.FC<TradeModalProps> = ({
 
             <div className="bg-[#120d24]/90 p-4 rounded-2xl border border-white/10 flex flex-col justify-between gap-2">
               <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-amber-400" />
-                <span>Quick Counter Offers</span>
+                <Repeat className="w-4 h-4 text-amber-400" />
+                <span>Quick Payment Presets</span>
               </span>
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => applyQuickOffer(0.05)}
-                  className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-amber-300 transition-all cursor-pointer"
+                  onClick={payFullCash}
+                  className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white transition-all cursor-pointer"
                 >
-                  -5% Offer
+                  Pay All Cash
                 </button>
                 <button
-                  onClick={() => applyQuickOffer(0.10)}
+                  onClick={autoPickTrade}
                   className="flex-1 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 text-xs font-bold transition-all cursor-pointer"
                 >
-                  -10% Offer
-                </button>
-                <button
-                  onClick={() => applyQuickOffer(0.20)}
-                  className="flex-1 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-400/40 text-rose-300 text-xs font-bold transition-all cursor-pointer"
-                >
-                  -20% Offer
+                  Auto Pick Trade
                 </button>
               </div>
             </div>
@@ -378,7 +288,6 @@ export const TradeModal: React.FC<TradeModalProps> = ({
                 filteredOwned.map((card) => {
                   const isSelected = selected.has(card.id);
                   const cardPrice = card.currentPrice || 0;
-                  const isSpecialty = calculateSpecialtyBonus(vendorDef, card);
 
                   return (
                     <div
@@ -397,28 +306,14 @@ export const TradeModal: React.FC<TradeModalProps> = ({
                           {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h5 className="text-xs font-bold text-white truncate">{card.name}</h5>
-                            {isSpecialty && (
-                              <span className="px-1.5 py-0.2 rounded bg-purple-500/30 text-purple-300 border border-purple-400/40 text-[9px] font-mono font-bold shrink-0">
-                                +15% Specialty
-                              </span>
-                            )}
-                          </div>
+                          <h5 className="text-xs font-bold text-white truncate">{card.name}</h5>
                           <span className="text-[10px] font-mono text-gray-400">{card.setName || 'Set'} • {card.rarity || 'Card'}</span>
                         </div>
                       </div>
 
-                      <div className="text-right shrink-0">
-                        <span className="font-mono font-bold text-xs text-emerald-400 block">
-                          ${(isSpecialty ? cardPrice * 1.15 : cardPrice).toFixed(2)}
-                        </span>
-                        {isSpecialty && (
-                          <span className="text-[9px] font-mono text-gray-400 line-through">
-                            ${cardPrice.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
+                      <span className="font-mono font-bold text-xs text-emerald-400 shrink-0">
+                        ${cardPrice.toFixed(2)}
+                      </span>
                     </div>
                   );
                 })
@@ -427,40 +322,30 @@ export const TradeModal: React.FC<TradeModalProps> = ({
           </div>
         </div>
 
-        {/* Footer Checkout & Haggling Trigger */}
+        {/* Footer Checkout Trigger */}
         <div className="p-4 border-t border-white/10 bg-[#120d24] shrink-0 flex items-center justify-between gap-4">
           <div>
-            <span className="text-[10px] font-mono text-gray-400 uppercase block">Total Value Offered</span>
+            <span className="text-[10px] font-mono text-gray-400 uppercase block">Total Covered</span>
             <span className="text-lg font-mono font-black text-emerald-400">${covered.toFixed(2)}</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleHaggleOffer}
-              disabled={patience <= 0 || done || covered <= 0}
-              className="px-4 py-3 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-400/50 text-purple-200 font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-            >
-              Haggle / Submit Offer
-            </button>
-
-            <button
-              onClick={complete}
-              disabled={!canComplete}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-black font-black text-xs uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer active:scale-95"
-            >
-              {done ? (
-                <>
-                  <CheckCircle2 className="w-4 h-4 text-black" />
-                  <span>DEAL COMPLETED!</span>
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="w-4 h-4 text-black" />
-                  <span>COMPLETE TRANSACTION</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            onClick={complete}
+            disabled={!canComplete}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-black font-black text-xs uppercase tracking-wider shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer active:scale-95"
+          >
+            {done ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-black" />
+                <span>DEAL COMPLETED!</span>
+              </>
+            ) : (
+              <>
+                <ShieldCheck className="w-4 h-4 text-black" />
+                <span>COMPLETE TRANSACTION</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
