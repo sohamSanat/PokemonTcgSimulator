@@ -1733,14 +1733,14 @@ export default function App() {
  <span className="font-bold text-white text-[8px] leading-tight truncate w-full">{card.name}</span>
  </div>
  <img
- src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
+ src={imageFallbacks.get(card.id) || card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${card.set?.id || (card.id?.includes('-') ? card.id.split('-')[0] : null) || (currentSet?.id && !currentSet.id.includes('mystery') && !currentSet.id.includes('pack') ? currentSet.id : 'swsh3')}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
  alt={card.name}
  className="absolute inset-0 w-full h-full object-cover block z-10"
  onError={(e) => {
  const target = e.currentTarget as HTMLImageElement;
  const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
- const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
- handleCardImageError(target, setId, num);
+ const cardSetId = card.set?.id || (card.id?.includes('-') ? card.id.split('-')[0] : null) || (currentSet?.id && !currentSet.id.includes('mystery') && !currentSet.id.includes('pack') ? currentSet.id : 'swsh3');
+ handleCardImageError(target, cardSetId, num);
  imageFallbacks.set(card.id, target.src);
  }}
  />
@@ -1864,14 +1864,14 @@ export default function App() {
  <span className="font-bold text-white text-[6px] leading-tight truncate w-full">{card.name}</span>
  </div>
  <img
- src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${currentSet?.id || 'swsh3'}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
+ src={card.images?.small || card.images?.large || `https://assets.tcgdex.net/en/swsh/${card.set?.id || (card.id?.includes('-') ? card.id.split('-')[0] : null) || (currentSet?.id && !currentSet.id.includes('mystery') && !currentSet.id.includes('pack') ? currentSet.id : 'swsh3')}/${card.localId || card.id?.split('-').pop() || idx + 1}/low.webp`}
  alt={card.name}
  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 block z-10"
  onError={(e) => {
  const target = e.currentTarget as HTMLImageElement;
  const num = card.localId || card.id?.split('-').pop() || `${idx + 1}`;
- const setId = currentSet?.id || card.id?.split('-')[0] || 'swsh3';
- handleCardImageError(target, setId, num);
+ const cardSetId = card.set?.id || (card.id?.includes('-') ? card.id.split('-')[0] : null) || (currentSet?.id && !currentSet.id.includes('mystery') && !currentSet.id.includes('pack') ? currentSet.id : 'swsh3');
+ handleCardImageError(target, cardSetId, num);
  }}
  />
  </div>

@@ -93,6 +93,16 @@ export interface PokemonCard {
  rarity?: string;
  isReverseHolo?: boolean;
  illustrator?: string;
+ set?: {
+ id: string;
+ name?: string;
+ logo?: string;
+ symbol?: string;
+ cardCount?: {
+ total: number;
+ official: number;
+ };
+ };
  images: {
  small: string;
  large: string;
