@@ -1,4 +1,5 @@
-import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary, getJapaneseVintageCardImageUrl, BoundedMap } from './tcgdex';
+import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary, getJapaneseVintageCardImageUrl } from './tcgdex';
+import { BoundedMap } from '../utils/BoundedMap';
 
 export const getScrydexApiBase = () => `https://api.scrydex.com/pokemon/v1/ja`;
 

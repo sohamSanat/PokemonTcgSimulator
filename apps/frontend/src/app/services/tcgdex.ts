@@ -234,25 +234,9 @@ function enrichSetSummary<T extends { id: string; logo?: string }>(set: T): T {
  return set;
 }
 
-export class BoundedMap<K, V> extends Map<K, V> {
-  private maxSize: number;
+import { BoundedMap } from '../utils/BoundedMap';
 
-  constructor(maxSize: number = 500) {
-    super();
-    this.maxSize = maxSize;
-  }
-
-  override set(key: K, value: V): this {
-    if (this.size >= this.maxSize && !this.has(key)) {
-      const oldestKey = this.keys().next().value;
-      if (oldestKey !== undefined) {
-        this.delete(oldestKey);
-      }
-    }
-    super.set(key, value);
-    return this;
-  }
-}
+export { BoundedMap };
 
 const seriesCache = new BoundedMap<string, TCGDexSeries>(50);
 const setDetailsCache = new BoundedMap<string, TCGDexSet>(100);
