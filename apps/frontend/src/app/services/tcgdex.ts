@@ -234,9 +234,29 @@ function enrichSetSummary<T extends { id: string; logo?: string }>(set: T): T {
  return set;
 }
 
-const seriesCache = new Map<string, TCGDexSeries>();
-const setDetailsCache = new Map<string, TCGDexSet>();
-export const cardFullCache = new Map<string, TCGDexCardFull>();
+export class BoundedMap<K, V> extends Map<K, V> {
+  private maxSize: number;
+
+  constructor(maxSize: number = 500) {
+    super();
+    this.maxSize = maxSize;
+  }
+
+  override set(key: K, value: V): this {
+    if (this.size >= this.maxSize && !this.has(key)) {
+      const oldestKey = this.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.delete(oldestKey);
+      }
+    }
+    super.set(key, value);
+    return this;
+  }
+}
+
+const seriesCache = new BoundedMap<string, TCGDexSeries>(50);
+const setDetailsCache = new BoundedMap<string, TCGDexSet>(100);
+export const cardFullCache = new BoundedMap<string, TCGDexCardFull>(500);
 export const onCardFullCacheUpdated = new Set<() => void>();
 
 // Cross-browser timeout helper (since AbortSignal.timeout is not supported in Safari < 16)

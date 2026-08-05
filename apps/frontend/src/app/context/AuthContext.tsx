@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../services/firebase';
+import { listenToFirestore } from '../components/binder/store';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -34,12 +35,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           window.dispatchEvent(new CustomEvent('daily_cash_updated', { detail: 999999999 }));
         }
         
-        // Import store directly to avoid circular ESM export issues with types.ts
         try {
-          const storeModule = await import('../components/binder/store');
-          if (storeModule && typeof storeModule.listenToFirestore === 'function') {
-            storeModule.listenToFirestore(user ? user.uid : null);
-          }
+          listenToFirestore(user ? user.uid : null);
         } catch (e) {
           console.error('Failed to initialize listenToFirestore:', e);
         }

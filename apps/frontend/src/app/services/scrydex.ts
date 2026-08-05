@@ -1,9 +1,9 @@
-import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary, getJapaneseVintageCardImageUrl } from './tcgdex';
+import { TCGDexCardSummary, TCGDexSet, PokemonCard, TCGDexCardFull, TCGDexSeries, TCGDexSetSummary, getJapaneseVintageCardImageUrl, BoundedMap } from './tcgdex';
 
 export const getScrydexApiBase = () => `https://api.scrydex.com/pokemon/v1/ja`;
 
-const scrydexSetCache = new Map<string, TCGDexSet>();
-export const scrydexCardFullCache = new Map<string, TCGDexCardFull>();
+const scrydexSetCache = new BoundedMap<string, TCGDexSet>(100);
+export const scrydexCardFullCache = new BoundedMap<string, TCGDexCardFull>(500);
 export const onScrydexCardFullCacheUpdated = new Set<() => void>();
 
 const SCRYDEX_API_BASE = 'https://api.scrydex.com/pokemon/v1';

@@ -9,7 +9,6 @@ import { LoginModal } from './components/auth/LoginModal';
 import { sound } from './services/sound';
 import { generateVendorReply } from './services/geminiVendorChat';
 import setPackPricesData from './data/set_pack_prices.json';
-import BinderView from './components/binder/BinderView';
 import { useEconomy } from './context/EconomyContext';
 import { useAppUI } from './context/AppUIContext';
 import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, getStorageKey, getProfile, type CatalogueStore, type Binder, type Card } from './components/binder/types';
@@ -19,25 +18,28 @@ import InteractiveCard3D from './components/binder/InteractiveCard3D';
 import BoosterPackTear from './components/BoosterPackTear';
 import { PackLoadingCurtain } from './components/PackLoadingCurtain';
 import { preloadPackAssets, preloadSingleImage } from './services/imagePreloader';
-import PSAGradingLab from './components/psa/PSAGradingLab';
-import RipNShipView from './components/ripNship/RipNShipView';
-import { CardMarketModal } from './components/CardMarketModal';
-import BulkCatalogueModal from './components/binder/BulkCatalogueModal';
 import { PackOffLobby } from './components/multiplayer/PackOffLobby';
 import { PackOffArena } from './components/multiplayer/PackOffArena';
-import CardShowView, { TradeModal } from './components/cardShow/CardShowView';
-import { MissionsView } from './components/missions/MissionsView';
-import { ProfileView } from './components/profile/ProfileView';
+import { TradeModal } from './components/cardShow/CardShowView';
 import { getDailyFreePacks, useDailyFreePack, getEarnedSetPacks, useEarnedSetPack, hasEarnedSetPackForSet, useEarnedSetPackForSet, addEarnedSetPacks, addOwnedMysteryPacks, trackMissionProgress, getMissions, EarnedSetPack, getDailyCash, useDailyCash, getOwnedMysteryPacks, type OwnedMysteryPack } from './services/missions';
 import { updateMatchPack } from './services/matchmaking';
 import { ENGLISH_MYSTERY_PACKS, JAPANESE_MYSTERY_PACKS, MysteryPackConfig, getRandomSetFromMysteryPack, rollMysteryPackResult, type MysteryPackResult } from './data/mysteryPacks';
-import InventoryModal from './components/inventory/InventoryModal';
-import { LuckyDropModal } from './components/LuckyDropModal';
 import { getRemainingLuckyDropSeconds, claimLuckyDropReward, type LuckyDropReward } from './services/luckyDrop';
 import { getMysteryPackChaseCards, type MysteryPackChaseCard } from './services/mysteryPackChaseService';
 import { SetPurchaseOptionsModal } from './components/proceduralBox/SetPurchaseOptionsModal';
-import { BoosterBoxUnboxingModal } from './components/proceduralBox/BoosterBoxUnboxingModal';
 import { imageFallbacks, type CardData, DEFAULT_PACK_ARTS, getPackArtsForSet, getSetLogoUrl, getSetBoosterPrice, setPackPrices } from './utils/packUtils';
+
+// Lazy-loaded heavy views & modal modules for optimized initial bundle loading
+const BinderView = React.lazy(() => import('./components/binder/BinderView'));
+const PSAGradingLab = React.lazy(() => import('./components/psa/PSAGradingLab'));
+const CardShowView = React.lazy(() => import('./components/cardShow/CardShowView'));
+const MissionsView = React.lazy(() => import('./components/missions/MissionsView').then(m => ({ default: m.MissionsView })));
+const ProfileView = React.lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
+const CardMarketModal = React.lazy(() => import('./components/CardMarketModal').then(m => ({ default: m.CardMarketModal })));
+const BulkCatalogueModal = React.lazy(() => import('./components/binder/BulkCatalogueModal'));
+const InventoryModal = React.lazy(() => import('./components/inventory/InventoryModal'));
+const LuckyDropModal = React.lazy(() => import('./components/LuckyDropModal').then(m => ({ default: m.LuckyDropModal })));
+const BoosterBoxUnboxingModal = React.lazy(() => import('./components/proceduralBox/BoosterBoxUnboxingModal').then(m => ({ default: m.BoosterBoxUnboxingModal })));
 import { ChaseCardsModal } from './components/app/ChaseCardsModal';
 import { OutofPassesModal } from './components/app/OutofPassesModal';
 import { InsufficientCashModal } from './components/app/InsufficientCashModal';
@@ -1345,8 +1347,14 @@ export default function App() {
  />
 
  {/* Main Content or Binder View */}
- {activeTab === 'binder' ? (
- <BinderView
+  {activeTab === 'binder' ? (
+  <React.Suspense fallback={
+    <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] gap-3 text-amber-400 font-bold py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+      <span className="text-sm font-extrabold tracking-wide uppercase text-amber-300/80">Loading Binder Vault...</span>
+    </div>
+  }>
+  <BinderView
  onSwitchToPacks={() => setActiveTab('pack')}
  onInspectCard={(binderCard) => {
  sound.playModalOpen();
@@ -1383,13 +1391,21 @@ export default function App() {
  setInspectedCard(cardData);
  }}
  />
+  </React.Suspense>
  ) : activeTab === 'psa' ? (
- <PSAGradingLab
- onBackToPacks={() => setActiveTab('pack')}
- onGradeComplete={() => {
- getBinders();
- }}
- />
+  <React.Suspense fallback={
+    <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] gap-3 text-amber-400 font-bold py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+      <span className="text-sm font-extrabold tracking-wide uppercase text-amber-300/80">Loading PSA Grading Lab...</span>
+    </div>
+  }>
+  <PSAGradingLab
+  onBackToPacks={() => setActiveTab('pack')}
+  onGradeComplete={() => {
+  getBinders();
+  }}
+  />
+  </React.Suspense>
  ) : activeTab === 'ripNship' ? (
  <div className="flex-1 overflow-y-auto min-h-0 p-4 sm:p-8 flex items-center justify-center">
  <div className="relative min-h-[420px] w-full max-w-3xl flex flex-col items-center justify-center p-6 sm:p-12 text-center rounded-3xl bg-gradient-to-b from-[#1c1428]/95 via-[#140e20]/95 to-[#0b0814]/95 border border-rose-500/30 shadow-[0_0_60px_rgba(244,63,94,0.18)] overflow-hidden my-4">
@@ -1509,86 +1525,107 @@ export default function App() {
  />
  </div>
  ) : (activeTab === 'cardShow' || activeTab === 'auctions') ? (
- <div className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden min-h-0 w-full">
- <CardShowView
- initialShowAuction={activeTab === 'auctions'}
- onBackToPacks={() => setActiveTab('pack')}
- onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
- onSpendNetReturn={(amt) => setSessionSpent((s) => Number((s + amt).toFixed(2)))}
- onInspectCard={(binderCard) => {
- sound.playModalOpen();
- setInspectedViewMode('art');
- const cardData: any = {
- id: binderCard.id,
- originalIndex: 0,
- flipped: false,
- collected: true,
- value: binderCard.currentPrice || 0,
- isSlabbed: binderCard.isSlabbed || false,
- slabGrade: binderCard.slabGrade || 'N/A',
- binderId: 'my-collection',
- isVendorCatalog: binderCard.isVendorCatalog || true,
- vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
- vendorBooth: binderCard.vendorBooth || '5B',
- vendorRating: binderCard.vendorRating || '4.8 / 5',
- pokemon: {
- id: binderCard.id,
- name: binderCard.name || 'Pokemon Card',
- rarity: 'Special',
- isReverseHolo: false,
- illustrator: 'Expo Circuit',
- isSlabbed: binderCard.isSlabbed || false,
- slabGrade: binderCard.slabGrade || 'N/A',
- isVendorCatalog: binderCard.isVendorCatalog || true,
- vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
- vendorBooth: binderCard.vendorBooth || '5B',
- vendorRating: binderCard.vendorRating || '4.8 / 5',
- images: {
- small: binderCard.imageUrl || '',
- large: binderCard.imageUrl || '',
- },
- pricing: {
- tcgplayer: {},
- cardmarket: {}
- }
- }
- };
- setInspectedCard(cardData);
- }}
- />
- </div>
- ) : activeTab === 'missions' ? (
- <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
- <MissionsView
- onBackToPacks={() => setActiveTab('pack')}
- onOpenInventory={() => setIsInventoryOpen(true)}
- onSelectEarnedPack={(setId, language) => {
- setActiveTab('pack');
- setSelectedLanguage(language);
- loadSetAndGeneratePack(setId, language);
- }}
- onOpenCardCatalogue={(binderCard) => {
- sound.playModalOpen();
- setInspectedViewMode('art');
- const cardData: any = {
- id: binderCard.id,
- originalIndex: 0,
- flipped: false,
- collected: true,
- value: (binderCard as any).value || (binderCard as any).currentPrice || 150,
- pokemon: binderCard
- };
- setInspectedCard(cardData);
- }}
- />
- </div>
- ) : activeTab === 'profile' ? (
- <ProfileView
- currentUser={currentUser}
- netReturn={sessionTotal - sessionSpent}
- packCount={packCount}
- onBackToPacks={() => setActiveTab('pack')}
- />
+  <div className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden min-h-0 w-full">
+  <React.Suspense fallback={
+    <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] gap-3 text-amber-400 font-bold py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+      <span className="text-sm font-extrabold tracking-wide uppercase text-amber-300/80">Loading Card Show Marketplace...</span>
+    </div>
+  }>
+  <CardShowView
+  initialShowAuction={activeTab === 'auctions'}
+  onBackToPacks={() => setActiveTab('pack')}
+  onAddNetReturn={(amt) => setSessionTotal((s) => Number((s + amt).toFixed(2)))}
+  onSpendNetReturn={(amt) => setSessionSpent((s) => Number((s + amt).toFixed(2)))}
+  onInspectCard={(binderCard) => {
+  sound.playModalOpen();
+  setInspectedViewMode('art');
+  const cardData: any = {
+  id: binderCard.id,
+  originalIndex: 0,
+  flipped: false,
+  collected: true,
+  value: binderCard.currentPrice || 0,
+  isSlabbed: binderCard.isSlabbed || false,
+  slabGrade: binderCard.slabGrade || 'N/A',
+  binderId: 'my-collection',
+  isVendorCatalog: binderCard.isVendorCatalog || true,
+  vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
+  vendorBooth: binderCard.vendorBooth || '5B',
+  vendorRating: binderCard.vendorRating || '4.8 / 5',
+  pokemon: {
+  id: binderCard.id,
+  name: binderCard.name || 'Pokemon Card',
+  rarity: 'Special',
+  isReverseHolo: false,
+  illustrator: 'Expo Circuit',
+  isSlabbed: binderCard.isSlabbed || false,
+  slabGrade: binderCard.slabGrade || 'N/A',
+  isVendorCatalog: binderCard.isVendorCatalog || true,
+  vendorName: binderCard.vendorName || 'VINTAGEVAULT TCG',
+  vendorBooth: binderCard.vendorBooth || '5B',
+  vendorRating: binderCard.vendorRating || '4.8 / 5',
+  images: {
+  small: binderCard.imageUrl || '',
+  large: binderCard.imageUrl || '',
+  },
+  pricing: {
+  tcgplayer: {},
+  cardmarket: {}
+  }
+  }
+  };
+  setInspectedCard(cardData);
+  }}
+  />
+  </React.Suspense>
+  </div>
+  ) : activeTab === 'missions' ? (
+  <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 w-full">
+  <React.Suspense fallback={
+    <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] gap-3 text-amber-400 font-bold py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+      <span className="text-sm font-extrabold tracking-wide uppercase text-amber-300/80">Loading Missions Hub...</span>
+    </div>
+  }>
+  <MissionsView
+  onBackToPacks={() => setActiveTab('pack')}
+  onOpenInventory={() => setIsInventoryOpen(true)}
+  onSelectEarnedPack={(setId, language) => {
+  setActiveTab('pack');
+  setSelectedLanguage(language);
+  loadSetAndGeneratePack(setId, language);
+  }}
+  onOpenCardCatalogue={(binderCard) => {
+  sound.playModalOpen();
+  setInspectedViewMode('art');
+  const cardData: any = {
+  id: binderCard.id,
+  originalIndex: 0,
+  flipped: false,
+  collected: true,
+  value: (binderCard as any).value || (binderCard as any).currentPrice || 150,
+  pokemon: binderCard
+  };
+  setInspectedCard(cardData);
+  }}
+  />
+  </React.Suspense>
+  </div>
+  ) : activeTab === 'profile' ? (
+  <React.Suspense fallback={
+    <div className="flex-1 flex flex-col items-center justify-center min-h-[400px] gap-3 text-amber-400 font-bold py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+      <span className="text-sm font-extrabold tracking-wide uppercase text-amber-300/80">Loading Profile...</span>
+    </div>
+  }>
+  <ProfileView
+  currentUser={currentUser}
+  netReturn={sessionTotal - sessionSpent}
+  packCount={packCount}
+  onBackToPacks={() => setActiveTab('pack')}
+  />
+  </React.Suspense>
  ) : (
  <main className="flex-1 flex flex-col items-center justify-start pt-2 z-10 relative px-4 pb-12 overflow-y-auto overflow-x-hidden w-full">
 
@@ -2535,6 +2572,7 @@ export default function App() {
  {/* Market Price Inspection Modal */}
  <AnimatePresence>
  {inspectedCard && (
+ <React.Suspense fallback={null}>
  <CardMarketModal
  card={inspectedCard}
  onClose={() => setInspectedCard(null)}
@@ -2587,6 +2625,7 @@ export default function App() {
  } : undefined}
  isAddedToBinder={inspectedCard ? binderAddedIds.has(inspectedCard.id as number) : false}
  />
+ </React.Suspense>
  )}
  </AnimatePresence>
 
@@ -2904,6 +2943,7 @@ export default function App() {
  />
 
  <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+ <React.Suspense fallback={null}>
  <BulkCatalogueModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
  <InventoryModal
  isOpen={isInventoryOpen}
@@ -2928,6 +2968,7 @@ export default function App() {
  onOpenNow={handleLuckyDropOpenNow}
  onAddToInventory={handleLuckyDropAddToInventory}
  />
+ </React.Suspense>
 
  <SetPurchaseOptionsModal
  isOpen={!!purchaseTargetSet}
@@ -2970,6 +3011,7 @@ export default function App() {
  />
 
  {/* Cinematic 3D Booster Box Unboxing Experience Modal */}
+ <React.Suspense fallback={null}>
  <BoosterBoxUnboxingModal
  isOpen={!!unboxingBoxTarget}
  onClose={() => setUnboxingBoxTarget(null)}
@@ -3016,6 +3058,7 @@ export default function App() {
  setIsInventoryOpen(true);
  }}
  />
+ </React.Suspense>
 
  {/* Aggressive hidden DOM preloader for pack arts to guarantee instant cache hits */}
  <div style={{ display: 'none' }} aria-hidden="true">
