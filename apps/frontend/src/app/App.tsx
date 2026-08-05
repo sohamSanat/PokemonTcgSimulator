@@ -10,6 +10,8 @@ import { sound } from './services/sound';
 import { generateVendorReply } from './services/geminiVendorChat';
 import setPackPricesData from './data/set_pack_prices.json';
 import BinderView from './components/binder/BinderView';
+import { useEconomy } from './context/EconomyContext';
+import { useAppUI } from './context/AppUIContext';
 import { saveCollectedCard, getBinders, saveBinders, updateCardSlabStatus, saveCardToCatalogue, getCatalogues, moveCardToBinder, getStorageKey, getProfile, type CatalogueStore, type Binder, type Card } from './components/binder/types';
 import SleeveAnimation from './components/binder/SleeveAnimation';
 import SlabAnimation from './components/binder/SlabAnimation';
@@ -398,140 +400,38 @@ export default function App() {
  bonusPacksCount: number;
  price: number;
  } | null>(null);
+  const {
+    sessionTotal, setSessionTotal,
+    packCount, setPackCount,
+    sessionSpent, setSessionSpent,
+    dailyFreePacks, setDailyFreePacks,
+    earnedSetPacks, setEarnedSetPacks,
+    ownedMysteryPacks, setOwnedMysteryPacks,
+    dailyCash, setDailyCash
+  } = useEconomy();
+  const {
+    activeTab, setActiveTab,
+    isMobileMenuOpen, setIsMobileMenuOpen,
+    isInventoryOpen, setIsInventoryOpen,
+    soundEnabled, setSoundEnabled,
+    inspectedCard, setInspectedCard,
+    inspectedViewMode, setInspectedViewMode,
+    tradeTarget, setTradeTarget,
+    luckyDropSeconds, setLuckyDropSeconds,
+    claimedLuckyPack, setClaimedLuckyPack,
+    isLuckyDropModalOpen, setIsLuckyDropModalOpen,
+    purchaseTargetSet, setPurchaseTargetSet,
+    unboxingBoxTarget, setUnboxingBoxTarget,
+    showOutofPassesModal, setShowOutofPassesModal,
+    showInsufficientCashModal, setShowInsufficientCashModal,
+    showPriceGateModal, setShowPriceGateModal,
+    priceGateCost, setPriceGateCost
+  } = useAppUI();
 
- const [sessionTotal, setSessionTotal] = useState(() => {
- try {
- const saved = localStorage.getItem(getStorageKey('tcg_session_total', currentUser?.uid));
- return saved !== null ? Number(saved) : 0;
- } catch { return 0; }
- });
- const [packCount, setPackCount] = useState(() => {
- try {
- const saved = localStorage.getItem(getStorageKey('tcg_session_pack_count', currentUser?.uid));
- return saved !== null ? Number(saved) : 0;
- } catch { return 0; }
- });
- const [sessionSpent, setSessionSpent] = useState(() => {
- try {
- const saved = localStorage.getItem(getStorageKey('tcg_session_spent', currentUser?.uid));
- return saved !== null ? Number(saved) : 0;
- } catch { return 0; }
- });
-
- const lastSyncedStatsRef = useRef({ sessionTotal: -1, packCount: -1, sessionSpent: -1 });
- const [hasLoadedFromFirebase, setHasLoadedFromFirebase] = useState(false);
- const previousUserRef = useRef<string | undefined | null>(currentUser?.uid);
-
- // When switching users, load target user stats to prevent leaking previous user's stats.
- // We ONLY do this if we had a previous user. If we came from a guest (prevUid == null),
- // we keep the state to allow Firebase migration to pick up the guest stats.
- useEffect(() => {
- const prevUid = previousUserRef.current;
- if (prevUid !== currentUser?.uid) {
- if (prevUid != null) {
- try {
- const savedTotal = localStorage.getItem(getStorageKey('tcg_session_total', currentUser?.uid));
- setSessionTotal(savedTotal !== null ? Number(savedTotal) : 0);
- 
- const savedCount = localStorage.getItem(getStorageKey('tcg_session_pack_count', currentUser?.uid));
- setPackCount(savedCount !== null ? Number(savedCount) : 0);
-
- const savedSpent = localStorage.getItem(getStorageKey('tcg_session_spent', currentUser?.uid));
- setSessionSpent(savedSpent !== null ? Number(savedSpent) : 0);
- } catch { }
- }
- previousUserRef.current = currentUser?.uid;
- // Reset the "loaded from Firebase" flag + last-synced stats for the new
- // user. Otherwise the save effect below would treat the PREVIOUS user's
- // in-memory stats as if they belonged to the new user and persist them
- // (both to localStorage and Firestore), leaking Account A's revenue into
- // Account B during the transition render.
- lastSyncedStatsRef.current = { sessionTotal: -1, packCount: -1, sessionSpent: -1 };
- setHasLoadedFromFirebase(false);
- }
- }, [currentUser?.uid]);
-
- // Listen for Firebase Stats sync
- useEffect(() => {
- if (!currentUser) return;
- setHasLoadedFromFirebase(false);
- const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), (docSnap) => {
- setHasLoadedFromFirebase(true);
- if (docSnap.exists()) {
- const rootData = docSnap.data();
- const data = rootData.stats || {};
- const fbTotal = data.sessionTotal ?? rootData.netTotal ?? 0;
- const fbCount = data.packCount ?? 0;
- const fbSpent = data.sessionSpent ?? rootData.netSpent ?? 0;
-
- lastSyncedStatsRef.current = {
- sessionTotal: fbTotal,
- packCount: fbCount,
- sessionSpent: fbSpent,
- };
-
- const isMigration = !rootData.stats && !rootData.netTotal;
-
- setSessionTotal(prev => {
- if (isMigration && fbTotal === 0 && prev > 0) return prev;
- // Protect in-flight local card flip total from being overwritten by older async snapshots
- return prev > fbTotal ? prev : fbTotal;
- });
- setPackCount(prev => {
- if (isMigration && fbCount === 0 && prev > 0) return prev;
- return prev > fbCount ? prev : fbCount;
- });
- setSessionSpent(prev => {
- if (isMigration && fbSpent === 0 && prev > 0) return prev;
- return prev > fbSpent ? prev : fbSpent;
- });
- }
- });
- return () => unsubscribe();
- }, [currentUser]);
-
- // Save stats synchronously to LocalStorage & Firebase
- useEffect(() => {
- const uid = currentUser?.uid;
- try {
- localStorage.setItem(getStorageKey('tcg_session_total', uid), sessionTotal.toString());
- localStorage.setItem(getStorageKey('tcg_session_pack_count', uid), packCount.toString());
- localStorage.setItem(getStorageKey('tcg_session_spent', uid), sessionSpent.toString());
- window.dispatchEvent(new CustomEvent('user_stats_updated', { detail: { sessionTotal, packCount, sessionSpent } }));
- } catch { }
-
- if (!uid) return;
-
- if (hasLoadedFromFirebase) {
- const isFromFirebase =
- sessionTotal === lastSyncedStatsRef.current.sessionTotal &&
- packCount === lastSyncedStatsRef.current.packCount &&
- sessionSpent === lastSyncedStatsRef.current.sessionSpent;
-
- if (!isFromFirebase) {
- lastSyncedStatsRef.current = { sessionTotal, packCount, sessionSpent };
- setDoc(doc(db, 'users', uid), {
- netTotal: sessionTotal,
- netSpent: sessionSpent,
- stats: {
- sessionTotal,
- packCount,
- sessionSpent,
- lastUpdated: new Date().toISOString()
- }
- }, { merge: true }).catch(err => console.error('Failed to sync stats to Firebase:', err));
- }
- }
- }, [sessionTotal, packCount, sessionSpent, currentUser, hasLoadedFromFirebase]);
  const [isRevealingAll, setIsRevealingAll] = useState(false);
  const [cards, setCards] = useState<CardData[]>([]);
- const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
- const [inspectedCard, setInspectedCard] = useState<CardData | null>(null);
- const [tradeTarget, setTradeTarget] = useState<any>(null);
- const [inspectedViewMode, setInspectedViewMode] = useState<'market' | 'art'>('market');
  const [isChaseCardsReady, setIsChaseCardsReady] = useState(false);
  const [isChaseCardsRevealed, setIsChaseCardsRevealed] = useState(true);
-
 
  useEffect(() => {
  setIsChaseCardsRevealed(true);
@@ -543,31 +443,9 @@ export default function App() {
  }
  }, [inspectedCard]);
 
- const [soundEnabled, setSoundEnabled] = useState<boolean>(sound.isEnabled());
- const [activeTab, setActiveTab] = useState<'pack' | 'binder' | 'psa' | 'ripNship' | 'multiplayerLobby' | 'multiplayerArena' | 'cardShow' | 'missions' | 'auctions' | 'profile'>('pack');
- const [dailyFreePacks, setDailyFreePacks] = useState(() => getDailyFreePacks());
- const [earnedSetPacks, setEarnedSetPacks] = useState<EarnedSetPack[]>(() => getEarnedSetPacks());
- const [ownedMysteryPacks, setOwnedMysteryPacks] = useState<OwnedMysteryPack[]>(() => getOwnedMysteryPacks());
- const [isInventoryOpen, setIsInventoryOpen] = useState<boolean>(false);
- const [luckyDropSeconds, setLuckyDropSeconds] = useState<number>(() => getRemainingLuckyDropSeconds());
- const [claimedLuckyPack, setClaimedLuckyPack] = useState<LuckyDropReward | null>(null);
- const [isLuckyDropModalOpen, setIsLuckyDropModalOpen] = useState<boolean>(false);
- const [purchaseTargetSet, setPurchaseTargetSet] = useState<any | null>(null);
- const [unboxingBoxTarget, setUnboxingBoxTarget] = useState<{
- set: any;
- boxType: 'halfBox' | 'fullBox';
- action: 'rip' | 'vault';
- } | null>(null);
-
  useEffect(() => {
- loadJapaneseMetadata();
- const updateLuckyTimer = () => {
- setLuckyDropSeconds(getRemainingLuckyDropSeconds());
- };
- updateLuckyTimer();
- const interval = setInterval(updateLuckyTimer, 1000);
- return () => clearInterval(interval);
- }, []);
+    loadJapaneseMetadata();
+  }, []);
 
  const handleLuckyDropClick = () => {
  if (luckyDropSeconds === 0) {
@@ -615,11 +493,6 @@ export default function App() {
  return `${m}:${String(s).padStart(2, '0')}`;
  };
 
- const [dailyCash, setDailyCash] = useState(() => getDailyCash());
- const [showOutofPassesModal, setShowOutofPassesModal] = useState<boolean>(false);
- const [showInsufficientCashModal, setShowInsufficientCashModal] = useState<boolean>(false);
- const [showPriceGateModal, setShowPriceGateModal] = useState<boolean>(false);
- const [priceGateCost, setPriceGateCost] = useState<number>(0);
  const [pendingOpenKind, setPendingOpenKind] = useState<'tear' | 'reset'>('tear');
  const openKindRef = useRef<'tear' | 'reset'>('tear');
  const [matchId, setMatchId] = useState<string>('');
