@@ -14,6 +14,8 @@ import type { BulkCard, CatalogueStore, Card, Binder, SetOption, GenerationOptio
 import { MASTER_SET_GENERATIONS, SAMPLE_CARDS, SAMPLE_BINDERS } from './constants';
 import { formatRarityTag, genPriceHistory } from './utils';
 
+import { getItemSync, setItemSync } from '../../services/storageDb';
+
 const PROMO_CARDS_POOL = promoCardsData as any[];
 
 /**
@@ -32,7 +34,7 @@ export function getStorageKey(base: string, forceUid?: string | null): string {
 
 export function getCatalogues(): CatalogueStore {
   try {
-    const data = localStorage.getItem(getStorageKey('tcg_catalogues'));
+    const data = getItemSync(getStorageKey('tcg_catalogues'));
     return data ? JSON.parse(data) : {};
   } catch {
     return {};
@@ -57,7 +59,7 @@ export function saveCardToCatalogue(cardData: any, setName: string): void {
   };
 
   try {
-    localStorage.setItem(getStorageKey('tcg_catalogues'), JSON.stringify(catalogues));
+    setItemSync(getStorageKey('tcg_catalogues'), JSON.stringify(catalogues));
     syncToFirestore();
   } catch (e) {
     console.error('Failed to save card to catalogue', e);
